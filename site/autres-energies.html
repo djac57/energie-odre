@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="autresenergies.js?v=d88185ba3c"></script>
+<script src="autresenergies.js?v=06ea982790"></script>
 <script src="geo.js"></script>
 <script src="geo_world.js"></script>
 <style>
@@ -149,6 +149,7 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .shipcard dt { color: var(--muted); }
 .shipcard dd { margin: 0; color: var(--text); }
 .aiscount { font-size: 15px; font-weight: 600; color: var(--text); margin: 2px 0 10px; }
+.aiscount .sub { font-size: 12.5px; font-weight: 500; color: var(--text-2); margin-top: 2px; }
 .lg2 svg { flex: none; }
 .aisbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 8px; }
 .aisbar input { font: 13px "IBM Plex Mono", monospace; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); padding: 6px 10px; width: 240px; max-width: 100%; }
@@ -250,9 +251,10 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <div class="stack">
     <div class="panel"><div class="ptitle" id="aisTitle"></div>
       <div class="aiscount mono" id="aisCount"></div>
+      <div class="ctlrow"><div class="tabs" id="aisLayer"></div><div class="tabs" id="aisPeriod"></div></div>
       <div class="ctlrow"><div class="tabs" id="aisTerm"></div><div class="tabs" id="aisType"></div></div>
       <div class="aisbar"><input type="search" id="aisSearch" list="aisNames" placeholder="Chercher un navire…" aria-label="Chercher un navire par son nom" autocomplete="off"><datalist id="aisNames"></datalist><span class="note" id="aisFound"></span></div>
-      <div id="aisMap"></div><div class="legend" id="aisLegend"></div><div class="legend lg2" id="aisLegend2"></div>
+      <div id="aisMap"></div><div class="legend" id="aisLegend"></div><div class="legend lg2" id="aisLegend2"></div><p class="note" id="aisOrigNote"></p>
       <p class="note">Molette, pincement ou boutons pour zoomer, glisser pour se déplacer. Cliquez un navire pour sa fiche et son voyage.</p></div>
     <div class="term-cards" id="termCards"></div>
     <div class="panel"><div class="ptitle">Navires retenus</div><div class="tscroll"><table id="aisTable"></table></div></div>
@@ -832,7 +834,32 @@ function shipIcon(kind) { return kind === "lng" ? "M0,-9 L4,-5 L4,8 L-4,8 L-4,-5
 const dtShort = d => d ? d.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—";
 const CAPS = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
 const DEP_LBL = { port: "observé", prevdest: "d'après la destination précédente", guess: "estimation" };
-let aisSel = null, aisView = null, aisTerm = "all", aisType = "all";
+let aisSel = null, aisView = null, aisTerm = "all", aisType = "all", aisLayer = "both", aisPeriod = "month";
+// Principal terminal d'exportation par pays (lat, lon), saisi à la main : point de départ schématique des flux d'origine
+const EXPORT_OIL = { US: [27.8, -97.3, "Corpus Christi"], KZ: [44.72, 37.79, "Novorossiisk (oléoduc CPC)"], NG: [4.4, 7.15, "Bonny / Forcados"], NO: [60.81, 5.03, "Mongstad"],
+  LY: [30.63, 18.35, "Es Sider"], AE: [25.17, 56.37, "Fujairah"], AZ: [36.88, 35.93, "Ceyhan (oléoduc BTC)"], GQ: [3.78, 8.73, "Zafiro (Bioko)"], AO: [-7.5, 12.4, "Luanda / champs offshore"],
+  BR: [-23.98, -46.3, "Santos"], SA: [26.65, 50.17, "Ras Tanura"], IQ: [29.7, 48.8, "Bassorah"], DZ: [36.89, 6.92, "Skikda"], EG: [31.11, 29.63, "Sidi Kerir"], MX: [18.43, -93.2, "Dos Bocas"],
+  GY: [7.0, -57.0, "champs offshore (Guyana)"], UK: [60.45, -1.3, "Sullom Voe"], CA: [47.5, -52.8, "Terre-Neuve"], CM: [2.9, 9.87, "Kribi"], CG: [-4.92, 11.88, "Djeno"], GA: [-0.7, 8.8, "Port-Gentil"],
+  GH: [4.9, -1.8, "Takoradi"], CI: [5.27, -4.01, "Abidjan"], TN: [36.8, 10.9, "La Skhira"], RU: [60.35, 28.7, "Primorsk"], IR: [29.25, 50.3, "Kharg"], KW: [29.06, 48.16, "Mina al-Ahmadi"],
+  OM: [23.6, 58.5, "Mina al-Fahal"], VE: [10.1, -64.8, "José"], CO: [9.4, -75.7, "Coveñas"], TR: [36.88, 35.93, "Ceyhan"], SN: [14.7, -17.4, "Sangomar"], TT: [10.4, -61.48, "Point Lisas"] };
+const EXPORT_LNG = { DZ: [35.82, -0.28, "Arzew / Bethioua"], QA: [25.92, 51.6, "Ras Laffan"], NG: [4.42, 7.15, "Bonny"], US: [29.73, -93.87, "Sabine Pass"], RU: [71.27, 72.07, "Sabetta (Yamal)"],
+  TT: [10.18, -61.7, "Point Fortin"], EG: [31.47, 31.76, "Damiette"], AO: [-6.1, 12.33, "Soyo"], CM: [2.9, 9.87, "Kribi"], GQ: [3.78, 8.73, "Bioko"], OM: [22.7, 59.4, "Qalhat"], AE: [25.15, 52.87, "Das Island"] };
+const GAS_PIPE = new Set(["NO", "BE", "DE", "ES", "CH", "IT", "NL", "LU", "UK"]);  // voisins par gazoduc : hors couche maritime
+// Arrivée en France : côté Méditerranée pour les origines méditerranéennes, mer Noire et Proche-Orient (via Suez), sinon côté Atlantique
+const MED_ORIG = new Set(["DZ", "LY", "EG", "TN", "KZ", "AZ", "TR", "RU_BS", "SA", "IQ", "IR", "KW", "AE", "OM", "QA"]);
+function originFlows(period) {
+  const I = A.imports || {}, out = [];
+  const add = (D, energy, table, skip, conv) => { if (!D) return; const m = D.months; let i = m.length - 1;
+    while (i > 0 && Object.values(D.partners).filter(p => p.v[i]).length < 3) i--;  // dernier mois avec une ventilation publiée
+    const idx = period === "month" ? [i] : d3.range(Math.max(0, i - 11), i + 1);
+    Object.entries(D.partners).forEach(([c, p]) => { if (skip.has(c) || !table[c]) return; const v = d3.sum(idx, k => p.v[k] || 0) * conv; if (v <= 0) return;
+      const [la, lo, term] = table[c], med = MED_ORIG.has(c) && !(energy === "oil" && c === "RU"), arr = energy === "oil" ? (med ? [43.4, 4.9] : [49.47, 0.15]) : (med ? [43.42, 4.87] : [47.3, -2.15]);
+      out.push({ c, nom: p.nom, energy, v, term, from: [la, lo], to: arr, toName: energy === "oil" ? (med ? "Fos-Lavéra" : "Le Havre") : (med ? "Fos" : "Montoir"), path: routeTo([la, lo], arr),
+        period: period === "month" ? mLong(m[i]) : `${mLong(m[idx[0]])} – ${mLong(m[i])}` }); }); };
+  add(I.oilFR, "oil", EXPORT_OIL, new Set(), 1 / 1000);   // kt -> Mt
+  add(I.gasFR, "lng", EXPORT_LNG, GAS_PIPE, 1);            // TWh
+  return out;
+}
 function renderAIS() {
   const S = A.ais; const host = document.getElementById("aisMap"); host.replaceChildren();
   if (!S?.ships?.length) { host.append(el("p", "note", "Pas d'instantané AIS disponible.")); return; }
@@ -853,15 +880,23 @@ function renderAIS() {
   const terms = [...new Set(all.map(s => s.term))].filter(t => TERMS[t]);
   setTabs("aisTerm", [["all", "Tous les ports"], ...terms.map(t => [t, t])], aisTerm, v => { aisTerm = v; aisView = null; renderAIS(); });
   setTabs("aisType", [["all", "Tous"], ["lng", "Méthaniers"], ["oil", "Pétroliers"]], aisType, v => { aisType = v; aisView = null; renderAIS(); });
+  setTabs("aisLayer", [["both", "Origines et navires"], ["origins", "Origines"], ["ships", "Navires"]], aisLayer, v => { aisLayer = v; aisView = null; renderAIS(); });
+  setTabs("aisPeriod", [["month", "Dernier mois"], ["year", "12 derniers mois"]], aisPeriod, v => { aisPeriod = v; renderAIS(); });
+  document.getElementById("aisPeriod").style.display = aisLayer === "ships" ? "none" : "";
   const ships = all.filter(s => (aisTerm === "all" || s.term === aisTerm) && (aisType === "all" || s.cap?.kind === aisType));
   // compteur : navires en route (repérés avec une destination française, pas encore arrivés)
-  const go = ships.filter(s => s.enroute && !s.arrived);
-  const m3 = d3.sum(go.filter(s => s.cap?.kind === "lng"), s => s.cap.m3), dwt = d3.sum(go.filter(s => s.cap?.kind === "oil"), s => s.cap.dwt);
-  document.getElementById("aisCount").textContent = `${go.length} navire${go.length > 1 ? "s" : ""} en route vers la France · ${fr(m3 / 1e6, 2)} Mm³ de GNL · ${fr(dwt / 1e6, 2)} Mt de pétrole et produits (capacités estimées)` +
-    ` · ${ships.length - go.length} à quai ou au mouillage près des terminaux`;
+  // en route : en mouvement (> 1 nœud) ou loin du port ; sinon au mouillage ou à quai près d'un terminal
+  const atAnchor = s => s.arrived || (s.sog != null && s.sog <= 1) || (s.dist != null && s.dist < 15);
+  const sumUp = list => { const n = list.length, m3 = d3.sum(list.filter(s => s.cap?.kind === "lng"), s => s.cap.m3), dwt = d3.sum(list.filter(s => s.cap?.kind === "oil"), s => s.cap.dwt);
+    return `${n} navire${n > 1 ? "s" : ""} · ${fr(m3 / 1e6, 2)} Mm³ de GNL · ${fr(dwt / 1e6, 2)} Mt de pétrole et produits`; };
+  const go = ships.filter(s => !atAnchor(s)), still = ships.filter(atAnchor);
+  const cnt = document.getElementById("aisCount"); cnt.replaceChildren();
+  cnt.append(el("div", null, `En route vers la France : ${sumUp(go)}`), el("div", "sub", `Au mouillage ou à quai près des terminaux : ${sumUp(still)} · capacités estimées d'après la taille des navires`));
   const W = widthOf("aisMap"), H = Math.round(W * (W < 560 ? 1.15 : .62));
   // vue initiale : tous les navires, leurs départs et leurs ports, au moins la façade française
-  const pts = [[-8, 42], [9, 51.5]]; ships.forEach(s => { pts.push([s.lon, s.lat]); if (s.dep && !s.arrived) pts.push([s.dep.lon, s.dep.lat]); });
+  const flows = aisLayer !== "ships" ? originFlows(aisPeriod) : [];
+  const pts = [[-8, 42], [9, 51.5]]; if (aisLayer !== "origins") ships.forEach(s => { pts.push([s.lon, s.lat]); if (s.dep && !s.arrived) pts.push([s.dep.lon, s.dep.lat]); });
+  flows.forEach(f => pts.push([f.from[1], f.from[0]]));
   const proj = d3.geoMercator().fitExtent([[24, 24], [W - 24, H - 24]], { type: "MultiPoint", coordinates: pts });
   const pxDeg = proj.scale() * Math.PI / 180 / Math.cos(46 * Math.PI / 180);  // pixels par degré de longitude vers 46° N à l'échelle 1
   const kmax = Math.max(40, 2500 / pxDeg), kDetail = Math.max(2, 70 / pxDeg);
@@ -876,7 +911,26 @@ function renderAIS() {
       else o.append("circle").attr("cx", x).attr("cy", y).attr("r", 2.5).attr("fill", css("--accent")).attr("opacity", .8);
       if (W > 520 || pd >= 60 || p.rank > 1) o.append("text").attr("x", x + 7).attr("y", y + 4).attr("class", "mono maplab").style("font-size", p.rank === 1 ? "11px" : "10px")
         .text(p.name + (pd >= 300 && p.code ? ` · ${p.code}` : "")); });
+    // couche « Origines » : flux par pays d'origine (Eurostat), le long des routes maritimes
+    const vmaxE = { oil: d3.max(flows.filter(f => f.energy === "oil"), f => f.v) || 1, lng: d3.max(flows.filter(f => f.energy === "lng"), f => f.v) || 1 };
+    const labels = [];
+    flows.forEach(f => { const c = f.energy === "lng" ? css("--o-lng") : css("--oil"), w = 1.5 + Math.sqrt(f.v / vmaxE[f.energy]) * (W < 560 ? 7 : 12), d = curve(f.path.map(P)), op = sel ? .25 : 1;
+      const unit = f.energy === "oil" ? (aisPeriod === "month" ? "Mt/mois" : "Mt sur 12 mois") : (aisPeriod === "month" ? "TWh/mois" : "TWh sur 12 mois");
+      const g = o.append("g").style("cursor", "pointer").attr("opacity", op).on("pointermove", e => showTip(e, [["big", `${fr(f.v, f.v < 1 ? 2 : 1)} ${unit}`],
+        ["énergie", f.energy === "oil" ? "pétrole brut" : "gaz naturel liquéfié (hors gazoducs)"], ["départ schématique", f.term], ["arrivée", f.toName],
+        ["source", `Eurostat, ${f.energy === "oil" ? "nrg_ti_oilm" : "nrg_ti_gasm"}, mensuel, ${f.period}`]], `${f.nom} → France`)).on("pointerleave", hideTip);
+      g.append("path").attr("d", d).attr("fill", "none").attr("stroke", "transparent").attr("stroke-width", Math.max(12, w));
+      g.append("path").attr("d", d).attr("fill", "none").attr("stroke", c).attr("stroke-width", w).attr("stroke-opacity", .22).attr("stroke-linecap", "round");
+      g.append("path").attr("d", d).attr("class", "flowline").attr("stroke", c).attr("stroke-width", Math.max(1.4, w * .35)).attr("stroke-dasharray", "1 9").attr("stroke-opacity", .9).style("animation-duration", "2.4s");
+      const [x, y] = P(f.from); g.append("circle").attr("cx", x).attr("cy", y).attr("r", 3.5).attr("fill", c).attr("stroke", css("--bg"));
+      if (!sel) labels.push({ x: x + 6, y: y + 3, v: f.v / vmaxE[f.energy], t: `${f.nom} · ${fr(f.v, f.v < 1 ? 2 : 1)} ${f.energy === "oil" ? "Mt" : "TWh"}${f.energy === "lng" ? " GNL" : ""}` }); });
+    // étiquettes sans chevauchement : les plus gros flux d'abord, décalage vertical si possible
+    const placed = []; labels.sort((a, b) => b.v - a.v).forEach(l => { const w = l.t.length * 6.4;
+      for (const dy of [0, 13, -13, 26]) { const bx = { x0: l.x, x1: l.x + w, y0: l.y + dy - 10, y1: l.y + dy + 2 };
+        if (bx.x1 > W - 2 || placed.some(q => bx.x0 < q.x1 && bx.x1 > q.x0 && bx.y0 < q.y1 && bx.y1 > q.y0)) continue;
+        placed.push(bx); o.append("text").attr("x", l.x).attr("y", l.y + dy).attr("class", "mono maplab strong").style("font-size", "10.5px").text(l.t); break; } });
     if (minRank === 0) Object.entries(TERMS).forEach(([n, ll]) => { const [x, y] = P(ll); o.append("rect").attr("x", x - 3).attr("y", y - 3).attr("width", 6).attr("height", 6).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.2); });
+    if (aisLayer === "origins") return;
     ships.forEach(s => { const on = !sel || sel === s, op = on ? 1 : .2, c = colOf(s), w = sel === s ? 2.6 : 1.5, isSel = sel === s;
       // origine probable (destination précédente ou estimation) : pointillé fin ; départ observé non relié : route hors couverture
       if (s.lead) o.append("path").attr("d", curve(s.lead.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 1.6 : 1)
@@ -956,10 +1010,17 @@ function renderAIS() {
     const sp = el("span"); const sv = d3.select(sp).append("svg").attr("width", 26).attr("height", 8); sv.append("line").attr("x1", 1).attr("x2", 25).attr("y1", 4).attr("y2", 4).attr("stroke", css("--text-2")).attr("stroke-width", 2).attr("stroke-dasharray", d || null).attr("stroke-linecap", "round");
     sp.append(document.createTextNode(t)); lg2.append(sp); });
   { const sp = el("span"); sp.append(document.createTextNode("départ : ● observé · ○ destination précédente ou estimation")); lg2.append(sp); }
+  const on = document.getElementById("aisOrigNote");
+  if (aisLayer === "ships") on.textContent = ""; else { const fl = flows, per = fl[0]?.period || "", gm = A.imports?.gasFR, lastGas = gm ? gm.months[gm.months.length - 1] : null,
+      alsiFR = (A.alsi?.France?.monthly || []).find(x => x[0] === lastGas) || (A.alsi?.France?.monthly || []).at(-2);
+    on.textContent = `Origines (${per}) : importations françaises par pays d'origine, Eurostat — pétrole brut (nrg_ti_oilm, Mt) et gaz arrivé par la mer (nrg_ti_gasm, TWh, hors pays voisins reliés par gazoduc). ` +
+      `La ventilation du GNL de la France est en partie confidentielle : certains fournisseurs, dont les États-Unis certains mois, n'apparaissent pas` +
+      `${alsiFR ? ` ; à titre de comparaison, les terminaux français ont regazéifié ${fr(alsiFR[1], 1)} TWh en ${mLong(alsiFR[0])} (GIE ALSI)` : ""}. ` +
+      `Produits pétroliers raffinés : non disponibles par origine dans ces séries. Départ au principal terminal d'exportation du pays, route schématique, arrivée côté Atlantique ou Méditerranée selon la route.`; }
   // cartes par terminal, navires cliquables
   const cards = document.getElementById("termCards"); cards.replaceChildren();
   Object.keys(TERMS).forEach(t => { const list = ships.filter(s => s.term === t); if (!list.length) return;
-    const way = list.filter(s => s.enroute && !s.arrived), soon = list.filter(s => s.sog != null && s.sog <= 1 || (s.etaEst && s.etaEst - now < 72 * 3600e3) || (s.etaDecl && s.etaDecl - now < 72 * 3600e3 && s.etaDecl > now - 864e5));
+    const way = list.filter(s => !atAnchor(s)), soon = list.filter(s => s.sog != null && s.sog <= 1 || (s.etaEst && s.etaEst - now < 72 * 3600e3) || (s.etaDecl && s.etaDecl - now < 72 * 3600e3 && s.etaDecl > now - 864e5));
     const lng = d3.sum(way.filter(s => s.cap?.kind === "lng"), s => s.cap.gwh), oil = d3.sum(way.filter(s => s.cap?.kind === "oil"), s => s.cap.dwt);
     const c = el("div"); c.append(el("div", "k", t), el("div", "v mono", `${list.length} navire${list.length > 1 ? "s" : ""}`),
       el("div", "d", `en route : ${way.length}${lng ? ` · GNL ≈ ${fr(lng, 0)} GWh` : ""}${oil ? ` · ≈ ${fr(oil / 1000, 0)} kt` : ""} · sous 72 h ou à quai : ${soon.length}`));

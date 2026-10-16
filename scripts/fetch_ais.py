@@ -1,13 +1,15 @@
 """Navires-citernes en route vers la France, via le flux AIS d'AISStream.io.
 
 Trois écoutes par passage (3 connexions au plus, limite d'AISStream) :
-1. repérage (AIS_SCAN_SECONDS, 240 s) : messages statiques du monde entier ; les
+1. repérage (AIS_SCAN_SECONDS, 480 s) : messages statiques du monde entier ; les
    pétroliers et méthaniers dont la destination déclarée est un port français
    (scripts/ais_ports.py) entrent dans la liste de suivi ;
-2. côtière, en même temps (AIS_SECONDS, 240 s) : positions et messages statiques sur la
+2. côtière, en même temps que le début du repérage (AIS_SECONDS, 240 s) : positions et messages statiques sur la
    façade française, pour les navires au mouillage ou à quai sans destination claire ;
 3. suivi (AIS_TRACK_SECONDS, 180 s) : positions des navires de la liste où qu'ils soient,
-   par lots de 200 MMSI (limite d'un abonnement).
+   par lots de 200 MMSI (limite d'un abonnement). Durée totale ≈ 11 min.
+   Un navire n'émet son message statique (destination) que toutes les 6 minutes et seulement
+   quand une station côtière le reçoit : un repérage plus long en attrape davantage.
 
 La couverture d'AISStream est terrestre (stations côtières bénévoles) : en haute mer, les
 navires ne sont pas reçus ; leurs traces ont donc des trous.
@@ -47,7 +49,7 @@ URL = "wss://stream.aisstream.io/v0/stream"
 BOX = [[[41.0, -6.5], [51.5, 9.8]]]  # façade française : Manche, Atlantique, Méditerranée
 WORLD = [[[-90.0, -180.0], [90.0, 180.0]]]
 SECONDS = int(os.environ.get("AIS_SECONDS", "240"))
-SCAN_SECONDS = int(os.environ.get("AIS_SCAN_SECONDS", "240"))
+SCAN_SECONDS = int(os.environ.get("AIS_SCAN_SECONDS", "480"))
 TRACK_SECONDS = int(os.environ.get("AIS_TRACK_SECONDS", "180"))
 MMSI_PER_SUB = 200
 STOP_KN = 0.5
