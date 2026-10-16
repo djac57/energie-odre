@@ -11,3 +11,4 @@ local/
 # Générés par le workflow avant déploiement (reconstruits à chaque passage, non versionnés)
 site/rte.js
 site/prices.js
+site/gazpetrole.js
