@@ -11,7 +11,7 @@
 "region": "Auvergne-Rhône-Alpes",
 "date_format(date,'yyyy-MM')": "2016-02",
 "mois": null,
-"vent": 3.806939655172414,
+"vent": 3.8069396551724135,
 "rayonnement": 79.16133620689655,
 "n": 232
 },
@@ -164,7 +164,7 @@
 "date_format(date,'yyyy-MM')": "2017-09",
 "mois": null,
 "vent": 2.864833333333333,
-"rayonnement": 160.15470833333333,
+"rayonnement": 160.15470833333336,
 "n": 240
 },
 {
@@ -764,7 +764,7 @@
 "date_format(date,'yyyy-MM')": "2023-12",
 "mois": null,
 "vent": 3.6129435483870966,
-"rayonnement": 48.192137096774196,
+"rayonnement": 48.19213709677419,
 "n": 248
 },
 {
@@ -1076,7 +1076,7 @@
 "date_format(date,'yyyy-MM')": "2016-05",
 "mois": null,
 "vent": 4.870564516129033,
-"rayonnement": 205.90987903225803,
+"rayonnement": 205.90987903225806,
 "n": 248
 },
 {
@@ -1716,7 +1716,7 @@
 "date_format(date,'yyyy-MM')": "2023-01",
 "mois": null,
 "vent": 6.548145161290323,
-"rayonnement": 41.862096774193546,
+"rayonnement": 41.86209677419355,
 "n": 248
 },
 {
@@ -2068,7 +2068,7 @@
 "date_format(date,'yyyy-MM')": "2026-09",
 "mois": null,
 "vent": 3.7444166666666665,
-"rayonnement": 192.2745,
+"rayonnement": 192.27450000000002,
 "n": 240
 },
 {
@@ -2212,7 +2212,7 @@
 "date_format(date,'yyyy-MM')": "2017-05",
 "mois": null,
 "vent": 6.439153225806451,
-"rayonnement": 236.98395161290324,
+"rayonnement": 236.9839516129032,
 "n": 248
 },
 {
@@ -3604,7 +3604,7 @@
 "date_format(date,'yyyy-MM')": "2021-01",
 "mois": null,
 "vent": 6.579233870967743,
-"rayonnement": 40.86008064516129,
+"rayonnement": 40.8600806451613,
 "n": 248
 },
 {
@@ -4132,7 +4132,7 @@
 "date_format(date,'yyyy-MM')": "2026-07",
 "mois": null,
 "vent": 4.788306451612903,
-"rayonnement": 306.39556451612907,
+"rayonnement": 306.395564516129,
 "n": 248
 },
 {
@@ -4148,7 +4148,7 @@
 "date_format(date,'yyyy-MM')": "2026-09",
 "mois": null,
 "vent": 4.2400416666666665,
-"rayonnement": 179.75233333333335,
+"rayonnement": 179.75233333333333,
 "n": 240
 },
 {
@@ -4172,7 +4172,7 @@
 "date_format(date,'yyyy-MM')": "2016-02",
 "mois": null,
 "vent": 6.277801724137931,
-"rayonnement": 110.70771551724138,
+"rayonnement": 110.70771551724137,
 "n": 232
 },
 {
@@ -7900,7 +7900,7 @@
 "date_format(date,'yyyy-MM')": "2022-06",
 "mois": null,
 "vent": 5.632874999999999,
-"rayonnement": 271.4738333333333,
+"rayonnement": 271.47383333333335,
 "n": 240
 },
 {
@@ -9564,7 +9564,7 @@
 "date_format(date,'yyyy-MM')": "2018-02",
 "mois": null,
 "vent": 6.200803571428572,
-"rayonnement": 102.81223214285716,
+"rayonnement": 102.81223214285714,
 "n": 224
 },
 {
