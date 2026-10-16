@@ -1,0 +1,61 @@
+name: Mise à jour et déploiement
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 4 * * *"  # chaque jour à 04:23 UTC (l'historique consolidé RTE évolue chaque mois, le temps réel est chargé en direct par la page)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Télécharger éCO2mix et la météo régionale (ODRÉ)
+        run: python scripts/fetch.py data/raw
+
+      - name: Construire data.js
+        run: python scripts/build.py data/raw site/data.js
+
+      - name: Committer les nouvelles données
+        run: |
+          if [ -n "$(git status --porcelain data site)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data site
+            git commit -m "Données ODRÉ mises à jour ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "Aucune nouvelle donnée."
+          fi
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

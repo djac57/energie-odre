@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Réseau électrique français</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="data.js?v=b21ad0c625"></script>
+<script src="geo.js"></script>
+<style>
+/* Direction : salle de contrôle — sombre par défaut, accents lumineux, chiffres en mono */
+:root, :root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #06090d; --panel: #0b1117; --panel-2: #101921; --line: #1b2833; --grid: #15202a;
+  --text: #e3eef5; --text-2: #9db1bf; --muted: #5f7686; --accent: #4de1ff; --accent-2: #ffb627;
+  --exp: #4de1ff; --imp: #ff7a45; --glow: 0 0 18px rgba(77,225,255,.25);
+  --land: #0f1820; --land-hi: #16232e; --france: #12303c; --sea: #06090d;
+  --f-nucleaire: #ffc93c; --f-hydraulique: #3d8bff; --f-eolien: #2ee6c5; --f-solaire: #ff8a3d;
+  --f-bioenergies: #5bd67a; --f-gaz: #ff4d6a; --f-charbon: #8a96a3; --f-fioul: #b48cff;
+  --conso: #ffffff; --hm-0: #0d151c; --ok: #5bd67a; --cloud: #d9e2e8; --cloud-dark: #8b97a3;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #eef2f5; --panel: #ffffff; --panel-2: #f4f7f9; --line: #d3dce3; --grid: #e4eaef;
+  --text: #0b1720; --text-2: #3b5162; --muted: #6f8597; --accent: #0077b6; --accent-2: #b97400;
+  --exp: #0077b6; --imp: #d4541c; --glow: none;
+  --land: #e3e9ee; --land-hi: #d6dfe6; --france: #cfe6f1; --sea: #eef2f5;
+  --f-nucleaire: #d9a300; --f-hydraulique: #2563c9; --f-eolien: #11a58b; --f-solaire: #e8692a;
+  --f-bioenergies: #2f9e55; --f-gaz: #d63a50; --f-charbon: #4b545c; --f-fioul: #8457c9;
+  --conso: #0b1720; --hm-0: #f1f4f6; --ok: #2f9e55; --cloud: #8fa1ae; --cloud-dark: #56636e;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 "Space Grotesk", system-ui, sans-serif;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px; background-attachment: fixed; }
+.mono, .num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; }
+a { color: var(--accent); }
+
+/* Barre de commande */
+.bar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 10px 28px;
+  background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.brand { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 8px; margin-right: auto; }
+.brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 10px var(--ok); animation: pulse 2s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+.ctl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ctl .lab { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+select { font: 500 13px "IBM Plex Mono", monospace; color: var(--text); background: var(--panel); border: 1px solid var(--line); padding: 6px 8px; border-radius: 0; }
+.tab { border: 1px solid var(--line); background: var(--panel); padding: 5px 10px; cursor: pointer; font: 500 12px "IBM Plex Mono", monospace; color: var(--text-2); letter-spacing: .03em; }
+.tab[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent), var(--glow); }
+.tab:disabled { opacity: .35; cursor: not-allowed; }
+.icon-btn { border: 1px solid var(--line); background: var(--panel); width: 34px; height: 34px; cursor: pointer; display: grid; place-items: center; }
+
+/* En-tête */
+.hero { padding: 56px 28px 36px; max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+h1 { font-weight: 700; font-size: clamp(36px, 6vw, 76px); line-height: .95; letter-spacing: -.035em; margin: 0 0 18px; }
+h1 em { font-style: normal; color: var(--accent); text-shadow: var(--glow); }
+.lede { color: var(--text-2); font-size: 17px; max-width: 640px; margin: 0; }
+.source { font: 12.5px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 14px; }
+.readout { border: 1px solid var(--line); background: var(--panel); padding: 16px 18px; position: relative; }
+.readout::before, .readout::after, .panel::before, .panel::after { content: ""; position: absolute; width: 10px; height: 10px; border-color: var(--accent); border-style: solid; }
+.readout::before, .panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.readout::after, .panel::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.readout .k { font: 11px "IBM Plex Mono", monospace; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+.readout .rows { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px 18px; margin-top: 10px; }
+.readout .v { font: 600 26px "IBM Plex Mono", monospace; letter-spacing: -.02em; }
+.readout .s { font-size: 12px; color: var(--text-2); }
+
+/* KPI */
+.kpis { max-width: 1400px; margin: 0 auto; padding: 0 28px 8px; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-top: 1px solid var(--line); }
+.kpi { padding: 18px 18px 18px 0; border-right: 1px solid var(--line); margin-right: 18px; min-width: 0; }
+.kpi:last-child { border-right: none; }
+.kpi .k { font: 11px "IBM Plex Mono", monospace; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+.kpi .v { font: 600 34px "IBM Plex Mono", monospace; letter-spacing: -.03em; margin-top: 4px; }
+.kpi .d { font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
+.meter { height: 5px; background: var(--panel-2); margin-top: 8px; display: flex; gap: 1px; }
+
+/* Sections pleine largeur */
+section.band { border-top: 1px solid var(--line); }
+.band-in { max-width: 1400px; margin: 0 auto; padding: 36px 28px; display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 32px; }
+.side .no { font: 12px "IBM Plex Mono", monospace; color: var(--accent); letter-spacing: .14em; }
+.side h2 { font-weight: 700; font-size: 28px; line-height: 1.05; letter-spacing: -.02em; margin: 8px 0 10px; }
+.side p { color: var(--text-2); font-size: 14px; margin: 0 0 14px; }
+.side .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.panel { position: relative; border: 1px solid var(--line); background: var(--panel); padding: 16px; min-width: 0; }
+svg text { fill: var(--text); }
+.axis text { fill: var(--muted); font: 11px "IBM Plex Mono", monospace; }
+.axis path, .axis line { stroke: var(--grid); }
+.axis .domain { display: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 2px 4px; margin-top: 10px; }
+.lg { display: inline-flex; align-items: center; gap: 6px; font: 12px "IBM Plex Mono", monospace; color: var(--text-2); border: none; background: none; padding: 3px 6px; cursor: pointer; }
+.lg.dim { opacity: .3; }
+.sw { width: 10px; height: 10px; flex: none; }
+.sw.line { height: 2px; width: 14px; }
+.tip { position: fixed; pointer-events: none; z-index: 100; background: var(--panel); border: 1px solid var(--accent); box-shadow: var(--glow), 0 8px 30px rgba(0,0,0,.35);
+  padding: 10px 12px; font: 12px "IBM Plex Mono", monospace; min-width: 180px; max-width: 300px; opacity: 0; transition: opacity .1s; }
+.tip .t { color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
+.tip .r { display: flex; justify-content: space-between; gap: 12px; padding: 1px 0; }
+.tip .r .n { display: flex; align-items: center; gap: 6px; color: var(--text-2); white-space: nowrap; }
+.tip .r b { color: var(--text); font-weight: 600; }
+.tip .key { width: 10px; height: 10px; flex: none; }
+.tip .big { font-size: 20px; font-weight: 600; color: var(--text); }
+.tip hr { border: none; border-top: 1px solid var(--line); margin: 6px 0; }
+canvas { display: block; width: 100%; cursor: crosshair; }
+.scale { display: flex; align-items: center; gap: 8px; font: 11px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 8px; }
+.grad { width: 180px; height: 6px; }
+.smalls { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.small { background: var(--panel); padding: 8px; min-width: 0; }
+.small .lab { font: 11px "IBM Plex Mono", monospace; color: var(--text-2); text-transform: uppercase; display: flex; justify-content: space-between; letter-spacing: .05em; }
+.small .lab span { color: var(--f-solaire); }
+.maps { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; }
+.player { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.play { width: 34px; height: 34px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; display: grid; place-items: center; flex: none; }
+input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
+.mlabel { font: 600 16px "IBM Plex Mono", monospace; min-width: 120px; text-align: right; }
+.livebar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.srcseg { display: inline-flex; border: 1px solid var(--accent); }
+.srcseg button { border: none; background: transparent; padding: 7px 14px; cursor: pointer; font: 600 13px "IBM Plex Mono", monospace; color: var(--text-2); letter-spacing: .06em; display: inline-flex; align-items: center; gap: 7px; }
+.srcseg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.ldot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.srcseg .live-ok .ldot, .ldot.on { background: #ff3b3b; box-shadow: 0 0 8px #ff3b3b; animation: pulse 1.4s infinite; }
+.lstatus { font: 11.5px "IBM Plex Mono", monospace; color: var(--muted); }
+.lstatus.err { color: var(--imp); }
+.maptitle { font: 600 12px "IBM Plex Mono", monospace; color: var(--text-2); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+.legends { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+.legends .lt { font: 11px "IBM Plex Mono", monospace; color: var(--text-2); }
+.rgrad { height: 8px; max-width: 320px; margin-top: 6px; }
+.rticks { display: flex; justify-content: space-between; max-width: 320px; font: 11px "IBM Plex Mono", monospace; color: var(--text-2); margin-top: 2px; }
+.pictos { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; font: 11px "IBM Plex Mono", monospace; color: var(--text-2); margin-top: 4px; }
+.pictos span { display: inline-flex; align-items: center; gap: 4px; }
+.flist { display: none; gap: 2px; margin-top: 8px; font-size: 12.5px; }
+.flist div { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+.flist .exp { color: var(--exp); } .flist .imp { color: var(--imp); }
+.corr { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.corr h3 { font: 600 12px "IBM Plex Mono", monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); margin: 0 0 4px; }
+.records { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.rec { background: var(--panel); padding: 14px 16px; }
+.rec .k { font: 11px "IBM Plex Mono", monospace; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; display: flex; align-items: center; gap: 6px; }
+.rec .v { font: 600 26px "IBM Plex Mono", monospace; margin-top: 4px; }
+.rec .d { font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
+.note { font: 12px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 8px; }
+footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; line-height: 1.7; }
+@media (max-width: 1000px) {
+  .band-in { grid-template-columns: 1fr; gap: 16px; } .maps { grid-template-columns: 1fr; } .hero { grid-template-columns: 1fr; gap: 24px; }
+  .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } .kpi:nth-child(2) { border-right: none; } .smalls { grid-template-columns: repeat(4, minmax(0,1fr)); }
+  .records { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 560px) {
+  .bar { padding: 8px 16px; position: static; } .hero { padding: 32px 16px 24px; } .kpis { padding: 0 16px 8px; } .band-in { padding: 28px 16px; }
+  .kpi .v { font-size: 24px; } .kpi { padding-right: 10px; margin-right: 10px; } .smalls { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .records { grid-template-columns: 1fr; } .corr { grid-template-columns: 1fr; } .readout .v { font-size: 20px; } footer { padding: 24px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .brand .dot { animation: none; } }
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="brand"><span class="dot"></span>Réseau · éCO2mix</div>
+  <div class="ctl"><span class="lab">Période</span><select id="period" aria-label="Période"></select><span id="presets" class="ctl"></span></div>
+  <button class="icon-btn" id="theme" title="Thème clair / sombre" aria-label="Changer de thème">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</div>
+
+<header class="hero">
+  <div>
+    <h1>D'où vient l'<em>électricité</em> française&nbsp;?</h1>
+    <p class="lede">Production par filière, consommation, CO₂ et échanges avec les voisins, mesurés toutes les demi-heures par RTE depuis 2012 — et le vent et le soleil qui font tourner les renouvelables.</p>
+    <p class="source" id="source"></p>
+  </div>
+  <div class="readout" id="readout"></div>
+</header>
+
+<section class="kpis" id="kpis"></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">01 — MIX</div><h2>Le mix, jour après jour</h2>
+    <p id="mixSub">Puissance moyenne produite par filière. Trait blanc&nbsp;: consommation. Cliquez une filière pour l'isoler.</p>
+    <div class="tabs" id="mixMode"><button class="tab" data-v="abs" aria-pressed="true">GW</button><button class="tab" data-v="pct" aria-pressed="false">% du mix</button></div></div>
+  <div class="panel"><div id="mix"></div><div class="legend" id="mixLegend"></div></div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">02 — FRONTIÈRES</div><h2>Ce qui entre, ce qui sort</h2>
+    <p>Chaque couloir montre les deux sens&nbsp;: <b style="color:var(--exp)">exportations</b> vers le voisin, <b style="color:var(--imp)">importations</b> vers la France. Épaisseur et débit des particules suivent les volumes. RTE publie Allemagne et Belgique ensemble.</p>
+    <div class="tabs" id="flowMode"><button class="tab" data-v="period" aria-pressed="true">Toute la période</button><button class="tab" data-v="month" aria-pressed="false">Mois par mois</button></div></div>
+  <div class="panel">
+    <div id="flowMap"></div><div id="flowList" class="flist"></div>
+    <div class="player" id="flowPlayer"><button class="play" id="flowPlay" aria-label="Lecture">▶</button><input type="range" id="flowSlider" aria-label="Mois"><div class="mlabel" id="flowLabel"></div></div>
+    <div class="note">Solde exportateur mois par mois depuis 2012</div><div id="exportTrend"></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">03 — RÉGIONS</div><h2>Renouvelables, vent et soleil</h2>
+    <p>Production renouvelable des 12 régions métropolitaines. En surcouche&nbsp;: la vitesse moyenne du vent à 100&nbsp;m (les éoliennes tournent d'autant plus vite) et le rayonnement solaire moyen. Cliquez une région pour comparer météo et production.</p>
+    <div class="tabs" id="regMetric"><button class="tab" data-v="ren" aria-pressed="true">% ENR</button><button class="tab" data-v="eolien" aria-pressed="false">Éolien</button><button class="tab" data-v="solaire" aria-pressed="false">Solaire</button><button class="tab" data-v="hydraulique" aria-pressed="false">Hydraulique</button></div>
+    <div class="tabs" id="overlays"><button class="tab" data-v="wind" aria-pressed="true">⟲ Vent</button><button class="tab" data-v="sun" aria-pressed="true">☀ Ciel</button></div>
+    <div class="tabs" id="regMode"><button class="tab" data-v="period" aria-pressed="true">Moyenne de période</button><button class="tab" data-v="month" aria-pressed="false">Mois par mois</button></div></div>
+  <div class="maps">
+    <div class="panel"><div class="livebar"><div class="srcseg" id="regSource"><button data-v="live" aria-pressed="false"><span class="ldot"></span>LIVE</button><button data-v="year" aria-pressed="true" id="yearBtn">Dernière année</button></div><span class="lstatus" id="liveStatus"></span></div>
+      <div class="maptitle" id="regTitle"></div><div id="regMap"></div>
+      <div class="player" id="regPlayer"><button class="play" id="regPlay" aria-label="Lecture">▶</button><input type="range" id="regSlider" aria-label="Mois"><div class="mlabel" id="regLabel"></div></div>
+      <div class="legends"><div><div class="lt" id="regLegendT"></div><div class="rgrad" id="regGrad"></div><div class="rticks"><span id="regMin"></span><span id="regMid"></span><span id="regMax"></span></div></div>
+        <div id="skyLegend"></div><div id="windLegend"></div></div>
+      <div class="note" id="regNote"></div></div>
+    <div class="panel"><div class="corr"><div><h3 id="corrWindT">Vent → éolien</h3><div id="corrWind"></div></div><div><h3 id="corrSunT">Soleil → solaire</h3><div id="corrSun"></div></div></div>
+      <div class="note" id="corrNote"></div></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">04 — HISTORIQUE</div><h2>Quinze ans de mix</h2><p>Production annuelle par filière. Cliquez une année pour la sélectionner.</p>
+    <div class="tabs" id="yearMode"><button class="tab" data-v="abs" aria-pressed="true">TWh</button><button class="tab" data-v="pct" aria-pressed="false">% du mix</button></div></div>
+  <div class="panel"><div id="years"></div></div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">05 — HEURE × JOUR</div><h2>Chaque heure de l'année</h2><p id="hmSub">Une colonne par jour, une ligne par heure.</p>
+    <div class="tabs" id="hmMetric"><button class="tab" data-v="consommation" aria-pressed="true">Conso</button><button class="tab" data-v="taux_co2" aria-pressed="false">CO₂</button><button class="tab" data-v="solaire" aria-pressed="false">Solaire</button><button class="tab" data-v="eolien" aria-pressed="false">Éolien</button></div></div>
+  <div class="panel"><canvas id="hm" height="300" role="img" aria-label="Carte de chaleur heure par jour"></canvas><div class="scale"><span id="hmMin"></span><div class="grad" id="hmGrad"></div><span id="hmMax"></span></div></div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">06 — JOUR TYPE</div><h2>Une journée, mois par mois</h2><p>Puissance moyenne heure par heure. Le solaire gonfle le midi en été&nbsp;; la consommation grimpe le soir en hiver.</p></div>
+  <div class="smalls" id="smalls"></div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">07 — RECORDS</div><h2>Records depuis 2012</h2><p>Sur les pas de mesure d'une demi-heure.</p></div>
+  <div class="records" id="records"></div>
+</div></section>
+
+<footer>
+  <b>Données</b> — RTE, éCO2mix, sur <a href="https://odre.opendatasoft.com" target="_blank" rel="noopener">ODRÉ</a> (Open Data Réseaux Énergies), Licence Ouverte&nbsp;: nationales consolidées et définitives (<span class="mono">eco2mix-national-cons-def</span>) + temps réel (<span class="mono">eco2mix-national-tr</span>)&nbsp;; régionales (<span class="mono">eco2mix-regional-cons-def</span>, <span class="mono">eco2mix-regional-tr</span>)&nbsp;;
+  météo régionale Weathernews France (<span class="mono">rayonnement-solaire-vitesse-vent-tri-horaires-regionaux</span>, vent à 100&nbsp;m et rayonnement solaire global, tri-horaire, depuis 2016, Licence Ouverte 2.0) — sans direction du vent&nbsp;: les éoliennes de la carte en indiquent la force, pas l'orientation.
+  Le temps réel est provisoire. « Bas carbone » = nucléaire, hydraulique, éolien, solaire, bioénergies&nbsp;; « ENR » = hydraulique, éolien, solaire, bioénergies. Échanges commerciaux&nbsp;: les exportations et importations de chaque mois sont cumulées séparément sur les pas fins.<br>
+  <b>En direct</b> — production régionale et nationale : API ODRÉ (<span class="mono">eco2mix-regional-tr</span>, <span class="mono">eco2mix-national-tr</span>), interrogée par votre navigateur et rafraîchie toutes les 15 min&nbsp;; météo actuelle&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (données CC BY 4.0), au centroïde de chaque région.<br>
+  <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Grégoire David), issu d'Admin Express IGN, Licence Ouverte&nbsp;; pays&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> (Natural Earth, domaine public). Simplifiés et embarqués.
+</footer>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+const D = window.DATA, GEO = window.GEO;
+const S = D.sources;
+const NAMES = { nucleaire: "Nucléaire", hydraulique: "Hydraulique", eolien: "Éolien", solaire: "Solaire", bioenergies: "Bioénergies", gaz: "Gaz", charbon: "Charbon", fioul: "Fioul", thermique: "Thermique fossile" };
+const LOW_CARBON = ["nucleaire", "hydraulique", "eolien", "solaire", "bioenergies"], RENEW = ["hydraulique", "eolien", "solaire", "bioenergies"];
+const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+const MS = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+const START = new Date(D.start + "T00:00:00");
+const dayDate = i => new Date(START.getFullYear(), START.getMonth(), START.getDate() + i);
+const dayIndex = date => Math.round((new Date(date.getFullYear(), date.getMonth(), date.getDate()) - START) / 864e5);
+const LASTDAY = D.days - 1;
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const col = k => css("--f-" + (k === "thermique" ? "gaz" : k));
+const fr = (v, d = 0) => (+v).toLocaleString("fr-FR", { maximumFractionDigits: d, minimumFractionDigits: d });
+const fmtGW = mw => fr(mw / 1000, mw < 10000 ? 1 : 0) + " GW";
+const fmtTWh = t => fr(t, Math.abs(t) < 10 ? 1 : 0) + " TWh";
+const fmtPct = v => fr(v * 100, v < .1 ? 1 : 0) + " %";
+const fmtDay = d => d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long", year: "numeric" });
+const ymKey = dt => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
+const monthName = m => MONTHS[+m.slice(5) - 1] + " " + m.slice(0, 4);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const tip = document.getElementById("tip");
+function showTip(ev, build) { tip.replaceChildren(); build(tip); tip.style.opacity = 1; const r = tip.getBoundingClientRect();
+  let x = ev.clientX + 14, y = ev.clientY + 14; if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14; if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 14;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px"; }
+const hideTip = () => tip.style.opacity = 0;
+function row(p, color, name, value) { const r = el("div", "r"), n = el("span", "n"); if (color) { const k = el("span", "key"); k.style.background = color; n.append(k); }
+  n.append(document.createTextNode(name)); r.append(n, el("b", null, value)); p.append(r); }
+
+/* ---------- Période ---------- */
+const lastDate = dayDate(LASTDAY), lastYear = lastDate.getFullYear(), firstYear = START.getFullYear();
+const state = { period: "last12", mixMode: "abs", yearMode: "abs", hm: "consommation", focus: null, flowMode: "period", flowMonth: null,
+  regMetric: "ren", wind: true, sun: true, region: "Hauts-de-France", regMode: "period", regMonth: null, regSource: "year", sourcePicked: false };
+function range() {
+  if (state.period === "last12") return [Math.max(0, LASTDAY - 364), LASTDAY];
+  if (state.period === "all") return [0, LASTDAY];
+  const y = +state.period; return [Math.max(0, dayIndex(new Date(y, 0, 1))), Math.min(LASTDAY, dayIndex(new Date(y, 11, 31)))];
+}
+const monthsInRange = list => { const [d0, d1] = range(), a = ymKey(dayDate(d0)), b = ymKey(dayDate(d1)); return list.map((m, i) => [m, i]).filter(([m]) => m >= a && m <= b); };
+const periodLabel = () => state.period === "last12" ? "12 derniers mois" : state.period === "all" ? `${firstYear}–${lastYear}` : state.period;
+const sel = document.getElementById("period");
+sel.add(new Option("12 derniers mois", "last12"));
+for (let y = lastYear; y >= firstYear; y--) sel.add(new Option(y === lastYear ? `${y} (en cours)` : String(y), y));
+sel.add(new Option(`Tout ${firstYear}–${lastYear}`, "all"));
+sel.onchange = () => { state.period = sel.value; update(); };
+const presets = document.getElementById("presets");
+[["12 MOIS", "last12"], [String(lastYear - 1), String(lastYear - 1)], ["TOUT", "all"]].forEach(([l, v]) => {
+  const b = el("button", "tab", l); b.dataset.v = v; b.onclick = () => { state.period = v; update(); }; presets.append(b); });
+(() => { const s = document.getElementById("source"), t = new Date(D.lastStamp);
+  s.append("Source : données publiques "); const a = el("a", null, "ODRÉ / RTE"); a.href = "https://odre.opendatasoft.com"; a.target = "_blank"; a.rel = "noopener"; s.append(a);
+  s.append(` · dernière mesure ${t.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })} ${t.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`); })();
+
+/* ---------- Agrégats ---------- */
+function sumDays(d0, d1, k) { let s = 0, n = 0; const a = D.daily[k]; for (let i = d0; i <= d1; i++) if (a[i] != null) { s += a[i]; n++; } return { twh: s * 24 / 1e6, n, mean: n ? s / n : 0 }; }
+function mixTotals(d0, d1) { const o = {}; S.forEach(k => o[k] = sumDays(d0, d1, k).twh); o.total = d3.sum(S, k => o[k]); return o; }
+function co2Mean(d0, d1) { let s = 0, w = 0; for (let i = d0; i <= d1; i++) { const c = D.daily.taux_co2[i]; if (c == null) continue; const p = d3.sum(S, k => D.daily[k][i] || 0); s += c * p; w += p; } return w ? s / w : 0; }
+const monthHours = m => { const [y, mo] = m.split("-").map(Number); return (y === lastDate.getFullYear() && mo === lastDate.getMonth() + 1 ? lastDate.getDate() : new Date(y, mo, 0).getDate()) * 24; };
+
+/* ---------- Relevé en direct ---------- */
+function renderReadout() {
+  const N = LIVE.national;
+  if (N) { const box = document.getElementById("readout"); box.replaceChildren();
+    const k = el("div", "k"); const dot = el("span", "ldot on"); dot.style.cssText = "display:inline-block;margin-right:6px;vertical-align:1px";
+    k.append(dot, document.createTextNode(`En direct · RTE ${new Date(N.date_heure).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ${hhmm(N.date_heure)}`)); box.append(k);
+    const rows = el("div", "rows");
+    [["Consommation", fmtGW(N.consommation), "instantanée"], ["CO₂", fr(N.taux_co2) + " g", "par kWh produit"], ["Solaire", fmtGW(N.solaire), "en ce moment"], ["Éolien", fmtGW(N.eolien), "en ce moment"]]
+      .forEach(([a, v, s2]) => { const c = el("div"); c.append(el("div", "k", a), el("div", "v", v), el("div", "s", s2)); rows.append(c); }); box.append(rows); return; }
+  const h = D.hourly, n = h.consommation.length; let i = n - 1; while (i > 0 && h.consommation[i] == null) i--;
+  const t = dayDate(Math.floor(i / 24)); t.setHours(i % 24);
+  const box = document.getElementById("readout"); box.replaceChildren();
+  box.append(el("div", "k", `Dernière heure mesurée · ${t.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ${i % 24} h`));
+  const rows = el("div", "rows");
+  [["Consommation", fmtGW(h.consommation[i]), "moyenne horaire"], ["CO₂", fr(h.taux_co2[i]) + " g", "par kWh produit"],
+   ["Solaire", fmtGW(h.solaire[i]), "en ce moment"], ["Éolien", fmtGW(h.eolien[i]), "en ce moment"]].forEach(([k, v, s]) => {
+    const c = el("div"); c.append(el("div", "k", k), el("div", "v", v), el("div", "s", s)); rows.append(c); });
+  box.append(rows);
+}
+
+/* ---------- KPI ---------- */
+function renderKPIs() {
+  const [d0, d1] = range(), len = d1 - d0 + 1, m = mixTotals(d0, d1), p0 = Math.max(0, d0 - len), p1 = d0 - 1;
+  const prev = p1 >= p0 && state.period !== "all" ? mixTotals(p0, p1) : null;
+  const low = d3.sum(LOW_CARBON, k => m[k]) / m.total, lowPrev = prev ? d3.sum(LOW_CARBON, k => prev[k]) / prev.total : null;
+  const co2 = co2Mean(d0, d1), co2Prev = prev ? co2Mean(p0, p1) : null;
+  const exp = -sumDays(d0, d1, "ech_physiques").twh, expPrev = prev ? -sumDays(p0, p1, "ech_physiques").twh : null;
+  const delta = (a, b, f) => b == null ? "—" : `${a >= b ? "▲" : "▼"} ${f(Math.abs(a - b))} vs période préc.`;
+  const items = [["Production", fmtTWh(m.total), delta(m.total, prev?.total, fmtTWh)], ["Bas carbone", fmtPct(low), delta(low, lowPrev, v => fr(v * 100, 1) + " pt")],
+    ["CO₂ moyen", fr(co2) + " g/kWh", delta(co2, co2Prev, v => fr(v) + " g")], [exp >= 0 ? "Export net" : "Import net", fmtTWh(Math.abs(exp)), delta(exp, expPrev, fmtTWh)]];
+  const c = document.getElementById("kpis"); c.replaceChildren();
+  items.forEach(([k, v, d], i) => { const b = el("div", "kpi"); b.append(el("div", "k", `${k} · ${periodLabel()}`), el("div", "v", v), el("div", "d", d));
+    if (i === 1) { const mtr = el("div", "meter"); S.forEach(s => { const x = el("div"); x.style.cssText = `flex:${m[s]};background:${col(s)}`; mtr.append(x); }); b.append(mtr); } c.append(b); });
+  document.querySelectorAll("#presets .tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === String(state.period)));
+  sel.value = state.period;
+}
+
+/* ---------- 01 Mix ---------- */
+function renderMix() {
+  const host = document.getElementById("mix"); host.replaceChildren();
+  const [d0, d1] = range(), span = d1 - d0 + 1, step = span > 800 ? 7 : 1;
+  const pts = [];
+  for (let i = d0; i <= d1; i += step) { const j1 = Math.min(d1, i + step - 1), o = { i, date: dayDate(i) };
+    [...S, "consommation", "taux_co2", "ech_physiques"].forEach(k => o[k] = sumDays(i, j1, k).mean); o.prod = d3.sum(S, k => o[k]); pts.push(o); }
+  const pct = state.mixMode === "pct", W = host.clientWidth, H = W < 560 ? 280 : 400, M = { l: 46, r: 8, t: 10, b: 26 };
+  const keys = state.focus ? [state.focus] : S;
+  const stack = d3.stack().keys(keys).value((d, k) => pct ? d[k] / (d.prod || 1) : d[k] / 1000)(pts);
+  const x = d3.scaleTime().domain([pts[0].date, pts.at(-1).date]).range([M.l, W - M.r]);
+  const ymax = pct ? (state.focus ? d3.max(pts, d => d[state.focus] / d.prod) * 1.1 : 1) : d3.max(pts, d => Math.max(state.focus ? d[state.focus] : d.prod, state.focus ? 0 : d.consommation)) / 1000 * 1.05;
+  const y = d3.scaleLinear().domain([0, ymax]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - M.l - M.r)).tickFormat(v => pct ? Math.round(v * 100) + "%" : v + " GW"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 560 ? 4 : 8).tickSize(0).tickPadding(8)
+    .tickFormat(d => span > 400 ? d3.timeFormat("%Y")(d) : MS[d.getMonth()] + (d.getMonth() === 0 ? " " + String(d.getFullYear()).slice(2) : "")));
+  svg.append("g").selectAll("path").data(stack).join("path").attr("d", d3.area().x(d => x(d.data.date)).y0(d => y(d[0])).y1(d => y(d[1])).curve(d3.curveMonotoneX))
+    .attr("fill", d => col(d.key)).attr("opacity", .9).style("cursor", "pointer").on("click", (e, d) => { state.focus = state.focus === d.key ? null : d.key; renderMix(); });
+  if (!pct && !state.focus) svg.append("path").datum(pts).attr("fill", "none").attr("stroke", "var(--conso)").attr("stroke-width", 1.6)
+    .attr("d", d3.line().x(d => x(d.date)).y(d => y(d.consommation / 1000)).curve(d3.curveMonotoneX));
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--accent)").attr("opacity", 0).style("pointer-events", "none");
+  svg.append("rect").attr("x", M.l).attr("y", M.t).attr("width", W - M.l - M.r).attr("height", H - M.t - M.b).attr("fill", "transparent")
+    .on("click", () => { if (state.focus) { state.focus = null; renderMix(); } })
+    .on("pointermove", e => { const d = pts[d3.bisector(d => d.date).center(pts, x.invert(d3.pointer(e)[0]))];
+      cross.attr("x1", x(d.date)).attr("x2", x(d.date)).attr("opacity", .7);
+      showTip(e, t => { t.append(el("div", "t", step === 7 ? "Semaine du " + d.date.toLocaleDateString("fr-FR") : fmtDay(d.date)));
+        row(t, css("--conso"), "Consommation", fmtGW(d.consommation)); t.append(el("hr"));
+        [...S].reverse().forEach(s => { if (d[s] > 50) row(t, col(s), NAMES[s], pct ? fmtPct(d[s] / d.prod) : fmtGW(d[s])); });
+        t.append(el("hr")); row(t, null, "CO₂", fr(d.taux_co2) + " g/kWh"); row(t, null, d.ech_physiques < 0 ? "Export" : "Import", fmtGW(Math.abs(d.ech_physiques))); }); })
+    .on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+  const lg = document.getElementById("mixLegend"); lg.replaceChildren();
+  S.forEach(s => { const b = el("button", "lg" + (state.focus && state.focus !== s ? " dim" : "")); const sw = el("span", "sw"); sw.style.background = col(s);
+    b.append(sw, document.createTextNode(NAMES[s])); b.onclick = () => { state.focus = state.focus === s ? null : s; renderMix(); }; lg.append(b); });
+  const c = el("span", "lg"); const sw = el("span", "sw line"); sw.style.background = css("--conso"); c.append(sw, document.createTextNode("Consommation")); lg.append(c);
+}
+
+/* ---------- 02 Frontières ---------- */
+// Couloirs : point côté France → point côté voisin (lon, lat). Allemagne et Belgique : un seul couloir, comme dans la source.
+const CORRIDORS = [
+  { k: "ech_comm_angleterre", name: "Royaume-Uni", ids: ["826"], a: [1.7, 50.5], b: [-1.2, 51.9] },
+  { k: "ech_comm_allemagne_belgique", name: "Allemagne + Belgique", ids: ["276", "056"], a: [5.3, 49.2], b: [7.6, 50.6] },
+  { k: "ech_comm_suisse", name: "Suisse", ids: ["756"], a: [6.3, 46.6], b: [8.1, 46.9] },
+  { k: "ech_comm_italie", name: "Italie", ids: ["380"], a: [6.8, 44.6], b: [9.4, 45.2] },
+  { k: "ech_comm_espagne", name: "Espagne", ids: ["724"], a: [0.3, 43.0], b: [-1.4, 41.4] },
+];
+const flow = { timer: null, play: null, particles: [] };
+function flowValues() {
+  const list = monthsInRange(D.borderMonths);
+  const months = state.flowMode === "month" && state.flowMonth != null ? list.filter(([m]) => m === state.flowMonth) : list;
+  return CORRIDORS.map(c => { let ex = 0, im = 0; months.forEach(([m, i]) => { const v = D.borders[c.k][i]; if (v) { ex += v[0]; im += v[1]; } });
+    return { ...c, ex, im, net: ex - im, hours: d3.sum(months, ([m]) => monthHours(m)) }; });
+}
+function renderFlows() {
+  const host = document.getElementById("flowMap"); host.replaceChildren();
+  if (flow.timer) { flow.timer.stop(); flow.timer = null; }
+  const W = host.clientWidth, H = Math.round(W * (W < 560 ? 1.05 : .78));
+  const frame = { type: "MultiPoint", coordinates: [[-6.5, 40.4], [13.2, 40.4], [-6.5, 54.8], [13.2, 54.8]] };
+  const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[6, 6], [W - 6, H - 6]], frame);
+  const path = d3.geoPath(proj);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
+  const vals = flowValues(), maxV = d3.max(vals, v => Math.max(v.ex, v.im)) || 1;
+  const neighbor = new Map(CORRIDORS.flatMap(c => c.ids.map(id => [id, c])));
+  svg.append("rect").attr("width", W).attr("height", H).attr("fill", "var(--sea)");
+  svg.append("g").selectAll("path").data(GEO.countries.features).join("path").attr("d", path)
+    .attr("fill", d => d.properties.id === "250" ? "var(--france)" : neighbor.has(d.properties.id) ? "var(--land-hi)" : "var(--land)")
+    .attr("stroke", d => d.properties.id === "250" ? "var(--accent)" : "var(--line)").attr("stroke-width", d => d.properties.id === "250" ? 1.2 : .8)
+    .on("pointermove", (e, d) => { const c = neighbor.get(d.properties.id); if (!c) return hideTip(); const v = vals.find(x => x.k === c.k); flowTip(e, v); })
+    .on("pointerleave", hideTip);
+  // Allemagne + Belgique : contour commun en pointillé
+  svg.append("g").selectAll("path").data(GEO.countries.features.filter(f => ["276", "056"].includes(f.properties.id))).join("path").attr("d", path)
+    .attr("fill", "none").attr("stroke", "var(--accent-2)").attr("stroke-dasharray", "3 3").attr("stroke-width", 1).style("pointer-events", "none");
+  svg.append("g").selectAll("path").data(GEO.regions.features).join("path").attr("d", path).attr("fill", "none").attr("stroke", "var(--line)").attr("stroke-width", .5).style("pointer-events", "none");
+  const wScale = d3.scaleSqrt().domain([0, maxV]).range([0, Math.max(10, W / 45)]);
+  const lanes = svg.append("g"), labels = svg.append("g"), parts = svg.append("g").style("pointer-events", "none");
+  flow.particles = [];
+  vals.forEach(v => {
+    const A = proj(v.a), B = proj(v.b), dx = B[0] - A[0], dy = B[1] - A[1], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
+    [["ex", A, B, 1, "var(--exp)"], ["im", B, A, -1, "var(--imp)"]].forEach(([kind, P, Q, side, color]) => {
+      const val = v[kind]; if (val <= 0.005) return;
+      const off = 4 + wScale(val) / 2, o = [nx * off * side, ny * off * side];
+      const mid = [(P[0] + Q[0]) / 2 + o[0] * 2.2, (P[1] + Q[1]) / 2 + o[1] * 2.2];
+      const d = `M${P[0] + o[0]},${P[1] + o[1]} Q${mid[0]},${mid[1]} ${Q[0] + o[0]},${Q[1] + o[1]}`;
+      const lane = lanes.append("path").attr("d", d).attr("fill", "none").attr("stroke", color).attr("stroke-width", Math.max(1, wScale(val))).attr("stroke-linecap", "round").attr("opacity", .35)
+        .on("pointermove", e => flowTip(e, v)).on("pointerleave", hideTip);
+      lanes.append("path").attr("d", d).attr("fill", "none").attr("stroke", color).attr("stroke-width", 1).attr("opacity", .9).style("pointer-events", "none");
+      // Pointe de flèche à l'arrivée
+      const node = lane.node(), L = node.getTotalLength(), p1 = node.getPointAtLength(L), p0 = node.getPointAtLength(Math.max(0, L - 6)), ang = Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
+      lanes.append("path").attr("d", "M0,-5 L9,0 L0,5 Z").attr("fill", color).attr("transform", `translate(${p1.x},${p1.y}) rotate(${ang})`).style("pointer-events", "none");
+      const n = Math.max(2, Math.round(3 + 14 * val / maxV));
+      for (let i = 0; i < n; i++) flow.particles.push({ node, L, t: i / n, speed: .05 + .25 * val / maxV, color, r: 1.6 + 2.2 * Math.sqrt(val / maxV), el: parts.append("circle").attr("fill", color) });
+    });
+    // Étiquette côté voisin
+    const B2 = proj(v.b), g = labels.append("g").attr("transform", `translate(${B2[0]},${B2[1]})`).style("pointer-events", "none");
+    const small = W < 560, anchor = B2[0] < W / 2 ? "end" : "start", dxl = anchor === "end" ? -8 : 8;
+    g.append("text").attr("x", dxl).attr("y", -16).attr("text-anchor", anchor).style("font", `600 ${small ? 11 : 12}px 'Space Grotesk'`)
+      .style("paint-order", "stroke").style("stroke", "var(--sea)").style("stroke-width", 3).text(small && v.name.length > 12 ? "All.+Belg." : v.name);
+    if (small) return; // sur mobile, les chiffres passent dans la liste sous la carte
+    g.append("text").attr("x", dxl).attr("y", -2).attr("text-anchor", anchor).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--exp)").text("↗ " + fmtTWh(v.ex));
+    g.append("text").attr("x", dxl).attr("y", 12).attr("text-anchor", anchor).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--imp)").text("↙ " + fmtTWh(v.im));
+  });
+  const list = document.getElementById("flowList"); list.replaceChildren(); list.style.display = W < 560 ? "grid" : "none";
+  if (W < 560) vals.forEach(v => { const r = el("div"); r.append(el("span", null, v.name), el("b", "num exp", "↗ " + fmtTWh(v.ex)), el("b", "num imp", "↙ " + fmtTWh(v.im))); list.append(r); });
+  const tot = d3.sum(vals, v => v.net);
+  svg.append("text").attr("x", 12).attr("y", 20).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--muted)").text(state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth).toUpperCase() : periodLabel().toUpperCase());
+  svg.append("text").attr("x", 12).attr("y", 42).style("font", "600 18px 'IBM Plex Mono'").style("fill", tot >= 0 ? "var(--exp)" : "var(--imp)").text(`${tot >= 0 ? "Export" : "Import"} net ${fmtTWh(Math.abs(tot))}`);
+  const draw = el => { flow.particles.forEach(p => { const pt = p.node.getPointAtLength(p.t * p.L); p.el.attr("cx", pt.x).attr("cy", pt.y).attr("r", p.r).attr("opacity", Math.sin(p.t * Math.PI)); }); };
+  if (REDUCED) { draw(); return; }
+  let last = 0;
+  flow.timer = d3.timer(el => { const dt = Math.min(.05, (el - last) / 1000); last = el; flow.particles.forEach(p => { p.t = (p.t + p.speed * dt) % 1; }); draw(); });
+}
+function flowTip(e, v) { showTip(e, t => { t.append(el("div", "t", v.name + " · " + (state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth) : periodLabel())));
+  row(t, css("--exp"), "Exportations", fmtTWh(v.ex)); row(t, css("--imp"), "Importations", fmtTWh(v.im)); t.append(el("hr"));
+  t.append(el("div", "big", (v.net >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.net)))); t.append(el("div", null, v.net >= 0 ? "solde exportateur" : "solde importateur"));
+  if (v.hours) row(t, null, "Puissance moyenne", fmtGW((v.ex - v.im) * 1e6 / v.hours)); }); }
+function syncFlowPlayer() {
+  const list = monthsInRange(D.borderMonths).map(([m]) => m), sl = document.getElementById("flowSlider");
+  document.getElementById("flowPlayer").style.display = state.flowMode === "month" ? "flex" : "none";
+  if (!list.length) return;
+  if (!list.includes(state.flowMonth)) state.flowMonth = list[0];
+  sl.min = 0; sl.max = list.length - 1; sl.value = list.indexOf(state.flowMonth);
+  document.getElementById("flowLabel").textContent = monthName(state.flowMonth);
+}
+document.getElementById("flowSlider").oninput = e => { const list = monthsInRange(D.borderMonths).map(([m]) => m); state.flowMonth = list[+e.target.value]; stopFlowPlay(); syncFlowPlayer(); renderFlows(); };
+function stopFlowPlay() { clearInterval(flow.play); flow.play = null; document.getElementById("flowPlay").textContent = "▶"; }
+document.getElementById("flowPlay").onclick = () => {
+  if (flow.play) return stopFlowPlay();
+  const list = monthsInRange(D.borderMonths).map(([m]) => m); if (list.indexOf(state.flowMonth) >= list.length - 1) state.flowMonth = list[0];
+  document.getElementById("flowPlay").textContent = "❚❚"; syncFlowPlayer(); renderFlows();
+  flow.play = setInterval(() => { const i = list.indexOf(state.flowMonth); if (i >= list.length - 1) return stopFlowPlay(); state.flowMonth = list[i + 1]; syncFlowPlayer(); renderFlows(); }, list.length > 36 ? 450 : 1100);
+};
+function renderExportTrend() {
+  const th = document.getElementById("exportTrend"); th.replaceChildren();
+  const months = D.borderMonths.map((m, i) => ({ m, date: new Date(+m.slice(0, 4), +m.slice(5) - 1, 15), s: d3.sum(CORRIDORS, c => { const v = D.borders[c.k][i]; return v ? v[0] - v[1] : 0; }) }));
+  const W = th.clientWidth, H = 100, M = { l: 40, r: 4, t: 6, b: 18 };
+  const x = d3.scaleTime().domain(d3.extent(months, d => d.date)).range([M.l, W - M.r]), y = d3.scaleLinear().domain(d3.extent(months, d => d.s)).nice().range([H - M.b, M.t]);
+  const svg = d3.select(th).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(3).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " TWh"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 400 ? 4 : 7).tickSize(0).tickPadding(6));
+  const [d0, d1] = range(); svg.append("rect").attr("x", x(dayDate(d0))).attr("width", Math.max(2, x(dayDate(d1)) - x(dayDate(d0)))).attr("y", M.t).attr("height", H - M.t - M.b).attr("fill", "var(--accent)").attr("opacity", .08);
+  svg.selectAll("rect.m").data(months).join("rect").attr("class", "m").attr("x", d => x(d.date) - 1).attr("width", Math.max(1, (W - M.l) / months.length - .6))
+    .attr("y", d => Math.min(y(0), y(d.s))).attr("height", d => Math.abs(y(d.s) - y(0))).attr("fill", d => d.s >= 0 ? "var(--exp)" : "var(--imp)")
+    .attr("opacity", d => state.flowMode === "month" && d.m === state.flowMonth ? 1 : .75);
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").style("cursor", "pointer").on("pointermove", e => {
+    const d = months[d3.bisector(d => d.date).center(months, x.invert(d3.pointer(e)[0]))];
+    showTip(e, t => { t.append(el("div", "t", monthName(d.m))); t.append(el("div", "big", (d.s >= 0 ? "+" : "−") + fmtTWh(Math.abs(d.s)))); t.append(el("div", null, d.s >= 0 ? "export net" : "import net")); });
+  }).on("pointerleave", hideTip).on("click", e => {
+    const d = months[d3.bisector(d => d.date).center(months, x.invert(d3.pointer(e)[0]))];
+    state.period = d.m.slice(0, 4) === String(lastYear) || +d.m.slice(0, 4) < firstYear ? state.period : d.m.slice(0, 4); state.flowMode = "month"; state.flowMonth = d.m;
+    document.querySelectorAll("#flowMode .tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === "month")); update(); });
+}
+
+/* ---------- 03 Régions : renouvelables, vent, ciel ---------- */
+const REG = D.regionFields, regWind = { timer: null, play: null };
+// Centre de la carte très dense : on écarte un peu les glyphes (fraction de la largeur)
+const GLYPH_OFFSET = { "Île-de-France": [.035, -.035], "Centre-Val de Loire": [-.02, .05], "Normandie": [-.01, -.015], "Hauts-de-France": [0, -.02], "Grand Est": [.03, .01], "Bourgogne-Franche-Comté": [.02, .03], "Pays de la Loire": [-.015, .02], "Bretagne": [-.02, 0] };
+
+// Ensoleillement relatif : rayonnement du mois ÷ normale de ce mois calendaire dans la région (moyenne 2016-2026)
+const SKY = (() => {
+  const normal = {}, ratios = [];
+  Object.entries(D.weather).forEach(([name, arr]) => { normal[name] = d3.range(12).map(mo => d3.mean(D.weatherMonths.map((m, i) => +m.slice(5) - 1 === mo && arr[i] ? arr[i][1] : null).filter(v => v != null))); });
+  Object.entries(D.weather).forEach(([name, arr]) => D.weatherMonths.forEach((m, i) => { const n = normal[name][+m.slice(5) - 1]; if (arr[i] && n) ratios.push(arr[i][1] / n); }));
+  ratios.sort(d3.ascending);
+  // Seuils : 10 % / 25 % / 75 % / 90 % de tous les couples région × mois → extrêmes rares, « mitigé » au milieu
+  return { normal, q: [.1, .25, .75, .9].map(p => d3.quantile(ratios, p)) };
+})();
+const SKY_CATS = [ // du plus sombre au plus lumineux
+  { id: "rain", name: "très sombre" }, { id: "cloud", name: "sombre" }, { id: "suncloud", name: "mitigé" }, { id: "veiled", name: "lumineux" }, { id: "sun", name: "très lumineux" } ];
+function skyCat(ratio, q, winter) {
+  // q : 4 seuils croissants ; en hiver, la classe la plus sombre devient un flocon (ciel très sombre, pas une mesure de neige)
+  const k = ratio < q[0] ? 0 : ratio < q[1] ? 1 : ratio < q[2] ? 2 : ratio < q[3] ? 3 : 4;
+  return k === 0 && winter ? "snow" : SKY_CATS[k].id;
+}
+function drawSky(g, kind, r) {
+  const sunC = "var(--f-solaire)", cloudC = ["rain", "snow", "storm"].includes(kind) ? "var(--cloud-dark)" : "var(--cloud)";
+  const sun = (cx, cy, rr, rays = true) => { if (rays) d3.range(8).forEach(i => g.append("line").attr("x1", cx).attr("y1", cy - rr - 2).attr("x2", cx).attr("y2", cy - rr - 2 - rr * .5).attr("stroke", sunC).attr("stroke-width", 1.6).attr("stroke-linecap", "round").attr("transform", `rotate(${i * 45},${cx},${cy})`));
+    g.append("circle").attr("cx", cx).attr("cy", cy).attr("r", rr).attr("fill", sunC); };
+  const cloud = (cx, cy, s) => g.append("path").attr("fill", cloudC).attr("stroke", "var(--bg)").attr("stroke-width", 1)
+    .attr("d", `M${cx - s},${cy + s * .5} a${s * .5},${s * .5} 0 0 1 ${s * .3},${-s * .95} a${s * .65},${s * .65} 0 0 1 ${s * 1.15},${-s * .2} a${s * .5},${s * .5} 0 0 1 ${s * .55},${s * 1.15} z`);
+  const moon = (cx, cy, rr) => g.append("path").attr("fill", "#e9e4c8").attr("d", `M${cx + rr * .35},${cy - rr} a${rr},${rr} 0 1 0 ${rr * .65},${rr * 1.55} a${rr * .8},${rr * .8} 0 1 1 ${-rr * .65},${-rr * 1.55} z`);
+  if (kind === "moon") return moon(-r * .2, 0, r * .6);
+  if (kind === "mooncloud") { moon(-r * .35, -r * .25, r * .45); return cloud(r * .1, r * .15, r * .8); }
+  if (kind === "fog") { [-.45, -.1, .25, .6].forEach((dy, i) => g.append("line").attr("x1", -r * (i % 2 ? .7 : .9)).attr("x2", r * (i % 2 ? .9 : .7)).attr("y1", r * dy).attr("y2", r * dy).attr("stroke", "var(--cloud)").attr("stroke-width", 2.2).attr("stroke-linecap", "round")); return; }
+  if (kind === "storm") { cloud(0, -r * .15, r * .95); return g.append("path").attr("d", `M${r * .05},${r * .35} L${-r * .25},${r * .85} L${r * .02},${r * .8} L${-r * .12},${r * 1.25} L${r * .35},${r * .65} L${r * .08},${r * .7} Z`).attr("fill", "var(--accent-2)"); }
+  if (kind === "sun") sun(0, 0, r * .62);
+  else if (kind === "veiled") { sun(0, 0, r * .55, true); [-.25, .2].forEach(dy => g.append("line").attr("x1", -r * .9).attr("x2", r * .9).attr("y1", r * dy + r * .55).attr("y2", r * dy + r * .55).attr("stroke", cloudC).attr("stroke-width", 2).attr("stroke-linecap", "round")); }
+  else if (kind === "suncloud") { sun(-r * .3, -r * .3, r * .45); cloud(r * .1, r * .15, r * .8); }
+  else { cloud(0, -r * .1, r * .95);
+    if (kind === "rain") [-.45, 0, .45].forEach(dx => g.append("line").attr("x1", r * dx).attr("y1", r * .65).attr("x2", r * dx - r * .18).attr("y2", r * 1.05).attr("stroke", "var(--f-hydraulique)").attr("stroke-width", 1.8).attr("stroke-linecap", "round"));
+    if (kind === "snow") d3.range(3).forEach(i => g.append("line").attr("x1", 0).attr("y1", r * .55).attr("x2", 0).attr("y2", r * 1.15).attr("stroke", "var(--text)").attr("stroke-width", 1.4).attr("transform", `rotate(${i * 60},0,${r * .85})`)); }
+}
+function regionStats() {
+  const monthMode = state.regMode === "month" && state.regMonth;
+  const mi = monthsInRange(D.regionMonths).filter(([m]) => !monthMode || m === state.regMonth);
+  const wi = monthsInRange(D.weatherMonths).filter(([m]) => !monthMode || m === state.regMonth);
+  return Object.fromEntries(Object.entries(D.regions).map(([name, arr]) => {
+    const o = { name }; ["consommation", "nucleaire", "hydraulique", "eolien", "solaire", "bioenergies", "thermique"].forEach(f => o[f] = d3.sum(mi, ([m, i]) => (arr[i] && arr[i][REG.indexOf(f)] || 0) * monthHours(m)) / 1e6);
+    o.eolMissing = mi.some(([m, i]) => arr[i] && arr[i][REG.indexOf("eolien")] == null);
+    o.prod = d3.sum(["nucleaire", "hydraulique", "eolien", "solaire", "bioenergies", "thermique"], f => o[f]); o.renTWh = d3.sum(RENEW, f => o[f]); o.ren = o.renTWh / (o.prod || 1);
+    const w = D.weather[name] || []; const ws = wi.map(([m, i]) => [m, w[i]]).filter(x => x[1]);
+    o.wind = ws.length ? d3.mean(ws, x => x[1][0]) : null; o.sun = ws.length ? d3.mean(ws, x => x[1][1]) : null;
+    // rapport à la normale : moyenne des rapports mensuels
+    o.ratio = ws.length ? d3.mean(ws, ([m, v]) => v[1] / (SKY.normal[name][+m.slice(5) - 1] || v[1])) : null;
+    o.winter = monthMode && [12, 1, 2].includes(+state.regMonth.slice(5));
+    return [name, o]; }));
+}
+const METRIC = { ren: { name: "Part renouvelable dans la production", unit: "%", v: o => o.ren, fmt: fmtPct, hue: "--f-bioenergies" },
+  eolien: { name: "Production éolienne", unit: "TWh", v: o => o.eolien, fmt: fmtTWh, hue: "--f-eolien" },
+  solaire: { name: "Production solaire", unit: "TWh", v: o => o.solaire, fmt: fmtTWh, hue: "--f-solaire" },
+  hydraulique: { name: "Production hydraulique", unit: "TWh", v: o => o.hydraulique, fmt: fmtTWh, hue: "--f-hydraulique" } };
+const WIND_REF = [4, 6, 8]; // m/s de référence pour la légende
+const turbineSize = (wind, base) => base * Math.max(.45, Math.min(2.1, wind / 6)); // taille ∝ vent (6 m/s = taille de base)
+const turbineSpeed = wind => 18 * wind * wind / 6; // degrés par seconde : croît vite avec le vent
+function drawTurbine(g, sz) {
+  g.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", sz * 1.35).attr("stroke", "var(--text)").attr("stroke-width", Math.max(1, sz / 9));
+  const rot = g.append("g");
+  d3.range(3).forEach(i => rot.append("path").attr("d", `M0,0 L${-sz * .12},${-sz * .9} L0,${-sz * 1.05} L${sz * .12},${-sz * .9} Z`).attr("fill", "var(--text)").attr("transform", `rotate(${i * 120})`));
+  rot.append("circle").attr("r", Math.max(1.5, sz / 9)).attr("fill", "var(--accent)");
+  return rot;
+}
+function renderRegionMap() {
+  const host = document.getElementById("regMap"); host.replaceChildren(); if (regWind.timer) { regWind.timer.stop(); regWind.timer = null; }
+  syncSource();
+  if (state.regSource === "live" && LIVE.ok) return renderRegionLive();
+  syncRegPlayer();
+  const W = host.clientWidth, H = Math.round(W * .95), stats = regionStats(), met = METRIC[state.regMetric];
+  const monthMode = state.regMode === "month" && state.regMonth, when = monthMode ? monthName(state.regMonth) : periodLabel();
+  const feats = GEO.regions.features, proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[8, 8], [W - 8, H - 8]], { type: "FeatureCollection", features: feats });
+  const path = d3.geoPath(proj), svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
+  const values = Object.values(stats).map(met.v), vmax = d3.max(values) || 1;
+  // Le bas de l'échelle part d'une teinte légèrement colorée pour se détacher du fond
+  const scale = d3.scaleSequential(d3.interpolateRgb(d3.interpolateRgb(css("--hm-0"), css(met.hue))(.12), css(met.hue))).domain([0, vmax]);
+  document.getElementById("regTitle").textContent = `${met.name} · ${when}`;
+  svg.append("g").selectAll("path").data(feats).join("path").attr("d", path)
+    .attr("fill", f => stats[f.properties.nom] ? scale(met.v(stats[f.properties.nom])) : "var(--land)")
+    .attr("stroke", f => f.properties.nom === state.region ? "var(--accent)" : "var(--bg)").attr("stroke-width", f => f.properties.nom === state.region ? 2.5 : 1)
+    .style("cursor", f => stats[f.properties.nom] ? "pointer" : "default")
+    .on("click", (e, f) => { if (stats[f.properties.nom]) { state.region = f.properties.nom; renderRegionMap(); renderCorr(); } })
+    .on("pointermove", (e, f) => { const o = stats[f.properties.nom]; showTip(e, t => { t.append(el("div", "t", f.properties.nom + " · " + when));
+      if (!o) { t.append(el("div", null, "Pas de données éCO2mix (Corse)")); return; }
+      t.append(el("div", "big", met.fmt(met.v(o)))); t.append(el("div", null, met.name)); t.append(el("hr"));
+      RENEW.forEach(k => row(t, col(k), NAMES[k], k === "eolien" && o.eolMissing ? (o.eolien ? fmtTWh(o.eolien) + " (partiel)" : "n.d.") : fmtTWh(o[k])));
+      row(t, null, "Production totale", fmtTWh(o.prod)); row(t, null, "Consommation", fmtTWh(o.consommation)); t.append(el("hr"));
+      row(t, null, "Vent à 100 m", o.wind == null ? "—" : fr(o.wind, 1) + " m/s");
+      row(t, null, "Rayonnement", o.sun == null ? "—" : fr(o.sun) + " W/m²");
+      if (o.ratio != null) row(t, null, "vs normale du mois", (o.ratio >= 1 ? "+" : "−") + fr(Math.abs(o.ratio - 1) * 100) + " %"); }); })
+    .on("pointerleave", hideTip);
+  // Seuils de ciel : en vue mois, quantiles de tous les couples région × mois ; en vue période, quantiles entre régions
+  const withSky = Object.values(stats).filter(o => o.ratio != null);
+  const q = monthMode ? SKY.q : [.2, .4, .6, .8].map(p => d3.quantile(withSky.map(o => o.ratio).sort(d3.ascending), p));
+  const base = Math.max(8, W / 46), glyphs = svg.append("g").style("pointer-events", "none"), rotors = [];
+  feats.forEach(f => { const o = stats[f.properties.nom]; if (!o) return; let [cx, cy] = path.centroid(f);
+    const off = GLYPH_OFFSET[f.properties.nom]; if (off) { cx += off[0] * W; cy += off[1] * W; }
+    const g = glyphs.append("g").attr("transform", `translate(${cx},${cy})`);
+    const both = state.sun && state.wind;
+    if (state.sun && o.ratio != null) drawSky(g.append("g").attr("transform", `translate(${both ? -base * .95 : 0},0)`), skyCat(o.ratio, q, o.winter), base);
+    if (state.wind && o.wind != null) { const sz = turbineSize(o.wind, base), tw = g.append("g").attr("transform", `translate(${both ? base * .95 : 0},${-sz * .35})`);
+      rotors.push({ rot: drawTurbine(tw, sz), speed: turbineSpeed(o.wind), a: Math.random() * 120 }); }
+    const lab = [state.sun && o.sun != null ? fr(o.sun) + " W/m²" : null, state.wind && o.wind != null ? fr(o.wind, 1) + " m/s" : null].filter(Boolean).join(" · ");
+    if (lab && W >= 560) g.append("text").attr("y", base * 2.1 + 8).attr("text-anchor", "middle").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--text)")
+      .style("paint-order", "stroke").style("stroke", "var(--bg)").style("stroke-width", 3).text(lab);
+  });
+  // Légendes
+  document.getElementById("regLegendT").textContent = `${met.name} (${met.unit}) · ${when}`;
+  document.getElementById("regMin").textContent = met.fmt(0); document.getElementById("regMid").textContent = met.fmt(vmax / 2); document.getElementById("regMax").textContent = met.fmt(vmax);
+  document.getElementById("regGrad").style.background = `linear-gradient(90deg, ${scale(0)}, ${scale(vmax / 2)}, ${scale(vmax)})`;
+  const sky = document.getElementById("skyLegend"); sky.replaceChildren(); sky.style.display = state.sun ? "" : "none";
+  if (state.sun) { sky.append(el("div", "lt", monthMode ? "Ciel · rayonnement du mois ÷ normale du mois dans la région · 10 % des mois les plus sombres → pluie, 10 % les plus lumineux → plein soleil" : "Ciel · rayonnement rapporté à la normale, classé entre régions (quintiles)"));
+    const row2 = el("div", "pictos");
+    [["sun", "très lumineux"], ["veiled", "lumineux"], ["suncloud", "mitigé"], ["cloud", "sombre"], ["rain", "très sombre"], ["snow", "très sombre (hiver)"]].forEach(([k, n]) => {
+      const sp = el("span"); const sv = d3.select(sp).append("svg").attr("width", 22).attr("height", 22).append("g").attr("transform", "translate(11,10)"); drawSky(sv, k, 7); sp.append(document.createTextNode(n)); row2.append(sp); });
+    sky.append(row2); }
+  const wl = document.getElementById("windLegend"); wl.replaceChildren(); wl.style.display = state.wind ? "" : "none";
+  if (state.wind) { wl.append(el("div", "lt", "Vent moyen à 100 m · taille et vitesse de rotation proportionnelles")); const row3 = el("div", "pictos");
+    WIND_REF.forEach(v => { const sz = turbineSize(v, 9), sp = el("span"); const sv = d3.select(sp).append("svg").attr("width", sz * 2.4).attr("height", sz * 2.6).append("g").attr("transform", `translate(${sz * 1.2},${sz * 1.1})`);
+      const rot = drawTurbine(sv, sz); rotors.push({ rot, speed: turbineSpeed(v), a: 0 }); sp.append(document.createTextNode(v + " m/s")); row3.append(sp); });
+    wl.append(row3); }
+  const missing = Object.values(stats).some(o => o.eolMissing);
+  document.getElementById("regNote").textContent = (withSky.length ? "Pictos de ciel : traduction du rayonnement solaire mesuré. La source ne mesure ni la pluie ni la neige : nuage + pluie ou flocon signifient seulement « très peu de soleil pour la saison ». Le vent n'a pas de direction dans la source." : "Pas de données météo avant 2016.")
+    + (missing ? " Éolien régional non détaillé par la source avant 2024 : part ENR sous-estimée sur ces mois." : "");
+  if (REDUCED || !rotors.length) { rotors.forEach(r => r.rot.attr("transform", `rotate(${r.a})`)); return; }
+  let last = 0; regWind.timer = d3.timer(t => { const dt = (t - last) / 1000; last = t; rotors.forEach(r => { r.a = (r.a + r.speed * dt) % 360; r.rot.attr("transform", `rotate(${r.a})`); }); });
+}
+function syncRegPlayer() {
+  const list = monthsInRange(D.weatherMonths).map(([m]) => m).filter(m => D.regionMonths.includes(m)), sl = document.getElementById("regSlider");
+  document.getElementById("regPlayer").style.display = state.regMode === "month" ? "flex" : "none";
+  if (!list.length) return;
+  if (!list.includes(state.regMonth)) state.regMonth = list[list.length - 1];
+  sl.min = 0; sl.max = list.length - 1; sl.value = list.indexOf(state.regMonth); document.getElementById("regLabel").textContent = monthName(state.regMonth);
+}
+function regMonthList() { return monthsInRange(D.weatherMonths).map(([m]) => m).filter(m => D.regionMonths.includes(m)); }
+function stopRegPlay() { clearInterval(regWind.play); regWind.play = null; document.getElementById("regPlay").textContent = "▶"; }
+document.getElementById("regSlider").oninput = e => { state.regMonth = regMonthList()[+e.target.value]; stopRegPlay(); renderRegionMap(); renderCorr(); };
+document.getElementById("regPlay").onclick = () => {
+  if (regWind.play) return stopRegPlay();
+  const list = regMonthList(); if (list.indexOf(state.regMonth) >= list.length - 1) state.regMonth = list[0];
+  document.getElementById("regPlay").textContent = "❚❚"; renderRegionMap(); renderCorr();
+  regWind.play = setInterval(() => { const i = list.indexOf(state.regMonth); if (i >= list.length - 1) return stopRegPlay(); state.regMonth = list[i + 1]; renderRegionMap(); renderCorr(); }, 1300);
+};
+/* ---------- LIVE : ODRÉ temps réel + Open-Meteo, côté navigateur ---------- */
+const ODRE = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/";
+const LIVE = { ok: false, loading: false, error: null, regions: {}, weather: {}, national: null, stamp: null, wstamp: null, particles: null };
+const LIVE_FIELDS = ["consommation", "eolien", "solaire", "hydraulique", "bioenergies", "thermique", "nucleaire"];
+async function getJSON(url, ms = 12000) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+  try { const r = await fetch(url, { signal: ctl.signal }); if (!r.ok) throw new Error("HTTP " + r.status); return await r.json(); } finally { clearTimeout(t); }
+}
+async function loadLive() {
+  LIVE.loading = true; syncSource();
+  try {
+    // 1) dernier pas publié par région (RTE temps réel, ~1 h de délai)
+    const q = new URLSearchParams({ select: "date_heure,libelle_region," + LIVE_FIELDS.join(","), where: "consommation is not null", order_by: "date_heure desc", limit: "100" });
+    const reg = await getJSON(ODRE + "eco2mix-regional-tr/records?" + q);
+    const latest = {};
+    reg.results.forEach(r => { if (!latest[r.libelle_region] || r.date_heure > latest[r.libelle_region].date_heure) latest[r.libelle_region] = r; });
+    // 2) météo actuelle au centroïde de chaque région (Open-Meteo, un seul appel multi-points)
+    const feats = GEO.regions.features.filter(f => D.regions[f.properties.nom]);
+    const pts = feats.map(f => d3.geoCentroid(f));
+    const wq = new URLSearchParams({ latitude: pts.map(p => p[1].toFixed(3)).join(","), longitude: pts.map(p => p[0].toFixed(3)).join(","),
+      current: "wind_speed_100m,wind_direction_100m,cloud_cover,precipitation,rain,snowfall,weather_code,is_day", wind_speed_unit: "ms", timezone: "Europe/Paris" });
+    const met = await getJSON("https://api.open-meteo.com/v1/forecast?" + wq);
+    const metList = Array.isArray(met) ? met : [met];
+    const weather = {}; feats.forEach((f, i) => { if (metList[i]) weather[f.properties.nom] = metList[i].current; });
+    // 3) national temps réel pour l'en-tête
+    let national = null;
+    try { const nq = new URLSearchParams({ select: "date_heure,consommation,taux_co2,solaire,eolien,nucleaire", where: "consommation is not null", order_by: "date_heure desc", limit: "1" });
+      national = (await getJSON(ODRE + "eco2mix-national-tr/records?" + nq)).results[0] || null; } catch (e) { national = null; }
+    if (!Object.keys(latest).length || !Object.keys(weather).length) throw new Error("réponse vide");
+    Object.assign(LIVE, { ok: true, error: null, regions: latest, weather, national, stamp: d3.max(Object.values(latest), r => r.date_heure), wstamp: metList[0]?.current?.time, fetched: new Date() });
+    if (!state.sourcePicked) state.regSource = "live";
+  } catch (e) {
+    LIVE.error = e.name === "AbortError" ? "délai dépassé" : e.message;
+    if (!LIVE.ok) state.regSource = "year";
+  } finally { LIVE.loading = false; renderReadout(); renderRegionMap(); renderCorr(); }
+}
+const hhmm = iso => new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+function syncSource() {
+  const live = state.regSource === "live" && LIVE.ok;
+  document.querySelectorAll("#regSource button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === (live ? "live" : "year")));
+  document.querySelector('#regSource button[data-v="live"]').classList.toggle("live-ok", LIVE.ok);
+  document.getElementById("yearBtn").textContent = state.period === "last12" ? "Dernière année" : periodLabel();
+  document.getElementById("regMode").style.display = live ? "none" : "";
+  if (live) document.getElementById("regPlayer").style.display = "none";
+  const st = document.getElementById("liveStatus"); st.classList.toggle("err", !!LIVE.error && !LIVE.ok);
+  st.textContent = LIVE.loading ? "● connexion au temps réel…" : LIVE.ok ? `RTE ${hhmm(LIVE.stamp)} · météo ${LIVE.wstamp ? LIVE.wstamp.slice(11, 16) : "—"} · actualisé toutes les 15 min`
+    : LIVE.error ? `Temps réel indisponible (${LIVE.error}) — affichage de l'historique` : "";
+}
+function liveSky(w) {
+  const c = w.weather_code, day = w.is_day === 1;
+  if (c >= 95) return "storm"; if ((c >= 71 && c <= 77) || c === 85 || c === 86) return "snow";
+  if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) return "rain"; if (c === 45 || c === 48) return "fog";
+  if (c === 3) return "cloud"; if (c === 2) return day ? "suncloud" : "mooncloud"; if (c === 1) return day ? "veiled" : "moon"; return day ? "sun" : "moon";
+}
+const SKY_LIVE_NAMES = { sun: "ciel clair", veiled: "peu nuageux", suncloud: "nuageux", cloud: "couvert", fog: "brouillard", rain: "pluie", snow: "neige", storm: "orage", moon: "nuit claire", mooncloud: "nuit nuageuse" };
+function renderRegionLive() {
+  const host = document.getElementById("regMap"), W = host.clientWidth, H = Math.round(W * .95), met = METRIC[state.regMetric];
+  const stats = {}; Object.entries(LIVE.regions).forEach(([name, r]) => { const o = { name, ...r }; o.prod = d3.sum(["nucleaire", "hydraulique", "eolien", "solaire", "bioenergies", "thermique"], k => r[k] || 0);
+    o.ren = d3.sum(RENEW, k => r[k] || 0) / (o.prod || 1); stats[name] = o; });
+  const LMET = { ren: { v: o => o.ren, fmt: fmtPct, unit: "%" }, eolien: { v: o => o.eolien, fmt: v => fr(v) + " MW", unit: "MW" }, solaire: { v: o => o.solaire, fmt: v => fr(v) + " MW", unit: "MW" }, hydraulique: { v: o => o.hydraulique, fmt: v => fr(v) + " MW", unit: "MW" } }[state.regMetric];
+  const feats = GEO.regions.features, proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[8, 8], [W - 8, H - 8]], { type: "FeatureCollection", features: feats });
+  const path = d3.geoPath(proj), svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
+  const vmax = d3.max(Object.values(stats), LMET.v) || 1;
+  const scale = d3.scaleSequential(d3.interpolateRgb(d3.interpolateRgb(css("--hm-0"), css(met.hue))(.12), css(met.hue))).domain([0, vmax]);
+  document.getElementById("regTitle").textContent = `${met.name.replace("Production", "Puissance")} · en direct · ${hhmm(LIVE.stamp)}`;
+  svg.append("g").selectAll("path").data(feats).join("path").attr("d", path)
+    .attr("fill", f => stats[f.properties.nom] ? scale(LMET.v(stats[f.properties.nom]) || 0) : "var(--land)")
+    .attr("stroke", f => f.properties.nom === state.region ? "var(--accent)" : "var(--bg)").attr("stroke-width", f => f.properties.nom === state.region ? 2.5 : 1)
+    .style("cursor", f => stats[f.properties.nom] ? "pointer" : "default")
+    .on("click", (e, f) => { if (stats[f.properties.nom]) { state.region = f.properties.nom; renderRegionMap(); renderCorr(); } })
+    .on("pointermove", (e, f) => { const o = stats[f.properties.nom], w = LIVE.weather[f.properties.nom]; showTip(e, t => {
+      t.append(el("div", "t", `${f.properties.nom} · RTE ${hhmm(LIVE.stamp)}`));
+      if (!o) { t.append(el("div", null, "Pas de données éCO2mix (Corse)")); return; }
+      t.append(el("div", "big", LMET.fmt(LMET.v(o) || 0))); t.append(el("hr"));
+      [...RENEW, "nucleaire", "thermique"].forEach(k => row(t, col(k), NAMES[k], fr(o[k] || 0) + " MW")); row(t, null, "Consommation", fr(o.consommation) + " MW");
+      if (w) { t.append(el("hr")); row(t, null, "Ciel", SKY_LIVE_NAMES[liveSky(w)] + ` (${w.cloud_cover} % nuages)`); row(t, null, "Vent à 100 m", `${fr(w.wind_speed_100m, 1)} m/s · de ${fr(w.wind_direction_100m)}°`);
+        if (w.precipitation > 0) row(t, null, "Précipitations", fr(w.precipitation, 1) + " mm"); } }); })
+    .on("pointerleave", hideTip);
+  // Glyphes météo réels, éoliennes et particules de vent orientées
+  const base = Math.max(8, W / 46), glyphs = svg.append("g").style("pointer-events", "none"), partG = svg.append("g").style("pointer-events", "none"), rotors = [], parts = [];
+  feats.forEach(f => { const o = stats[f.properties.nom], w = LIVE.weather[f.properties.nom]; if (!o || !w) return; let [cx, cy] = path.centroid(f);
+    const off = GLYPH_OFFSET[f.properties.nom]; if (off) { cx += off[0] * W; cy += off[1] * W; }
+    const g = glyphs.append("g").attr("transform", `translate(${cx},${cy})`), both = state.sun && state.wind;
+    if (state.sun) drawSky(g.append("g").attr("transform", `translate(${both ? -base * .95 : 0},0)`), liveSky(w), base);
+    if (state.wind) { const v = w.wind_speed_100m, sz = turbineSize(v, base), tw = g.append("g").attr("transform", `translate(${both ? base * .95 : 0},${-sz * .35})`);
+      rotors.push({ rot: drawTurbine(tw, sz), speed: turbineSpeed(v), a: Math.random() * 120 });
+      // direction météo = d'où vient le vent ; il souffle vers dir + 180°
+      const to = (w.wind_direction_100m + 180) * Math.PI / 180, ux = Math.sin(to), uy = -Math.cos(to);
+      const ar = g.append("g").attr("transform", `translate(${both ? base * .95 : 0},${base * 1.7}) rotate(${w.wind_direction_100m + 180})`);
+      ar.append("line").attr("x1", 0).attr("y1", base * .55).attr("x2", 0).attr("y2", -base * .45).attr("stroke", "var(--accent)").attr("stroke-width", 1.6);
+      ar.append("path").attr("d", `M0,${-base * .7} L${-base * .25},${-base * .3} L${base * .25},${-base * .3} Z`).attr("fill", "var(--accent)");
+      const R = W / 13, n = Math.round(6 + v * 1.5);
+      for (let i = 0; i < n; i++) { const a = Math.random() * 2 * Math.PI, d = Math.sqrt(Math.random()) * R;
+        parts.push({ cx, cy, R, ux, uy, x: Math.cos(a) * d, y: Math.sin(a) * d, sp: 4 + v * 4, len: 3 + v * .9, el: partG.append("line").attr("stroke", "var(--accent)").attr("stroke-width", 1.2).attr("stroke-linecap", "round") }); } }
+    const lab = [state.sun ? SKY_LIVE_NAMES[liveSky(w)] : null, state.wind ? fr(w.wind_speed_100m, 1) + " m/s" : null].filter(Boolean).join(" · ");
+    if (lab && W >= 560) g.append("text").attr("y", base * 2.9 + 8).attr("text-anchor", "middle").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--text)")
+      .style("paint-order", "stroke").style("stroke", "var(--bg)").style("stroke-width", 3).text(lab);
+  });
+  // Légendes LIVE
+  document.getElementById("regLegendT").textContent = `${met.name.replace("Production", "Puissance")} (${LMET.unit}) · instantané RTE ${hhmm(LIVE.stamp)}`;
+  document.getElementById("regMin").textContent = LMET.fmt(0); document.getElementById("regMid").textContent = LMET.fmt(vmax / 2); document.getElementById("regMax").textContent = LMET.fmt(vmax);
+  document.getElementById("regGrad").style.background = `linear-gradient(90deg, ${scale(0)}, ${scale(vmax / 2)}, ${scale(vmax)})`;
+  const sky = document.getElementById("skyLegend"); sky.replaceChildren(); sky.style.display = state.sun ? "" : "none";
+  if (state.sun) { sky.append(el("div", "lt", "Ciel actuel (Open-Meteo, code météo WMO)")); const row2 = el("div", "pictos");
+    [...new Set(Object.values(LIVE.weather).map(liveSky))].forEach(k => { const sp = el("span"); const sv = d3.select(sp).append("svg").attr("width", 22).attr("height", 24).append("g").attr("transform", "translate(11,10)"); drawSky(sv, k, 7); sp.append(document.createTextNode(SKY_LIVE_NAMES[k])); row2.append(sp); });
+    sky.append(row2); }
+  const wl = document.getElementById("windLegend"); wl.replaceChildren(); wl.style.display = state.wind ? "" : "none";
+  if (state.wind) { wl.append(el("div", "lt", "Vent actuel à 100 m · taille et rotation ∝ vitesse · flèche et particules : sens du vent")); const row3 = el("div", "pictos");
+    WIND_REF.forEach(v => { const sz = turbineSize(v, 9), sp = el("span"); const sv = d3.select(sp).append("svg").attr("width", sz * 2.4).attr("height", sz * 2.6).append("g").attr("transform", `translate(${sz * 1.2},${sz * 1.1})`);
+      rotors.push({ rot: drawTurbine(sv, sz), speed: turbineSpeed(v), a: 0 }); sp.append(document.createTextNode(v + " m/s")); row3.append(sp); }); wl.append(row3); }
+  document.getElementById("regNote").textContent = `Production : RTE éCO2mix temps réel (dernier pas publié, ${hhmm(LIVE.stamp)} ; RTE publie avec environ une heure de décalage). Météo : Open-Meteo au centroïde de chaque région (${LIVE.wstamp ? LIVE.wstamp.slice(11, 16) : "—"}), CC BY 4.0.`;
+  const draw = () => { parts.forEach(p => { p.el.attr("x1", p.cx + p.x).attr("y1", p.cy + p.y).attr("x2", p.cx + p.x - p.ux * p.len).attr("y2", p.cy + p.y - p.uy * p.len)
+    .attr("opacity", Math.max(0, 1 - Math.hypot(p.x, p.y) / p.R) * .9); }); rotors.forEach(r => r.rot.attr("transform", `rotate(${r.a})`)); };
+  if (REDUCED) return draw();
+  let last = 0; regWind.timer = d3.timer(t => { const dt = Math.min(.05, (t - last) / 1000); last = t;
+    rotors.forEach(r => { r.a = (r.a + r.speed * dt) % 360; });
+    parts.forEach(p => { p.x += p.ux * p.sp * dt; p.y += p.uy * p.sp * dt; if (Math.hypot(p.x, p.y) > p.R) { const a = Math.random() * 2 * Math.PI, d = Math.sqrt(Math.random()) * p.R * .9; p.x = Math.cos(a) * d - p.ux * p.R * .6; p.y = Math.sin(a) * d - p.uy * p.R * .6; } });
+    draw(); });
+}
+
+function scatter(host, pts, xl, yl, color) {
+  host.replaceChildren(); const W = host.clientWidth, H = 220, M = { l: 44, r: 8, t: 8, b: 30 };
+  const x = d3.scaleLinear().domain(d3.extent(pts, p => p.x)).nice().range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, d3.max(pts, p => p.y) || 1]).nice().range([H - M.b, M.t]);
+  const years = d3.extent(pts, p => p.yr), c = d3.scaleSequential(d3.interpolateRgb(css("--muted"), color)).domain(years);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => fr(v / 1000, y.domain()[1] < 1500 ? 2 : 1)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(4).tickSize(-(H - M.t - M.b)));
+  svg.append("text").attr("x", W - M.r).attr("y", H - 2).attr("text-anchor", "end").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)").text(xl);
+  svg.append("text").attr("x", M.l).attr("y", M.t + 2).attr("dy", ".7em").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)").text(" " + yl);
+  let [d0, d1] = range(), a = ymKey(dayDate(d0)), b = ymKey(dayDate(d1));
+  if (state.regMode === "month" && state.regMonth) a = b = state.regMonth;
+  svg.append("g").selectAll("circle").data(pts).join("circle").attr("cx", p => x(p.x)).attr("cy", p => y(p.y)).attr("r", p => p.m >= a && p.m <= b ? 4.5 : 3)
+    .attr("fill", p => c(p.yr)).attr("stroke", p => p.m >= a && p.m <= b ? "var(--text)" : "none").attr("opacity", .9)
+    .on("pointermove", (e, p) => showTip(e, t => { t.append(el("div", "t", monthName(p.m))); row(t, null, xl, fr(p.x, 1)); row(t, color, yl, fmtGW(p.y)); })).on("pointerleave", hideTip);
+  const n = pts.length, mx = d3.mean(pts, p => p.x), my = d3.mean(pts, p => p.y);
+  const r = d3.sum(pts, p => (p.x - mx) * (p.y - my)) / Math.sqrt(d3.sum(pts, p => (p.x - mx) ** 2) * d3.sum(pts, p => (p.y - my) ** 2));
+  return r;
+}
+function renderCorr() {
+  const name = state.region, w = D.weather[name] || [], reg = D.regions[name] || [];
+  const byM = new Map(D.regionMonths.map((m, i) => [m, reg[i]]));
+  const pW = [], pS = [];
+  D.weatherMonths.forEach((m, i) => { const wv = w[i], rv = byM.get(m); if (!wv || !rv) return; const yr = +m.slice(0, 4);
+    const e = rv[REG.indexOf("eolien")], so = rv[REG.indexOf("solaire")];
+    if (e != null) pW.push({ m, yr, x: wv[0], y: e }); if (so != null) pS.push({ m, yr, x: wv[1], y: so }); });
+  document.getElementById("corrWindT").textContent = `${name} · vent → éolien`;
+  document.getElementById("corrSunT").textContent = `soleil → solaire`;
+  const rW = scatter(document.getElementById("corrWind"), pW, "vent à 100 m (m/s)", "éolien (GW moyen)", css("--f-eolien"));
+  const rS = scatter(document.getElementById("corrSun"), pS, "rayonnement (W/m²)", "solaire (GW moyen)", css("--f-solaire"));
+  document.getElementById("corrNote").textContent = `Un point par mois (solaire depuis 2016, éolien depuis 2024 : avant, la source ne détaille pas l'éolien régional), du gris (ancien) à la couleur (récent) : les nuages montent avec les années car le parc s'agrandit. Corrélation : vent r = ${fr(rW, 2)} · soleil r = ${fr(rS, 2)}. Points cerclés : période ou mois choisi.`;
+}
+
+/* ---------- 04 Années ---------- */
+function renderYears() {
+  const host = document.getElementById("years"); host.replaceChildren(); const pct = state.yearMode === "pct";
+  const rows = d3.range(firstYear, lastYear + 1).map(yr => { const d0 = Math.max(0, dayIndex(new Date(yr, 0, 1))), d1 = Math.min(LASTDAY, dayIndex(new Date(yr, 11, 31)));
+    return { yr, ...mixTotals(d0, d1), partial: d1 < dayIndex(new Date(yr, 11, 31)), d1 }; });
+  const W = host.clientWidth, H = W < 560 ? 260 : 340, M = { l: 50, r: 6, t: 16, b: 26 };
+  const x = d3.scaleBand().domain(rows.map(r => r.yr)).range([M.l, W - M.r]).padding(.22), y = d3.scaleLinear().domain([0, pct ? 1 : d3.max(rows, r => r.total)]).nice().range([H - M.b, M.t]);
+  const st = d3.stack().keys(S).value((d, k) => pct ? d[k] / d.total : d[k])(rows), svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - M.l - M.r)).tickFormat(v => pct ? Math.round(v * 100) + "%" : v + " TWh"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickSize(0).tickPadding(8).tickFormat(v => W < 560 ? "’" + String(v).slice(2) : v));
+  svg.append("g").selectAll("g").data(st).join("g").attr("fill", d => col(d.key)).selectAll("rect").data(d => d).join("rect")
+    .attr("x", d => x(d.data.yr)).attr("width", x.bandwidth()).attr("y", d => y(d[1])).attr("height", d => Math.max(0, y(d[0]) - y(d[1]) - 1));
+  rows.forEach(r => { const g = svg.append("g").style("cursor", "pointer");
+    if (String(r.yr) === String(state.period)) g.append("rect").attr("x", x(r.yr) - 3).attr("y", M.t - 8).attr("width", x.bandwidth() + 6).attr("height", H - M.b - M.t + 10).attr("fill", "none").attr("stroke", "var(--accent)").attr("stroke-width", 1.5);
+    if (r.partial) g.append("text").attr("x", x(r.yr) + x.bandwidth() / 2).attr("y", y(pct ? 1 : r.total) - 4).attr("text-anchor", "middle").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)").text("→" + dayDate(r.d1).toLocaleDateString("fr-FR", { month: "short" }));
+    g.append("rect").attr("x", x(r.yr) - x.step() * x.paddingInner() / 2).attr("width", x.step()).attr("y", M.t).attr("height", H - M.t - M.b).attr("fill", "transparent")
+      .on("click", () => { state.period = String(r.yr); update(); })
+      .on("pointermove", e => showTip(e, t => { t.append(el("div", "t", `${r.yr}${r.partial ? " (partiel)" : ""} · ${fmtTWh(r.total)}`)); [...S].reverse().forEach(s => row(t, col(s), NAMES[s], pct ? fmtPct(r[s] / r.total) : fmtTWh(r[s]))); }))
+      .on("pointerleave", hideTip); });
+}
+
+/* ---------- 05 Carte de chaleur ---------- */
+const HM = { consommation: { name: "Consommation", fmt: fmtGW, hue: "--f-hydraulique" }, taux_co2: { name: "CO₂", fmt: v => fr(v) + " g/kWh", hue: "--f-gaz" },
+  solaire: { name: "Solaire", fmt: fmtGW, hue: "--f-solaire" }, eolien: { name: "Éolien", fmt: fmtGW, hue: "--f-eolien" } };
+function renderHeat() {
+  const cv = document.getElementById("hm"), [d0, d1] = range(), span = d1 - d0 + 1, step = span > 400 ? 7 : 1, cols = Math.ceil(span / step);
+  const W = cv.parentElement.clientWidth - 32, labelW = 34, H = W < 560 ? 220 : 300, topPad = 2, botPad = 20, dpr = devicePixelRatio || 1;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px"; const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr); ctx.clearRect(0, 0, W, H);
+  const a = D.hourly[state.hm], meta = HM[state.hm], grid = [];
+  for (let c = 0; c < cols; c++) { const cl = []; for (let h = 0; h < 24; h++) { let s = 0, n = 0; for (let k = 0; k < step; k++) { const di = d0 + c * step + k; if (di > d1) break; const v = a[di * 24 + h]; if (v != null) { s += v; n++; } } cl.push(n ? s / n : null); } grid.push(cl); }
+  const vals = grid.flat().filter(v => v != null).sort(d3.ascending), lo = d3.quantile(vals, .01), hi = d3.quantile(vals, .99);
+  const scale = d3.scaleSequential(d3.interpolateRgb(css("--hm-0"), css(meta.hue))).domain([lo, hi]).clamp(true), cw = (W - labelW) / cols, ch = (H - topPad - botPad) / 24;
+  grid.forEach((cl, c) => cl.forEach((v, h) => { if (v == null) return; ctx.fillStyle = scale(v); ctx.fillRect(labelW + c * cw, topPad + h * ch, Math.ceil(cw + .5), Math.ceil(ch + .5)); }));
+  ctx.fillStyle = css("--muted"); ctx.font = "11px 'IBM Plex Mono', monospace"; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+  [0, 6, 12, 18, 23].forEach(h => ctx.fillText(h + "h", labelW - 6, topPad + (h + .5) * ch)); ctx.textAlign = "left"; ctx.textBaseline = "top"; let lastX = -99;
+  for (let c = 0; c < cols; c++) { const dt = dayDate(d0 + c * step); if ((step === 1 && dt.getDate() === 1) || (step === 7 && dt.getMonth() === 0 && dt.getDate() <= 7)) { const xx = labelW + c * cw;
+    if (xx - lastX > 34) { ctx.fillText(step === 7 ? String(dt.getFullYear()) : MS[dt.getMonth()], xx + 2, H - botPad + 5); lastX = xx; } } }
+  document.getElementById("hmSub").textContent = `${step === 7 ? "Une colonne par semaine" : "Une colonne par jour"}, une ligne par heure · ${meta.name} · ${periodLabel()}.`;
+  document.getElementById("hmMin").textContent = meta.fmt(lo); document.getElementById("hmMax").textContent = meta.fmt(hi);
+  document.getElementById("hmGrad").style.background = `linear-gradient(90deg, ${scale(lo)}, ${scale((lo + hi) / 2)}, ${scale(hi)})`;
+  cv.onpointermove = e => { const r = cv.getBoundingClientRect(), c = Math.floor((e.clientX - r.left - labelW) / cw), h = Math.floor((e.clientY - r.top - topPad) / ch);
+    if (c < 0 || c >= cols || h < 0 || h > 23) return hideTip(); const v = grid[c][h], dt = dayDate(d0 + c * step);
+    showTip(e, t => { t.append(el("div", "t", (step === 7 ? "Semaine du " + dt.toLocaleDateString("fr-FR") : fmtDay(dt)) + ` · ${h}h–${h + 1}h`)); t.append(el("div", "big", v == null ? "—" : meta.fmt(v))); t.append(el("div", null, meta.name)); }); };
+  cv.onpointerleave = hideTip;
+}
+
+/* ---------- 06 Jour type ---------- */
+function renderSmalls() {
+  const host = document.getElementById("smalls"); host.replaceChildren(); const [d0, d1] = range(), a = ymKey(dayDate(d0)), b = ymKey(dayDate(d1));
+  const months = D.profileMonths.map((m, i) => ({ m, i })).filter(o => o.m >= a && o.m <= b);
+  const groups = months.length > 12 ? d3.range(12).map(mo => ({ label: MONTHS[mo], idx: months.filter(o => +o.m.slice(5) === mo + 1).map(o => o.i) }))
+    : months.map(o => ({ label: MONTHS[+o.m.slice(5) - 1] + " " + o.m.slice(2, 4), idx: [o.i] }));
+  const prof = groups.map(g => d3.range(24).map(h => { const o = { h }; [...S, "consommation"].forEach(k => o[k] = d3.mean(g.idx, i => D.profile[k][i][h])); return o; }));
+  const ymax = d3.max(prof.flat(), d => Math.max(d3.sum(S, k => d[k]), d.consommation)) / 1000;
+  groups.forEach((g, gi) => { const box = el("div", "small"), lab = el("div", "lab"); lab.append(document.createTextNode(g.label)); box.append(lab); host.append(box);
+    const W = box.clientWidth - 16 || 140, H = 100, M = { l: 1, r: 1, t: 4, b: 12 };
+    if (W >= 120) lab.append(el("span", null, "☀ " + fmtGW(d3.max(prof[gi], d => d.solaire))));
+    const x = d3.scaleLinear().domain([0, 23]).range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, ymax]).range([H - M.b, M.t]), svg = d3.select(box).append("svg").attr("width", W).attr("height", H);
+    svg.append("g").selectAll("path").data(d3.stack().keys(S).value((d, k) => d[k] / 1000)(prof[gi])).join("path").attr("fill", d => col(d.key)).attr("d", d3.area().x(d => x(d.data.h)).y0(d => y(d[0])).y1(d => y(d[1])).curve(d3.curveMonotoneX));
+    svg.append("path").datum(prof[gi]).attr("fill", "none").attr("stroke", "var(--conso)").attr("stroke-width", 1.3).attr("d", d3.line().x(d => x(d.h)).y(d => y(d.consommation / 1000)).curve(d3.curveMonotoneX));
+    [0, 12].forEach(h => svg.append("text").attr("x", x(h)).attr("y", H - 1).attr("text-anchor", h ? "middle" : "start").style("font", "9px 'IBM Plex Mono'").style("fill", "var(--muted)").text(h + "h"));
+    const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--accent)").attr("opacity", 0);
+    svg.append("rect").attr("width", W).attr("height", H).attr("fill", "transparent").on("pointermove", e => { const h = Math.max(0, Math.min(23, Math.round(x.invert(d3.pointer(e)[0])))), d = prof[gi][h];
+      cross.attr("x1", x(h)).attr("x2", x(h)).attr("opacity", .7);
+      showTip(e, t => { t.append(el("div", "t", `${g.label} · ${h}h–${h + 1}h`)); row(t, css("--conso"), "Consommation", fmtGW(d.consommation)); t.append(el("hr")); [...S].reverse().forEach(s => { if (d[s] > 50) row(t, col(s), NAMES[s], fmtGW(d[s])); }); });
+    }).on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); }); });
+}
+
+/* ---------- 07 Records ---------- */
+function renderRecords() {
+  const R = D.records, host = document.getElementById("records"); host.replaceChildren();
+  const when = s => { const t = new Date(s); return t.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) + " · " + t.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); };
+  [["Pic de consommation", R.conso_max, fmtGW, "--conso"], ["Conso la plus basse", R.conso_min, fmtGW, "--conso"], ["Record solaire", R.solaire_max, fmtGW, "--f-solaire"],
+   ["Record éolien", R.eolien_max, fmtGW, "--f-eolien"], ["Record nucléaire", R.nucleaire_max, fmtGW, "--f-nucleaire"], ["Export record", R.export_max, v => fmtGW(-v), "--exp"],
+   ["Le plus propre", R.co2_min, v => fr(v) + " g/kWh", "--f-bioenergies"], ["Le plus carboné", R.co2_max, v => fr(v) + " g/kWh", "--f-gaz"], ["Import record", R.import_max, fmtGW, "--imp"]].forEach(([k, r, f, c]) => {
+    if (!r) return; const b = el("div", "rec"), kk = el("div", "k"), sw = el("span", "sw"); sw.style.background = css(c); kk.append(sw, document.createTextNode(k)); b.append(kk, el("div", "v", f(r[0])), el("div", "d", when(r[1]))); host.append(b); });
+}
+
+/* ---------- Commandes ---------- */
+function tabs(id, onPick, multi) { document.querySelectorAll(`#${id} .tab`).forEach(b => b.onclick = () => {
+  if (multi) { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); } else document.querySelectorAll(`#${id} .tab`).forEach(x => x.setAttribute("aria-pressed", x === b));
+  onPick(b.dataset.v, b.getAttribute("aria-pressed") === "true"); }); }
+tabs("mixMode", v => { state.mixMode = v; renderMix(); }); tabs("yearMode", v => { state.yearMode = v; renderYears(); }); tabs("hmMetric", v => { state.hm = v; renderHeat(); });
+tabs("regMetric", v => { state.regMetric = v; renderRegionMap(); });
+document.querySelectorAll("#regSource button").forEach(b => b.onclick = () => {
+  state.sourcePicked = true; state.regSource = b.dataset.v; stopRegPlay();
+  if (b.dataset.v === "live" && !LIVE.ok && !LIVE.loading) loadLive(); renderRegionMap(); renderCorr(); });
+tabs("regMode", v => { state.regMode = v; stopRegPlay(); renderRegionMap(); renderCorr(); }); tabs("overlays", (v, on) => { state[v] = on; renderRegionMap(); }, true);
+tabs("flowMode", v => { state.flowMode = v; stopFlowPlay(); syncFlowPlayer(); renderFlows(); renderExportTrend(); });
+document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
+  try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} update(); };
+try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); }
+let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(update, 150); });
+update();
+loadLive(); setInterval(loadLive, 15 * 60 * 1000);
+</script>
+</body>
+</html>

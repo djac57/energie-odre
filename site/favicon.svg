@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Pylône haute tension stylisé sur fond nuit : dessin original -->
+  <rect width="64" height="64" rx="12" fill="#06090d"/>
+  <path d="M32 6 20 58M32 6l12 52M14 20h36M18 32h28M23 20l18 12M41 20 23 32M21 44h22M24 32l16 12M40 32 24 44" fill="none" stroke="#4de1ff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="14" cy="20" r="3" fill="#ffb627"/><circle cx="50" cy="20" r="3" fill="#ffb627"/>
+</svg>

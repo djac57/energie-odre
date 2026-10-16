@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.new
+# Exports nationaux complets (~40 Mo) : retéléchargés à chaque mise à jour
+data/raw/eco2mix-national-*.csv
