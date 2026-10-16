@@ -24177,19 +24177,19 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 1",
-"pub":"2026-10-16T16:07:37Z",
+"pub":"2026-10-16T20:56:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
-"start":"2026-10-16T22:00:00Z",
+"start":"2026-10-16T20:55:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-16T22:00:00Z",
+"2026-10-16T20:55:00Z",
 "2026-11-25T22:30:00Z",
 915
 ]
 ],
-"v":11
+"v":12
 },
 "EC-EDF-05470-EDF-T-00107362":{
 "eic":"17W100P100P0140T",
@@ -142192,24 +142192,24 @@
 },
 "EDF-05470_EDF_T_00314196":{
 "eic":"17W100P100P0115S",
-"end":"2026-10-16T22:00:00Z",
+"end":"2026-10-16T20:55:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 1",
-"pub":"2026-10-16T19:32:36Z",
+"pub":"2026-10-16T20:56:38Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Baisse avant arrêt\nBaisse à 100 MW : [1h] – palier à 100 MW : [1h] – baisse à 50 MW : [30 mn] –  baisse jusqu’à découplage.\n\n-------------------------------------------------------------------------------------\nUnit Ramping down before outage\nRamp down to 100 MW : [1h] – threshold at 100 MW : [1h] –",
 "start":"2026-10-16T20:30:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-16T20:30:00Z",
-"2026-10-16T22:00:00Z",
+"2026-10-16T20:55:00Z",
 815
 ]
 ],
-"v":6
+"v":7
 },
 "EDF-05470_EDF_T_00314197":{
 "eic":"17W100P100P0146H",
