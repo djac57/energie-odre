@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="autresenergies.js?v=06ea982790"></script>
+<script src="autresenergies.js?v=3647529b2c"></script>
 <script src="geo.js"></script>
 <script src="geo_world.js"></script>
 <style>
@@ -835,30 +835,11 @@ const dtShort = d => d ? d.toLocaleString("fr-FR", { day: "numeric", month: "sho
 const CAPS = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
 const DEP_LBL = { port: "observé", prevdest: "d'après la destination précédente", guess: "estimation" };
 let aisSel = null, aisView = null, aisTerm = "all", aisType = "all", aisLayer = "both", aisPeriod = "month";
-// Principal terminal d'exportation par pays (lat, lon), saisi à la main : point de départ schématique des flux d'origine
-const EXPORT_OIL = { US: [27.8, -97.3, "Corpus Christi"], KZ: [44.72, 37.79, "Novorossiisk (oléoduc CPC)"], NG: [4.4, 7.15, "Bonny / Forcados"], NO: [60.81, 5.03, "Mongstad"],
-  LY: [30.63, 18.35, "Es Sider"], AE: [25.17, 56.37, "Fujairah"], AZ: [36.88, 35.93, "Ceyhan (oléoduc BTC)"], GQ: [3.78, 8.73, "Zafiro (Bioko)"], AO: [-7.5, 12.4, "Luanda / champs offshore"],
-  BR: [-23.98, -46.3, "Santos"], SA: [26.65, 50.17, "Ras Tanura"], IQ: [29.7, 48.8, "Bassorah"], DZ: [36.89, 6.92, "Skikda"], EG: [31.11, 29.63, "Sidi Kerir"], MX: [18.43, -93.2, "Dos Bocas"],
-  GY: [7.0, -57.0, "champs offshore (Guyana)"], UK: [60.45, -1.3, "Sullom Voe"], CA: [47.5, -52.8, "Terre-Neuve"], CM: [2.9, 9.87, "Kribi"], CG: [-4.92, 11.88, "Djeno"], GA: [-0.7, 8.8, "Port-Gentil"],
-  GH: [4.9, -1.8, "Takoradi"], CI: [5.27, -4.01, "Abidjan"], TN: [36.8, 10.9, "La Skhira"], RU: [60.35, 28.7, "Primorsk"], IR: [29.25, 50.3, "Kharg"], KW: [29.06, 48.16, "Mina al-Ahmadi"],
-  OM: [23.6, 58.5, "Mina al-Fahal"], VE: [10.1, -64.8, "José"], CO: [9.4, -75.7, "Coveñas"], TR: [36.88, 35.93, "Ceyhan"], SN: [14.7, -17.4, "Sangomar"], TT: [10.4, -61.48, "Point Lisas"] };
-const EXPORT_LNG = { DZ: [35.82, -0.28, "Arzew / Bethioua"], QA: [25.92, 51.6, "Ras Laffan"], NG: [4.42, 7.15, "Bonny"], US: [29.73, -93.87, "Sabine Pass"], RU: [71.27, 72.07, "Sabetta (Yamal)"],
-  TT: [10.18, -61.7, "Point Fortin"], EG: [31.47, 31.76, "Damiette"], AO: [-6.1, 12.33, "Soyo"], CM: [2.9, 9.87, "Kribi"], GQ: [3.78, 8.73, "Bioko"], OM: [22.7, 59.4, "Qalhat"], AE: [25.15, 52.87, "Das Island"] };
-const GAS_PIPE = new Set(["NO", "BE", "DE", "ES", "CH", "IT", "NL", "LU", "UK"]);  // voisins par gazoduc : hors couche maritime
-// Arrivée en France : côté Méditerranée pour les origines méditerranéennes, mer Noire et Proche-Orient (via Suez), sinon côté Atlantique
-const MED_ORIG = new Set(["DZ", "LY", "EG", "TN", "KZ", "AZ", "TR", "RU_BS", "SA", "IQ", "IR", "KW", "AE", "OM", "QA"]);
+// Flux d'origine calculés au build (routes en mer contrôlées) : on ne garde que la période choisie
 function originFlows(period) {
-  const I = A.imports || {}, out = [];
-  const add = (D, energy, table, skip, conv) => { if (!D) return; const m = D.months; let i = m.length - 1;
-    while (i > 0 && Object.values(D.partners).filter(p => p.v[i]).length < 3) i--;  // dernier mois avec une ventilation publiée
-    const idx = period === "month" ? [i] : d3.range(Math.max(0, i - 11), i + 1);
-    Object.entries(D.partners).forEach(([c, p]) => { if (skip.has(c) || !table[c]) return; const v = d3.sum(idx, k => p.v[k] || 0) * conv; if (v <= 0) return;
-      const [la, lo, term] = table[c], med = MED_ORIG.has(c) && !(energy === "oil" && c === "RU"), arr = energy === "oil" ? (med ? [43.4, 4.9] : [49.47, 0.15]) : (med ? [43.42, 4.87] : [47.3, -2.15]);
-      out.push({ c, nom: p.nom, energy, v, term, from: [la, lo], to: arr, toName: energy === "oil" ? (med ? "Fos-Lavéra" : "Le Havre") : (med ? "Fos" : "Montoir"), path: routeTo([la, lo], arr),
-        period: period === "month" ? mLong(m[i]) : `${mLong(m[idx[0]])} – ${mLong(m[i])}` }); }); };
-  add(I.oilFR, "oil", EXPORT_OIL, new Set(), 1 / 1000);   // kt -> Mt
-  add(I.gasFR, "lng", EXPORT_LNG, GAS_PIPE, 1);            // TWh
-  return out;
+  const O = A.origins; if (!O?.flows) return [];
+  return O.flows.map(f => { const meta = O[f.energy] || {}, v = period === "month" ? f.m : f.y;
+    return { ...f, v, period: period === "month" ? mLong(meta.month) : `${mLong(meta.first12)} – ${mLong(meta.month)}`, toName: f.to }; }).filter(f => f.v > 0);
 }
 function renderAIS() {
   const S = A.ais; const host = document.getElementById("aisMap"); host.replaceChildren();
@@ -867,15 +848,12 @@ function renderAIS() {
   const all = S.ships.map(s => { const term = (s.terminal || "").replace(" (à proximité)", "");
     const pos = [s.lat, s.lon], dest = s.port ? [s.port.lat, s.port.lon] : TERMS[term] || null;
     const arrived = s.atPort && (!s.port || s.atPort.name === s.port.name || nmd(pos, dest) < 6);
-    const r = dest && !arrived && (s.sog > 1 || s.sog == null || nmd(pos, dest) > 8) ? routeTo(pos, dest) : null;
+    const r = s.rPath || (dest && !arrived && !s.port && (s.sog > 1 || s.sog == null || nmd(pos, dest) > 8) ? routeTo(pos, dest) : null);
     const dist = r ? pathNm(r) : dest ? nmd(pos, dest) : null;
     const etaEst = r && s.sog > 3 ? new Date(now.getTime() + dist / s.sog * 3600e3) : null;
-    // trace observée découpée : segments reçus, et trous de couverture (> 60 milles et > 3 h) refaits par la route
-    const tr = [...(s.track || []).map(p => [p[1], p[2], p[0]])]; if (!tr.length || nmd(tr.at(-1), pos) > .5) tr.push([s.lat, s.lon, s.t]);
-    const seen = [[tr[0]]], gaps = [];
-    for (let i = 1; i < tr.length; i++) { const a = tr[i - 1], b = tr[i];
-      if (nmd(a, b) > 60 && b[2] - a[2] > 3 * 3600) { gaps.push(routeTo(a, b)); seen.push([b]); } else seen.at(-1).push(b); }
-    const lead = s.dep && !arrived ? (s.dep.kind === "port" && nmd([s.dep.lat, s.dep.lon], tr[0]) < 3 ? null : routeTo([s.dep.lat, s.dep.lon], tr[0])) : null;
+    // trace observée découpée au build : segments reçus, trous de couverture refaits par une route en mer
+    const segs = s.segs || [{ k: "seen", p: [pos] }], seen = segs.filter(g => g.k === "seen").map(g => g.p), gaps = segs.filter(g => g.k === "gap").map(g => g.p);
+    const lead = arrived ? null : s.lead;
     return { ...s, term, r, dist, etaEst, arrived, etaDecl: etaDeclared(s.eta, now), key: String(s.mmsi), seen, gaps, lead }; });
   const terms = [...new Set(all.map(s => s.term))].filter(t => TERMS[t]);
   setTabs("aisTerm", [["all", "Tous les ports"], ...terms.map(t => [t, t])], aisTerm, v => { aisTerm = v; aisView = null; renderAIS(); });
@@ -904,7 +882,11 @@ function renderAIS() {
   let M;
   const draw = t => {
     const P = ll => t.apply(proj([ll[1], ll[0]])), o = M.over; o.selectAll("*").remove();
-    const line = d3.line(), curve = d3.line().curve(d3.curveCatmullRom.alpha(.5)), sel = ships.find(s => s.key === aisSel);
+    // routes en mer : segments droits en lat/lon, densifiés pour suivre exactement le tracé contrôlé au build
+    const dens = pts => pts.flatMap((p, i) => { if (!i) return [p]; const q = pts[i - 1], n = Math.max(1, Math.ceil(Math.max(Math.abs(p[0] - q[0]), Math.abs(p[1] - q[1])) / .5));
+      return d3.range(1, n + 1).map(k => [q[0] + (p[0] - q[0]) * k / n, q[1] + (p[1] - q[1]) * k / n]); });
+    const line = d3.line(), lineD = d3.line(), sel = ships.find(s => s.key === aisSel);
+    const curveP = pts => lineD(dens(pts).map(P));
     const pd = pxDeg * t.k, minRank = pd >= 300 ? 3 : pd >= 90 ? 2 : pd >= 25 ? 1 : 0;
     (S.ports || []).filter(p => p.rank <= minRank).forEach(p => { const [x, y] = P([p.lat, p.lon]); if (x < -20 || y < -20 || x > W + 20 || y > H + 20) return;
       if (p.rank === 1) o.append("rect").attr("x", x - 4).attr("y", y - 4).attr("width", 8).attr("height", 8).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.5);
@@ -914,14 +896,16 @@ function renderAIS() {
     // couche « Origines » : flux par pays d'origine (Eurostat), le long des routes maritimes
     const vmaxE = { oil: d3.max(flows.filter(f => f.energy === "oil"), f => f.v) || 1, lng: d3.max(flows.filter(f => f.energy === "lng"), f => f.v) || 1 };
     const labels = [];
-    flows.forEach(f => { const c = f.energy === "lng" ? css("--o-lng") : css("--oil"), w = 1.5 + Math.sqrt(f.v / vmaxE[f.energy]) * (W < 560 ? 7 : 12), d = curve(f.path.map(P)), op = sel ? .25 : 1;
+    flows.forEach(f => { const c = f.energy === "lng" ? css("--o-lng") : css("--oil"), w = 1.5 + Math.sqrt(f.v / vmaxE[f.energy]) * (W < 560 ? 7 : 12), d = curveP(f.path), op = sel ? .25 : 1;
       const unit = f.energy === "oil" ? (aisPeriod === "month" ? "Mt/mois" : "Mt sur 12 mois") : (aisPeriod === "month" ? "TWh/mois" : "TWh sur 12 mois");
       const g = o.append("g").style("cursor", "pointer").attr("opacity", op).on("pointermove", e => showTip(e, [["big", `${fr(f.v, f.v < 1 ? 2 : 1)} ${unit}`],
-        ["énergie", f.energy === "oil" ? "pétrole brut" : "gaz naturel liquéfié (hors gazoducs)"], ["départ schématique", f.term], ["arrivée", f.toName],
+        ["énergie", f.energy === "oil" ? "pétrole brut" : "gaz naturel liquéfié (hors gazoducs)"], ["terminal d'export", f.term], ...(f.pipe ? [["acheminement terrestre", f.pipe.name]] : []), ["arrivée", `${f.toName} (port le plus proche par la mer)`], ["route", `${fr(f.nm, 0)} milles`],
         ["source", `Eurostat, ${f.energy === "oil" ? "nrg_ti_oilm" : "nrg_ti_gasm"}, mensuel, ${f.period}`]], `${f.nom} → France`)).on("pointerleave", hideTip);
       g.append("path").attr("d", d).attr("fill", "none").attr("stroke", "transparent").attr("stroke-width", Math.max(12, w));
       g.append("path").attr("d", d).attr("fill", "none").attr("stroke", c).attr("stroke-width", w).attr("stroke-opacity", .22).attr("stroke-linecap", "round");
       g.append("path").attr("d", d).attr("class", "flowline").attr("stroke", c).attr("stroke-width", Math.max(1.4, w * .35)).attr("stroke-dasharray", "1 9").attr("stroke-opacity", .9).style("animation-duration", "2.4s");
+      if (f.pipe) { const dp = line(f.pipe.path.map(P)); g.append("path").attr("d", dp).attr("fill", "none").attr("stroke", css("--text-2")).attr("stroke-width", 2).attr("stroke-dasharray", "8 3 2 3").attr("opacity", .85);
+        const m = P(f.pipe.path[Math.floor(f.pipe.path.length / 2)]); if (pd >= 8 || W > 900) o.append("text").attr("x", m[0] + 5).attr("y", m[1] - 5).attr("class", "mono maplab").text(f.pipe.name); }
       const [x, y] = P(f.from); g.append("circle").attr("cx", x).attr("cy", y).attr("r", 3.5).attr("fill", c).attr("stroke", css("--bg"));
       if (!sel) labels.push({ x: x + 6, y: y + 3, v: f.v / vmaxE[f.energy], t: `${f.nom} · ${fr(f.v, f.v < 1 ? 2 : 1)} ${f.energy === "oil" ? "Mt" : "TWh"}${f.energy === "lng" ? " GNL" : ""}` }); });
     // étiquettes sans chevauchement : les plus gros flux d'abord, décalage vertical si possible
@@ -933,12 +917,12 @@ function renderAIS() {
     if (aisLayer === "origins") return;
     ships.forEach(s => { const on = !sel || sel === s, op = on ? 1 : .2, c = colOf(s), w = sel === s ? 2.6 : 1.5, isSel = sel === s;
       // origine probable (destination précédente ou estimation) : pointillé fin ; départ observé non relié : route hors couverture
-      if (s.lead) o.append("path").attr("d", curve(s.lead.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 1.6 : 1)
+      if (s.lead) o.append("path").attr("d", curveP(s.lead)).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 1.6 : 1)
         .attr("stroke-dasharray", s.dep.kind === "port" ? "6 5" : "1 4").attr("stroke-linecap", "round").attr("opacity", .75 * op);
-      s.gaps.forEach(g => o.append("path").attr("d", curve(g.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 1.8 : 1.1).attr("stroke-dasharray", "6 5").attr("opacity", .7 * op));
+      s.gaps.forEach(g => o.append("path").attr("d", curveP(g)).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 1.8 : 1.1).attr("stroke-dasharray", "6 5").attr("opacity", .7 * op));
       s.seen.forEach(seg => { if (seg.length > 1) o.append("path").attr("d", line(seg.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", w).attr("stroke-linejoin", "round").attr("opacity", .9 * op);
         else { const [x, y] = P(seg[0]); o.append("circle").attr("cx", x).attr("cy", y).attr("r", isSel ? 3 : 2).attr("fill", c).attr("opacity", .9 * op); } });
-      if (s.r) o.append("path").attr("d", curve(s.r.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 2 : 1.1).attr("stroke-dasharray", "6 5").attr("opacity", .7 * op);
+      if (s.r) o.append("path").attr("d", curveP(s.r)).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 2 : 1.1).attr("stroke-dasharray", "6 5").attr("opacity", .7 * op);
       if (s.dep && !s.arrived && (isSel || (!sel && s.dep.kind !== "port" && pd < 25))) { const [x, y] = P([s.dep.lat, s.dep.lon]);
         o.append("circle").attr("cx", x).attr("cy", y).attr("r", isSel ? 5 : 3.5).attr("fill", s.dep.kind === "port" ? c : css("--bg")).attr("stroke", c).attr("stroke-width", 1.8).attr("opacity", op);
         if (isSel) o.append("text").attr("x", x + 8).attr("y", y - 6).attr("class", "mono maplab strong")
@@ -1006,7 +990,7 @@ function renderAIS() {
   document.getElementById("aisNote").textContent = `Couverture gratuite d'AISStream.io : des stations côtières, pas de satellites. En haute mer les navires ne sont pas reçus : leurs traces ont des trous, refaits en pointillés le long d'une route plausible. Repérage dans le monde entier (${Math.round((S.scanSeconds || 0) / 60)} min, ${(C.scan || 0).toLocaleString("fr-FR")} messages), suivi de ${S.watch || 0} navires (${Math.round((S.trackSeconds || 0) / 60)} min), écoute côtière française (${Math.round((S.seconds || 0) / 60)} min). L'AIS ne donne ni le port de départ ni la cargaison : capacités estimées d'après la longueur, chargement d'après le tirant d'eau.`;
   legend("aisLegend", [[css("--oil"), "pétrolier / produits"], [css("--o-lng"), "méthanier"], [css("--accent"), "terminal / port"]]);
   const lg2 = document.getElementById("aisLegend2"); lg2.replaceChildren();
-  [["", "trajet observé (positions reçues)"], ["6 5", "route estimée hors couverture AIS"], ["1 4", "depuis l'origine probable (destination précédente ou estimation)"]].forEach(([d, t]) => {
+  [["", "trajet observé (positions reçues)"], ["6 5", "route estimée hors couverture AIS"], ["1 4", "depuis l'origine probable (destination précédente ou estimation)"], ["8 3 2 3", "oléoduc terrestre (CPC, BTC)"]].forEach(([d, t]) => {
     const sp = el("span"); const sv = d3.select(sp).append("svg").attr("width", 26).attr("height", 8); sv.append("line").attr("x1", 1).attr("x2", 25).attr("y1", 4).attr("y2", 4).attr("stroke", css("--text-2")).attr("stroke-width", 2).attr("stroke-dasharray", d || null).attr("stroke-linecap", "round");
     sp.append(document.createTextNode(t)); lg2.append(sp); });
   { const sp = el("span"); sp.append(document.createTextNode("départ : ● observé · ○ destination précédente ou estimation")); lg2.append(sp); }
@@ -1016,7 +1000,7 @@ function renderAIS() {
     on.textContent = `Origines (${per}) : importations françaises par pays d'origine, Eurostat — pétrole brut (nrg_ti_oilm, Mt) et gaz arrivé par la mer (nrg_ti_gasm, TWh, hors pays voisins reliés par gazoduc). ` +
       `La ventilation du GNL de la France est en partie confidentielle : certains fournisseurs, dont les États-Unis certains mois, n'apparaissent pas` +
       `${alsiFR ? ` ; à titre de comparaison, les terminaux français ont regazéifié ${fr(alsiFR[1], 1)} TWh en ${mLong(alsiFR[0])} (GIE ALSI)` : ""}. ` +
-      `Produits pétroliers raffinés : non disponibles par origine dans ces séries. Départ au principal terminal d'exportation du pays, route schématique, arrivée côté Atlantique ou Méditerranée selon la route.`; }
+      `Produits pétroliers raffinés : non disponibles par origine dans ces séries. Départ au principal terminal maritime d'exportation du pays (oléoducs CPC et BTC en tirets mixtes), route calculée en mer et contrôlée sur le fond de carte, arrivée au port français le plus proche par la mer.`; }
   // cartes par terminal, navires cliquables
   const cards = document.getElementById("termCards"); cards.replaceChildren();
   Object.keys(TERMS).forEach(t => { const list = ships.filter(s => s.term === t); if (!list.length) return;

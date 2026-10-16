@@ -12,6 +12,7 @@ import sys
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from sea_routes import Router  # noqa: E402
 from ais_ports import PORT_LIST, decode_destination, guess_origin, is_french, nm, offshore_of, port_at, region  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -357,6 +358,82 @@ def ttf():
     return [[m, t[m]] for m in sorted(t)] if t else None
 
 
+# ---------------------------------------------------------------- Origines des importations (couche de la carte des navires)
+# Terminal maritime d'exportation retenu par pays (lat, lon sur la côte ou en mer devant le terminal), saisi à la main.
+# Un oléoduc terrestre (tracé schématique) relie au besoin la zone de production au terminal.
+EXPORT_OIL = {
+    "US": (27.75, -97.05, "Corpus Christi (golfe du Mexique)"), "KZ": (44.66, 37.85, "Novorossiïsk, terminal CPC"), "NG": (4.15, 7.05, "Bonny / Forcados (offshore)"),
+    "NO": (60.72, 4.75, "Mongstad / Sture"), "LY": (30.65, 18.40, "Es Sider"), "AE": (25.17, 56.42, "Fujaïrah"), "AZ": (36.85, 35.90, "Ceyhan, terminal BTC"),
+    "GQ": (3.55, 8.35, "Zafiro (offshore, Bioko)"), "AO": (-7.40, 12.30, "terminaux offshore d'Angola"), "BR": (-24.00, -45.30, "São Sebastião / bassin de Santos"),
+    "SA": (26.62, 50.25, "Ras Tanura"), "IQ": (29.68, 48.82, "terminal de Bassora (offshore)"), "DZ": (36.92, 6.95, "Skikda"), "EG": (31.15, 29.62, "Sidi Kerir"),
+    "MX": (18.60, -93.20, "Dos Bocas"), "GY": (7.30, -56.90, "champs offshore du Guyana"), "UK": (60.45, -1.00, "Sullom Voe (Shetland)"),
+    "CA": (47.20, -54.10, "Terre-Neuve (Whiffen Head)"), "CM": (2.90, 9.80, "Kribi"), "CG": (-4.92, 11.78, "Djeno"), "GA": (-0.75, 8.70, "Port-Gentil"),
+    "GH": (4.75, -1.85, "Takoradi (offshore)"), "CI": (5.20, -4.00, "Abidjan"), "TN": (34.50, 10.60, "La Skhira"), "RU": (60.30, 28.60, "Primorsk"),
+    "IR": (29.20, 50.30, "Kharg"), "KW": (29.05, 48.20, "Mina al-Ahmadi"), "OM": (23.65, 58.55, "Mina al-Fahal"), "VE": (10.20, -64.80, "José"),
+    "CO": (9.55, -75.85, "Coveñas"), "TR": (36.85, 35.90, "Ceyhan"), "SN": (13.90, -17.60, "Sangomar (offshore)"), "TT": (10.40, -61.50, "Point Lisas"),
+}
+EXPORT_LNG = {
+    "DZ": (35.85, -0.30, "Arzew / Bethioua"), "QA": (25.93, 51.62, "Ras Laffan"), "NG": (4.20, 7.10, "Bonny"), "US": (29.68, -93.85, "Sabine Pass"),
+    "RU": (71.30, 72.10, "Sabetta (Yamal LNG)"), "TT": (10.20, -61.75, "Point Fortin"), "EG": (31.50, 31.75, "Damiette"), "AO": (-6.05, 12.25, "Soyo"),
+    "CM": (2.90, 9.80, "Kribi"), "GQ": (3.80, 8.70, "Bioko"), "OM": (22.70, 59.45, "Qalhat"), "AE": (25.15, 52.85, "Das Island"), "PE": (-13.25, -76.35, "Pampa Melchorita"),
+}
+LAND_PIPES = {  # zone de production -> terminal (tracés schématiques)
+    ("oil", "KZ"): ("oléoduc CPC", [[46.15, 53.38], [47.10, 51.90], [46.40, 48.00], [45.40, 41.00], [44.72, 37.80]]),
+    ("oil", "AZ"): ("oléoduc BTC", [[40.18, 49.47], [41.00, 46.50], [41.70, 44.80], [40.90, 42.80], [39.90, 41.30], [38.40, 38.50], [36.88, 35.93]]),
+}
+GAS_PIPE_PARTNERS = {"NO", "BE", "DE", "ES", "CH", "IT", "NL", "LU", "UK"}  # voisins reliés par gazoduc : hors couche maritime
+ARRIVALS = {"oil": {"Le Havre": (49.45, 0.05), "Donges": (47.25, -2.25), "Fos-Lavéra": (43.33, 4.85)},
+            "lng": {"Montoir": (47.25, -2.25), "Fos": (43.33, 4.85), "Dunkerque": (51.05, 2.15)}}
+
+
+def _route_nm(path):
+    return sum(nm(a, b) for a, b in zip(path, path[1:]))
+
+
+def origins(router, imp):
+    """Flux d'importation par pays d'origine le long de routes calculées en mer ; contrôle terre/mer."""
+    if not imp:
+        return None
+    flows, problems = [], []
+    for energy, key, table, conv in (("oil", "oilFR", EXPORT_OIL, 1 / 1000), ("lng", "gasFR", EXPORT_LNG, 1)):
+        D = imp.get(key)
+        if not D:
+            continue
+        months = D["months"]
+        i = len(months) - 1
+        while i > 0 and sum(1 for p in D["partners"].values() if p["v"][i]) < 3:
+            i -= 1  # dernier mois avec une ventilation publiée
+        for c, p in D["partners"].items():
+            if c not in table or (energy == "lng" and c in GAS_PIPE_PARTNERS):
+                continue
+            vm = (p["v"][i] or 0) * conv
+            vy = sum(p["v"][k] or 0 for k in range(max(0, i - 11), i + 1)) * conv
+            if vy <= 0:
+                continue
+            la, lo, term = table[c]
+            # port d'arrivée : le plus proche par la mer
+            best = None
+            for name, dst in ARRIVALS[energy].items():
+                path = router.route([la, lo], list(dst))
+                if best is None or _route_nm(path) < best[0]:
+                    best = (_route_nm(path), name, path)
+            bad = router.sea.check(best[2]) if best[2] and len(best[2]) > 3 else []
+            if bad:
+                problems.append((p["nom"], energy, bad[:3]))
+            pipe = LAND_PIPES.get((energy, c))
+            flows.append({"c": c, "nom": p["nom"], "energy": energy, "m": round(vm, 3), "y": round(vy, 3), "term": term, "from": [la, lo],
+                          "to": best[1], "nm": round(best[0]), "path": best[2], "pipe": {"name": pipe[0], "path": pipe[1]} if pipe else None})
+        flows_meta = {"month": months[i], "first12": months[max(0, i - 11)]}
+        if energy == "oil":
+            oil_meta = flows_meta
+        else:
+            lng_meta = flows_meta
+    for nom, energy, bad in problems:
+        print(f"  ATTENTION route sur la terre : {nom} ({energy}) {bad}", file=sys.stderr)
+    print(f"  origines : {len(flows)} flux, {len(problems)} route(s) en défaut au contrôle terre/mer")
+    return {"flows": flows, "oil": locals().get("oil_meta"), "lng": locals().get("lng_meta")}
+
+
 # ---------------------------------------------------------------- Navires (AIS)
 MID = {"227": "France", "228": "France", "226": "France", "636": "Libéria", "637": "Libéria", "538": "Îles Marshall", "351": "Panama", "352": "Panama",
        "353": "Panama", "354": "Panama", "355": "Panama", "356": "Panama", "357": "Panama", "370": "Panama", "371": "Panama", "372": "Panama",
@@ -410,7 +487,7 @@ def capacity(s):
     return {"kind": "oil", "cls": cls, "dwt": dwt, "laden": None if not draught else draught >= .8 * laden}
 
 
-def ais():
+def ais(router):
     base = os.path.join(RAW, "..", "ais")
     if not os.path.exists(os.path.join(base, "snapshot.json")):
         return None
@@ -465,6 +542,24 @@ def ais():
                 g = guess_origin(x["cap"]["kind"], f[1], f[2], x.get("cog"), x.get("sog"), (port["lat"], port["lon"]) if port else None)
                 if g:
                     x["dep"] = {"kind": "guess", "name": g["name"], "lat": g["lat"], "lon": g["lon"]}
+        # routes en mer (contrôlées) : trous de couverture, départ -> 1re position, position -> port déclaré
+        pts = [[p[1], p[2], p[0]] for p in tr]
+        if not pts or nm(pts[-1][:2], (x["lat"], x["lon"])) > .5:
+            pts.append([x["lat"], x["lon"], x["t"]])
+        segs = [{"k": "seen", "p": [pts[0][:2]]}]
+        for a_, b_ in zip(pts, pts[1:]):
+            if nm(a_[:2], b_[:2]) > 60 and b_[2] - a_[2] > 3 * 3600:
+                segs.append({"k": "gap", "p": router.route(a_[:2], b_[:2])})
+                segs.append({"k": "seen", "p": [b_[:2]]})
+            else:
+                segs[-1]["p"].append(b_[:2])
+        x["segs"] = segs
+        arrived = bool(x["atPort"]) and (not port or x["atPort"]["name"] == port["name"] or nm((x["lat"], x["lon"]), (port["lat"], port["lon"])) < 6)
+        x["lead"] = None
+        if x["dep"] and not arrived and nm((x["dep"]["lat"], x["dep"]["lon"]), pts[0][:2]) > 3:
+            x["lead"] = router.route([x["dep"]["lat"], x["dep"]["lon"]], pts[0][:2])
+        x["rPath"] = router.route([x["lat"], x["lon"]], [port["lat"], port["lon"]]) if port and not arrived and nm((x["lat"], x["lon"]), (port["lat"], port["lon"])) > 3 else None
+        x.pop("track", None)
         ships.append(x)
     ports = [{"name": p["name"], "code": p["code"], "lat": p["lat"], "lon": p["lon"], "rank": p["rank"]} for p in PORT_LIST]
     return {"t": snap.get("t"), "seconds": snap.get("seconds"), "scanSeconds": snap.get("scanSeconds"), "trackSeconds": snap.get("trackSeconds"),
@@ -552,12 +647,15 @@ def imf_prices():
 
 
 def main():
+    router = Router(os.path.join(RAW, "sea_routes_cache.json"))
+    imp = imports()
     data = {"storage": storage(), "conso": consumption(), "ecogaz": ecogaz(), "fuel": load("fuel_snapshot"),
             "fuelDaily": load("fuel_daily"), "wob": oil_bulletin(), "brent": brent(),
-            "agsi": agsi(), "alsi": alsi(), "entsogFR": entsog_fr(), "network": gas_network(), "gasPrices": gas_prices(), "imports": imports(), "ttf": ttf(), "ais": ais(),
+            "agsi": agsi(), "alsi": alsi(), "entsogFR": entsog_fr(), "network": gas_network(), "gasPrices": gas_prices(), "imports": imp, "ttf": ttf(), "ais": ais(router), "origins": origins(router, imp),
             "coal": coal(), "uranium": uranium(), "imf": imf_prices()}
     data["updated"] = max(filter(None, [data["storage"]["days"][-1] if data["storage"]["days"] else None,
                                         data["conso"]["lastDp"], data["fuel"].get("maj", "")[:10]]))
+    router.save()
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("window.AE=")
