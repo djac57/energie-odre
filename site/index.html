@@ -145,6 +145,21 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .st-running { color: var(--ok); } .st-stopped { color: var(--muted); } .st-unavailable { color: var(--imp); }
 .stat { font: 12px "IBM Plex Mono", monospace; color: var(--text-2); margin-top: 10px; display: grid; gap: 4px; }
 .stat b { color: var(--text); font-size: 15px; }
+.ecobar { max-width: 1400px; margin: 0 auto; padding: 4px 28px 18px; display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 8px 18px; align-items: start; }
+.ecobar .ttl { font: 600 12px "IBM Plex Mono", monospace; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; }
+.ecobar .days { display: grid; gap: 3px; min-width: 0; }
+.ecobar .day { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; gap: 10px; align-items: center; font: 11.5px "IBM Plex Mono", monospace; color: var(--text-2); }
+.ecobar .cells { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 1px; height: 14px; }
+.ecobar .cells span { border-radius: 1px; }
+.ecobar .pill { padding: 1px 8px; font-weight: 600; color: #04120a; white-space: nowrap; }
+.ecobar .hist { grid-column: 2; font: 11px "IBM Plex Mono", monospace; color: var(--muted); }
+.band-in > div { min-width: 0; }
+.tcal { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 2px; overflow-x: auto; padding-bottom: 4px; }
+.tcal span { width: 11px; height: 11px; border-radius: 2px; }
+.tcount { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 12px; }
+.tcount div { background: var(--panel); padding: 10px 12px; font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
+.tcount b { display: block; font-size: 22px; color: var(--text); }
+@media (max-width: 560px) { .ecobar { grid-template-columns: 1fr; padding: 4px 16px 16px; } .ecobar .hist { grid-column: 1; } .ecobar .day { grid-template-columns: 70px minmax(0, 1fr); } .ecobar .day .msg { display: none; } }
 .flist { display: none; gap: 2px; margin-top: 8px; font-size: 12.5px; }
 .flist div { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--line); }
 .flist .exp { color: var(--exp); } .flist .imp { color: var(--imp); }
@@ -158,7 +173,7 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .note { font: 12px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 8px; }
 footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; line-height: 1.7; }
 @media (max-width: 1000px) {
-  .band-in { grid-template-columns: 1fr; gap: 16px; } .maps { grid-template-columns: 1fr; } .hero { grid-template-columns: 1fr; gap: 24px; }
+  .band-in { grid-template-columns: minmax(0, 1fr); gap: 16px; } .band-in > * { min-width: 0; } .maps { grid-template-columns: 1fr; } .hero { grid-template-columns: 1fr; gap: 24px; }
   .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } .kpi:nth-child(2) { border-right: none; } .smalls { grid-template-columns: repeat(4, minmax(0,1fr)); }
   .records { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
@@ -189,6 +204,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 </header>
 
 <section class="kpis" id="kpis"></section>
+<section class="ecobar" id="ecowatt"></section>
 
 <section class="band"><div class="band-in">
   <div class="side"><div class="no">01 — MIX</div><h2>Le mix, jour après jour</h2>
@@ -200,6 +216,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 <section class="band"><div class="band-in">
   <div class="side"><div class="no">02 — FRONTIÈRES</div><h2>Ce qui entre, ce qui sort</h2>
     <p>Chaque couloir montre les deux sens&nbsp;: <b style="color:var(--exp)">exportations</b> vers le voisin, <b style="color:var(--imp)">importations</b> vers la France. Épaisseur et débit des particules suivent les volumes. RTE publie Allemagne et Belgique ensemble.</p>
+    <div class="tabs" id="flowSource"><button class="tab" data-v="commercial" aria-pressed="true">Échanges commerciaux</button><button class="tab" data-v="physical" aria-pressed="false">Flux physiques</button></div>
     <div class="tabs" id="flowMode"><button class="tab" data-v="period" aria-pressed="true">Toute la période</button><button class="tab" data-v="month" aria-pressed="false">Mois par mois</button></div></div>
   <div class="panel">
     <div id="flowMap"></div><div id="flowList" class="flist"></div>
@@ -251,7 +268,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 <div id="rteBlock">
 <section class="band"><div class="band-in">
   <div class="side"><div class="no">08 — CENTRALES</div><h2>Les grands groupes, en ce moment</h2>
-    <p>Tous les sites d'au moins 100&nbsp;MW. Forme et couleur&nbsp;: filière&nbsp;; taille&nbsp;: puissance installée&nbsp;; contour&nbsp;: <b style="color:var(--ok)">en production</b>, <b style="color:var(--muted)">à l'arrêt</b>, <b style="color:var(--imp)">indisponible</b>. Cliquez un site pour sa fiche.</p>
+    <p>Tous les sites d'au moins 100&nbsp;MW. Pictogramme et couleur&nbsp;: filière&nbsp;; taille&nbsp;: puissance installée du site&nbsp;; anneau&nbsp;: un segment par tranche, <b style="color:var(--ok)">en production</b>, <b style="color:var(--muted)">à l'arrêt</b> ou <b style="color:var(--imp)">indisponible</b>. Cliquez un site pour sa fiche.</p>
     <div class="tabs" id="plantFilter"></div><p class="note" id="plantStamp"></p></div>
   <div class="maps"><div class="panel"><div id="plantMap"></div><div class="pictos" id="plantLegend"></div></div>
     <div class="panel" id="plantCard"></div></div>
@@ -284,8 +301,23 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 </div></section>
 </div>
 
+<section class="band" id="tempoBlock"><div class="band-in">
+  <div class="side"><div class="no">12 — TEMPO</div><h2>Jours bleus, blancs, rouges</h2>
+    <p>Le calendrier des offres de type Tempo, fixé chaque jour par RTE pour le lendemain (publié vers 10&nbsp;h&nbsp;40)&nbsp;: les jours rouges et blancs tombent quand le système est le plus tendu. Saison du 1<sup>er</sup> septembre au 31 août.</p>
+    <div class="tabs" id="tempoSeason"></div></div>
+  <div><div class="panel"><div class="maptitle" id="tempoTitle"></div><div class="tcal" id="tempoCal"></div><div class="tcount" id="tempoCount"></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Consommation et prix moyens selon la couleur du jour</div><div id="tempoCmp"></div><div class="note" id="tempoNote"></div></div></div>
+</div></section>
+
+<section class="band" id="flexBlock"><div class="band-in">
+  <div class="side"><div class="no">13 — FLEXIBILITÉS</div><h2>Réserves et effacement</h2>
+    <p>Pour tenir la fréquence à 50&nbsp;Hz, RTE contractualise chaque jour des réserves&nbsp;: primaire (FCR), secondaire automatique (aFRR), tertiaire (mFRR, RR). L'effacement, lui, rémunère des consommateurs qui réduisent leur demande.</p></div>
+  <div><div class="panel" id="resPanel"><div class="maptitle">Besoin de réserves contractualisées par RTE (MW, moyenne journalière)</div><div id="resChart"></div><div class="legend" id="resLegend"></div><div class="note" id="resNote"></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Opérateurs d'effacement (mécanisme NEBEF)</div><div id="drBox"></div></div></div>
+</div></section>
+
 <section class="band" id="priceBlock"><div class="band-in">
-  <div class="side"><div class="no">12 — PRIX</div><h2>Le prix de l'électricité, heure par heure</h2>
+  <div class="side"><div class="no">14 — PRIX</div><h2>Le prix de l'électricité, heure par heure</h2>
     <p>Prix spot de la veille pour le lendemain (day-ahead), zone France. Bande&nbsp;: minimum et maximum de chaque jour&nbsp;; trait&nbsp;: moyenne mensuelle. La crise de 2022 écrase tout le reste&nbsp;: changez l'échelle pour lire les années calmes.</p>
     <div class="tabs" id="prScale"><button class="tab" data-v="lin" aria-pressed="true">Linéaire</button><button class="tab" data-v="cap" aria-pressed="false">Plafond 300 €</button></div>
     <p class="note" id="prSource"></p></div>
@@ -311,6 +343,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <b>En direct</b> — production régionale et nationale : API ODRÉ (<span class="mono">eco2mix-regional-tr</span>, <span class="mono">eco2mix-national-tr</span>), interrogée par votre navigateur et rafraîchie toutes les 15 min&nbsp;; météo actuelle&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (données CC BY 4.0), au centroïde de chaque région.<br>
   <b>Pilotage RTE</b> — API du portail <a href="https://data.rte-france.com" target="_blank" rel="noopener">data.rte-france.com</a> (données publiques, réutilisation autorisée avec mention de la source, CGU art.&nbsp;9) : Actual Generation (production par filière et par groupe), Generation Installed Capacities, Unavailability Additional Information, Generation Forecast, Consumption, Balancing Energy&nbsp;; mises à jour chaque heure par le dépôt. Les prix de marché de gros (EPEX SPOT / Nord Pool) ne sont pas affichés.
   Coordonnées des centrales&nbsp;: <a href="https://data.jrc.ec.europa.eu/dataset/9810feeb-f062-49cd-8e76-8d8cfd488a05" target="_blank" rel="noopener">JRC Open Power Plants Database</a> (Commission européenne, CC BY 4.0), rapprochée par code EIC, complétée par Wikidata (CC0) et, à défaut, le centre de la commune (geo.api.gouv.fr, Licence Ouverte).<br>
+  <b>Pilotage RTE (suite)</b> — Ecowatt v5 (signal du jour et des 3 jours suivants), Physical Flow v1 (flux physiques aux frontières), Tempo Like Supply Contract v1, Demand Response v1, Balancing Capacity v5 (besoin de réserves) — données publiques RTE, réutilisation avec mention de la source.<br>
   <b>Prix spot</b> — day-ahead zone France&nbsp;: Bundesnetzagentur | SMARD.de, licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, via l'API <a href="https://api.energy-charts.info" target="_blank" rel="noopener">Energy-Charts</a> (Fraunhofer ISE), mis à jour chaque heure par le dépôt.<br>
   <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Grégoire David), issu d'Admin Express IGN, Licence Ouverte&nbsp;; pays&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> (Natural Earth, domaine public). Simplifiés et embarqués.
 </footer>
@@ -463,12 +496,32 @@ const CORRIDORS = [
   { k: "ech_comm_italie", name: "Italie", ids: ["380"], a: [6.8, 44.6], b: [9.4, 45.2] },
   { k: "ech_comm_espagne", name: "Espagne", ids: ["724"], a: [0.3, 43.0], b: [-1.4, 41.4] },
 ];
+// Flux physiques (API RTE Physical Flow) : l'Allemagne et la Belgique y sont séparées
+const PHYS_CORRIDORS = [
+  { p: "Royaume-Uni", name: "Royaume-Uni", ids: ["826"], a: [1.7, 50.5], b: [-1.2, 51.9], comm: "ech_comm_angleterre" },
+  { p: "Belgique", name: "Belgique", ids: ["056"], a: [3.6, 50.25], b: [4.6, 50.85], comm: "ech_comm_allemagne_belgique" },
+  { p: "Allemagne", name: "Allemagne", ids: ["276"], a: [7.3, 48.85], b: [8.9, 49.5], comm: "ech_comm_allemagne_belgique" },
+  { p: "Suisse", name: "Suisse", ids: ["756"], a: [6.3, 46.6], b: [8.1, 46.9], comm: "ech_comm_suisse" },
+  { p: "Italie", name: "Italie", ids: ["380"], a: [6.8, 44.6], b: [9.4, 45.2], comm: "ech_comm_italie" },
+  { p: "Espagne", name: "Espagne", ids: ["724"], a: [0.3, 43.0], b: [-1.4, 41.4], comm: "ech_comm_espagne" },
+];
+const physicalOn = () => state.flowSource === "physical" && window.RTE && RTE.physical;
+const flowCorridors = () => physicalOn() ? PHYS_CORRIDORS : CORRIDORS;
 const flow = { timer: null, play: null, particles: [] };
+function commercial(k, months) { let ex = 0, im = 0; months.forEach(([m, i]) => { const v = D.borders[k][i]; if (v) { ex += v[0]; im += v[1]; } }); return { ex, im }; }
 function flowValues() {
   const list = monthsInRange(D.borderMonths);
   const months = state.flowMode === "month" && state.flowMonth != null ? list.filter(([m]) => m === state.flowMonth) : list;
-  return CORRIDORS.map(c => { let ex = 0, im = 0; months.forEach(([m, i]) => { const v = D.borders[c.k][i]; if (v) { ex += v[0]; im += v[1]; } });
-    return { ...c, ex, im, net: ex - im, hours: d3.sum(months, ([m]) => monthHours(m)) }; });
+  const hours = d3.sum(months, ([m]) => monthHours(m));
+  if (physicalOn()) {
+    const vals = PHYS_CORRIDORS.map(c => { let ex = 0, im = 0; months.forEach(([m]) => { const v = RTE.physical[c.p]?.[m]; if (v) { ex += v[0] / 1e6; im += v[1] / 1e6; } });
+      return { ...c, ex, im, net: ex - im, hours }; });
+    // écart physique − commercial (boucles et transits) ; Allemagne et Belgique sont comparées ensemble
+    vals.forEach(v => { const same = vals.filter(w => w.comm === v.comm), cm = commercial(v.comm, months);
+      v.commNet = cm.ex - cm.im; v.physGroupNet = d3.sum(same, w => w.net); v.gap = v.physGroupNet - v.commNet; v.grouped = same.length > 1; });
+    return vals;
+  }
+  return CORRIDORS.map(c => { const { ex, im } = commercial(c.k, months); return { ...c, ex, im, net: ex - im, hours }; });
 }
 function renderFlows() {
   const host = document.getElementById("flowMap"); host.replaceChildren();
@@ -479,15 +532,15 @@ function renderFlows() {
   const path = d3.geoPath(proj);
   const svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
   const vals = flowValues(), maxV = d3.max(vals, v => Math.max(v.ex, v.im)) || 1;
-  const neighbor = new Map(CORRIDORS.flatMap(c => c.ids.map(id => [id, c])));
+  const neighbor = new Map(flowCorridors().flatMap(c => c.ids.map(id => [id, c])));
   svg.append("rect").attr("width", W).attr("height", H).attr("fill", "var(--sea)");
   svg.append("g").selectAll("path").data(GEO.countries.features).join("path").attr("d", path)
     .attr("fill", d => d.properties.id === "250" ? "var(--france)" : neighbor.has(d.properties.id) ? "var(--land-hi)" : "var(--land)")
     .attr("stroke", d => d.properties.id === "250" ? "var(--accent)" : "var(--line)").attr("stroke-width", d => d.properties.id === "250" ? 1.2 : .8)
-    .on("pointermove", (e, d) => { const c = neighbor.get(d.properties.id); if (!c) return hideTip(); const v = vals.find(x => x.k === c.k); flowTip(e, v); })
+    .on("pointermove", (e, d) => { const c = neighbor.get(d.properties.id); if (!c) return hideTip(); const v = vals.find(x => x.name === c.name); flowTip(e, v); })
     .on("pointerleave", hideTip);
   // Allemagne + Belgique : contour commun en pointillé
-  svg.append("g").selectAll("path").data(GEO.countries.features.filter(f => ["276", "056"].includes(f.properties.id))).join("path").attr("d", path)
+  if (!physicalOn()) svg.append("g").selectAll("path").data(GEO.countries.features.filter(f => ["276", "056"].includes(f.properties.id))).join("path").attr("d", path)
     .attr("fill", "none").attr("stroke", "var(--accent-2)").attr("stroke-dasharray", "3 3").attr("stroke-width", 1).style("pointer-events", "none");
   svg.append("g").selectAll("path").data(GEO.regions.features).join("path").attr("d", path).attr("fill", "none").attr("stroke", "var(--line)").attr("stroke-width", .5).style("pointer-events", "none");
   const wScale = d3.scaleSqrt().domain([0, maxV]).range([0, Math.max(10, W / 45)]);
@@ -531,7 +584,9 @@ function renderFlows() {
 function flowTip(e, v) { showTip(e, t => { t.append(el("div", "t", v.name + " · " + (state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth) : periodLabel())));
   row(t, css("--exp"), "Exportations", fmtTWh(v.ex)); row(t, css("--imp"), "Importations", fmtTWh(v.im)); t.append(el("hr"));
   t.append(el("div", "big", (v.net >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.net)))); t.append(el("div", null, v.net >= 0 ? "solde exportateur" : "solde importateur"));
-  if (v.hours) row(t, null, "Puissance moyenne", fmtGW((v.ex - v.im) * 1e6 / v.hours)); }); }
+  if (v.hours) row(t, null, "Puissance moyenne", fmtGW((v.ex - v.im) * 1e6 / v.hours));
+  if (v.gap != null) { t.append(el("hr")); row(t, null, v.grouped ? "Solde physique All. + Belg." : "Solde physique", (v.physGroupNet >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.physGroupNet)));
+    row(t, null, "Solde commercial", (v.commNet >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.commNet))); row(t, null, "Écart (boucles, transits)", (v.gap >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.gap))); } }); }
 function syncFlowPlayer() {
   const list = monthsInRange(D.borderMonths).map(([m]) => m), sl = document.getElementById("flowSlider");
   document.getElementById("flowPlayer").style.display = state.flowMode === "month" ? "flex" : "none";
@@ -948,53 +1003,94 @@ function renderRecords() {
 
 /* ---------- 08-11 Pilotage RTE ---------- */
 const RT = window.RTE;
-const RTYPE = { NUCLEAR: ["nucleaire", d3.symbolCircle, "Nucléaire"], HYDRO_PUMPED_STORAGE: ["hydraulique", d3.symbolTriangle, "Hydraulique (STEP)"],
-  HYDRO_WATER_RESERVOIR: ["hydraulique", d3.symbolTriangle, "Hydraulique (lacs)"], HYDRO_RUN_OF_RIVER_AND_POUNDAGE: ["hydraulique", d3.symbolTriangle, "Hydraulique (fil de l'eau)"],
-  FOSSIL_GAS: ["gaz", d3.symbolSquare, "Gaz"], FOSSIL_HARD_COAL: ["charbon", d3.symbolDiamond, "Charbon"], FOSSIL_OIL: ["fioul", d3.symbolDiamond, "Fioul"],
-  WIND_OFFSHORE: ["eolien", d3.symbolWye, "Éolien en mer"], WIND_ONSHORE: ["eolien", d3.symbolWye, "Éolien"], SOLAR: ["solaire", d3.symbolStar, "Solaire"],
-  BIOMASS: ["bioenergies", d3.symbolCross, "Biomasse"], WASTE: ["bioenergies", d3.symbolCross, "Déchets"], OTHER: ["charbon", d3.symbolCircle, "Autre (stockage…)"], MARINE: ["hydraulique", d3.symbolCircle, "Marémotrice"] };
-const rtype = t => RTYPE[t] || ["charbon", d3.symbolCircle, t];
+// Filières RTE → couleur de filière, pictogramme, libellé
+const RTYPE = { NUCLEAR: ["nucleaire", "tower", "Nucléaire"], HYDRO_PUMPED_STORAGE: ["hydraulique", "cycle", "Hydraulique (STEP)"],
+  HYDRO_WATER_RESERVOIR: ["hydraulique", "dam", "Hydraulique (lacs)"], HYDRO_RUN_OF_RIVER_AND_POUNDAGE: ["hydraulique", "waves", "Hydraulique (fil de l'eau)"],
+  FOSSIL_GAS: ["gaz", "flame", "Gaz"], FOSSIL_HARD_COAL: ["charbon", "chimney", "Charbon"], FOSSIL_OIL: ["fioul", "barrel", "Fioul"],
+  WIND_OFFSHORE: ["eolien", "offshore", "Éolien en mer"], WIND_ONSHORE: ["eolien", "turbine", "Éolien"], SOLAR: ["solaire", "panel", "Solaire"],
+  BIOMASS: ["bioenergies", "leaf", "Biomasse"], WASTE: ["bioenergies", "leaf", "Déchets"], OTHER: ["charbon", "battery", "Stockage / autre"], MARINE: ["hydraulique", "waves", "Marémotrice"] };
+const rtype = t => RTYPE[t] || ["charbon", "battery", t];
+// Encre du pictogramme selon la couleur du disque (contraste)
+const PICTO_INK = { nucleaire: "#1d1500", solaire: "#2a1200", eolien: "#032a23", bioenergies: "#04220f", gaz: "#fff", charbon: "#fff", fioul: "#fff", hydraulique: "#fff" };
+// Pictogrammes originaux, dessinés dans une boîte de -10 à 10
+function drawPicto(g, kind, r, ink, bg) {
+  const k = r / 11, G = g.append("g").attr("transform", `scale(${k})`);
+  const P = (d, fill = ink) => G.append("path").attr("d", d).attr("fill", fill);
+  const L = (d, w = 1.8, c = ink) => G.append("path").attr("d", d).attr("fill", "none").attr("stroke", c).attr("stroke-width", w).attr("stroke-linecap", "round").attr("stroke-linejoin", "round");
+  const C = (x, y, rr, f = ink) => G.append("circle").attr("cx", x).attr("cy", y).attr("r", rr).attr("fill", f);
+  if (kind === "tower") { P("M-5.5,8 C-3.2,3 -3.2,-1 -4.6,-4.5 L4.6,-4.5 C3.2,-1 3.2,3 5.5,8 Z"); C(-1.2, -7, 2.3); C(2.4, -7.8, 1.9); C(5, -7, 1.3); }
+  else if (kind === "dam") { P("M-8.5,7.5 L-4.5,-7 L-1.5,-7 L-1.5,7.5 Z"); P("M-0.5,-3.5 Q2,-5.2 4.3,-3.5 T8.5,-3.5 L8.5,7.5 L-0.5,7.5 Z"); L("M0.5,1 Q2.5,-0.4 4.5,1 T8.3,1", 1.2, bg); }
+  else if (kind === "waves") { L("M-8,-3 Q-6,-6 -4,-3 T0,-3 T4,-3 T8,-3", 2); L("M-8,3 Q-6,0 -4,3 T0,3 T4,3 T8,3", 2); }
+  else if (kind === "cycle") { L("M-6.5,-0.5 A6.5,6.5 0 0 1 5.5,-3.5", 2); P("M7.6,-1.2 L6.4,-6.6 L2.4,-2.8 Z"); L("M6.5,0.5 A6.5,6.5 0 0 1 -5.5,3.5", 2); P("M-7.6,1.2 L-6.4,6.6 L-2.4,2.8 Z"); }
+  else if (kind === "flame") { P("M0,-9 C4,-4 6.5,-1 5.5,3 C4.8,6.5 2,8 0,8 C-2,8 -4.8,6.5 -5.5,3 C-6.3,-0.5 -3.5,-2.5 -2.5,-6 C-1.5,-3.5 -0.5,-3 0,-9Z"); P("M0,0.5 C2,2.5 2.5,4.2 1.6,5.7 C1,6.6 -1,6.6 -1.6,5.7 C-2.5,4.2 -1.2,2.5 0,0.5Z", bg); }
+  else if (kind === "chimney") { P("M-8.5,8 L-8.5,1 L-4.5,-1.2 L-4.5,1 L-0.5,-1.2 L-0.5,1 L2.5,-0.6 L2.5,-6 L5.8,-6 L5.8,8 Z"); C(4.5, -8.3, 1.7); C(7.2, -9.2, 1.3); }
+  else if (kind === "barrel") { G.append("rect").attr("x", -5.5).attr("y", -7.5).attr("width", 11).attr("height", 15).attr("rx", 2.2).attr("fill", ink); L("M-5.5,-3 H5.5 M-5.5,3 H5.5", 1.4, bg); }
+  else if (kind === "turbine" || kind === "offshore") { const dy = kind === "offshore" ? -2.2 : 0;
+    P(`M-0.6,${dy} L-1.4,${8 + dy * .3} L1.4,${8 + dy * .3} L0.6,${dy} Z`);
+    [0, 120, 240].forEach(a => P("M0,0 L-1,-8.2 L0,-9 L1,-8.2 Z").attr("transform", `translate(0,${dy - 1}) rotate(${a + 10})`)); C(0, dy - 1, 1.5);
+    if (dy) L("M-8.5,8 Q-6.4,6 -4.2,8 T0,8 T4.2,8 T8.5,8", 1.6); }
+  else if (kind === "panel") { P("M-8.5,3.5 L-4.5,-5 L8.5,-5 L4.5,3.5 Z"); L("M-6.5,-0.7 L6.5,-0.7 M-0.8,-5 L-3.2,3.5 M3.6,-5 L1.2,3.5", 1, bg); L("M-1,3.5 L-1,8 M-3.5,8 H1.5", 1.6); }
+  else if (kind === "leaf") { P("M-6.5,6.5 C-7,-3 0.5,-8.5 8.5,-8.5 C8.5,-0.5 3,6.5 -6.5,6.5Z"); L("M-6.5,6.5 L4.5,-4.5", 1.3, bg); }
+  else { G.append("rect").attr("x", -7.5).attr("y", -4.5).attr("width", 13.5).attr("height", 9).attr("rx", 1.6).attr("fill", ink); G.append("rect").attr("x", 6.3).attr("y", -1.8).attr("width", 2.2).attr("height", 3.6).attr("fill", ink); P("M0.5,-3.5 L-2.5,0.5 L0,0.5 L-1,3.5 L2.5,-0.8 L0,-0.8 Z", bg); }
+}
 const REASON = { FORESEEN_MAINTENANCE: "maintenance prévue", COMPLEMENTARY_INFORMATION: "information complémentaire", FAILURE: "panne", SHUTDOWN: "arrêt" };
-const FAMILY = [["all", "Tout"], ["nucleaire", "Nucléaire"], ["hydraulique", "Hydraulique"], ["gaz", "Gaz"], ["eolien", "Éolien en mer"], ["autres", "Autres"]];
+const FAMILY = [["all", "Tout"], ["nuc", "Nucléaire"], ["hydro", "Hydraulique"], ["gas", "Gaz"], ["wind", "Éolien en mer"], ["autres", "Autres"]];
 const rstate = { family: "all", site: null, unavWin: 90, fc: "conso", fcWin: 14, beWin: 14 };
 const fmtMW = v => v == null ? "—" : fr(v) + " MW";
 const tUTC = s => new Date(s.length === 13 ? s + ":00:00Z" : (s.length === 16 ? s + ":00Z" : s));
-function siteState(site) {
-  const gs = site.groups.map(g => RT.groups[g]).filter(Boolean);
-  if (!gs.length) return "nd";
-  const st = gs.map(g => g.state);
-  if (st.includes("running")) return st.includes("unavailable") ? "partial" : "running";
-  return st.every(s => s === "unavailable") ? "unavailable" : st.includes("unavailable") ? "partial" : "stopped";
-}
-const STATE_LABEL = { running: "en production", stopped: "à l'arrêt", unavailable: "indisponible", partial: "en production (partiel)", nd: "pas de production publiée par groupe" };
-const stateColor = st => st === "running" || st === "partial" ? "var(--ok)" : st === "unavailable" ? "var(--imp)" : "var(--muted)";
-const siteNow = site => d3.sum(site.groups, g => RT.groups[g]?.lastMW || 0);
+const STATE_LABEL = { running: "en production", stopped: "à l'arrêt", unavailable: "indisponible", partial: "en partie", nd: "production par groupe non publiée" };
+const stateColor = st => st === "running" ? "var(--ok)" : st === "unavailable" ? "var(--imp)" : st === "partial" ? "var(--accent-2)" : "var(--muted)";
+const unitGroups = u => u.groups.map(g => RT.groups[g]).filter(Boolean);
+const unitState = u => { const gs = unitGroups(u); if (!gs.length) return "nd"; const st = gs.map(g => g.state);
+  return st.every(x => x === "running") ? "running" : st.every(x => x === "unavailable") ? "unavailable" : st.includes("running") ? "partial" : st.includes("unavailable") ? "unavailable" : "stopped"; };
+// Production négative = consommation des auxiliaires d'une tranche à l'arrêt : affichée à zéro
+const unitNow = u => d3.sum(unitGroups(u), g => Math.max(0, g.lastMW || 0));
+const siteGroups = s => s.units.flatMap(u => u.groups);
+const siteNow = s => d3.sum(s.units, unitNow);
+function siteState(s) { const st = s.units.map(unitState).filter(x => x !== "nd"); if (!st.length) return "nd";
+  return st.every(x => x === "running") ? "running" : st.every(x => x === "unavailable") ? "unavailable" : st.every(x => x === "stopped") ? "stopped" : "partial"; }
+// Segments de l'anneau : un par tranche, ou par groupe quand une tranche en compte plusieurs (barrages)
+function segments(s) { const out = [];
+  s.units.forEach(u => { const gs = unitGroups(u);
+    if (gs.length > 1) gs.forEach(g => out.push({ w: u.mw / gs.length, st: g.state, label: g.name }));
+    else out.push({ w: u.mw, st: unitState(u), label: u.name }); });
+  return out; }
 function renderPlants() {
   const host = document.getElementById("plantMap"); host.replaceChildren();
-  const W = host.clientWidth, H = Math.round(W * .95);
+  const W = host.clientWidth, H = Math.round(W * .95), small = W < 560;
   const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[8, 8], [W - 8, H - 8]], { type: "FeatureCollection", features: GEO.regions.features });
   const path = d3.geoPath(proj), svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
   svg.append("g").selectAll("path").data(GEO.countries.features).join("path").attr("d", path).attr("fill", d => d.properties.id === "250" ? "var(--land-hi)" : "var(--land)").attr("stroke", "var(--line)").attr("stroke-width", .6);
   svg.append("g").selectAll("path").data(GEO.regions.features).join("path").attr("d", path).attr("fill", "none").attr("stroke", "var(--line)").attr("stroke-width", .6);
-  const fam = s => { const k = rtype(s.type)[0]; return ["nucleaire", "hydraulique", "gaz", "eolien"].includes(k) ? k : "autres"; };
-  const sites = RT.sites.filter(s => s.lat != null && (rstate.family === "all" || fam(s) === rstate.family)).sort((a, b) => b.mw - a.mw);
-  const area = d3.scaleSqrt().domain([0, d3.max(RT.sites, s => s.mw)]).range([0, W / 22]);
-  const g = svg.append("g");
-  sites.forEach(s => { const [x, y] = proj([s.lon, s.lat]), st = siteState(s), [k, sym] = rtype(s.type), r = Math.max(3, area(s.mw));
-    const node = g.append("path").attr("transform", `translate(${x},${y})`).attr("d", d3.symbol(sym, Math.PI * r * r)())
-      .attr("fill", css("--f-" + k)).attr("fill-opacity", st === "stopped" || st === "nd" ? .35 : .85)
-      .attr("stroke", stateColor(st)).attr("stroke-width", s.id === rstate.site ? 3 : 1.6).attr("stroke-dasharray", st === "unavailable" ? "3 2" : null)
-      .style("cursor", "pointer").on("click", () => { rstate.site = s.id; renderPlants(); renderPlantCard(); })
+  const famOf = s => ["nuc", "hydro", "gas", "wind"].includes(s.fam) ? s.fam : "autres";
+  const sites = RT.sites.filter(s => s.lat != null && (rstate.family === "all" || famOf(s) === rstate.family)).sort((a, b) => b.mw - a.mw);
+  const rad = d3.scaleSqrt().domain([0, d3.max(RT.sites, s => s.mw)]).range([0, W / (small ? 26 : 34)]);
+  const arc = d3.arc(), pie = d3.pie().value(d => d.w).sort(null).padAngle(.06);
+  const layer = svg.append("g");
+  sites.forEach(s => { const [x, y] = proj([s.lon, s.lat]), st = siteState(s), [k, picto] = rtype(s.type), r = Math.max(small ? 7 : 5.5, rad(s.mw));
+    const g = layer.append("g").attr("transform", `translate(${x},${y})`).style("cursor", "pointer");
+    g.append("circle").attr("r", r + 6).attr("fill", "transparent"); // zone de clic élargie
+    pie(segments(s)).forEach(a => g.append("path").attr("d", arc({ ...a, innerRadius: r + 1.2, outerRadius: r + (small ? 3.6 : 3.2) })).attr("fill", stateColor(a.data.st)));
+    g.append("circle").attr("r", r).attr("fill", css("--f-" + k)).attr("stroke", s.id === rstate.site ? "var(--text)" : "var(--bg)").attr("stroke-width", s.id === rstate.site ? 2 : 1)
+      .attr("opacity", st === "stopped" || st === "nd" ? .55 : 1);
+    if (r >= 6) drawPicto(g, picto, r * .78, PICTO_INK[k] || "#fff", css("--f-" + k));
+    g.on("click", () => { rstate.site = s.id; renderPlants(); renderPlantCard(); })
       .on("pointermove", e => showTip(e, t => { t.append(el("div", "t", rtype(s.type)[2] + " · " + STATE_LABEL[st])); t.append(el("div", "big", s.name));
-        row(t, null, "Puissance installée", fmtMW(s.mw)); row(t, null, "Production (dernière heure)", s.groups.length ? fmtMW(siteNow(s)) : "n.d.");
+        row(t, null, "Puissance installée", fmtMW(s.mw) + (s.units.length > 1 ? ` · ${s.units.length} tranches` : ""));
+        row(t, null, "Production (dernière heure)", siteGroups(s).length ? fmtMW(siteNow(s)) : "n.d.");
+        if (s.units.length > 1) s.units.forEach(u => row(t, stateColor(unitState(u)), u.name, STATE_LABEL[unitState(u)]));
         if (s.prec === "commune") row(t, null, "Position", "approx. (commune)"); }))
       .on("pointerleave", hideTip); });
   const lg = document.getElementById("plantLegend"); lg.replaceChildren();
-  [["NUCLEAR"], ["HYDRO_WATER_RESERVOIR"], ["FOSSIL_GAS"], ["FOSSIL_HARD_COAL"], ["FOSSIL_OIL"], ["WIND_OFFSHORE"], ["BIOMASS"]].forEach(([t]) => {
-    const [k, sym, n] = rtype(t), sp = el("span"), sv = d3.select(sp).append("svg").attr("width", 16).attr("height", 16);
-    sv.append("path").attr("transform", "translate(8,8)").attr("d", d3.symbol(sym, 60)()).attr("fill", css("--f-" + k)); sp.append(document.createTextNode(n.replace(/ \(.*\)/, ""))); lg.append(sp); });
-  const unloc = RT.sites.filter(s => s.lat == null).map(s => s.name);
-  document.getElementById("plantStamp").textContent = `Production : dernière heure publiée par RTE (${RT.groups && Object.values(RT.groups)[0]?.last ? tUTC(d3.max(Object.values(RT.groups), g => g.last || "")).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}). ${RT.sites.length} sites, ${unloc.length} non localisés (${unloc.join(", ")}).`;
+  ["NUCLEAR", "HYDRO_WATER_RESERVOIR", "HYDRO_RUN_OF_RIVER_AND_POUNDAGE", "HYDRO_PUMPED_STORAGE", "FOSSIL_GAS", "FOSSIL_HARD_COAL", "FOSSIL_OIL", "WIND_OFFSHORE", "BIOMASS", "OTHER"].forEach(t => {
+    const [k, picto, n] = rtype(t), sp = el("span"), sv = d3.select(sp).append("svg").attr("width", 22).attr("height", 22).append("g").attr("transform", "translate(11,11)");
+    sv.append("circle").attr("r", 10).attr("fill", css("--f-" + k)); drawPicto(sv, picto, 8, PICTO_INK[k] || "#fff", css("--f-" + k)); sp.append(document.createTextNode(n)); lg.append(sp); });
+  [["running", "anneau : tranche en production"], ["partial", "en partie"], ["stopped", "à l'arrêt"], ["unavailable", "indisponible"]].forEach(([st, n]) => {
+    const sp = el("span"), sv = d3.select(sp).append("svg").attr("width", 16).attr("height", 16); sv.append("circle").attr("cx", 8).attr("cy", 8).attr("r", 6).attr("fill", "none").attr("stroke", stateColor(st)).attr("stroke-width", 3);
+    sp.append(document.createTextNode(n)); lg.append(sp); });
+  const unloc = RT.sites.filter(s => s.lat == null).map(s => s.name), nUnits = d3.sum(RT.sites, s => s.units.length), nGroups = Object.keys(RT.groups).length;
+  const lastH = d3.max(Object.values(RT.groups), g => g.last || "");
+  document.getElementById("plantStamp").textContent = `${RT.sites.length} sites, ${nUnits} tranches, ${nGroups} groupes suivis heure par heure · production : dernière heure publiée par RTE (${lastH ? tUTC(lastH).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}) · non localisés : ${unloc.join(", ") || "aucun"}.`;
 }
 function lineChart(host, series, { H = 150, unit = "MW", h0, keys, colors, dashes, yfmt, fill } = {}) {
   host.replaceChildren(); const W = host.clientWidth, M = { l: 46, r: 6, t: 8, b: 20 };
@@ -1024,18 +1120,39 @@ function renderPlantCard() {
   const st = siteState(s), [k, , tn] = rtype(s.type);
   box.append(el("div", "maptitle", tn + " · " + STATE_LABEL[st]));
   box.append(el("h3", null, s.name));
-  box.append(el("div", "meta", `${fmtMW(s.mw)} installés · ${s.owner || "exploitant n.d."}${s.kv ? " · raccordé en " + s.kv + " kV" : ""}${s.prec === "commune" ? " · position approximative (commune)" : ""}`));
+  box.append(el("div", "meta", `${fmtMW(s.mw)} installés${s.units.length > 1 ? " · " + s.units.length + " tranches" : ""} · ${s.owner || "exploitant n.d."}${s.units[0].kv ? " · raccordé en " + s.units[0].kv + " kV" : ""}${s.prec === "commune" ? " · position approximative (commune)" : ""}`));
   const gl = el("div", "glist");
-  s.groups.map(g => RT.groups[g]).filter(Boolean).forEach(g => { const r2 = el("div"); r2.append(el("span", null, g.name), el("span", "st-" + g.state, STATE_LABEL[g.state]), el("b", null, fmtMW(g.lastMW))); gl.append(r2); });
-  if (!s.groups.length) gl.append(el("div", "note", "RTE ne publie pas la production de ce site groupe par groupe."));
+  s.units.forEach(u => { const r2 = el("div"); const ust = unitState(u);
+    r2.append(el("span", null, `${u.name} · ${fmtMW(u.mw)}${unitGroups(u).length > 1 ? " · " + unitGroups(u).length + " groupes" : ""}`), el("span", "st-" + (ust === "partial" ? "running" : ust), STATE_LABEL[ust]), el("b", null, unitGroups(u).length ? fmtMW(unitNow(u)) : "n.d.")); gl.append(r2); });
   box.append(gl);
-  if (s.groups.length) { const sum = RT.groups[s.groups[0]].curve.map((v, i) => { const xs = s.groups.map(g => RT.groups[g]?.curve[i]); return xs.every(x => x == null) ? null : d3.sum(xs, x => x || 0); });
-    box.append(el("div", "maptitle", "Production horaire · 14 derniers jours (MW)")); const c = el("div"); box.append(c);
-    const ch = lineChart(c, [sum], { H: 140, h0: RT.curveStart, colors: [css("--f-" + k)], fill: [true] }); addHover(ch, [sum], ["Production"], [css("--f-" + k)], fmtMW); }
-  const evs = RT.events.filter(e => s.groups.includes(e.g)).sort((a, b) => b.s.localeCompare(a.s)).slice(0, 40);
+  const withCurve = s.units.filter(u => unitGroups(u).length);
+  if (withCurve.length) {
+    const n = unitGroups(withCurve[0])[0].curve.length;
+    const series = withCurve.map(u => d3.range(n).map(i => d3.sum(unitGroups(u), g => Math.max(0, g.curve[i] || 0))));
+    box.append(el("div", "maptitle", "Production horaire par tranche · 14 derniers jours (MW, empilée)"));
+    const c = el("div"); box.append(c);
+    const W = c.clientWidth || 300, H = 150, M = { l: 46, r: 6, t: 8, b: 20 };
+    const h0 = new Date(RT.curveStart), x = d3.scaleTime().domain([h0, new Date(+h0 + (n - 1) * 3600e3)]).range([M.l, W - M.r]);
+    const rows = d3.range(n).map(i => Object.fromEntries([["i", i], ...withCurve.map((u, j) => [j, series[j][i]])]));
+    const stk = d3.stack().keys(withCurve.map((u, j) => j))(rows);
+    const y = d3.scaleLinear().domain([0, Math.max(d3.max(stk.at(-1), d => d[1]) || 1, d3.sum(withCurve, u => u.mw) * .2)]).nice().range([H - M.b, M.t]);
+    const shade = d3.scaleLinear().domain([0, Math.max(1, withCurve.length - 1)]).range([1, .45]);
+    const svg = d3.select(c).append("svg").attr("width", W).attr("height", H);
+    svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => fr(v)));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickSize(0).tickPadding(6).tickFormat(W < 500 ? d3.timeFormat("%d/%m") : null));
+    svg.append("g").selectAll("path").data(stk).join("path").attr("fill", css("--f-" + k)).attr("opacity", (d, j) => shade(j)).attr("stroke", "var(--panel)").attr("stroke-width", .6)
+      .attr("d", d3.area().x(d => x(new Date(+h0 + d.data.i * 3600e3))).y0(d => y(d[0])).y1(d => y(d[1])));
+    const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--accent)").attr("opacity", 0);
+    svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+      const i = Math.max(0, Math.min(n - 1, Math.round((x.invert(d3.pointer(e)[0]) - h0) / 3600e3))); cross.attr("x1", x(new Date(+h0 + i * 3600e3))).attr("x2", x(new Date(+h0 + i * 3600e3))).attr("opacity", .7);
+      showTip(e, t => { t.append(el("div", "t", new Date(+h0 + i * 3600e3).toLocaleString("fr-FR", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })));
+        withCurve.forEach((u, j) => row(t, null, u.name, fmtMW(series[j][i]))); row(t, null, "Total", fmtMW(d3.sum(series, sr => sr[i]))); }); })
+      .on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+  } else box.append(el("div", "note", "RTE ne publie pas la production de ce site groupe par groupe."));
+  const gset = new Set(siteGroups(s)), evs = RT.events.filter(e => gset.has(e.g)).sort((a, b) => b.s.localeCompare(a.s)).slice(0, 60);
   box.append(el("div", "maptitle", `Indisponibilités déclarées (${evs.length ? "plus récentes d'abord" : "aucune sur la fenêtre"})`));
   const list = el("div", "evs");
-  evs.forEach(e => { const d = el("div", "ev"); const b = el("b", e.k, e.k === "P" ? "Programmée" : "Fortuite"); d.append(b);
+  evs.forEach(e => { const d = el("div", "ev"); d.append(el("b", e.k, e.k === "P" ? "Programmée" : "Fortuite"));
     d.append(document.createTextNode(` · ${e.n} · ${REASON[e.r] || e.r || ""} · −${fmtMW(e.u)} · ${tUTC(e.s).toLocaleDateString("fr-FR")} → ${e.e ? tUTC(e.e).toLocaleDateString("fr-FR") : "?"}${e.rm ? " · « " + e.rm + " »" : ""}`)); list.append(d); });
   box.append(list);
 }
@@ -1136,6 +1253,89 @@ function renderRte() {
 }
 [["unavWin", v => { rstate.unavWin = +v; renderFrise(); }], ["fcSeries", v => { rstate.fc = v; renderForecast(); }], ["fcWin", v => { rstate.fcWin = +v; renderForecast(); }], ["beWin", v => { rstate.beWin = +v; renderBalancing(); }]]
   .forEach(([id, f]) => document.querySelectorAll(`#${id} .tab`).forEach(b => b.onclick = () => { document.querySelectorAll(`#${id} .tab`).forEach(x => x.setAttribute("aria-pressed", x === b)); f(b.dataset.v); }));
+
+/* ---------- Ecowatt, Tempo, flexibilités ---------- */
+const ECO = { 0: ["#1aa260", "vert, production décarbonée"], 1: ["#5bd67a", "pas d'alerte"], 2: ["#ffb627", "système tendu"], 3: ["#ff4d6a", "système très tendu"] };
+function renderEcowatt() {
+  const box = document.getElementById("ecowatt"); box.replaceChildren(); const E = window.RTE?.ecowatt;
+  if (!E?.length) { box.style.display = "none"; return; } box.style.display = "";
+  const today = new Date(); const tk = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const coming = E.filter(([d]) => d >= tk).slice(0, 4);
+  const t = el("div"); t.append(el("div", "ttl", "Ecowatt"), el("div", "note", "signal RTE, heure par heure")); box.append(t);
+  const days = el("div", "days");
+  coming.forEach(([d, v]) => { const r = el("div", "day"); r.append(el("span", null, new Date(d + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })));
+    const cells = el("div", "cells"); v.h.forEach((h, i) => { const c = el("span"); c.style.background = (ECO[h] || ["var(--line)"])[0]; c.title = `${i} h – ${i + 1} h : ${(ECO[h] || ["", "n.d."])[1]}`; cells.append(c); }); r.append(cells);
+    const pill = el("span", "pill msg", v.msg || ECO[v.d]?.[1] || ""); pill.style.background = (ECO[v.d] || ECO[1])[0]; r.append(pill); days.append(r); });
+  box.append(days);
+  const alerts = E.filter(([, v]) => v.d >= 2);
+  box.append(el("div", "hist", `Historique enregistré depuis le ${new Date(E[0][0] + "T12:00:00").toLocaleDateString("fr-FR")} : ${alerts.length ? alerts.length + " jour(s) orange ou rouge (" + alerts.map(([d]) => d.split("-").reverse().join("/")).slice(-6).join(", ") + ")" : "aucune alerte orange ou rouge"}. Vert foncé : production décarbonée.`));
+}
+const TEMPO_C = { BLUE: "#3d8bff", WHITE: "#e6edf2", RED: "#ff4d6a" }, TEMPO_N = { BLUE: "bleu", WHITE: "blanc", RED: "rouge" }, TEMPO_Q = { RED: 22, WHITE: 43 };
+let tempoSeason = null;
+function renderTempo() {
+  const T = window.RTE?.tempo, blk = document.getElementById("tempoBlock"); if (!T || !Object.keys(T).length) { blk.style.display = "none"; return; }
+  const days = Object.keys(T).sort(), last = days.at(-1), seasonOf = d => +d.slice(5, 7) >= 9 ? +d.slice(0, 4) : +d.slice(0, 4) - 1;
+  const seasons = [...new Set(days.map(seasonOf))].sort(); if (tempoSeason == null) tempoSeason = seasonOf(last);
+  const tb = document.getElementById("tempoSeason"); tb.replaceChildren();
+  seasons.slice(-6).forEach(y => { const b = el("button", "tab", `${y}–${String(y + 1).slice(2)}`); b.setAttribute("aria-pressed", y === tempoSeason); b.onclick = () => { tempoSeason = y; renderTempo(); }; tb.append(b); });
+  const start = new Date(tempoSeason, 8, 1), end = new Date(tempoSeason + 1, 7, 31), cal = document.getElementById("tempoCal"); cal.replaceChildren();
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  for (let i = 0; i < (start.getDay() + 6) % 7; i++) cal.append(el("span"));
+  const counts = { BLUE: 0, WHITE: 0, RED: 0 };
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) { const k = iso(d), c = T[k], sp = el("span");
+    sp.style.background = c ? TEMPO_C[c] : "var(--panel-2)"; if (c) counts[c]++;
+    if (k === last) { sp.style.outline = "2px solid var(--accent)"; sp.style.outlineOffset = "1px"; }
+    sp.title = `${d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} : ${c ? TEMPO_N[c] : "à venir"}`; cal.append(sp); }
+  const nDays = Math.round((end - start) / 864e5) + 1;
+  document.getElementById("tempoTitle").textContent = `Saison ${tempoSeason}–${tempoSeason + 1}` + (seasonOf(last) === tempoSeason ? ` · ${new Date(last + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })} : ${TEMPO_N[T[last]]} (encadré)` : "");
+  const ct = document.getElementById("tempoCount"); ct.replaceChildren();
+  const quota = { RED: TEMPO_Q.RED, WHITE: TEMPO_Q.WHITE, BLUE: nDays - TEMPO_Q.RED - TEMPO_Q.WHITE };
+  ["BLUE", "WHITE", "RED"].forEach(c => { const d = el("div"); const sw = el("span", "sw"); sw.style.cssText = `background:${TEMPO_C[c]};display:inline-block;margin-right:6px;vertical-align:-1px`;
+    d.append(sw, document.createTextNode(`jours ${TEMPO_N[c]}s`), el("b", null, `${counts[c]} / ${quota[c]}`), document.createTextNode(seasonOf(last) === tempoSeason ? `reste ${Math.max(0, quota[c] - counts[c])}` : "")); ct.append(d); });
+  // Consommation et prix moyens par couleur (toutes saisons)
+  const byDay = new Map(); for (let i = 0; i <= LASTDAY; i++) { const dd = dayDate(i); byDay.set(iso(dd), i); }
+  const prices = new Map((window.PRICES?.daily || []).map(r => [r[0], r[1]]));
+  const rows = ["BLUE", "WHITE", "RED"].map(c => { const ds = days.filter(d => T[d] === c);
+    return { c, n: ds.length, conso: d3.mean(ds, d => byDay.has(d) ? D.daily.consommation[byDay.get(d)] : null), price: d3.mean(ds, d => prices.get(d)) }; });
+  const host = document.getElementById("tempoCmp"); host.replaceChildren(); const W = host.clientWidth, H = 170, M = { l: 70, r: 60, t: 6, b: 6 };
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H), half = (W - M.l - M.r) / 2;
+  const xc = d3.scaleLinear().domain([0, d3.max(rows, r => r.conso) || 1]).range([0, half - 20]), xp = d3.scaleLinear().domain([0, d3.max(rows, r => r.price) || 1]).range([0, half - 20]);
+  svg.append("text").attr("x", M.l).attr("y", 14).style("font", "10.5px 'IBM Plex Mono'").style("fill", "var(--muted)").text("CONSOMMATION MOYENNE");
+  svg.append("text").attr("x", M.l + half + 10).attr("y", 14).style("font", "10.5px 'IBM Plex Mono'").style("fill", "var(--muted)").text("PRIX SPOT MOYEN");
+  rows.forEach((r, j) => { const y = 28 + j * 46, g = svg.append("g").attr("transform", `translate(0,${y})`);
+    g.append("text").attr("x", M.l - 8).attr("y", 14).attr("text-anchor", "end").style("font", "12px 'IBM Plex Mono'").style("fill", "var(--text-2)").text(`${TEMPO_N[r.c]} (${r.n} j)`);
+    g.append("rect").attr("x", M.l).attr("y", 2).attr("height", 22).attr("width", xc(r.conso || 0)).attr("fill", TEMPO_C[r.c]).attr("stroke", "var(--line)");
+    g.append("text").attr("x", M.l + xc(r.conso || 0) + 6).attr("y", 18).style("font", "11.5px 'IBM Plex Mono'").text(r.conso ? fmtGW(r.conso) : "—");
+    g.append("rect").attr("x", M.l + half + 10).attr("y", 2).attr("height", 22).attr("width", xp(r.price || 0)).attr("fill", TEMPO_C[r.c]).attr("stroke", "var(--line)");
+    g.append("text").attr("x", M.l + half + 16 + xp(r.price || 0)).attr("y", 18).style("font", "11.5px 'IBM Plex Mono'").text(r.price ? fmtEur(r.price) : "—"); });
+  document.getElementById("tempoNote").textContent = `Toutes saisons depuis ${days[0].slice(0, 4)}. Consommation : éCO2mix ; prix : day-ahead (SMARD, CC BY 4.0).`;
+}
+function renderFlex() {
+  const R2 = window.RTE?.reserves || {}, days = Object.keys(R2).sort(), panel = document.getElementById("resPanel");
+  const keys = [["FCR|UP_DOWN|DAILY", "FCR (symétrique)", "#4de1ff"], ["aFRR|UP|DAILY", "aFRR hausse", "#5bd67a"], ["aFRR|DOWN|DAILY", "aFRR baisse", "#2e8a57"], ["mFRR|UP|DAILY", "mFRR hausse", "#ffb627"], ["RR|UP|DAILY", "RR hausse", "#b48cff"]];
+  if (!days.length) { panel.style.display = "none"; } else { panel.style.display = "";
+    const host = document.getElementById("resChart"); host.replaceChildren(); const W = host.clientWidth, H = 170, M = { l: 46, r: 6, t: 8, b: 20 };
+    const x = d3.scaleTime().domain([new Date(days[0]), new Date(days.at(-1))]).range([M.l, W - M.r]);
+    const all = days.flatMap(d => keys.map(([k]) => R2[d][k]).filter(v => v != null)), y = d3.scaleLinear().domain([0, d3.max(all) || 1]).nice().range([H - M.b, M.t]);
+    const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+    svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickSize(0).tickPadding(6).tickFormat(d3.timeFormat("%d/%m")));
+    keys.forEach(([k, n, c]) => svg.append("path").datum(days.filter(d => R2[d][k] != null)).attr("fill", "none").attr("stroke", c).attr("stroke-width", 1.8).attr("d", d3.line().x(d => x(new Date(d))).y(d => y(R2[d][k])).curve(d3.curveStepAfter)));
+    svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+      const d = days[d3.bisector(d => new Date(d)).center(days, x.invert(d3.pointer(e)[0]))];
+      showTip(e, t => { t.append(el("div", "t", new Date(d + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }))); keys.forEach(([k, n, c]) => row(t, c, n, R2[d][k] != null ? fmtMW(R2[d][k]) : "—")); }); }).on("pointerleave", hideTip);
+    const lg = document.getElementById("resLegend"); lg.replaceChildren(); keys.forEach(([, n, c]) => { const b = el("span", "lg"), sw = el("span", "sw line"); sw.style.background = c; b.append(sw, document.createTextNode(n)); lg.append(b); });
+    document.getElementById("resNote").textContent = "Source : RTE Balancing Capacity v5 (tso_need_for_procured_reserves). Les volumes effectivement contractualisés (procured_reserves) ne sont plus publiés depuis fin 2025 ou momentanément indisponibles.";
+  }
+  const DR = window.RTE?.demandResponse || {}, ms = Object.keys(DR).sort(), box = document.getElementById("drBox"); box.replaceChildren();
+  if (!ms.length) { box.append(el("div", "note", "Pas de données.")); return; }
+  const cur = DR[ms.at(-1)], st = el("div", "stat");
+  [["Opérateurs déclarés", cur.n], ["Règles NEBEF reconnues", cur.nebef_rules_recognition], ["Qualifiés NEBEF", cur.nebef_rules_qualification], ["En expérimentation (accord / qualification)", `${cur.trial_nebef_rules_agreement} / ${cur.trial_nebef_rules_qualification}`]]
+    .forEach(([k, v]) => { const d = el("div"); d.append(document.createTextNode(k + " "), el("b", null, String(v))); st.append(d); });
+  box.append(st);
+  if (cur.names?.length) box.append(el("div", "note", "Qualifiés : " + cur.names.join(", ") + "."));
+  box.append(el("div", "note", `Relevé de ${monthName(ms.at(-1))} (historique accumulé à partir de ce mois). Volumes d'effacement : aucun publié par l'API sur les périodes interrogées (données M+1).`));
+}
 
 /* ---------- 12 Prix spot ---------- */
 const PR = window.PRICES;
@@ -1261,11 +1461,12 @@ document.querySelectorAll("#regSource button").forEach(b => b.onclick = () => {
   state.sourcePicked = true; state.regSource = b.dataset.v; stopRegPlay();
   if (b.dataset.v === "live" && !LIVE.ok && !LIVE.loading) loadLive(); renderRegionMap(); renderCorr(); });
 tabs("regMode", v => { state.regMode = v; stopRegPlay(); renderRegionMap(); renderCorr(); }); tabs("overlays", (v, on) => { state[v] = on; renderRegionMap(); }, true);
+tabs("flowSource", v => { state.flowSource = v; renderFlows(); });
 tabs("flowMode", v => { state.flowMode = v; stopFlowPlay(); syncFlowPlayer(); renderFlows(); renderExportTrend(); });
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
   try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} update(); };
 try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); }
+function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); renderEcowatt(); renderTempo(); renderFlex(); }
 let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(update, 150); });
 update();
 loadLive(); setInterval(loadLive, 15 * 60 * 1000);

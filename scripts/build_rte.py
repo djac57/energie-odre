@@ -51,6 +51,26 @@ def dense(series, h0, n, scale=1):
     return out
 
 
+# Flux physiques : sens « pays>pays » → export / import mensuels (MWh) par voisin ; l'Angleterre cumule IFA et IFA2
+NEIGHBOURS = {"Germany": "Allemagne", "Belgium": "Belgique", "England-IFA": "Royaume-Uni", "England-IFA2": "Royaume-Uni", "England": "Royaume-Uni",
+              "Italy": "Italie", "Spain": "Espagne", "Switzerland": "Suisse"}
+
+
+def physical_monthly(pf):
+    out = defaultdict(lambda: defaultdict(lambda: [0, 0]))
+    for key, months in pf.get("monthly", {}).items():
+        a, b = key.split(">")
+        if a == "France" and b in NEIGHBOURS:
+            idx, nb = 0, NEIGHBOURS[b]
+        elif b == "France" and a in NEIGHBOURS:
+            idx, nb = 1, NEIGHBOURS[a]
+        else:
+            continue
+        for m, v in months.items():
+            out[nb][m][idx] += v
+    return {nb: dict(sorted(ms.items())) for nb, ms in out.items()}
+
+
 def main():
     meta = load("meta.json")
     caps = load("capacities_units.json")
@@ -201,15 +221,58 @@ def main():
                  "upAfrr": dense({k: v.get("up_afrr") or 0 for k, v in vol.items()}, hh0, nhh), "dnAfrr": dense({k: v.get("dn_afrr") or 0 for k, v in vol.items()}, hh0, nhh),
                  "imb": dense(field("imbalance_data", "imb"), hh0, nhh), "posP": dense(field("imbalance_data", "pos_p"), hh0, nhh), "negP": dense(field("imbalance_data", "neg_p"), hh0, nhh)}
 
-    data = {"updated": meta.get("last_run"), "sites": list(sites.values()), "groups": groups, "events": events, "unavTotal": unav_series,
+    # Sites physiques : tranches de même famille à moins de ~1,5 km (CATTENOM 1..4 → CATTENOM)
+    FAMILY = {"NUCLEAR": "nuc", "FOSSIL_GAS": "gas", "FOSSIL_HARD_COAL": "coal", "FOSSIL_OIL": "oil", "WIND_OFFSHORE": "wind",
+              "WIND_ONSHORE": "wind", "SOLAR": "sun", "BIOMASS": "bio", "WASTE": "bio", "MARINE": "marine", "OTHER": "other"}
+    fam = lambda t: "hydro" if t.startswith("HYDRO") else FAMILY.get(t, "other")
+
+    def km(a, b):
+        import math
+        dy = (a["lat"] - b["lat"]) * 111.2
+        dx = (a["lon"] - b["lon"]) * 111.2 * math.cos(math.radians(a["lat"]))
+        return (dx * dx + dy * dy) ** .5
+
+    def site_name(names):
+        base = [re.sub(r"[\s\-_]*(\d+|[IVX]+|TG\d*|TV\d*)$", "", n.strip()) for n in names]
+        pref = os.path.commonprefix(base).strip(" -_")
+        return pref if len(pref) >= 3 else base[0]
+
+    clusters = []
+    for u in sorted(sites.values(), key=lambda x: -x["mw"]):
+        for c in clusters:
+            if u["lat"] is not None and c["lat"] is not None and fam(u["type"]) == c["fam"] and km(u, c) < 1.5:
+                c["units"].append(u); break
+            if u["lat"] is None and c["lat"] is None and site_name([u["name"]]) == site_name([c["units"][0]["name"]]):
+                c["units"].append(u); break
+        else:
+            clusters.append({"fam": fam(u["type"]), "lat": u["lat"], "lon": u["lon"], "units": [u]})
+    phys = []
+    for c in clusters:
+        us = sorted(c["units"], key=lambda x: (len(x["name"]), x["name"]))
+        sid = "S-" + us[0]["id"]
+        for u in us:
+            for g in u["groups"]:
+                groups[g]["unit"], groups[g]["site"] = u["id"], sid
+        types = sorted({u["type"] for u in us}, key=lambda t: -sum(x["mw"] for x in us if x["type"] == t))
+        phys.append({"id": sid, "name": site_name([u["name"] for u in us]) if len(us) > 1 else us[0]["name"], "type": types[0], "fam": c["fam"],
+                     "mw": sum(u["mw"] for u in us), "lat": c["lat"], "lon": c["lon"], "prec": us[0]["prec"], "src": us[0]["src"],
+                     "owner": ", ".join(sorted({u["owner"] for u in us if u["owner"]})),
+                     "units": [{"id": u["id"], "name": u["name"], "type": u["type"], "mw": u["mw"], "kv": u["kv"], "groups": u["groups"]} for u in us]})
+    phys.sort(key=lambda x: -x["mw"])
+
+    data = {"updated": meta.get("last_run"), "sites": phys, "groups": groups, "events": events, "unavTotal": unav_series,
             "forecast": forecast, "balancing": balancing, "water": sorted(load("water_reserves.json").items()),
-            "capacityByType": caps.get("types", {}), "curveStart": h0.isoformat()}
+            "capacityByType": caps.get("types", {}), "curveStart": h0.isoformat(),
+            "ecowatt": sorted(load("ecowatt.json").items()), "tempo": load("tempo.json"),
+            "physical": physical_monthly(load("physical_flows.json", {"monthly": {}, "hourly": {}})),
+            "demandResponse": load("demand_response.json", {}).get("operators", {}),
+            "reserves": load("reserves.json", {}).get("need", {})}
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("window.RTE=")
         json.dump(data, fh, ensure_ascii=False, separators=(",", ":"))
         fh.write(";")
-    located = sum(1 for s in sites.values() if s["lat"] is not None)
-    print(f"{len(sites)} sites ≥ {MIN_MW} MW ({located} localisés), {len(groups)} groupes, {len(events)} indisponibilités, {os.path.getsize(OUT) // 1024} Ko")
+    located = sum(1 for s in phys if s["lat"] is not None)
+    print(f"{len(phys)} sites physiques ({located} localisés), {len(sites)} unités ≥ {MIN_MW} MW, {len(groups)} groupes, {len(events)} indisponibilités, {os.path.getsize(OUT) // 1024} Ko")
 
 
 if __name__ == "__main__":

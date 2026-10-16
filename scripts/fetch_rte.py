@@ -302,9 +302,139 @@ def step_water_reserves(api):
     return f"{len(wr)} semaines"
 
 
+def step_ecowatt(api):
+    """Signal Ecowatt du jour et des 3 jours suivants (quota RTE : 1 appel / 15 min) ; historique accumulé par jour."""
+    eco = load("ecowatt.json", {})
+    res = api.get("ecowatt/v5/signals")
+    for sig in res.get("signals", []):
+        day = (sig.get("jour") or "")[:10]
+        if not day:
+            continue
+        hv = [None] * 24
+        for v in sig.get("values", []):
+            if v.get("pas") is not None and 0 <= int(v["pas"]) < 24:
+                hv[int(v["pas"])] = v.get("hvalue")
+        eco[day] = {"d": sig.get("dvalue"), "msg": (sig.get("message") or "").strip()[:200], "h": hv, "gen": sig.get("GenerationFichier")}
+    save("ecowatt.json", eco)
+    return f"{len(eco)} jours"
+
+
+def step_physical_flows(api):
+    """Flux physiques aux frontières (pas de 15 min → horaire), un appel par heure recommandé.
+    Séries horaires sur 120 jours + cumuls mensuels (MWh) conservés sans limite."""
+    pf = load("physical_flows.json", {"hourly": {}, "monthly": {}})
+    hourly, monthly = pf.setdefault("hourly", {}), pf.setdefault("monthly", {})
+    known = [k for ser in hourly.values() for k in ser]
+    start = since({k: 1 for k in known}, KEEP_HOURLY_DAYS, KEEP_HOURLY_DAYS)
+    for a, b in windows(start, NOW + dt.timedelta(days=1), 31):
+        res = api.get("physical_flow/v1/physical_flows", {"start_date": local_iso(a), "end_date": local_iso(b)})
+        for blk in res.get("physical_flows", []):
+            key = f"{blk['sender_country_name']}>{blk['receiver_country_name']}"
+            hourly.setdefault(key, {}).update(hourly_mean(blk["values"]))
+    # cumuls mensuels (MWh) recalculés sur la fenêtre horaire, seulement pour les mois entièrement couverts
+    first_h = min((h for ser in hourly.values() for h in ser), default=None)
+    acc = defaultdict(lambda: defaultdict(float))
+    for key, ser in hourly.items():
+        for h, v in ser.items():
+            acc[key][h[:7]] += v
+    for key, months in acc.items():
+        monthly.setdefault(key, {}).update({m: round(v) for m, v in months.items() if first_h and m > first_h[:7]})
+    # Historique mensuel depuis 2015, rempli à rebours par paquets de 12 mois pour rester sobre
+    first = min((m for ser in monthly.values() for m in ser), default=NOW.strftime("%Y-%m"))
+    y, mo = (int(x) for x in first.split("-"))
+    filled = 0
+    while (y, mo) > (2015, 1) and filled < 12:
+        y, mo = (y, mo - 1) if mo > 1 else (y - 1, 12)
+        a = dt.datetime(y, mo, 1, tzinfo=PARIS)
+        b = dt.datetime(y + (mo == 12), mo % 12 + 1, 1, tzinfo=PARIS)
+        res = api.get("physical_flow/v1/physical_flows", {"start_date": local_iso(a), "end_date": local_iso(b)})
+        month_tot = defaultdict(float)
+        for blk in res.get("physical_flows", []):  # un bloc par jour ; valeurs = puissances moyennes (MW)
+            key = f"{blk['sender_country_name']}>{blk['receiver_country_name']}"
+            vals = [v["value"] for v in blk["values"] if v.get("value") is not None]
+            if vals:
+                month_tot[key] += sum(vals) / len(vals) * (parse(blk["end_date"]) - parse(blk["start_date"])).total_seconds() / 3600
+        for key, tot in month_tot.items():
+            monthly.setdefault(key, {})[f"{y}-{mo:02d}"] = round(tot)
+        filled += 1
+    pf["hourly"] = {k: prune(v, KEEP_HOURLY_DAYS) for k, v in hourly.items()}
+    save("physical_flows.json", pf)
+    return f"{len(pf['hourly'])} sens de flux, historique mensuel depuis {min((m for ser in monthly.values() for m in ser), default='—')}"
+
+
+def step_tempo(api):
+    """Couleurs Tempo : publiées vers 10 h 40 pour le lendemain ; historique depuis 2014 (366 jours max par appel)."""
+    tempo = load("tempo.json", {})
+    tomorrow = (NOW.astimezone(PARIS) + dt.timedelta(days=1)).strftime("%Y-%m-%d")
+    if tempo and tomorrow in tempo and NOW.hour != 3:
+        return "à jour"
+    if not tempo:
+        start = dt.datetime(2014, 9, 1, tzinfo=PARIS)
+    else:
+        start = NOW - dt.timedelta(days=10)
+    end = day_floor(NOW) + dt.timedelta(days=2)
+    for a, b in windows(start, end, 366):
+        res = api.get("tempo_like_supply_contract/v1/tempo_like_calendars", {"start_date": local_iso(a), "end_date": local_iso(b)})
+        blk = res.get("tempo_like_calendars", {})
+        for v in blk.get("values", []) if isinstance(blk, dict) else []:
+            tempo[v["start_date"][:10]] = v["value"]
+    save("tempo.json", tempo)
+    return f"{len(tempo)} jours"
+
+
+def step_demand_response(api):
+    """Opérateurs d'effacement (NEBEF) : un appel par jour ; on garde un relevé mensuel (nombre, agréments).
+    Les volumes d'effacement sont aussi interrogés (souvent vides : publiés en M+1)."""
+    dr = load("demand_response.json", {"operators": {}, "volumes": {}})
+    month = NOW.astimezone(PARIS).strftime("%Y-%m")
+    if month in dr["operators"] and NOW.hour != 3:
+        return "à jour"
+    ops = api.get("demand_response/v1/operators").get("operators", [])
+    flags = ["nebef_rules_recognition", "nebef_rules_qualification", "trial_nebef_rules_agreement", "trial_nebef_rules_qualification"]
+    dr["operators"][month] = {"n": len(ops), **{f: sum(1 for o in ops if o.get(f)) for f in flags},
+                              "names": sorted({o.get("name", "").strip() for o in ops if o.get("nebef_rules_qualification")})[:80]}
+    res = api.get("demand_response/v1/volumes", {"start_date": local_iso(day_floor(NOW) - dt.timedelta(days=40)), "end_date": local_iso(day_floor(NOW))})
+    for v in res.get("volumes", []):
+        for x in v.get("values", []):
+            if x.get("value") is not None:
+                dr["volumes"][x["start_date"][:16]] = x["value"]
+    save("demand_response.json", dr)
+    return f"{len(ops)} opérateurs, {len(dr['volumes'])} pas de volume"
+
+
+def step_reserves(api):
+    """Réserves d'équilibrage (Balancing Capacity v5) : besoin de réserves contractualisées par RTE (FCR, aFRR, mFRR),
+    moyenne journalière par produit et sens ; procured_reserves (arrêtée fin 2025) tentée sans bloquer."""
+    rv = load("reserves.json", {"need": {}, "procured": {}})
+    if rv["need"] and NOW.hour != 21:
+        return "hors créneau (une fois par jour, vers 23 h)"
+    last = max(rv["need"], default=None)
+    start = (dt.datetime.fromisoformat(last).replace(tzinfo=PARIS) - dt.timedelta(days=3)) if last else NOW - dt.timedelta(days=60)
+    for a, b in windows(start, NOW, 7):
+        res = api.get("balancing_capacity/v5/tso_need_for_procured_reserves", {"start_date": local_iso(a), "end_date": local_iso(b)})
+        acc = defaultdict(list)
+        for n in res.get("needs", []):
+            day = parse(n["start_date"]).astimezone(PARIS).strftime("%Y-%m-%d")
+            acc[(day, f"{n.get('reserve')}|{n.get('direction')}|{n.get('time_horizon')}")].append(n.get("volume") or 0)
+        for (day, k), vals in acc.items():
+            rv["need"].setdefault(day, {})[k] = round(sum(vals) / len(vals))
+    try:
+        if not rv["procured"]:
+            for a, b in windows(dt.datetime(2025, 1, 1, tzinfo=PARIS), dt.datetime(2026, 1, 1, tzinfo=PARIS), 124):
+                res = api.get("balancing_capacity/v5/procured_reserves", {"start_date": local_iso(a), "end_date": local_iso(b)})
+                for blk in res.get("procured_reserves", []):
+                    for v in blk.get("values", []):
+                        rv["procured"][v["start_date"][:13]] = {k: x for k, x in v.items() if isinstance(x, (int, float))}
+    except Exception as e:
+        print(f"RTE réserves contractualisées (procured_reserves) : indisponible ({str(e)[:80]})")
+    save("reserves.json", rv)
+    return f"{len(rv['need'])} jours de besoins"
+
+
 STEPS = [("capacités installées", step_capacities), ("stocks hydrauliques", step_water_reserves), ("production par groupe", step_actual_units), ("production par filière", step_actual_types),
          ("indisponibilités", step_unavailabilities), ("consommation", step_consumption), ("prévisions de production", step_generation_forecast),
-         ("ajustement", step_balancing)]
+         ("ajustement", step_balancing), ("Ecowatt", step_ecowatt), ("flux physiques", step_physical_flows), ("Tempo", step_tempo),
+         ("effacement", step_demand_response), ("réserves", step_reserves)]
 
 
 def main():
