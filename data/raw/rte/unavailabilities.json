@@ -21673,12 +21673,12 @@
 },
 "EC-EDF-05470-EDF-H-00108160":{
 "eic":"17W100P100P0068B",
-"end":"2026-10-16T15:00:00Z",
+"end":"2026-10-22T15:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":152,
 "name":"GRAND MAISON 8",
-"pub":"2026-09-18T07:59:37Z",
+"pub":"2026-10-16T14:11:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-09-11T15:00:00Z",
@@ -21686,20 +21686,20 @@
 "steps":[
 [
 "2026-09-11T15:00:00Z",
-"2026-10-16T15:00:00Z",
+"2026-10-22T15:00:00Z",
 152
 ]
 ],
-"v":4
+"v":5
 },
 "EC-EDF-05470-EDF-H-00108162":{
 "eic":"17W100P100P0067D",
-"end":"2026-10-16T15:00:00Z",
+"end":"2026-10-22T15:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":152,
 "name":"GRAND MAISON 7",
-"pub":"2026-09-18T07:58:37Z",
+"pub":"2026-10-16T14:11:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-09-11T15:00:00Z",
@@ -21707,11 +21707,11 @@
 "steps":[
 [
 "2026-09-11T15:00:00Z",
-"2026-10-16T15:00:00Z",
+"2026-10-22T15:00:00Z",
 152
 ]
 ],
-"v":4
+"v":5
 },
 "EC-EDF-05470-EDF-H-00108164":{
 "eic":"17W100P100P0067D",
@@ -102733,12 +102733,12 @@
 },
 "EDF-05470_EDF_H_00134788":{
 "eic":"17W100P100P0062N",
-"end":"2026-10-16T15:00:00Z",
+"end":"2026-10-16T14:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":170,
 "name":"GRAND MAISON 12",
-"pub":"2026-10-14T06:17:37Z",
+"pub":"2026-10-16T13:50:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-16T06:30:00Z",
@@ -102746,11 +102746,11 @@
 "steps":[
 [
 "2026-10-16T06:30:00Z",
-"2026-10-16T15:00:00Z",
+"2026-10-16T14:00:00Z",
 170
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_H_00134790":{
 "eic":"17W100P100P0315K",
@@ -103987,6 +103987,132 @@
 "2027-04-26T05:00:00Z",
 "2027-04-26T09:00:00Z",
 116
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135068":{
+"eic":"17W100P100P0299T",
+"end":"2027-07-05T10:00:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"PLANNED",
+"mw":116,
+"name":"SAINT GUILLERME",
+"pub":"2026-10-16T13:56:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2027-07-05T07:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2027-07-05T07:00:00Z",
+"2027-07-05T10:00:00Z",
+116
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135069":{
+"eic":"17W100P100P0299T",
+"end":"2027-09-08T06:00:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"PLANNED",
+"mw":116,
+"name":"SAINT GUILLERME",
+"pub":"2026-10-16T14:00:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2027-09-07T12:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2027-09-07T12:00:00Z",
+"2027-09-08T06:00:00Z",
+116
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135075":{
+"eic":"17W100P100P0062N",
+"end":"2026-10-19T15:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":170,
+"name":"GRAND MAISON 12",
+"pub":"2026-10-16T14:42:38Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
+"start":"2026-10-19T06:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-19T06:30:00Z",
+"2026-10-19T15:00:00Z",
+170
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135076":{
+"eic":"17W100P100P0062N",
+"end":"2026-10-20T15:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":170,
+"name":"GRAND MAISON 12",
+"pub":"2026-10-16T14:42:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
+"start":"2026-10-20T06:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-20T06:30:00Z",
+"2026-10-20T15:00:00Z",
+170
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135077":{
+"eic":"17W100P100P0062N",
+"end":"2026-10-21T15:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":170,
+"name":"GRAND MAISON 12",
+"pub":"2026-10-16T14:42:38Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
+"start":"2026-10-21T06:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-21T06:30:00Z",
+"2026-10-21T15:00:00Z",
+170
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135078":{
+"eic":"17W100P100P0062N",
+"end":"2026-10-22T15:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":170,
+"name":"GRAND MAISON 12",
+"pub":"2026-10-16T14:42:38Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
+"start":"2026-10-22T06:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-22T06:30:00Z",
+"2026-10-22T15:00:00Z",
+170
 ]
 ],
 "v":1
