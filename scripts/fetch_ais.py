@@ -5,7 +5,11 @@ française, puis met à jour data/raw/ais/ :
 - static.json : caractéristiques déclarées de chaque navire (nom, type, dimensions,
   tirant d'eau, destination, ETA), conservées d'un passage à l'autre car ces messages
   n'arrivent que toutes les ~6 minutes ;
-- tracks.json : positions des navires suivis sur 48 h (1 point / 10 min au plus) ;
+- tracks.json : positions des navires-citernes sur 5 jours (1 point / 10 min au plus),
+  remise à zéro quand le navire est vu à quai (la trace part alors de ce port) ;
+- voyages.json : dernier port où chaque navire-citerne a été vu à l'arrêt (moins de
+  0,5 nœud dans le rayon d'un port de scripts/ais_ports.py), port précédent et première
+  observation : l'AIS ne transmet pas le port de départ, on le déduit de l'historique ;
 - snapshot.json : instantané des tankers et méthaniers retenus.
 
 Clé : variable d'environnement AISSTREAM_KEY, sinon ~/.config/aisstream/credentials
@@ -23,11 +27,15 @@ import re
 import sys
 import time
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ais_ports import decode_destination, port_at  # noqa: E402
+
 RAW = os.path.join(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "data", "raw"), "ais")
 URL = "wss://stream.aisstream.io/v0/stream"
 BOX = [[[41.0, -6.5], [51.5, 9.8]]]  # façade française : Manche, Atlantique, Méditerranée
 SECONDS = int(os.environ.get("AIS_SECONDS", "240"))
-KEEP_H = 48
+KEEP_H = 120
+STOP_KN = 0.5
 
 # Ports et terminaux pétroliers / GNL suivis : motifs de destination AIS et position
 TERMINALS = {
@@ -60,6 +68,9 @@ def nm(a, b):
 
 
 def terminal_for(dest):
+    p, _ = decode_destination(dest)
+    if p:
+        return p["group"]
     d = re.sub(r"[^A-Z ]", " ", (dest or "").upper())
     for name, t in TERMINALS.items():
         if re.search(t["re"], d) or re.search(t["re"], d.replace(" ", "")):
@@ -118,14 +129,18 @@ async def listen(key, static, positions):
     return n
 
 
+def tanker(s):
+    """Navire-citerne de mer : types AIS 80-89 ou méthanier nommé « LNG … », hors barges et caboteurs fluviaux."""
+    if not s:
+        return False
+    if not (80 <= (s.get("type") or 0) <= 89 or "LNG" in (s.get("name") or "").upper()):
+        return False
+    return (s.get("len") or 0) >= 100 or (s.get("draught") or 0) >= 6
+
+
 def relevant(s, pos):
     """Tankers (types 80-89) et méthaniers de mer, à destination de la France ou près d'un terminal."""
-    if not s:
-        return None
-    is_lng = "LNG" in (s.get("name") or "").upper()
-    if not (80 <= (s.get("type") or 0) <= 89 or is_lng):
-        return None
-    if (s.get("len") or 0) < 100 and (s.get("draught") or 0) < 6:  # barges et caboteurs fluviaux
+    if not tanker(s):
         return None
     term = terminal_for(s.get("dest"))
     if not term and pos and not foreign(s.get("dest")):
@@ -160,7 +175,7 @@ def main():
         print("module websockets absent (pip install websockets) : rien à faire")
         return
     os.makedirs(RAW, exist_ok=True)
-    static, tracks = load("static", {}), load("tracks", {})
+    static, tracks, voyages = load("static", {}), load("tracks", {}), load("voyages", {})
     positions = {}
     try:
         n = asyncio.run(listen(key, static, positions))
@@ -172,14 +187,30 @@ def main():
     snap = []
     for m, p in positions.items():
         s = static.get(m)
+        if not tanker(s):
+            continue
+        # Historique de tous les navires-citernes : un navire peut changer de destination après son départ
+        v = voyages.setdefault(m, {"first": [p["t"], p["lat"], p["lon"]]})
+        v["seen"] = p["t"]
+        tr = tracks.setdefault(m, [])
+        port = port_at(p["lat"], p["lon"]) if (p.get("sog") is not None and p["sog"] < STOP_KN) else None
+        if port:
+            stop = v.get("stop")
+            if stop and stop["id"] == port["id"]:
+                stop["t"] = p["t"]
+            else:
+                if stop:
+                    v["prev"] = stop
+                v["stop"] = {"id": port["id"], "name": port["name"], "t0": p["t"], "t": p["t"], "lat": p["lat"], "lon": p["lon"]}
+            tr[:] = [x for x in tr if x[0] >= v["stop"]["t0"]]  # la trace du voyage suivant partira de ce port
+        if not tr or now - tr[-1][0] >= 600 or nm((tr[-1][1], tr[-1][2]), (p["lat"], p["lon"])) > 1:
+            tr.append([p["t"], p["lat"], p["lon"], p["sog"]])
         term = relevant(s, p)
         if not term:
             continue
-        tr = tracks.setdefault(m, [])
-        if not tr or now - tr[-1][0] >= 600 or nm((tr[-1][1], tr[-1][2]), (p["lat"], p["lon"])) > 1:
-            tr.append([p["t"], p["lat"], p["lon"], p["sog"]])
         snap.append({"mmsi": m, **{k: s.get(k) for k in ("name", "type", "imo", "len", "beam", "draught", "dest", "eta")}, "terminal": term, **p})
-    # Traces : 48 h glissantes, navires non revus depuis 48 h oubliés
+    # Traces : 5 jours glissants, navires non revus depuis 5 jours oubliés ; voyages oubliés après 14 jours
+    voyages = {m: v for m, v in voyages.items() if now - v.get("seen", 0) < 14 * 86400}
     tracks = {m: [x for x in tr if now - x[0] <= KEEP_H * 3600] for m, tr in tracks.items()}
     tracks = {m: tr for m, tr in tracks.items() if tr}
     # Les navires suivis mais absents de ce passage restent dans l'instantané avec leur dernière position (≤ 6 h)
@@ -192,6 +223,7 @@ def main():
                 snap.append({**x, "terminal": term})
     save("static", static)
     save("tracks", tracks)
+    save("voyages", voyages)
     save("snapshot", {"t": now, "messages": n, "seconds": SECONDS, "ships": snap})
     print(f"AIS : {n} messages en {SECONDS} s, {len(positions)} navires vus, {len(snap)} tankers/méthaniers retenus, {len(static)} fiches en cache")
 

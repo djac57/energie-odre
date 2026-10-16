@@ -21,6 +21,7 @@ partiel ne fait jamais disparaître l'historique déjà versionné.
 """
 import csv
 import io
+import datetime
 import json
 import os
 import re
@@ -285,8 +286,10 @@ def alsi():
     data = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
     targets = {"France": {"country": "FR"}, "UE": {"type": "eu"}}
     targets.update({n: {"country": "FR", "company": c, "facility": f} for n, (c, f) in ALSI_TERMINALS.items()})
+    # émissions GNL par pays de l'UE (carte des gazoducs : arrivées de GNL par façade)
+    targets.update({"pays:" + c: {"country": c} for c in ("ES", "IT", "NL", "BE", "DE", "PL", "LT", "GR", "HR", "PT", "FI")})
     for name, params in targets.items():
-        start = last_date("alsi", name) or "2016-01-01"
+        start = last_date("alsi", name) or ("2021-01-01" if name.startswith("pays:") else "2016-01-01")
         rows = gie("https://alsi.gie.eu/api", {**params, "from": start, "to": time.strftime("%Y-%m-%d")}, k)
         cur = data.setdefault(name, {})
         for r in rows:
@@ -399,6 +402,78 @@ def entsog_eu(points=None, start=None):
     print(f"  ENTSOG UE : {len(data)} points, depuis {start}")
 
 
+# Interconnexions transfrontalières (transport ↔ transport) : flux par point et par sens
+BORDER_SKIP = {("RU", "UA"), ("MD", "UA"), ("BY", "UA"), ("BA", "RS")}  # réseaux hors UE sans lien direct avec la page
+
+
+def entsog_borders(start=None):
+    """Flux physiques quotidiens aux points frontaliers, par point et par sens « A>B » (GWh/j).
+
+    Pour chaque point et chaque jour, le flux A→B est l'entrée déclarée par le gestionnaire
+    du pays B, sinon la sortie déclarée côté A. Les points regroupés dans un point virtuel
+    (VIP) sont écartés les jours où le VIP publie, pour ne pas compter deux fois."""
+    path = os.path.join(RAW, "entsog_borders.json")
+    old = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
+    ic = json.loads(get("https://transparency.entsog.eu/api/v1/interconnections?limit=-1", timeout=300))["interconnections"]
+    cp = {c["pointKey"]: c for c in json.loads(get("https://transparency.entsog.eu/api/v1/connectionpoints?limit=-1", timeout=300))["connectionpoints"]}
+    meta, opc = {}, defaultdict(dict)  # point -> {label, pays, vip} ; point -> {opérateur: pays}
+    for r in ic:
+        a, b = r.get("fromCountryKey"), r.get("toCountryKey")
+        if r.get("isInvalid") or r.get("fromInfrastructureTypeLabel") != "Transmission" or r.get("toInfrastructureTypeLabel") != "Transmission":
+            continue
+        if not a or not b or a == b or tuple(sorted((a, b))) in BORDER_SKIP:
+            continue
+        pk = r["pointKey"]
+        c = cp.get(pk, {})
+        meta[pk] = {"label": r["pointLabel"].strip(), "pair": sorted([a, b]), "vip": c.get("virtualPointKey") if c.get("hasVirtualPoint") else None}
+        for op, cc in ((r.get("fromOperatorKey"), a), (r.get("toOperatorKey"), b)):
+            if op:
+                opc[pk][op] = cc
+    flows = old.get("flows", {})
+    start = start or (max((max(v) for f in flows.values() for v in f.values() if v), default=None) or "2021-01-01")
+    if start > "2021-01-01":
+        start = (datetime.date.fromisoformat(start) - datetime.timedelta(days=20)).isoformat()
+    points = sorted(meta)
+    y, m = int(start[:4]), int(start[5:7])
+    today = time.strftime("%Y-%m-%d")
+    while f"{y}-{m:02d}-01" <= today:
+        a = f"{y}-{m:02d}-01"
+        ny, nmo = (y + 1, 1) if m == 12 else (y, m + 1)
+        side = defaultdict(lambda: defaultdict(float))  # (point, jour, pays, sens) -> GWh
+        for i in range(0, len(points), 80):
+            url = ENTSOG + "?" + urllib.parse.urlencode({"pointKey": ",".join(points[i:i + 80]), "indicator": "Physical Flow", "periodType": "day",
+                                                         "from": max(a, start), "to": f"{ny}-{nmo:02d}-01", "timezone": "CET", "limit": -1})
+            try:
+                rows = json.loads(get(url, timeout=300)).get("operationaldatas", [])
+            except Exception as e:
+                print(f"  {a} : {e}", file=sys.stderr)
+                rows = []
+            for r in rows:
+                pk, op = r.get("pointKey"), r.get("operatorKey")
+                cc = opc.get(pk, {}).get(op) or str(op or "")[:2]
+                if r.get("value") in (None, "") or cc not in meta.get(pk, {}).get("pair", []):
+                    continue
+                side[(pk, r["periodFrom"][:10], cc)][r.get("directionKey")] += float(r["value"]) / 1e6
+            time.sleep(0.3)
+        published = {(pk, d) for pk, d, _ in side}
+        for (pk, d, cc), dirs in list(side.items()):
+            vip = meta[pk]["vip"]
+            if vip and (vip, d) in published:
+                continue
+            other = [x for x in meta[pk]["pair"] if x != cc][0]
+            # entrée chez cc = flux other>cc ; sortie de cc = flux cc>other (si l'autre côté ne publie pas d'entrée)
+            if "entry" in dirs:
+                flows.setdefault(pk, {}).setdefault(f"{other}>{cc}", {})[d] = round(dirs["entry"], 1)
+            if "exit" in dirs and "entry" not in side.get((pk, d, other), {}):
+                flows.setdefault(pk, {}).setdefault(f"{cc}>{other}", {})[d] = round(dirs["exit"], 1)
+        y, m = ny, nmo
+    flows = {pk: {k: dict(sorted(v.items())) for k, v in f.items() if any(v.values())} for pk, f in flows.items()}
+    flows = {pk: f for pk, f in flows.items() if f}
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump({"points": {pk: meta[pk] for pk in flows if pk in meta}, "flows": flows}, fh, ensure_ascii=False, separators=(",", ":"))
+    print(f"  ENTSOG frontières : {len(flows)} points publiés, depuis {start}")
+
+
 def jsonstat(url):
     """JSON-stat Eurostat/Comext -> liste de (coordonnées, valeur)."""
     d = json.loads(get(url, timeout=300))
@@ -415,6 +490,24 @@ def jsonstat(url):
         out.append((coords, v))
     labels = d["dimension"].get("partner", {}).get("category", {}).get("label", {})
     return out, labels
+
+
+def gas_prices():
+    """Prix du gaz naturel par pays (Eurostat, semestriels depuis 2007), en €/kWh.
+
+    Ménages : tranche D2 (20 à 199 GJ/an), toutes taxes (I_TAX) et hors taxes (X_TAX).
+    Non-ménages : tranche I3 (10 000 à 99 999 GJ/an), hors TVA et taxes récupérables (X_VAT) et hors taxes (X_TAX)."""
+    out = {}
+    for key, ds, band, taxes in (("hh", "nrg_pc_202", "GJ20-199", ["I_TAX", "X_TAX"]), ("nhh", "nrg_pc_203", "GJ10000-99999", ["X_VAT", "X_TAX"])):
+        rows, _ = jsonstat(EUROSTAT + ds + "?" + urllib.parse.urlencode({"nrg_cons": band, "unit": "KWH", "currency": "EUR", "tax": taxes, "sinceTimePeriod": "2007"}, doseq=True))
+        series = defaultdict(dict)
+        for c, v in rows:
+            if v is not None:
+                series[f"{c['tax']}|{c['geo']}"][c["time"]] = v
+        out[key] = {k: dict(sorted(v.items())) for k, v in sorted(series.items())}
+    with open(os.path.join(RAW, "gas_prices.json"), "w", encoding="utf-8") as fh:
+        json.dump(out, fh, separators=(",", ":"))
+    print(f"  prix du gaz : {sum(len(v) for v in out.values())} séries")
 
 
 def coal():
@@ -488,6 +581,8 @@ def main():
     step("FMI via FRED — prix du gaz en Europe (TTF)", ttf)
     step("Eurostat — importations par pays d'origine", eurostat)
     step("ENTSOG — grands points d'entrée de l'UE", entsog_eu)
+    step("ENTSOG — interconnexions entre pays", entsog_borders)
+    step("Eurostat — prix du gaz naturel par pays (ménages, entreprises)", gas_prices)
     step("Eurostat — charbon (importations, bilan) et production des centrales", coal)
     step("Eurostat Comext — importations d'uranium", uranium)
     step("FMI via FRED — prix du charbon et de l'uranium", fred_prices)

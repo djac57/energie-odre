@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="autresenergies.js?v=917d4852ea"></script>
+<script src="autresenergies.js?v=3bdeb784cd"></script>
 <script src="geo.js"></script>
 <script src="geo_world.js"></script>
 <style>
@@ -21,7 +21,7 @@
   --glow: 0 0 18px rgba(77,225,255,.25); --land: #101b24; --land-2: #16242f; --france: #12303c; --sea: #070c11;
   --gas: #4de1ff; --gas-2: #2e8fbf; --ind: #b48cff; --dp: #4de1ff; --oil: #ffb627; --brent: #ff7a45; --coal: #a7b4c2; --uran: #c6f36b;
   --ok: #5bd67a; --warn: #ffb627; --bad: #ff4d6a; --band: rgba(77,225,255,.12);
-  --o-no: #4de1ff; --o-ru: #ff4d6a; --o-dz: #5bd67a; --o-ly: #9be29b; --o-az: #ffb627; --o-uk: #b48cff; --o-lng: #ff8a3d; --o-other: #8aa0b2;
+  --o-no: #4de1ff; --o-ru: #ff4d6a; --o-dz: #5bd67a; --o-ly: #9be29b; --o-az: #ffb627; --o-uk: #b48cff; --o-lng: #ff8a3d; --o-other: #8aa0b2; --b-entry: #eef3f7; --b-intra: #e879f9;
 }
 :root[data-theme="light"] {
   color-scheme: light;
@@ -30,7 +30,7 @@
   --glow: none; --land: #e3e9ee; --land-2: #d6dfe6; --france: #cfe6f1; --sea: #f3f7fa;
   --gas: #0077b6; --gas-2: #4aa3d4; --ind: #7a4fc4; --dp: #0077b6; --oil: #b97400; --brent: #d4541c; --coal: #4b545c; --uran: #5d8f12;
   --ok: #2f9e55; --warn: #b97400; --bad: #d63a50; --band: rgba(0,119,182,.12);
-  --o-no: #0077b6; --o-ru: #d63a50; --o-dz: #2f9e55; --o-ly: #6aa84f; --o-az: #b97400; --o-uk: #7a4fc4; --o-lng: #d4541c; --o-other: #6f8597;
+  --o-no: #0077b6; --o-ru: #d63a50; --o-dz: #2f9e55; --o-ly: #6aa84f; --o-az: #b97400; --o-uk: #7a4fc4; --o-lng: #d4541c; --o-other: #6f8597; --b-entry: #1f2a33; --b-intra: #b5179e;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -129,8 +129,40 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .plabel { font: 600 15px "IBM Plex Mono", monospace; min-width: 110px; text-align: right; }
 @keyframes flow { to { stroke-dashoffset: -28; } }
 .flowline { stroke-linecap: round; fill: none; animation: flow linear infinite; }
+.zmap { position: relative; }
+.ctlrow { display: flex; flex-wrap: wrap; gap: 0 16px; justify-content: space-between; }
+.zsvg { display: block; touch-action: none; cursor: grab; }
+.zsvg:active { cursor: grabbing; }
+.zbase path { vector-effect: non-scaling-stroke; }
+.zctl { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px; }
+.zbtn { width: 32px; height: 32px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: 600 16px "IBM Plex Mono", monospace; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.zbtn:hover { border-color: var(--accent); color: var(--accent); }
+.maplab { font-size: 10.5px; fill: var(--text-2); paint-order: stroke; stroke: var(--sea); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.maplab.strong { fill: var(--text); font-weight: 600; }
+.shipcard { position: absolute; top: 8px; right: 8px; width: 340px; max-height: calc(100% - 16px); overflow: auto; background: var(--panel); border: 1px solid var(--accent); box-shadow: var(--glow), 0 8px 30px rgba(0,0,0,.3); padding: 10px 12px; font: 12px "IBM Plex Mono", monospace; }
+.shipcard .sc-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+.shipcard .sc-h b { font-size: 15px; }
+.shipcard .sc-h .zbtn { width: 26px; height: 26px; flex: none; }
+.shipcard dl { margin: 0; display: grid; grid-template-columns: minmax(0, 118px) minmax(0, 1fr); gap: 4px 10px; }
+.shipcard dt { line-height: 1.35; }
+.shipcard dd { line-height: 1.35; }
+.shipcard dt { color: var(--muted); }
+.shipcard dd { margin: 0; color: var(--text); }
+.aisbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 8px; }
+.aisbar input { font: 13px "IBM Plex Mono", monospace; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); padding: 6px 10px; width: 240px; max-width: 100%; }
+.aisbar input:focus { outline: none; border-color: var(--accent); }
+.aisbar .note { margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.shipchip { font: 11px "IBM Plex Mono", monospace; border: 1px solid var(--line); background: var(--panel-2); color: var(--text-2); padding: 2px 6px; cursor: pointer; }
+.shipchip:hover, .shipchip.on { border-color: var(--accent); color: var(--accent); }
+tr.click { cursor: pointer; }
+tr.click:hover td, tr.click.on td { background: var(--band); }
+.gscale { height: 10px; margin-top: 8px; }
+.gscale-l { display: flex; justify-content: space-between; font: 11px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 3px; }
+.rank .row.me { color: var(--accent); font-weight: 600; }
+.rank .row.eu { color: var(--text-2); font-style: italic; }
 .term-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 12px; }
-.term-cards div { background: var(--panel); padding: 10px; }
+.term-cards > div { background: var(--panel); padding: 10px; }
 .term-cards .k { font: 600 12px "IBM Plex Mono", monospace; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; }
 .term-cards .v { font: 600 20px "IBM Plex Mono", monospace; }
 .term-cards .d { font: 11.5px "IBM Plex Mono", monospace; color: var(--muted); }
@@ -142,6 +174,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 }
 @media (max-width: 560px) {
   .bar { padding: 8px 16px; position: static; } .hero { padding: 32px 16px 24px; } .kpis { padding: 0 16px 8px; } .band-in { padding: 28px 16px; } .part { padding: 36px 16px 6px; }
+  .shipcard { position: static; width: auto; max-height: none; margin-top: 8px; box-shadow: none; }
   .kpi .v { font-size: 22px; } .kpi { padding-right: 8px; margin-right: 8px; } .readout .v { font-size: 20px; } .ecobar { padding: 10px 16px; } footer { padding: 24px 16px; }
 }
 @media (prefers-reduced-motion: reduce) { .brand .dot, .ldot.on, .flowline { animation: none; } }
@@ -191,15 +224,17 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 
 <section class="band"><div class="band-in">
   <div class="side"><div class="no">G1 — GAZODUCS</div><h3>Les grandes artères du gaz européen</h3>
-    <p>Flux physiques entrant dans l'UE aux grands points d'interconnexion (ENTSOG), en GWh par jour. Les particules suivent le débit du jour, l'épaisseur la moyenne sur 30 jours. Tracés schématiques.</p>
+    <p>Des champs de production jusqu'aux frontières de l'UE, puis d'un pays à l'autre&nbsp;: flux physiques quotidiens publiés par les gestionnaires de réseau (ENTSOG), en GWh par jour. Les particules suivent le débit du jour, l'épaisseur la moyenne sur 30 jours. Survolez un tracé ou une frontière pour le détail&nbsp;; zoomez pour les noms.</p>
     <p class="note" id="pipeNote"></p>
   </div>
   <div class="stack">
-    <div class="panel"><div class="ptitle" id="pipeTitle"></div><div id="pipeMap"></div>
+    <div class="panel"><div class="ptitle" id="pipeTitle"></div>
+      <div class="ctlrow"><div class="tabs" id="pFilter"></div><div class="tabs" id="pMode"></div></div>
+      <div id="pipeMap"></div>
       <div class="player"><button class="play" id="pPlay" aria-label="Lecture">▶</button><input type="range" id="pSlider" aria-label="Jour"><div class="plabel" id="pLabel"></div></div>
       <div class="legend" id="pipeLegend"></div></div>
     <div class="two">
-      <div class="panel"><div class="ptitle">Entrées dans l'UE par corridor · TWh par mois (ENTSOG, depuis 2021)</div><div id="corrHist"></div></div>
+      <div class="panel"><div class="ptitle">Entrées dans l'UE par origine · TWh par mois (gazoducs ENTSOG et GNL, depuis 2021)</div><div id="corrHist"></div></div>
       <div class="panel"><div class="ptitle">Importations de l'UE par origine · TWh par mois (Eurostat, depuis 2015)</div><div id="euOrigins"></div><div class="legend" id="euOriginsLegend"></div></div>
     </div>
   </div>
@@ -207,11 +242,14 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 
 <section class="band"><div class="band-in">
   <div class="side"><div class="no">G2 — EN APPROCHE</div><h3>Pétroliers et méthaniers attendus</h3>
-    <p>Navires-citernes de mer déclarant un port français, ou au mouillage tout près d'un terminal&nbsp;: trace des dernières 48 h, route estimée jusqu'au port et capacité estimée d'après leurs dimensions.</p>
+    <p>Navires-citernes de mer déclarant un port français, ou au mouillage tout près d'un terminal. Zoomez jusqu'au port, cliquez un navire ou cherchez-le par son nom&nbsp;: sa fiche, son trajet observé depuis son départ et sa route estimée jusqu'au port déclaré.</p>
     <p class="note" id="aisNote"></p>
   </div>
   <div class="stack">
-    <div class="panel"><div class="ptitle" id="aisTitle"></div><div id="aisMap"></div><div class="legend" id="aisLegend"></div></div>
+    <div class="panel"><div class="ptitle" id="aisTitle"></div>
+      <div class="aisbar"><input type="search" id="aisSearch" list="aisNames" placeholder="Chercher un navire…" aria-label="Chercher un navire par son nom" autocomplete="off"><datalist id="aisNames"></datalist><span class="note" id="aisFound"></span></div>
+      <div id="aisMap"></div><div class="legend" id="aisLegend"></div>
+      <p class="note">Molette, pincement ou boutons pour zoomer, glisser pour se déplacer. Cliquez un navire : trait plein = trajet observé, pointillé = route estimée jusqu'au port déclaré.</p></div>
     <div class="term-cards" id="termCards"></div>
     <div class="panel"><div class="ptitle">Navires retenus</div><div class="tscroll"><table id="aisTable"></table></div></div>
   </div>
@@ -269,6 +307,21 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
     <p>Prix de référence du gaz naturel en Europe (marché TTF), moyenne mensuelle en dollars par million de BTU, publié par le FMI.</p>
   </div>
   <div class="stack"><div class="panel"><div class="ptitle">Gaz naturel, Europe · $/MMBtu (FMI)</div><div id="ttfChart"></div></div></div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">G8 — PRIX PAR PAYS</div><h3>Ce que paient ménages et entreprises</h3>
+    <p>Prix du gaz naturel payé par les consommateurs finals, par pays, chaque semestre depuis 2007 (Eurostat), en centimes d'euro par kWh. Ménages&nbsp;: tranche D2 (20 à 200 GJ par an, un logement chauffé au gaz). Entreprises&nbsp;: tranche I3 (10&nbsp;000 à 100&nbsp;000 GJ par an).</p>
+    <div class="tabs" id="gpSeg"></div><div class="tabs" id="gpTax"></div>
+    <p class="note" id="gpNote"></p>
+  </div>
+  <div class="stack">
+    <div class="mapwrap">
+      <div class="panel"><div class="ptitle" id="gpMapTitle"></div><div id="gpMap"></div><div id="gpScale"></div></div>
+      <div class="panel"><div class="ptitle">Classement</div><div class="rank" id="gpRank"></div></div>
+    </div>
+    <div class="panel"><div class="ptitle" id="gpLineTitle"></div><div id="gpLine"></div><div class="legend" id="gpLegend"></div></div>
+  </div>
 </div></section>
 
 <!-- ======================= PÉTROLE ======================= -->
@@ -363,14 +416,14 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 
 <footer>
   <b>Gaz</b> — <a href="https://agsi.gie.eu" target="_blank" rel="noopener">GIE AGSI+</a> (stocks par pays) et <a href="https://alsi.gie.eu" target="_blank" rel="noopener">GIE ALSI</a> (terminaux GNL), données publiées par Gas Infrastructure Europe, citées avec leur source&nbsp;;
-  <a href="https://transparency.entsog.eu" target="_blank" rel="noopener">ENTSOG Transparency Platform</a> (flux physiques quotidiens aux points d'interconnexion ; le gazoduc Nord Stream et les entrées d'Emden ne sont pas publiés dans ce flux)&nbsp;;
+  <a href="https://transparency.entsog.eu" target="_blank" rel="noopener">ENTSOG Transparency Platform</a> (flux physiques quotidiens aux points d'entrée et à toutes les interconnexions transfrontalières, depuis 2021 ; le gazoduc Nord Stream et les entrées d'Emden ne sont pas publiés dans ce flux ; tracés des gazoducs schématiques, dessinés pour cette page)&nbsp;;
   <a href="https://odre.opendatasoft.com" target="_blank" rel="noopener">ODRÉ</a> (NaTran, Teréga, Storengy), Licence Ouverte 2.0&nbsp;: consommation des distributions publiques et des industriels, températures, signal Ecogaz, stocks par site Teréga&nbsp;;
-  prix du gaz en Europe&nbsp;: FMI, <i>Primary Commodity Prices</i> (série PNGASEUUSDM), via <a href="https://fred.stlouisfed.org/series/PNGASEUUSDM" target="_blank" rel="noopener">FRED</a>, © FMI, reproduit avec mention de la source.<br>
+  prix du gaz en Europe&nbsp;: FMI, <i>Primary Commodity Prices</i> (série PNGASEUUSDM), via <a href="https://fred.stlouisfed.org/series/PNGASEUUSDM" target="_blank" rel="noopener">FRED</a>, © FMI, reproduit avec mention de la source&nbsp;; prix par pays&nbsp;: Eurostat, <span class="mono">nrg_pc_202</span> (ménages, tranche D2) et <span class="mono">nrg_pc_203</span> (non-ménages, tranche I3), © Union européenne, réutilisation autorisée avec mention de la source.<br>
   <b>Importations par origine</b> — Eurostat, <span class="mono">nrg_ti_gasm</span> (gaz et GNL, mensuel), <span class="mono">nrg_ti_oilm</span> (pétrole brut, mensuel), <span class="mono">nrg_ti_sff</span> (houille, annuel), <span class="mono">nrg_cb_sff</span> (bilan des combustibles solides), Comext <span class="mono">DS-045409</span> (uranium, SH 2844), réutilisation libre avec mention de la source. Une partie des fournisseurs de gaz de la France est confidentielle&nbsp;: elle apparaît en « non ventilé ».<br>
-  <b>Navires</b> — positions et données déclarées par les navires (AIS), <a href="https://aisstream.io" target="_blank" rel="noopener">AISStream.io</a>, couverture côtière, instantané horaire. Capacités estimées d'après les dimensions, pas la cargaison réelle&nbsp;; routes estimées par points de passage schématiques. Pavillon déduit de l'identifiant MMSI.<br>
+  <b>Navires</b> — positions et données déclarées par les navires (AIS), <a href="https://aisstream.io" target="_blank" rel="noopener">AISStream.io</a>, couverture côtière, instantané horaire. Capacités estimées d'après les dimensions, pas la cargaison réelle&nbsp;; routes estimées par points de passage schématiques. Pavillon déduit de l'identifiant MMSI. Port de destination décodé depuis le champ Destination (codes UN/LOCODE et noms libres) avec une table locale de ports dont les coordonnées ont été saisies pour cette page&nbsp;; port de départ déduit de l'historique (dernier port où le navire a été vu à quai), l'AIS ne le transmettant pas.<br>
   <b>Carburants</b> — <a href="https://data.economie.gouv.fr/explore/dataset/prix-des-carburants-en-france-flux-instantane-v2/" target="_blank" rel="noopener">Prix des carburants en France, flux instantané v2</a> (ministère de l'Économie, Licence Ouverte), interrogé par votre navigateur&nbsp;; <a href="https://energy.ec.europa.eu/data-and-analysis/weekly-oil-bulletin_en" target="_blank" rel="noopener">Weekly Oil Bulletin</a>, © Union européenne, réutilisation autorisée&nbsp;; Brent&nbsp;: U.S. EIA, série <span class="mono">DCOILBRENTEU</span> via FRED (domaine public).<br>
   <b>Charbon et uranium</b> — production des centrales&nbsp;: RTE éCO2mix (ODRÉ) et API Actual Generation (data.rte-france.com)&nbsp;; prix&nbsp;: FMI (séries PCOALAUUSDM et PURANUSDM) via FRED, © FMI. Les origines détaillées de l'approvisionnement de l'UE publiées par l'Agence d'approvisionnement d'Euratom ne sont pas reprises ici.<br>
-  <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Admin Express IGN, Licence Ouverte)&nbsp;; monde et Europe&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> 2.0.2 (Natural Earth, domaine public). Tracés des gazoducs et routes maritimes&nbsp;: schématiques.
+  <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Admin Express IGN, Licence Ouverte)&nbsp;; monde et Europe&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> 2.0.2 (Natural Earth 110, 50 et 10 m — ce dernier pour les grands zooms sur l'Europe de l'Ouest —, domaine public). Tracés des gazoducs et routes maritimes&nbsp;: schématiques.
 </footer>
 <div class="tip" id="tip"></div>
 
@@ -565,146 +618,318 @@ document.getElementById("wSlider").oninput = e => { stopWorld(); const D = suppl
 
 /* ---------- G1. Gazoducs ---------- */
 const OCOL = () => ({ "Norvège": css("--o-no"), "Russie": css("--o-ru"), "Algérie": css("--o-dz"), "Libye": css("--o-ly"), "Azerbaïdjan": css("--o-az"), "Royaume-Uni": css("--o-uk"), "GNL": css("--o-lng") });
-let pDay = null, pTimer = null;
+// Centres approximatifs (lat, lon) pour orienter les flèches aux frontières ; à défaut, centroïde du fond de carte
+const CENTERS = { RU: [56, 38], NO: [61, 8], UK: [53, -1.5], FR: [46.6, 2.4], DZ: [31, 3], LY: [29, 16], TR: [39.5, 33], DK: [55.8, 9.3], NL: [52.3, 5.6], IT: [43, 12.5],
+  ES: [40, -3.6], GR: [39.5, 22], HR: [45.3, 16], IE: [53.3, -8], FI: [62.5, 25.5], DE: [51, 10], PL: [52, 19], UA: [49, 31], BY: [53.6, 28], MA: [32, -6], AL: [41, 20], SE: [60, 15] };
+const LNG_POS = { ES: [39.65, -0.2, "Espagne (6 terminaux)"], IT: [44.95, 12.55, "Italie (Adriatique, Panigaglia, OLT, Piombino)"], NL: [51.97, 4.05, "Pays-Bas (Gate, Eemshaven)"],
+  BE: [51.33, 3.2, "Belgique (Zeebrugge)"], DE: [53.6, 8.1, "Allemagne (Wilhelmshaven, Brunsbüttel, Mukran…)"], PL: [53.91, 14.26, "Pologne (Świnoujście)"], LT: [55.7, 21.13, "Lituanie (Klaipėda)"],
+  GR: [38.0, 23.4, "Grèce (Revithoussa, Alexandroupolis)"], HR: [45.25, 14.55, "Croatie (Krk)"], PT: [37.94, -8.87, "Portugal (Sines)"], FI: [60.05, 24.0, "Finlande (Inkoo)"] };
+const FR_LNG = { "Dunkerque": [51.04, 2.18], "Montoir-de-Bretagne": [47.3, -2.15], "Fos Tonkin": [43.43, 4.86], "Fos Cavaou": [43.41, 4.89], "Le Havre (FSRU)": [49.47, 0.17] };
+let pIdx = null, pMode = "day", pFilter = "entry", pTimer = null, pView = null;
 function renderPipes() {
-  const C = A.corridors || {}, keys = Object.keys(C); if (!keys.length) return;
-  const days = C[keys.find(k => C[k].days.length)]?.days || [];
-  if (pDay == null) pDay = days.length - 1;
-  const sl = document.getElementById("pSlider"); sl.min = 0; sl.max = days.length - 1; sl.value = pDay;
-  const day = days[pDay]; document.getElementById("pLabel").textContent = day ? new Date(day + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "";
+  const N = A.network; if (!N) return;
+  const n = pMode === "day" ? N.days.length : N.months.length;
+  if (pIdx == null || pIdx >= n) pIdx = n - 1;
+  const sl = document.getElementById("pSlider"); sl.min = 0; sl.max = n - 1; sl.value = pIdx;
+  const label = pMode === "day" ? dLong(N.days[pIdx]) : mLong(N.months[pIdx]);
+  document.getElementById("pLabel").textContent = pMode === "day" ? new Date(N.days[pIdx] + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : mLong(N.months[pIdx]);
+  setTabs("pFilter", [["entry", "Entrées dans l'UE"], ["intra", "Échanges intra-UE"], ["all", "Tout"]], pFilter, v => { pFilter = v; renderPipes(); });
+  setTabs("pMode", [["day", "Jour (1 an)"], ["month", "Mois (depuis 2021)"]], pMode, v => { if (v === pMode) return; stopPipes();
+    // garder la même période en changeant d'échelle
+    if (v === "month") pIdx = Math.max(0, N.months.indexOf(N.days[pIdx].slice(0, 7))); else { const d = N.days.findIndex(x => x.startsWith(N.months[pIdx])); pIdx = d >= 0 ? d : N.days.length - 1; }
+    pMode = v; renderPipes(); });
+  // valeur à l'indice courant (GWh/j) et moyenne 30 j (mode jour) ; en mode mois, la moyenne du mois
+  // jour : dernière valeur publiée sous 3 jours (les gestionnaires publient avec un ou deux jours d'écart)
+  const back = (arr, i) => { for (let k = i; k >= Math.max(0, i - 3); k--) if (arr?.[k] != null) return arr[k]; return null; };
+  const at = s => pMode === "day" ? back(s.v, pIdx) : s.m?.[pIdx] ?? null;
+  const mean = s => { if (pMode === "month") return s.m?.[pIdx] ?? 0; const a = (s.v || []).slice(Math.max(0, pIdx - 29), pIdx + 1).filter(x => x != null); return a.length ? d3.mean(a) : 0; };
   const host = document.getElementById("pipeMap"); host.replaceChildren();
-  const W = widthOf("pipeMap"), H = Math.round(W * (W < 560 ? .95 : .62));
-  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
-  const proj = d3.geoConicConformal().rotate([-15, 0]).center([0, 47]).parallels([35, 60]).fitExtent([[6, 6], [W - 6, H - 6]], { type: "MultiPoint", coordinates: [[-10, 31], [50, 31], [-10, 63], [50, 63]] });
-  const path = d3.geoPath(proj);
-  svg.append("rect").attr("width", W).attr("height", H).attr("fill", css("--sea"));
-  svg.append("g").selectAll("path").data(GW.europe.features).join("path").attr("d", path)
-    .attr("fill", f => EU_IDS.has(f.properties.id) ? css("--land-2") : css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5);
-  const col = OCOL(), val = (c, i) => c.v[i] ?? null;
-  const avg30 = (c, i) => { const s = c.v.slice(Math.max(0, i - 29), i + 1).filter(v => v != null); return s.length ? d3.mean(s) : 0; };
-  const vmax = d3.max(keys, k => d3.max(C[k].v.slice(-400))) || 1;
-  const wsc = d3.scaleSqrt().domain([0, vmax]).range([1, W < 560 ? 9 : 16]);
-  const totals = {};
-  keys.forEach(k => { const c = C[k], i = c.days.indexOf(day); const v = i >= 0 ? val(c, i) : null, a = i >= 0 ? avg30(c, i) : 0;
-    totals[c.origin] = (totals[c.origin] || 0) + (c.name.includes("Melendugno") ? 0 : (v || 0));
-    const line = d3.line().curve(d3.curveCatmullRom.alpha(.5))(c.path.map(([la, lo]) => proj([lo, la])));
-    const g = svg.append("g").style("cursor", "pointer")
-      .on("pointermove", e => showTip(e, [["big", (v != null ? fr(v, 0) : "—") + " GWh/j"], ["moyenne 30 j", fr(a, 0) + " GWh/j"], ["origine", c.origin]], `${c.name} · ${dLong(day)}`)).on("pointerleave", hideTip);
-    g.append("path").attr("d", line).attr("fill", "none").attr("stroke", col[c.origin]).attr("stroke-width", wsc(a)).attr("opacity", v ? .28 : .1).attr("stroke-linecap", "round");
-    if (v > 1) g.append("path").attr("d", line).attr("class", "flowline").attr("stroke", col[c.origin]).attr("stroke-width", Math.max(1.6, wsc(v) * .5))
-      .attr("stroke-dasharray", "1 " + Math.round(Math.max(5, 26 - v / vmax * 22))).style("animation-duration", Math.max(.5, 3 - v / vmax * 2.5) + "s");
-    else g.append("path").attr("d", line).attr("fill", "none").attr("stroke", col[c.origin]).attr("stroke-width", 1).attr("stroke-dasharray", "3 4").attr("opacity", .6);
-    const end = proj([c.path.at(-1)[1], c.path.at(-1)[0]]);
-    g.append("circle").attr("cx", end[0]).attr("cy", end[1]).attr("r", 3.5).attr("fill", col[c.origin]).attr("stroke", css("--bg"));
-    if (W > 560 && v > vmax * .12) g.append("text").attr("x", end[0] + 6).attr("y", end[1] - 6).attr("class", "mono").style("font-size", "10.5px").style("fill", css("--text-2")).text(fr(v, 0));
-  });
-  // GNL : émissions des terminaux de l'UE (ALSI) en pastille
-  const L = A.alsi?.UE; let lng = null;
-  if (L) { const i = L.days.indexOf(day); lng = i >= 0 ? L.send[i] : null; if (lng != null) totals["GNL"] = lng; }
-  const tt = Object.entries(totals).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
-  document.getElementById("pipeTitle").textContent = `${dLong(day)} · ${fr(d3.sum(tt, t => t[1]), 0)} GWh entrés dans l'UE (gazoducs suivis + GNL)`;
-  legend("pipeLegend", Object.entries(col).map(([o, c]) => [c, `${o}${totals[o] != null ? " · " + fr(totals[o], 0) + " GWh/j" : ""}`]));
-  document.getElementById("pipeNote").textContent = "Russie : transit par l'Ukraine (arrêté le 1er janvier 2025), TurkStream, Biélorussie. Nord Stream (arrêté en 2022) et les entrées d'Emden ne sont pas publiés dans ce flux ENTSOG. GNL : gaz regazéifié par l'ensemble des terminaux de l'UE.";
+  const W = widthOf("pipeMap"), H = Math.round(W * (W < 560 ? 1.15 : .66));
+  const proj = d3.geoConicConformal().rotate([-18, 0]).parallels([35, 62]).fitExtent([[4, 4], [W - 4, H - 4]], { type: "MultiPoint", coordinates: [[-10, 30], [48, 30], [-10, 66], [48, 66]] });
+  const col = OCOL(), names = N.names || {}, nm = c => names[c] || c;
+  const centers = {}; GW.europe.features.forEach(f => { const c = Object.keys(N.iso || {}).find(k => N.iso[k] === f.properties.id); if (c) { const g = d3.geoCentroid(f); centers[c] = [g[1], g[0]]; } });
+  Object.assign(centers, CENTERS);
+  const pipes = N.pipes.filter(() => pFilter !== "intra");
+  // en vue « entrées », les frontières déjà dessinées par un gazoduc depuis l'origine ne sont pas doublées d'une flèche
+  const PIPED = new Set(["FR|NO", "BE|NO", "DE|NO", "DK|NO", "NO|UK", "DZ|IT", "DZ|ES", "IT|LY", "GR|TR", "AL|IT", "BG|TR", "BE|UK", "NL|UK", "BY|LT", "FI|RU", "ES|MA", "DE|RU"]);
+  const borders = Object.entries(N.borders).filter(([k, b]) => pFilter === "all" ? !PIPED.has(k) || b.cat === "intra" : b.cat === pFilter && !(pFilter === "entry" && PIPED.has(k)));
+  const vmax = Math.max(d3.max(N.pipes, p => d3.max(p.v || [0])) || 1, 1);
+  const wsc = d3.scaleSqrt().domain([0, vmax]).range([1, W < 560 ? 8 : 14]);
+  const bsc = d3.scaleSqrt().domain([0, vmax]).range([4, W < 560 ? 10 : 15]);
+  const L = A.alsi || {};
+  const lngAt = name => { const s = L[name]; if (!s) return null; if (pMode === "day") { const d = N.days[pIdx]; let i = s.days.indexOf(d); if (i < 0 && d > s.days.at(-1)) i = s.days.length - 1; return i >= 0 ? back(s.send, i) : null; }
+    const m = (s.monthly || []).find(x => x[0] === N.months[pIdx]); return m ? m[1] * 1000 / new Date(+N.months[pIdx].slice(0, 4), +N.months[pIdx].slice(5), 0).getDate() : null; };
+  let M;
+  const draw = t => {
+    const P = ll => t.apply(proj([ll[1], ll[0]])), o = M.over; o.selectAll("*").remove();
+    const curve = d3.line().curve(d3.curveCatmullRom.alpha(.5));
+    // gazoducs depuis l'origine
+    pipes.forEach(p => { const v = at(p), a = mean(p), c = col[p.origin] || css("--o-other"), d = curve(p.path.map(P));
+      const closed = p.status === "fermé", hidden = p.status === "non publié";
+      const tipRows = () => [["big", v != null ? fr(v, 0) + " GWh/j" : hidden ? "non publié" : "—"], [pMode === "day" ? "moyenne 30 j" : "moyenne du mois", fr(a, 0) + " GWh/j"],
+        ["origine", `${p.origin} · ${p.from}`], ["arrivée", p.to], ["état", `${p.status}${p.since ? " · " + (closed ? "depuis " : "") + p.since : ""}`], ...(p.note ? [["", p.note]] : [])];
+      const g = o.append("g").style("cursor", "pointer").on("pointermove", e => showTip(e, tipRows(), `${p.name} · ${label}`)).on("pointerleave", hideTip);
+      g.append("path").attr("d", d).attr("fill", "none").attr("stroke", "transparent").attr("stroke-width", 14);
+      if (closed || hidden) g.append("path").attr("d", d).attr("fill", "none").attr("stroke", closed ? css("--muted") : c).attr("stroke-width", 1.6).attr("stroke-dasharray", closed ? "6 4" : "1 4").attr("stroke-linecap", "round").attr("opacity", .9);
+      if (!hidden) g.append("path").attr("d", d).attr("fill", "none").attr("stroke", c).attr("stroke-width", wsc(a)).attr("opacity", v ? .3 : .12).attr("stroke-linecap", "round");
+      if (v > 1) g.append("path").attr("d", d).attr("class", "flowline").attr("stroke", c).attr("stroke-width", Math.max(1.6, wsc(v) * .5))
+        .attr("stroke-dasharray", "1 " + Math.round(Math.max(5, 26 - v / vmax * 22))).style("animation-duration", Math.max(.5, 3 - v / vmax * 2.5) + "s");
+      const o0 = P(p.path[0]), e = P(p.path.at(-1));
+      o.append("circle").attr("cx", o0[0]).attr("cy", o0[1]).attr("r", 3).attr("fill", "none").attr("stroke", c).attr("stroke-width", 1.5);
+      o.append("circle").attr("cx", e[0]).attr("cy", e[1]).attr("r", 3.2).attr("fill", c).attr("stroke", css("--bg"));
+      // étiquettes : état des tracés fermés / non publiés, noms des autres au zoom
+      if (((closed || hidden) && (W >= 560 || t.k >= 2)) || t.k >= 2 || W > 900) { const mid = P(p.path[Math.floor(p.path.length / 2)]);
+        o.append("text").attr("x", mid[0] + 6).attr("y", mid[1] - 5).attr("class", "mono maplab" + (closed || hidden ? "" : " strong"))
+          .text(closed ? `${p.name.split(/ \(| \/ /)[0]} · fermé ${p.since}` : hidden ? `${p.name} · non publié` : `${p.name}${v != null && (t.k >= 2 || W > 900) ? " · " + fr(v, 0) : ""}`); }
+      if (t.k >= 2.5) o.append("text").attr("x", o0[0] + 6).attr("y", o0[1] + 12).attr("class", "mono maplab").text(p.from); });
+    // GNL : émissions des terminaux par pays (ALSI) ; France terminal par terminal
+    if (pFilter !== "intra") { const lsc = d3.scaleSqrt().domain([0, 800]).range([2, W < 560 ? 10 : 15]);
+      [...Object.entries(LNG_POS).map(([c, [la, lo, n]]) => ["pays:" + c, la, lo, n]), ...Object.entries(FR_LNG).map(([n, [la, lo]]) => [n, la, lo, "France · " + n])].forEach(([k, la, lo, n]) => {
+        const v = lngAt(k); if (v == null) return; const [x, y] = P([la, lo]);
+        o.append("circle").attr("cx", x).attr("cy", y).attr("r", lsc(Math.max(0, v))).attr("fill", col.GNL).attr("fill-opacity", .3).attr("stroke", col.GNL).attr("stroke-width", 1.4).style("cursor", "pointer")
+          .on("pointermove", e => showTip(e, [["big", fr(v, 0) + " GWh/j"], ["", "gaz regazéifié et injecté dans le réseau"]], `GNL · ${n} · ${label}`)).on("pointerleave", hideTip); }); }
+    // frontières : flèche dans le sens net du jour, épaisseur selon le flux net, particules selon le débit
+    borders.forEach(([key, b]) => { const ab = b.dirs[`${b.a}>${b.b}`], ba = b.dirs[`${b.b}>${b.a}`];
+      const vab = ab ? at(ab) : null, vba = ba ? at(ba) : null, net = (vab || 0) - (vba || 0);
+      const mab = ab ? mean(ab) : 0, mba = ba ? mean(ba) : 0;
+      if (vab == null && vba == null) return;
+      const [from, to] = net >= 0 ? [b.a, b.b] : [b.b, b.a], ca = centers[from], cb = centers[to]; if (!ca || !cb) return;
+      const [x, y] = P(b.pos), pa = P(ca), pb = P(cb); let dx = pb[0] - pa[0], dy = pb[1] - pa[1]; const len = Math.hypot(dx, dy) || 1; dx /= len; dy /= len;
+      const v = Math.abs(net), w = bsc(v), Lh = 10 + w * 1.4, c = b.cat === "intra" ? css("--b-intra") : b.cat === "entry" ? css("--b-entry") : css("--muted");
+      const x0 = x - dx * Lh, y0 = y - dy * Lh, x1 = x + dx * Lh, y1 = y + dy * Lh;
+      const g = o.append("g").style("cursor", "pointer").on("pointermove", e => showTip(e, [["big", `${fr(v, 0)} GWh/j`], [`${nm(b.a)} → ${nm(b.b)}`, vab != null ? fr(vab, 0) : "—"], [`${nm(b.b)} → ${nm(b.a)}`, vba != null ? fr(vba, 0) : "—"],
+        [pMode === "day" ? "net, moyenne 30 j" : "net, moyenne du mois", `${fr(Math.abs(mab - mba), 0)} GWh/j ${mab >= mba ? nm(b.a) + " → " + nm(b.b) : nm(b.b) + " → " + nm(b.a)}`],
+        ...b.points.map(pt => { const mi = pMode === "month" ? pIdx : N.months.indexOf(N.days[pIdx].slice(0, 7)); const f = Object.entries(pt.dirs).map(([d, s]) => [d, s[mi]]).filter(([, x]) => x);
+          return [pt.label.slice(0, 34), f.length ? f.map(([d, x]) => `${d.replace(">", "→")} ${fr(x, 0)}`).join(" · ") : "—"]; }).slice(0, 8)],
+        `${nm(from)} → ${nm(to)} · ${label}${b.points.length ? " · points : moyenne du mois" : ""}`)).on("pointerleave", hideTip);
+      g.append("circle").attr("cx", x).attr("cy", y).attr("r", Lh + 4).attr("fill", "transparent");
+      if (v < .5) { g.append("circle").attr("cx", x).attr("cy", y).attr("r", 3).attr("fill", "none").attr("stroke", c).attr("opacity", .6); return; }
+      g.append("line").attr("x1", x0).attr("y1", y0).attr("x2", x1).attr("y2", y1).attr("stroke", c).attr("stroke-width", w).attr("opacity", .35).attr("stroke-linecap", "round");
+      g.append("line").attr("x1", x0).attr("y1", y0).attr("x2", x1).attr("y2", y1).attr("class", "flowline").attr("stroke", c).attr("stroke-width", Math.max(1.6, w * .45))
+        .attr("stroke-dasharray", "1 7").style("animation-duration", Math.max(.5, 2.5 - v / vmax * 2) + "s");
+      const ah = 5 + w * .5; g.append("path").attr("d", `M${x1 + dx * ah},${y1 + dy * ah}L${x1 - dy * ah * .8},${y1 + dx * ah * .8}L${x1 + dy * ah * .8},${y1 - dx * ah * .8}Z`).attr("fill", c);
+      if (t.k >= 1.8 || W > 900) o.append("text").attr("x", x + 8).attr("y", y - Lh * .6 - 2).attr("class", "mono maplab").text(fr(v, 0)); });
+  };
+  let showDetail = () => {};
+  M = zoomMap(host, W, H, { kmax: 16, onZoom: t => { draw(t); showDetail(t.k); }, onEnd: t => { pView = t; } });
+  M.base.append("g").selectAll("path").data(GW.world.features).join("path").attr("d", d3.geoPath(proj)).attr("fill", css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5);
+  showDetail = drawBasemap(M, proj, "pipe", 4);
+  M.base.selectAll("g path").filter(f => f && EU_IDS.has(f.properties.id)).attr("fill", f => f.properties.id === "250" ? css("--france") : css("--land-2"));
+  if (pView) M.set(pView); else draw(d3.zoomIdentity);
+  // totaux : entrées dans l'UE (frontières hors UE → UE) + GNL de l'UE
+  let entry = 0; Object.values(N.borders).forEach(b => { if (b.cat !== "entry") return; const inEU = EU_IDS.has(N.iso[b.a]) ? b.a : b.b, out = inEU === b.a ? b.b : b.a; const s = b.dirs[`${out}>${inEU}`]; entry += s ? at(s) || 0 : 0; });
+  const lngEU = lngAt("UE");
+  document.getElementById("pipeTitle").textContent = `${label} · ${fr(entry, 0)} GWh/j entrés dans l'UE par gazoduc${lngEU != null ? ` + ${fr(lngEU, 0)} GWh/j de GNL` : ""}`;
+  legend("pipeLegend", [...Object.entries(col).map(([o, c]) => [c, o]), [css("--b-entry"), "frontière : entrée dans l'UE"], [css("--b-intra"), "frontière intra-UE"], [css("--muted"), "fermé / hors UE"]]);
+  document.getElementById("pipeNote").textContent = "Tracés schématiques dessinés d'après les points de passage connus, depuis les zones de production. Flèches aux frontières : flux net du jour entre deux pays (somme des points d'interconnexion ENTSOG ; quand un point virtuel regroupe des points encore publiés, la plus grande des deux sommes est retenue). Nord Stream et Emden ne sont pas publiés ; l'historique ENTSOG commence en 2021.";
   // historiques
-  const months = [...new Set(keys.flatMap(k => C[k].monthly.map(m => m[0])))].sort();
-  const origins = Object.keys(col).filter(o => o !== "GNL");
-  const series = origins.map(o => ({ name: o, col: col[o], v: months.map(m => d3.sum(keys.filter(k => C[k].origin === o && !C[k].name.includes("Melendugno")), k => (C[k].monthly.find(x => x[0] === m) || [0, 0])[1])) }));
-  if (L) series.push({ name: "GNL", col: col.GNL, v: months.map(m => (L.monthly.find(x => x[0] === m) || [0, 0])[1]) });
+  const months = N.months, origins = Object.keys(col).filter(o => o !== "GNL"), dim = m => new Date(+m.slice(0, 4), +m.slice(5), 0).getDate();
+  const series = origins.map(o => ({ name: o, col: col[o], v: months.map((m, i) => d3.sum(N.pipes.filter(p => p.origin === o && p.id !== "tap"), p => (p.m[i] || 0) * dim(m) / 1000)) }));
+  if (L.UE) series.push({ name: "GNL", col: col.GNL, v: months.map(m => (L.UE.monthly.find(x => x[0] === m) || [0, 0])[1]) });
   stackedBars("corrHist", months, series.filter(s => d3.sum(s.v)), "TWh", { xfmt: m => m.slice(5) === "01" ? m.slice(0, 4) : "", tfmt: mLong });
-  const I = A.imports?.gasEU, IL = A.imports?.lngEU;
+  const I = A.imports?.gasEU;
   if (I) { const pick = [["RU", "Russie (gazoduc + GNL)", col["Russie"]], ["NO", "Norvège", col["Norvège"]], ["US", "États-Unis (GNL)", col.GNL], ["DZ", "Algérie", col["Algérie"]], ["QA", "Qatar (GNL)", "#2ee6c5"], ["AZ", "Azerbaïdjan", col["Azerbaïdjan"]]];
     const ser = pick.filter(([k]) => I.partners[k]).map(([k, n, c]) => ({ name: n, col: c, pts: I.months.map((m, i) => [monthDate(m), I.partners[k].v[i]]), w: k === "RU" ? 2.6 : 1.6 }));
     lineChart("euOrigins", ser, v => fr(v, 0) + " TWh", null, null, { zero: true }); legend("euOriginsLegend", ser.map(s => [s.col, s.name]), true); }
 }
 function stopPipes() { clearInterval(pTimer); pTimer = null; document.getElementById("pPlay").textContent = "▶"; }
-document.getElementById("pPlay").onclick = () => { if (pTimer) return stopPipes(); const n = +document.getElementById("pSlider").max; if (pDay >= n) pDay = Math.max(0, n - 365);
-  document.getElementById("pPlay").textContent = "❚❚"; pTimer = setInterval(() => { pDay += 3; if (pDay >= n) { pDay = n; stopPipes(); } renderPipes(); }, 160); };
-document.getElementById("pSlider").oninput = e => { stopPipes(); pDay = +e.target.value; renderPipes(); };
+document.getElementById("pPlay").onclick = () => { if (pTimer) return stopPipes(); const n = +document.getElementById("pSlider").max; if (pIdx >= n) pIdx = 0;
+  document.getElementById("pPlay").textContent = "❚❚"; pTimer = setInterval(() => { pIdx += pMode === "day" ? 3 : 1; if (pIdx >= n) { pIdx = n; stopPipes(); } renderPipes(); }, pMode === "day" ? 160 : 400); };
+document.getElementById("pSlider").oninput = e => { stopPipes(); pIdx = +e.target.value; renderPipes(); };
+
+/* ---------- Carte zoomable générique (navires, gazoducs) ---------- */
+// Fond (base) transformé par d3.zoom ; surcouche (over) redessinée à chaque zoom pour garder pictos et textes à taille constante
+function zoomMap(host, W, H, opts = {}) {
+  const wrap = el("div", "zmap"); host.append(wrap);
+  const svg = d3.select(wrap).append("svg").attr("width", W).attr("height", H).attr("class", "zsvg");
+  svg.append("rect").attr("width", W).attr("height", H).attr("fill", css("--sea"));
+  const base = svg.append("g").attr("class", "zbase"), over = svg.append("g");
+  let cur = d3.zoomIdentity;
+  const zoom = d3.zoom().scaleExtent([1, opts.kmax || 64]).translateExtent([[-W * .6, -H * .6], [W * 1.6, H * 1.6]])
+    .on("zoom", e => { cur = e.transform; base.attr("transform", cur); opts.onZoom && opts.onZoom(cur); })
+    .on("end", e => opts.onEnd && opts.onEnd(e.transform));
+  svg.call(zoom);
+  const ctl = el("div", "zctl");
+  [["+", "Zoomer", () => svg.transition().duration(300).call(zoom.scaleBy, 2)], ["−", "Dézoomer", () => svg.transition().duration(300).call(zoom.scaleBy, .5)],
+   ["⌂", "Recentrer", () => svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity)]].forEach(([t, l, f]) => {
+    const b = el("button", "zbtn", t); b.title = l; b.setAttribute("aria-label", l); b.onclick = f; ctl.append(b); });
+  wrap.append(ctl);
+  // cadrer un ensemble de points écran (à l'échelle 1) : zoom animé
+  const fly = (pts, kmax = 24, kmin = 1, padR = 0) => { const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    const [x0, x1] = d3.extent(xs), [y0, y1] = d3.extent(ys), w = W - padR;  // padR : place prise par une fiche à droite
+    const k = Math.max(kmin, Math.min(kmax, .75 / Math.max((x1 - x0) / w, (y1 - y0) / H, 1e-6)));
+    svg.transition().duration(900).call(zoom.transform, d3.zoomIdentity.translate(w / 2, H / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2)); };
+  return { svg, base, over, zoom, fly, wrap, t: () => cur, set: t => svg.call(zoom.transform, t) };
+}
+// Fond Natural Earth 10 m (Europe de l'Ouest) chargé seulement aux grands zooms
+const COAST_SRC = "geo_coast10.js?v=1ea9e11a66";
+let coastReq = null;
+function loadCoast() { if (window.GEOC) return Promise.resolve(); if (!coastReq) coastReq = new Promise((res, rej) => { const s = document.createElement("script"); s.src = COAST_SRC; s.onload = res; s.onerror = rej; document.head.append(s); }); return coastReq; }
+// Fond de carte : 50 m partout, 10 m dans son rectangle (le 50 m y est masqué) dès que le zoom le justifie
+function drawBasemap(M, proj, idp, detailK = 3) {
+  const path = d3.geoPath(proj), fill = f => f.properties.id === "250" ? css("--france") : css("--land");
+  const g50 = M.base.append("g"), g10 = M.base.append("g").style("display", "none");
+  g50.selectAll("path").data(GW.europe.features).join("path").attr("d", path).attr("fill", fill).attr("stroke", css("--line")).attr("stroke-width", .6);
+  let ready = false;
+  const show = k => { if (k < detailK) { g10.style("display", "none"); g50.attr("clip-path", null); return; }
+    if (!ready) { loadCoast().then(() => { if (ready || !window.GEOC) return; ready = true;
+      const [x0, y0, x1, y1] = GEOC.box, ring = [];
+      for (let i = 0; i <= 40; i++) ring.push([x0 + (x1 - x0) * i / 40, y0]); for (let i = 0; i <= 40; i++) ring.push([x1, y0 + (y1 - y0) * i / 40]);
+      for (let i = 40; i >= 0; i--) ring.push([x0 + (x1 - x0) * i / 40, y1]); for (let i = 40; i >= 0; i--) ring.push([x0, y0 + (y1 - y0) * i / 40]);
+      const pr = ring.map(p => proj(p)), [W, H] = [+M.svg.attr("width"), +M.svg.attr("height")];
+      M.svg.append("defs").append("clipPath").attr("id", idp + "clip").append("path").attr("clip-rule", "evenodd")
+        .attr("d", `M${-W * 50},${-H * 50}H${W * 50}V${H * 50}H${-W * 50}Z M${pr.map(p => p.join(",")).join("L")}Z`);
+      g10.selectAll("path").data(GEOC.features).join("path").attr("d", path).attr("fill", fill).attr("stroke", css("--text-2")).attr("stroke-opacity", .35).attr("stroke-width", .7);
+      show(M.t().k); }); return; }
+    g10.style("display", null); g50.attr("clip-path", `url(#${idp}clip)`); };
+  return show;
+}
 
 /* ---------- G2. Navires en approche ---------- */
 const TERMS = { "Le Havre-Rouen": [49.55, 0.10], "Dunkerque": [51.05, 2.25], "Montoir-Donges": [47.30, -2.10], "Fos-Lavéra": [43.40, 4.90], "Gironde": [45.20, -0.75], "La Rochelle": [46.16, -1.22], "Sète": [43.40, 3.70] };
 // Points de passage maritimes schématiques (lat, lon) et voisinages
-const WP = { GIB: [35.95, -5.6], GATA: [36.6, -2.0], VALM: [39.5, 1.5], LION: [42.6, 4.2], STV: [36.9, -9.4], FIN: [43.3, -9.8], BISC: [45.5, -3.5], OUE: [48.4, -5.6],
-  LOIRE: [47.05, -2.6], CHAN: [49.9, -3.0], WIGHT: [50.2, -1.0], SEINE: [49.75, -0.2], PAS: [50.95, 1.45], GIR: [45.6, -1.6] };
-const WP_EDGES = [["GIB", "GATA"], ["GATA", "VALM"], ["VALM", "LION"], ["GIB", "STV"], ["STV", "FIN"], ["FIN", "BISC"], ["FIN", "OUE"], ["BISC", "GIR"], ["BISC", "LOIRE"], ["OUE", "LOIRE"], ["OUE", "CHAN"], ["CHAN", "WIGHT"], ["WIGHT", "SEINE"], ["WIGHT", "PAS"], ["BISC", "OUE"]];
-const TERM_WP = { "Le Havre-Rouen": "SEINE", "Dunkerque": "PAS", "Montoir-Donges": "LOIRE", "Fos-Lavéra": "LION", "Gironde": "GIR", "La Rochelle": "GIR", "Sète": "LION" };
+const WP = { GIB: [35.95, -5.6], GATA: [36.6, -2.0], VALM: [39.5, 1.5], LION: [42.6, 4.2], LIG: [43.4, 7.8], STV: [36.9, -9.4], FIN: [43.3, -9.8], BISC: [45.5, -3.5], OUE: [48.4, -5.6],
+  LOIRE: [47.05, -2.6], CHAN: [49.9, -3.0], WIGHT: [50.2, -1.0], SEINE: [49.75, -0.2], PAS: [50.95, 1.45], NSEA: [51.7, 2.8], GIR: [45.6, -1.6], SARD: [38.6, 8.0], SICI: [37.4, 11.6] };
+const WP_EDGES = [["GIB", "GATA"], ["GATA", "VALM"], ["VALM", "LION"], ["LION", "LIG"], ["VALM", "SARD"], ["SARD", "SICI"], ["GATA", "SARD"], ["GIB", "STV"], ["STV", "FIN"], ["FIN", "BISC"], ["FIN", "OUE"],
+  ["BISC", "GIR"], ["BISC", "LOIRE"], ["OUE", "LOIRE"], ["OUE", "CHAN"], ["CHAN", "WIGHT"], ["WIGHT", "SEINE"], ["WIGHT", "PAS"], ["BISC", "OUE"], ["PAS", "NSEA"], ["SEINE", "PAS"]];
 const nmd = (a, b) => { const r = Math.PI / 180, la1 = a[0] * r, la2 = b[0] * r, dl = (b[1] - a[1]) * r, dp = la2 - la1;
   return 3440.065 * 2 * Math.asin(Math.sqrt(Math.sin(dp / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dl / 2) ** 2)); };
-function route(from, term) {
-  const goal = TERM_WP[term]; if (!goal) return [from, TERMS[term]];
-  const dest = TERMS[term];
+// Route maritime schématique (plus court chemin entre points de passage) de from à dest, en [lat, lon]
+function routeTo(from, dest) {
   if (nmd(from, dest) < 40) return [from, dest];
   const nodes = Object.keys(WP), adj = Object.fromEntries(nodes.map(n => [n, []]));
   WP_EDGES.forEach(([a, b]) => { const d = nmd(WP[a], WP[b]); adj[a].push([b, d]); adj[b].push([a, d]); });
-  const start = nodes.reduce((best, n) => nmd(from, WP[n]) < nmd(from, WP[best]) ? n : best, nodes[0]);
+  const near = p => nodes.reduce((best, n) => nmd(p, WP[n]) < nmd(p, WP[best]) ? n : best, nodes[0]);
+  const start = near(from), goal = near(dest);
+  if (start === goal) return [from, dest];
   const dist = { [start]: 0 }, prev = {}, todo = new Set(nodes);
   while (todo.size) { let u = null; todo.forEach(n => { if (dist[n] != null && (u == null || dist[n] < dist[u])) u = n; }); if (u == null) break; todo.delete(u);
     adj[u].forEach(([v, d]) => { if (dist[v] == null || dist[u] + d < dist[v]) { dist[v] = dist[u] + d; prev[v] = u; } }); }
   const seq = []; for (let n = goal; n; n = prev[n]) { seq.unshift(n); if (n === start) break; }
   if (seq[0] !== start) return [from, dest];
+  // ne pas revenir en arrière vers le premier point de passage s'il est derrière le navire
+  if (seq.length > 1 && nmd(from, WP[seq[1]]) < nmd(WP[seq[0]], WP[seq[1]])) seq.shift();
   return [from, ...seq.map(n => WP[n]), dest];
 }
 const pathNm = pts => d3.sum(pts.slice(1), (p, i) => nmd(pts[i], p));
 function etaDeclared(e, now) { if (!e || !e[0] || !e[1] || e[0] > 12 || e[1] > 31) return null; const d = new Date(Date.UTC(now.getUTCFullYear(), e[0] - 1, e[1], e[2] < 24 ? e[2] : 0, e[3] < 60 ? e[3] : 0));
   if (d - now < -60 * 864e5) d.setUTCFullYear(d.getUTCFullYear() + 1); return d; }
 function shipIcon(kind) { return kind === "lng" ? "M0,-9 L4,-5 L4,8 L-4,8 L-4,-5 Z M0,-3 a2.2,2.2 0 1,0 0.01,0 M0,3 a2.2,2.2 0 1,0 0.01,0" : "M0,-9 L4,-4 L4,8 L-4,8 L-4,-4 Z"; }
+const dtShort = d => d ? d.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—";
+const CAPS = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
+let aisSel = null, aisView = null;
 function renderAIS() {
   const S = A.ais; const host = document.getElementById("aisMap"); host.replaceChildren();
   if (!S?.ships?.length) { host.append(el("p", "note", "Pas d'instantané AIS disponible.")); return; }
   const now = new Date(S.t * 1000);
-  const W = widthOf("aisMap"), H = Math.round(W * (W < 560 ? 1.05 : .78));
-  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
-  const proj = d3.geoConicConformal().rotate([-1.5, 0]).parallels([42, 50]).fitExtent([[6, 6], [W - 6, H - 6]], { type: "MultiPoint", coordinates: [[-10.5, 35.5], [10, 35.5], [-10.5, 52], [10, 52]] });
-  const path = d3.geoPath(proj);
-  svg.append("rect").attr("width", W).attr("height", H).attr("fill", css("--sea"));
-  svg.append("g").selectAll("path").data(GW.europe.features).join("path").attr("d", path).attr("fill", f => f.properties.id === "250" ? css("--france") : css("--land"))
-    .attr("stroke", css("--line")).attr("stroke-width", .6);
+  const W = widthOf("aisMap"), H = Math.round(W * (W < 560 ? 1.15 : .7));
+  const proj = d3.geoConicConformal().rotate([-1.5, 0]).parallels([42, 50]).fitExtent([[4, 4], [W - 4, H - 4]], { type: "MultiPoint", coordinates: [[-12, 35], [14, 35], [-12, 55.5], [14, 55.5]] });
   const ships = S.ships.map(s => { const term = (s.terminal || "").replace(" (à proximité)", "");
-    const r = s.sog > 1 && TERMS[term] ? route([s.lat, s.lon], term) : null; const dist = r ? pathNm(r) : TERMS[term] ? nmd([s.lat, s.lon], TERMS[term]) : null;
+    const pos = [s.lat, s.lon], dest = s.port ? [s.port.lat, s.port.lon] : TERMS[term] || null;
+    const arrived = s.atPort && (!s.port || s.atPort.name === s.port.name || nmd(pos, dest) < 6);
+    const r = dest && !arrived && (s.sog > 1 || nmd(pos, dest) > 8) ? routeTo(pos, dest) : null;
+    const dist = r ? pathNm(r) : dest ? nmd(pos, dest) : null;
     const etaEst = r && s.sog > 3 ? new Date(now.getTime() + dist / s.sog * 3600e3) : null;
-    return { ...s, term, r, dist, etaEst, etaDecl: etaDeclared(s.eta, now) }; });
-  // terminaux
-  Object.entries(TERMS).forEach(([n, [la, lo]]) => { const p = proj([lo, la]); svg.append("rect").attr("x", p[0] - 4).attr("y", p[1] - 4).attr("width", 8).attr("height", 8).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.5);
-    if (W > 520) svg.append("text").attr("x", p[0] + 7).attr("y", p[1] + 4).attr("class", "mono").style("font-size", "10.5px").style("fill", css("--text-2")).text(n); });
+    return { ...s, term, r, dist, etaEst, arrived, etaDecl: etaDeclared(s.eta, now), key: String(s.mmsi) }; });
   const colOf = s => s.cap?.kind === "lng" ? css("--o-lng") : css("--oil");
-  // routes estimées
-  ships.forEach(s => { if (!s.r) return; svg.append("path").attr("d", d3.line().curve(d3.curveCatmullRom.alpha(.5))(s.r.map(([la, lo]) => proj([lo, la])))).attr("fill", "none")
-    .attr("stroke", colOf(s)).attr("stroke-dasharray", "2 5").attr("stroke-width", 1.2).attr("opacity", .7); });
-  // traces passées qui s'estompent
-  ships.forEach(s => { const tr = (s.track || []).filter(p => p[1] != null); if (tr.length < 2) return; const t0 = tr[0][0], t1 = tr.at(-1)[0];
-    for (let i = 1; i < tr.length; i++) { const a = proj([tr[i - 1][2], tr[i - 1][1]]), b = proj([tr[i][2], tr[i][1]]);
-      svg.append("line").attr("x1", a[0]).attr("y1", a[1]).attr("x2", b[0]).attr("y2", b[1]).attr("stroke", colOf(s)).attr("stroke-width", 1.6).attr("opacity", .15 + .75 * (tr[i][0] - t0) / Math.max(1, t1 - t0)); } });
-  // navires
-  const sc = d3.scaleLinear().domain([80, 350]).range([.7, 1.7]).clamp(true);
-  ships.forEach(s => { const p = proj([s.lon, s.lat]); const ang = s.hdg != null && s.hdg < 360 ? s.hdg : s.cog || 0;
-    const g = svg.append("g").attr("transform", `translate(${p[0]},${p[1]}) rotate(${ang}) scale(${sc(s.len || 100)})`).style("cursor", "pointer")
-      .on("pointermove", e => showTip(e, [["big", s.name || s.mmsi], ["type", s.cap?.kind === "lng" ? "méthanier" : "pétrolier / chimiquier"], ["pavillon", s.flag || "—"],
-        ["longueur · tirant d'eau", `${s.len || "—"} m · ${fr(s.draught, 1)} m`], ["destination", s.dest || "—"], ["vitesse", fr(s.sog, 1) + " nœuds"],
-        ["ETA déclarée", s.etaDecl ? s.etaDecl.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"],
-        ["ETA estimée", s.etaEst ? s.etaEst.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : s.sog <= 1 ? "à quai / au mouillage" : "—"],
-        ["capacité estimée", s.cap?.kind === "lng" ? `${fr(s.cap.m3 / 1000, 0)} k m³ GNL ≈ ${fr(s.cap.gwh, 0)} GWh` : `${fr(s.cap?.dwt / 1000, 0)} kt (${s.cap?.cls})`],
-        ["chargement (inféré)", s.cap?.laden == null ? "inconnu" : s.cap.laden ? "plutôt chargé" : "plutôt lège"]], s.terminal)).on("pointerleave", hideTip);
-    g.append("path").attr("d", shipIcon(s.cap?.kind)).attr("fill", colOf(s)).attr("stroke", css("--bg")).attr("stroke-width", .8);
-    if (s.sog > 1) g.append("animateTransform").attr("attributeName", "transform").attr("type", "translate").attr("values", "0,0;0,-2;0,0").attr("dur", "2s").attr("repeatCount", "indefinite").attr("additive", "sum"); });
+  let M;
+  const draw = t => {
+    const P = ll => t.apply(proj([ll[1], ll[0]])), o = M.over; o.selectAll("*").remove();
+    const line = d3.line(), sel = ships.find(s => s.key === aisSel);
+    // ports et terminaux : les noms apparaissent avec le zoom
+    const minRank = t.k >= 7 ? 3 : t.k >= 2.5 ? 2 : 1;
+    (S.ports || []).filter(p => p.rank <= minRank).forEach(p => { const [x, y] = P([p.lat, p.lon]); if (x < -20 || y < -20 || x > W + 20 || y > H + 20) return;
+      if (p.rank === 1) o.append("rect").attr("x", x - 4).attr("y", y - 4).attr("width", 8).attr("height", 8).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.5);
+      else o.append("circle").attr("cx", x).attr("cy", y).attr("r", 2.5).attr("fill", css("--accent")).attr("opacity", .8);
+      if (W > 520 || t.k >= 2 || p.rank > 1) o.append("text").attr("x", x + 7).attr("y", y + 4).attr("class", "mono maplab").style("font-size", p.rank === 1 ? "11px" : "10px")
+        .text(p.name + (t.k >= 7 && p.code ? ` · ${p.code}` : "")); });
+    ships.forEach(s => { const on = !sel || sel === s, op = on ? 1 : .22, c = colOf(s), w = sel === s ? 2.6 : 1.5;
+      const tr = (s.track || []).map(p => [p[1], p[2]]);
+      const dep = s.dep && !s.arrived ? [s.dep.lat, s.dep.lon] : null;
+      // départ → première position observée : trajet non observé, pointillé fin
+      if (dep && tr.length && nmd(dep, tr[0]) > 3) o.append("path").attr("d", line([P(dep), P(tr[0])])).attr("fill", "none").attr("stroke", c).attr("stroke-width", 1).attr("stroke-dasharray", "1 4").attr("opacity", .6 * op);
+      // trace observée
+      const obs = [...tr, [s.lat, s.lon]]; if (obs.length > 1) o.append("path").attr("d", line(obs.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", w).attr("stroke-linejoin", "round").attr("opacity", .85 * op);
+      // route projetée jusqu'au port déclaré
+      if (s.r) o.append("path").attr("d", d3.line().curve(d3.curveCatmullRom.alpha(.5))(s.r.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", sel === s ? 2 : 1.2).attr("stroke-dasharray", "3 5").attr("opacity", .75 * op);
+      if (dep && (sel === s)) { const [x, y] = P(dep); o.append("circle").attr("cx", x).attr("cy", y).attr("r", 5).attr("fill", css("--bg")).attr("stroke", c).attr("stroke-width", 2);
+        o.append("text").attr("x", x + 8).attr("y", y - 6).attr("class", "mono maplab strong").text(s.dep.kind === "port" ? `départ : ${s.dep.name}` : "1re observation"); }
+      if (s.r && sel === s) { const [x, y] = P(s.r.at(-1)); o.append("circle").attr("cx", x).attr("cy", y).attr("r", 5).attr("fill", c);
+        o.append("text").attr("x", x + 8).attr("y", y + 14).attr("class", "mono maplab strong").text(`arrivée : ${s.port?.name || s.term}`); } });
+    // navires : taille constante à l'écran, orientés selon le cap (corrigé de la projection)
+    const sc = d3.scaleLinear().domain([80, 350]).range([.8, 1.6]).clamp(true);
+    ships.slice().sort((a, b) => (a.key === aisSel) - (b.key === aisSel)).forEach(s => { const [x, y] = P([s.lat, s.lon]); const hd = s.hdg != null && s.hdg < 360 ? s.hdg : s.cog || 0;
+      const r = Math.PI / 180, q = P([s.lat + .05 * Math.cos(hd * r), s.lon + .05 * Math.sin(hd * r) / Math.cos(s.lat * r)]), ang = Math.atan2(q[0] - x, y - q[1]) / r;
+      const g = o.append("g").attr("transform", `translate(${x},${y}) rotate(${ang}) scale(${sc(s.len || 100) * (s.key === aisSel ? 1.35 : 1)})`).style("cursor", "pointer").attr("opacity", !sel || sel === s ? 1 : .45)
+        .on("pointermove", e => showTip(e, [["big", s.name || s.mmsi], ["type", s.cap?.kind === "lng" ? "méthanier" : "pétrolier / chimiquier"], ["vitesse", fr(s.sog, 1) + " nœuds"],
+          ["destination", s.port ? s.port.name : s.dest || "—"]], "cliquer pour la fiche")).on("pointerleave", hideTip)
+        .on("click", e => { e.stopPropagation(); hideTip(); pick(s.key, true); });
+      g.append("circle").attr("r", 14).attr("fill", "transparent");  // zone de clic confortable au doigt
+      if (s.key === aisSel) g.append("circle").attr("r", 13).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.5);
+      g.append("path").attr("d", shipIcon(s.cap?.kind)).attr("fill", colOf(s)).attr("stroke", css("--bg")).attr("stroke-width", .8); });
+  };
+  let showDetail = () => {};
+  M = zoomMap(host, W, H, { kmax: 80, onZoom: t => { draw(t); showDetail(t.k); }, onEnd: t => { aisView = t; } });
+  showDetail = drawBasemap(M, proj, "ais");
+  M.svg.on("click", () => { if (aisSel) pick(null); });
+  const card = el("div", "shipcard"); card.hidden = true; M.wrap.append(card);
+  function pick(key, fly) {
+    aisSel = key; const s = ships.find(x => x.key === key);
+    document.querySelectorAll("#aisTable tr[data-k], .shipchip").forEach(r => r.classList.toggle("on", r.dataset.k === key));
+    if (!s) { card.hidden = true; draw(M.t()); return; }
+    card.hidden = false; card.replaceChildren();
+    const head = el("div", "sc-h"); head.append(el("b", null, s.name || s.mmsi)); const x = el("button", "zbtn", "×"); x.setAttribute("aria-label", "Fermer la fiche"); x.onclick = e => { e.stopPropagation(); pick(null); }; head.append(x); card.append(head);
+    const hd = s.hdg != null && s.hdg < 360 ? s.hdg : s.cog;
+    const depTxt = s.arrived ? (s.atPort.since ? `à quai à ${s.atPort.name} depuis le ${dtShort(new Date(s.atPort.since * 1000))}` : `à l'arrêt à ${s.atPort.name}`)
+      : s.dep?.kind === "port" ? `${s.dep.name} (vu à quai jusqu'au ${dtShort(new Date(s.dep.t * 1000))})`
+      : s.dep ? `inconnu : vu pour la première fois ${s.dep.nm > 3 ? `à ${s.dep.nm} milles au large de ${s.dep.name}` : `près de ${s.dep.name}`} le ${dtShort(new Date(s.dep.t * 1000))}` : "—";
+    const rows = [["Type", `${s.cap?.kind === "lng" ? "méthanier" : "pétrolier / chimiquier"} · ${s.cap?.cls || ""}`], ["Pavillon", s.flag || "—"],
+      ["Longueur · tirant d'eau", `${s.len || "—"} m · ${fr(s.draught, 1)} m`],
+      ["Capacité estimée", s.cap?.kind === "lng" ? `${fr(s.cap.m3 / 1000, 0)} k m³ GNL ≈ ${fr(s.cap.gwh, 0)} GWh` : `${fr(s.cap?.dwt / 1000, 0)} kt de port en lourd`],
+      ["Chargement (inféré)", s.cap?.laden == null ? "inconnu" : s.cap.laden ? "plutôt chargé" : "plutôt lège"],
+      ["Vitesse · cap", `${fr(s.sog, 1)} nœuds · ${hd != null ? Math.round(hd) + "° " + CAPS[Math.round(hd / 45) % 8] : "—"}`],
+      ["Départ", depTxt],
+      ["Destination déclarée", s.dest || "—"],
+      ["Port reconnu", s.port ? `${s.port.name}${s.port.code ? " (" + s.port.code + ")" : ""}` : `non décodable${s.term ? " · rattaché à " + s.term + " par proximité" : ""}`],
+      ["ETA déclarée", dtShort(s.etaDecl)], ["ETA estimée", s.arrived ? "arrivé" : s.etaEst ? dtShort(s.etaEst) : s.sog <= 1 ? "à l'arrêt" : "—"],
+      ["Distance restante", s.arrived ? "—" : s.dist != null ? `${fr(s.dist, 0)} milles (${fr(s.dist * 1.852, 0)} km)` : "—"],
+      ["Dernière position", dtShort(new Date(s.t * 1000))], ["MMSI · IMO", `${s.mmsi} · ${s.imo || "—"}`]];
+    const dl = el("dl"); rows.forEach(([k, v]) => dl.append(el("dt", null, k), el("dd", null, v))); card.append(dl);
+    draw(M.t());
+    if (fly) { const pts = [[s.lat, s.lon], ...(s.r ? [s.r.at(-1)] : []), ...(s.dep && !s.arrived ? [[s.dep.lat, s.dep.lon]] : [])].map(ll => proj([ll[1], ll[0]]));
+      M.fly(pts, pts.length > 1 ? 30 : 40, pts.length > 1 ? 1 : 30, matchMedia("(max-width: 560px)").matches ? 0 : Math.min(356, W * .45)); }
+  }
+  // recherche par nom
+  const q = document.getElementById("aisSearch"), dlst = document.getElementById("aisNames");
+  dlst.replaceChildren(...ships.map(s => { const o = el("option"); o.value = s.name || s.key; return o; }));
+  q.onchange = q.onkeydown = e => { if (e.type === "keydown" && e.key !== "Enter") return; const v = q.value.trim().toUpperCase(); if (!v) return;
+    const s = ships.find(x => (x.name || "").toUpperCase() === v) || ships.find(x => (x.name || "").toUpperCase().includes(v) || x.key === v);
+    document.getElementById("aisFound").textContent = s ? "" : "aucun navire de ce nom dans l'instantané"; if (s) pick(s.key, true); };
+  if (aisView) M.set(aisView); else draw(d3.zoomIdentity);
   const tAge = Math.round((Date.now() / 1000 - S.t) / 60);
   document.getElementById("aisTitle").textContent = `${ships.length} navires-citernes · instantané du ${now.toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}${tAge > 0 ? ` (il y a ${tAge < 120 ? tAge + " min" : Math.round(tAge / 60) + " h"})` : ""}`;
-  document.getElementById("aisNote").textContent = `Instantané horaire, couverture AIS côtière (AISStream.io), positions déclarées par les navires · écoute de ${Math.round((S.seconds || 0) / 60)} min, ${(S.messages || 0).toLocaleString("fr-FR")} messages. Capacité estimée d'après la longueur (classes de navires), chargement inféré du tirant d'eau : l'AIS ne renseigne pas la cargaison.`;
-  legend("aisLegend", [[css("--oil"), "pétrolier / produits"], [css("--o-lng"), "méthanier"], [css("--accent"), "terminal"]]);
-  // cartes par terminal : en approche sous 72 h
+  document.getElementById("aisNote").textContent = `Instantané horaire, couverture AIS côtière (AISStream.io), positions déclarées par les navires · écoute de ${Math.round((S.seconds || 0) / 60)} min, ${(S.messages || 0).toLocaleString("fr-FR")} messages. L'AIS ne donne ni le port de départ ni la cargaison : le départ est le dernier port où le navire a été vu à quai, la capacité est estimée d'après la longueur, le chargement d'après le tirant d'eau.`;
+  legend("aisLegend", [[css("--oil"), "pétrolier / produits"], [css("--o-lng"), "méthanier"], [css("--accent"), "terminal / port"]]);
+  // cartes par terminal : en approche sous 72 h, navires cliquables
   const cards = document.getElementById("termCards"); cards.replaceChildren();
   Object.keys(TERMS).forEach(t => { const list = ships.filter(s => s.term === t); if (!list.length) return;
     const soon = list.filter(s => s.sog <= 1 || (s.etaEst && s.etaEst - now < 72 * 3600e3) || (s.etaDecl && s.etaDecl - now < 72 * 3600e3 && s.etaDecl > now - 864e5));
     const lng = d3.sum(soon.filter(s => s.cap?.kind === "lng" && s.cap.laden !== false), s => s.cap.gwh), oil = d3.sum(soon.filter(s => s.cap?.kind === "oil" && s.cap.laden !== false), s => s.cap.dwt);
     const c = el("div"); c.append(el("div", "k", t), el("div", "v mono", `${list.length} navire${list.length > 1 ? "s" : ""}`),
-      el("div", "d", `sous 72 h ou à quai : ${soon.length}${lng ? ` · GNL ≈ ${fr(lng, 0)} GWh` : ""}${oil ? ` · ≈ ${fr(oil / 1000, 0)} kt` : ""}`)); cards.append(c); });
+      el("div", "d", `sous 72 h ou à quai : ${soon.length}${lng ? ` · GNL ≈ ${fr(lng, 0)} GWh` : ""}${oil ? ` · ≈ ${fr(oil / 1000, 0)} kt` : ""}`));
+    const chips = el("div", "chips"); list.forEach(s => { const b = el("button", "shipchip", s.name || s.key); b.dataset.k = s.key; b.onclick = () => { pick(s.key, true); M.wrap.scrollIntoView({ behavior: "smooth", block: "nearest" }); }; chips.append(b); });
+    c.append(chips); cards.append(c); });
   // tableau
   const tb = document.getElementById("aisTable"); tb.replaceChildren(); const h = el("tr");
-  ["Navire", "Type · classe", "Pavillon", "Destination", "Vitesse", "ETA", "Capacité estimée"].forEach(x => h.append(el("th", null, x))); tb.append(h);
-  ships.sort((a, b) => (a.term || "").localeCompare(b.term || "") || (a.dist || 0) - (b.dist || 0)).forEach(s => { const tr = el("tr");
+  ["Navire", "Type · classe", "Pavillon", "Départ", "Destination", "Vitesse", "ETA", "Capacité estimée"].forEach(x => h.append(el("th", null, x))); tb.append(h);
+  ships.sort((a, b) => (a.term || "").localeCompare(b.term || "") || (a.dist || 0) - (b.dist || 0)).forEach(s => { const tr = el("tr"); tr.dataset.k = s.key; tr.className = "click";
     tr.append(el("td", null, s.name || s.mmsi), el("td", null, `${s.cap?.kind === "lng" ? "méthanier" : "pétrolier"} · ${s.cap?.cls || ""}`), el("td", null, s.flag || "—"),
-      el("td", null, `${s.dest || "—"} → ${s.terminal}`), el("td", "num", fr(s.sog, 1) + " nd"),
-      el("td", null, s.sog <= 1 ? "à quai / mouillage" : (s.etaEst || s.etaDecl) ? (s.etaEst || s.etaDecl).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) + (s.etaEst ? " (estim.)" : " (décl.)") : "—"),
-      el("td", null, s.cap?.kind === "lng" ? `${fr(s.cap.m3 / 1000, 0)} k m³` : `${fr(s.cap?.dwt / 1000, 0)} kt`)); tb.append(tr); });
+      el("td", null, s.arrived ? "à quai" : s.dep?.kind === "port" ? s.dep.name : "inconnu"),
+      el("td", null, `${s.dest || "—"} → ${s.port ? s.port.name : s.terminal}`), el("td", "num", fr(s.sog, 1) + " nd"),
+      el("td", null, s.sog <= 1 ? "à quai / mouillage" : (s.etaEst || s.etaDecl) ? dtShort(s.etaEst || s.etaDecl) + (s.etaEst ? " (estim.)" : " (décl.)") : "—"),
+      el("td", null, s.cap?.kind === "lng" ? `${fr(s.cap.m3 / 1000, 0)} k m³` : `${fr(s.cap?.dwt / 1000, 0)} kt`));
+    tr.onclick = () => { pick(s.key, true); M.wrap.scrollIntoView({ behavior: "smooth", block: "nearest" }); }; tb.append(tr); });
+  if (aisSel && ships.some(s => s.key === aisSel)) pick(aisSel, false); else aisSel = null;
 }
 
 /* ---------- G3. Entrées en France ---------- */
@@ -967,9 +1192,75 @@ function renderUranium() {
 /* ---------- G7. Prix du gaz ---------- */
 function renderTTF() { if (A.ttf?.length) lineChart("ttfChart", [{ name: "Gaz naturel, Europe", col: css("--gas"), w: 2, pts: A.ttf.map(([m, v]) => [monthDate(m), v]).filter(p => p[0] >= new Date(2005, 0, 1)) }], v => fr(v, 1) + " $", null, null, { zero: true }); }
 
+/* ---------- G8. Prix du gaz par pays (Eurostat) ---------- */
+let gpSeg = "hh", gpTax = "tax";
+const semDate = t => new Date(+t.slice(0, 4), t.endsWith("S1") ? 3 : 9, 1);
+const semLong = t => `${t.endsWith("S1") ? "1er" : "2e"} semestre ${t.slice(0, 4)}`;
+function renderGasPrices() {
+  const G = A.gasPrices; if (!G?.[gpSeg]) return;
+  const D = G[gpSeg], taxKey = gpTax === "tax" ? (gpSeg === "hh" ? "I_TAX" : "X_VAT") : "X_TAX";
+  setTabs("gpSeg", [["hh", "Ménages"], ["nhh", "Entreprises"]], gpSeg, v => { gpSeg = v; renderGasPrices(); });
+  setTabs("gpTax", [["tax", gpSeg === "hh" ? "Toutes taxes" : "Hors TVA récupérable"], ["notax", "Hors taxes"]], gpTax, v => { gpTax = v; renderGasPrices(); });
+  document.getElementById("gpNote").textContent = gpSeg === "hh" ? "Toutes taxes : TVA et taxes comprises, prix payé par le ménage. Hors taxes : énergie, réseau et marge du fournisseur." : "Hors TVA récupérable : coût réel pour l'entreprise, taxes non récupérables comprises. Hors taxes : énergie, réseau et marge.";
+  const ser = Object.fromEntries(Object.entries(D.s).filter(([k]) => k.startsWith(taxKey + "|")).map(([k, v]) => [k.split("|")[1], v]));
+  const iLast = d3.range(D.sems.length).reverse().find(i => Object.values(ser).filter(v => v[i] != null).length >= 15) ?? D.sems.length - 1;
+  const sem = D.sems[iLast], vals = Object.entries(ser).filter(([c, v]) => v[iLast] != null && G.iso[c]).map(([c, v]) => [c, v[iLast]]);
+  const nm = c => G.names[c] || c, byIso = Object.fromEntries(vals.map(([c, v]) => [G.iso[c], [c, v]]));
+  const ext = d3.extent(vals, d => d[1]), color = d3.scaleSequential(d3.interpolateYlOrRd).domain([ext[0], ext[1]]);
+  document.getElementById("gpMapTitle").textContent = `${semLong(sem)} · c€/kWh`;
+  // carte
+  const host = document.getElementById("gpMap"); host.replaceChildren();
+  const W = widthOf("gpMap"), H = Math.round(W * (W < 560 ? 1 : .82));
+  const proj = d3.geoConicConformal().rotate([-12, 0]).parallels([38, 60]).fitExtent([[4, 4], [W - 4, H - 4]], { type: "MultiPoint", coordinates: [[-10, 35], [32, 35], [-10, 69], [32, 69]] });
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("rect").attr("width", W).attr("height", H).attr("fill", css("--sea"));
+  svg.append("g").selectAll("path").data(GW.europe.features).join("path").attr("d", d3.geoPath(proj))
+    .attr("fill", f => byIso[f.properties.id] ? color(byIso[f.properties.id][1]) : css("--land")).attr("stroke", f => f.properties.id === "250" ? css("--text") : css("--line"))
+    .attr("stroke-width", f => f.properties.id === "250" ? 1.6 : .5).style("cursor", f => byIso[f.properties.id] ? "pointer" : null)
+    .on("pointermove", (e, f) => { const x = byIso[f.properties.id]; if (!x) return; const [c] = x, v = ser[c];
+      const eu = (ser.EU27_2020 || [])[iLast]; showTip(e, [["big", fr(x[1], 2) + " c€/kWh"], ["moyenne UE", fr(eu, 2)], ["un an avant", fr(v[iLast - 2], 2)], ["2021, 1er semestre", fr(v[D.sems.indexOf("2021-S1")], 2)]], `${nm(c)} · ${semLong(sem)}`); })
+    .on("pointerleave", hideTip);
+  // échelle
+  const sc = document.getElementById("gpScale"); sc.replaceChildren(); const bar = el("div", "gscale"); bar.style.background = `linear-gradient(90deg, ${d3.range(0, 1.01, .1).map(t => color(ext[0] + t * (ext[1] - ext[0]))).join(",")})`;
+  const lab = el("div", "gscale-l"); lab.append(el("span", null, fr(ext[0], 1)), el("span", null, fr(ext[1], 1) + " c€/kWh")); sc.append(bar, lab);
+  // classement
+  const rk = document.getElementById("gpRank"); rk.replaceChildren(); const vmax = ext[1];
+  vals.sort((a, b) => b[1] - a[1]).forEach(([c, v], i) => { const r = el("div", "row" + (c === "FR" ? " me" : "")); r.append(el("span", null, i + 1));
+    const n = el("div"); n.append(el("div", null, nm(c))); const b = el("div", "bar"); b.style.width = (v / vmax * 100) + "%"; b.style.background = color(v); n.append(b); r.append(n, el("b", null, fr(v, 2))); rk.append(r); });
+  if (ser.EU27_2020?.[iLast] != null) { const r = el("div", "row eu"); r.append(el("span", null, "")); r.append(el("div", null, "Moyenne UE"), el("b", null, fr(ser.EU27_2020[iLast], 2))); rk.prepend(r); }
+  // courbes 2007 →
+  document.getElementById("gpLineTitle").textContent = `${gpSeg === "hh" ? "Ménages" : "Entreprises"} · ${gpTax === "tax" ? (gpSeg === "hh" ? "toutes taxes" : "hors TVA récupérable") : "hors taxes"} · c€/kWh par semestre, depuis 2007`;
+  const lh = document.getElementById("gpLine"); lh.replaceChildren();
+  const LW = widthOf("gpLine"), LH = LW < 560 ? 260 : 320, Mg = { l: 40, r: LW < 560 ? 64 : 104, t: 34, b: 24 };
+  const dates = D.sems.map(semDate), x = d3.scaleTime().domain(d3.extent(dates)).range([Mg.l, LW - Mg.r]);
+  const ymax = d3.max(Object.entries(ser).filter(([c]) => G.iso[c] || c === "EU27_2020"), ([, v]) => d3.max(v)) || 1, y = d3.scaleLinear().domain([0, ymax]).nice().range([LH - Mg.b, Mg.t]);
+  const ls = d3.select(lh).append("svg").attr("width", LW).attr("height", LH);
+  // repères : crise de 2022, bouclier tarifaire français
+  const band = (a, b, txt, row) => { const xa = x(a), xb = x(b); ls.append("rect").attr("x", xa).attr("y", Mg.t).attr("width", xb - xa).attr("height", LH - Mg.t - Mg.b).attr("fill", css("--band"));
+    ls.append("text").attr("x", xb).attr("text-anchor", "end").attr("y", Mg.t - 20 + row * 12).attr("class", "mono").style("font-size", "10.5px").style("fill", css("--text-2")).text(txt); };
+  band(new Date(2021, 10, 1), new Date(2023, 6, 1), LW < 560 ? "bouclier tarifaire FR" : "bouclier tarifaire FR (nov. 2021 – juin 2023)", 0);
+  band(new Date(2022, 1, 24), new Date(2022, 11, 31), "", 0); ls.append("text").attr("x", x(new Date(2022, 1, 24)) + 3).attr("y", Mg.t + 12).attr("class", "mono").style("font-size", "10.5px").style("fill", css("--text-2")).text("crise de 2022");
+  axes(ls, x, y, LW, LH, Mg, v => fr(v, 0), d3.axisBottom(x).ticks(LW < 560 ? 5 : 10).tickSize(0).tickPadding(8));
+  const line = d3.line().defined(d => d[1] != null).x(d => x(d[0])).y(d => y(d[1]));
+  Object.entries(ser).filter(([c]) => G.iso[c] && c !== "FR").forEach(([c, v]) => ls.append("path").attr("d", line(dates.map((d, i) => [d, v[i]]))).attr("fill", "none").attr("stroke", css("--muted")).attr("stroke-width", 1).attr("opacity", .35)
+    .style("cursor", "pointer").on("pointermove", e => showTip(e, [["big", nm(c)]], null)).on("pointerleave", hideTip));
+  const hl = [["EU27_2020", css("--text-2"), "4 3", "Moyenne UE"], ["FR", css("--accent"), null, "France"]];
+  hl.forEach(([c, col, dash, n]) => { const v = ser[c]; if (!v) return; ls.append("path").attr("d", line(dates.map((d, i) => [d, v[i]]))).attr("fill", "none").attr("stroke", col).attr("stroke-width", c === "FR" ? 2.6 : 1.8).attr("stroke-dasharray", dash);
+    const li = d3.range(v.length).reverse().find(i => v[i] != null); ls.append("text").attr("x", x(dates[li]) + 5).attr("y", y(v[li]) + 4).attr("class", "mono").style("font-size", "11px").style("fill", col).text(LW < 560 ? fr(v[li], 1) : `${n} ${fr(v[li], 1)}`); });
+  // survol : valeurs du semestre le plus proche
+  const cross = ls.append("line").attr("y1", Mg.t).attr("y2", LH - Mg.b).attr("stroke", css("--line")).style("display", "none");
+  ls.append("rect").attr("x", Mg.l).attr("y", Mg.t).attr("width", LW - Mg.l - Mg.r).attr("height", LH - Mg.t - Mg.b).attr("fill", "transparent")
+    .on("pointermove", e => { const [mx] = d3.pointer(e), i = d3.minIndex(dates, d => Math.abs(x(d) - mx)); cross.style("display", null).attr("x1", x(dates[i])).attr("x2", x(dates[i]));
+      const top = Object.entries(ser).filter(([c, v]) => G.iso[c] && v[i] != null).sort((a, b) => b[1][i] - a[1][i]);
+      showTip(e, [["France", fr(ser.FR?.[i], 2), css("--accent")], ["Moyenne UE", fr(ser.EU27_2020?.[i], 2), css("--text-2")], ...top.slice(0, 3).map(([c, v]) => [nm(c) + " (le plus cher)", fr(v[i], 2)]).slice(0, 1),
+        ...top.slice(-1).map(([c, v]) => [nm(c) + " (le moins cher)", fr(v[i], 2)])], semLong(D.sems[i])); })
+    .on("pointerleave", () => { cross.style("display", "none"); hideTip(); });
+  legend("gpLegend", [[css("--accent"), "France"], [css("--text-2"), "moyenne UE"], [css("--muted"), "autres pays"]], true);
+}
+
 /* ---------- Orchestration ---------- */
 function safe(f) { try { f(); } catch (e) { console.error(f.name, e); } }
-function renderAll() { [renderReadout, renderKPIs, renderEcogaz, renderWorld, renderPipes, renderAIS, renderFrEntries, renderLNG, renderStorage, renderConso, renderThermo, renderTTF,
+function renderAll() { [renderReadout, renderKPIs, renderEcogaz, renderWorld, renderPipes, renderAIS, renderFrEntries, renderLNG, renderStorage, renderConso, renderThermo, renderTTF, renderGasPrices,
   renderFuelTabs, renderFuel, drawStations, renderHist, renderEU, renderOil, renderCoal, renderUranium].forEach(safe); }
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
   try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} renderAll(); };

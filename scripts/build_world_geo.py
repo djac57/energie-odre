@@ -5,14 +5,24 @@ countries-110m pour le monde et countries-50m découpé sur l'Europe élargie
 (Afrique du Nord, Proche-Orient, Russie d'Europe). Les TopoJSON sont décodés en
 GeoJSON et les coordonnées arrondies pour rester légers.
 
-    python3 scripts/build_world_geo.py <countries-110m.json> <countries-50m.json> [site/geo_world.js]
+Avec --10m, écrit aussi site/geo_coast10.js (window.GEOC) : countries-10m découpé au
+rectangle Europe de l'Ouest - Méditerranée occidentale, chargé par la carte des
+navires seulement aux grands zooms.
+
+    python3 scripts/build_world_geo.py <countries-110m.json> <countries-50m.json> [site/geo_world.js] [--10m countries-10m.json]
 """
 import json
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = sys.argv[3] if len(sys.argv) > 3 else os.path.join(HERE, "..", "site", "geo_world.js")
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
+TEN = sys.argv[sys.argv.index("--10m") + 1] if "--10m" in sys.argv else None
+if TEN in ARGS:
+    ARGS.remove(TEN)
+OUT = ARGS[2] if len(ARGS) > 2 else os.path.join(HERE, "..", "site", "geo_world.js")
+OUT10 = os.path.join(os.path.dirname(OUT), "geo_coast10.js")
+COAST_BOX = (-14.0, 34.0, 20.0, 56.0)
 EUROPE_BOX = (-26.0, 24.0, 62.0, 72.0)  # lon min, lat min, lon max, lat max
 
 # Noms français des pays (id ISO 3166-1 numérique de world-atlas) utilisés par la page
@@ -70,9 +80,57 @@ def decode(topo, obj="countries", digits=2, box=None):
     return {"type": "FeatureCollection", "features": feats}
 
 
+def clip_ring(ring, box):
+    """Découpe d'un anneau par un rectangle (Sutherland-Hodgman)."""
+    x0, y0, x1, y1 = box
+    edges = [(lambda p: p[0] >= x0, lambda a, b: (x0, a[1] + (b[1] - a[1]) * (x0 - a[0]) / (b[0] - a[0]))),
+             (lambda p: p[0] <= x1, lambda a, b: (x1, a[1] + (b[1] - a[1]) * (x1 - a[0]) / (b[0] - a[0]))),
+             (lambda p: p[1] >= y0, lambda a, b: (a[0] + (b[0] - a[0]) * (y0 - a[1]) / (b[1] - a[1]), y0)),
+             (lambda p: p[1] <= y1, lambda a, b: (a[0] + (b[0] - a[0]) * (y1 - a[1]) / (b[1] - a[1]), y1))]
+    pts = ring
+    for inside, cut in edges:
+        if not pts:
+            break
+        out = []
+        for i, b in enumerate(pts):
+            a = pts[i - 1]
+            if inside(b):
+                if not inside(a):
+                    out.append(cut(a, b))
+                out.append(b)
+            elif inside(a):
+                out.append(cut(a, b))
+        pts = out
+    pts = [[round(x, 3), round(y, 3)] for x, y in pts]
+    pts = [p for i, p in enumerate(pts) if i == 0 or p != pts[i - 1]]
+    if len(pts) >= 3 and pts[0] != pts[-1]:
+        pts.append(pts[0])
+    return pts if len(pts) >= 4 else None
+
+
+def coast10(path):
+    fc = decode(json.load(open(path)), digits=4, box=COAST_BOX)
+    feats = []
+    for f in fc["features"]:
+        polys = []
+        for poly in f["geometry"]["coordinates"]:
+            rings = [clip_ring(r, COAST_BOX) for r in poly]
+            if rings[0]:
+                polys.append([r for r in rings if r])
+        if polys:
+            feats.append({**f, "geometry": {"type": "MultiPolygon", "coordinates": polys}})
+    with open(OUT10, "w", encoding="utf-8") as fh:
+        fh.write("window.GEOC=")
+        json.dump({"type": "FeatureCollection", "box": COAST_BOX, "features": feats}, fh, ensure_ascii=False, separators=(",", ":"))
+        fh.write(";")
+    print(f"{OUT10} : {os.path.getsize(OUT10) // 1024} Ko, {len(feats)} pays")
+
+
 def main():
-    world = decode(json.load(open(sys.argv[1])), digits=1)
-    europe = decode(json.load(open(sys.argv[2])), digits=2, box=EUROPE_BOX)
+    if TEN:
+        coast10(TEN)
+    world = decode(json.load(open(ARGS[0])), digits=1)
+    europe = decode(json.load(open(ARGS[1])), digits=2, box=EUROPE_BOX)
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("window.GEOW=")
         json.dump({"world": world, "europe": europe}, fh, ensure_ascii=False, separators=(",", ":"))
