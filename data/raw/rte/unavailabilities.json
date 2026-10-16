@@ -156974,6 +156974,216 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_T_00334954":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-19T22:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:42:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-19T04:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-19T04:00:00Z",
+"2026-10-19T22:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334955":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-20T22:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:43:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-19T22:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-19T22:00:00Z",
+"2026-10-20T22:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334956":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-21T22:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:44:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-20T22:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-20T22:00:00Z",
+"2026-10-21T22:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334957":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-22T22:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:44:37Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-21T22:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-21T22:00:00Z",
+"2026-10-22T22:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334958":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-23T22:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:45:38Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-22T22:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-22T22:00:00Z",
+"2026-10-23T22:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334959":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-24T22:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:45:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-23T22:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-23T22:00:00Z",
+"2026-10-24T22:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334960":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-25T23:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:46:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-24T22:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-24T22:00:00Z",
+"2026-10-25T23:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334961":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-26T23:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:46:38Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-25T23:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-25T23:00:00Z",
+"2026-10-26T23:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334962":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-27T23:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:47:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-26T23:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-26T23:00:00Z",
+"2026-10-27T23:00:00Z",
+28
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00334963":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-28T17:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-16T16:47:38Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-10-27T23:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-27T23:00:00Z",
+"2026-10-28T17:00:00Z",
+28
+]
+],
+"v":1
+},
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
 "end":"2027-09-21T22:00:00Z",
