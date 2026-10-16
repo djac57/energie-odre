@@ -13,6 +13,8 @@
 <script src="geo.js"></script>
 <script src="rte.js"></script>
 <script src="prices.js"></script>
+<script src="hubeau.js"></script>
+<script src="europe.js"></script>
 <style>
 /* Direction : salle de contrôle — sombre par défaut, accents lumineux, chiffres en mono */
 :root, :root[data-theme="dark"] {
@@ -175,6 +177,23 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .rec .k { font: 11px "IBM Plex Mono", monospace; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; display: flex; align-items: center; gap: 6px; }
 .rec .v { font: 600 26px "IBM Plex Mono", monospace; margin-top: 4px; }
 .rec .d { font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
+.ptabs { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 10px; }
+.ptabs .tab { padding: 4px 7px; font-size: 11.5px; }
+.chartlab { font: 11px "IBM Plex Mono", monospace; color: var(--text-2); margin: 10px 0 2px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.chartlab .sw { display: inline-block; vertical-align: middle; margin-right: 5px; }
+.envlist { display: grid; gap: 2px; font: 12px "IBM Plex Mono", monospace; }
+.envlist > div { display: grid; grid-template-columns: 120px minmax(0, 1fr) 70px; gap: 8px; align-items: center; padding: 2px 0; }
+.envlist .ebar { height: 10px; background: var(--imp); }
+.envlist > div.note { display: block; }
+.envlist button { all: unset; cursor: pointer; color: var(--text-2); } .envlist button:hover { color: var(--accent); }
+.clsleg { display: flex; flex-wrap: wrap; gap: 2px 10px; font: 11px "IBM Plex Mono", monospace; color: var(--text-2); margin-top: 8px; }
+.clsleg span { display: inline-flex; align-items: center; gap: 5px; }
+.eutable { width: 100%; border-collapse: collapse; font: 12px "IBM Plex Mono", monospace; }
+.eutable th { text-align: right; color: var(--muted); font-weight: 500; padding: 4px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.eutable td { text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+.eutable th:first-child, .eutable td:first-child { text-align: left; }
+.eutable tr.fr td { color: var(--accent); font-weight: 600; }
+.tscroll { overflow-x: auto; }
 .navlink { font: 12px "IBM Plex Mono", monospace; color: var(--accent); text-decoration: none; border: 1px solid var(--line); padding: 6px 10px; white-space: nowrap; }
 .navlink:hover { border-color: var(--accent); }
 .note { font: 12px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 8px; }
@@ -346,6 +365,44 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   </div>
 </div></section>
 
+<section class="band" id="riverBlock"><div class="band-in">
+  <div class="side"><div class="no">15 — RIVIÈRES</div><h2>Chaleur des rivières et nucléaire</h2>
+    <p>Les centrales de bord de rivière prélèvent de l'eau pour se refroidir et la rejettent réchauffée. Quand le débit baisse et que l'eau chauffe, leurs autorisations de rejet les obligent à réduire la puissance, voire à s'arrêter. Ici, au fil de l'été&nbsp;: la production de la centrale, le débit du cours d'eau comparé aux années précédentes, et la chaleur.</p>
+    <div class="ptabs" id="rvPlant"></div><div class="tabs" id="rvYear"></div>
+    <div class="stat" id="rvStats"></div></div>
+  <div><div class="panel"><div class="maptitle" id="rvTitle"></div>
+      <div class="chartlab" id="rvLabP"></div><div id="rvProd"></div>
+      <div class="chartlab" id="rvLabF"></div><div id="rvFlow"></div>
+      <div class="chartlab" id="rvLabT"></div><div id="rvTemp"></div>
+      <div class="note" id="rvNote"></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle" id="envTitle"></div><div class="envlist" id="envList"></div><div class="note" id="envNote"></div></div></div>
+</div></section>
+
+<section class="band" id="nappeBlock"><div class="band-in">
+  <div class="side"><div class="no">16 — NAPPES</div><h2>Les nappes phréatiques, mois par mois</h2>
+    <p>Un piézomètre par département&nbsp;: le plus long encore en service. Chaque point compare le niveau moyen du mois à tous les mêmes mois de sa chronique&nbsp;: <b>très bas</b> s'il fait partie des 10&nbsp;% les plus bas, <b>autour de la normale</b> entre 40 et 60&nbsp;%, etc.</p>
+    <div class="player"><button class="play" id="npPlay" aria-label="Lecture">▶</button><input type="range" id="npSlider" min="0" max="0" value="0" aria-label="Mois"><span class="mlabel" id="npLabel"></span></div>
+    <div class="clsleg" id="npLegend"></div>
+    <p class="note" id="npMethod">Méthode&nbsp;: rang centile du niveau moyen mensuel parmi les valeurs du même mois calendaire de la chronique de la station (au moins 10&nbsp;années), en sept classes calquées sur les bulletins du BRGM. Ce n'est pas l'indicateur piézométrique standardisé (IPS) officiel.</p></div>
+  <div><div class="maps"><div class="panel"><div id="npMap"></div></div>
+      <div class="panel"><div class="maptitle" id="npStTitle"></div><div id="npChron"></div><div class="note" id="npStNote"></div></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Part des piézomètres dans chaque classe, mois par mois · cliquez pour choisir le mois</div><div id="npFrise"></div></div></div>
+</div></section>
+
+<section class="band" id="euBlock"><div class="band-in">
+  <div class="side"><div class="no">17 — EUROPE</div><h2>La France et ses voisins</h2>
+    <p>Le nucléaire et l'hydraulique donnent à la France une des électricités les moins carbonées d'Europe. Mix de production, intensité carbone et prix de gros comparés avec les pays voisins.</p>
+    <div class="tabs" id="euMetric"><button class="tab" data-v="co2" aria-pressed="true">gCO₂/kWh</button><button class="tab" data-v="low" aria-pressed="false">% bas carbone</button><button class="tab" data-v="ren" aria-pressed="false">% renouvelable</button><button class="tab" data-v="price" aria-pressed="false">Prix</button></div>
+    <div class="tabs" id="euYear"></div>
+    <p class="note" id="euSource"></p></div>
+  <div><div class="maps"><div class="panel"><div class="maptitle" id="euMapT"></div><div id="euMap"></div></div>
+      <div class="panel"><div class="maptitle" id="euMixT"></div><div id="euMix"></div><div class="legend" id="euMixLg"></div></div></div>
+    <div class="maps" style="margin-top:16px">
+      <div class="panel"><div class="maptitle">Intensité carbone de la production (gCO₂/kWh, annuelle) · cliquez un pays de la légende</div><div id="euCo2"></div><div class="legend" id="euCo2Lg"></div></div>
+      <div class="panel"><div class="maptitle">Prix day-ahead moyen mensuel (€/MWh)</div><div id="euPrice"></div><div class="legend" id="euPriceLg"></div></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Prix day-ahead moyens comparés</div><div class="tscroll"><table class="eutable" id="euPriceTable"></table></div><div class="note" id="euPriceNote"></div></div></div>
+</div></section>
+
 <footer>
   <b>Données</b> — RTE, éCO2mix, sur <a href="https://odre.opendatasoft.com" target="_blank" rel="noopener">ODRÉ</a> (Open Data Réseaux Énergies), Licence Ouverte&nbsp;: nationales consolidées et définitives (<span class="mono">eco2mix-national-cons-def</span>) + temps réel (<span class="mono">eco2mix-national-tr</span>)&nbsp;; régionales (<span class="mono">eco2mix-regional-cons-def</span>, <span class="mono">eco2mix-regional-tr</span>)&nbsp;;
   météo régionale Weathernews France (<span class="mono">rayonnement-solaire-vitesse-vent-tri-horaires-regionaux</span>, vent à 100&nbsp;m et rayonnement solaire global, tri-horaire, depuis 2016, Licence Ouverte 2.0) — sans direction du vent&nbsp;: les éoliennes de la carte en indiquent la force, pas l'orientation.
@@ -355,6 +412,8 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   Coordonnées des centrales&nbsp;: <a href="https://data.jrc.ec.europa.eu/dataset/9810feeb-f062-49cd-8e76-8d8cfd488a05" target="_blank" rel="noopener">JRC Open Power Plants Database</a> (Commission européenne, CC BY 4.0), rapprochée par code EIC, complétée par Wikidata (CC0) et, à défaut, le centre de la commune (geo.api.gouv.fr, Licence Ouverte).<br>
   <b>Pilotage RTE (suite)</b> — Ecowatt v5 (signal du jour et des 3 jours suivants), Physical Flow v1 (flux physiques aux frontières), Tempo Like Supply Contract v1, Demand Response v1, Balancing Capacity v5 (besoin de réserves) — données publiques RTE, réutilisation avec mention de la source.<br>
   <b>Prix spot</b> — day-ahead zone France&nbsp;: Bundesnetzagentur | SMARD.de, licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, via l'API <a href="https://api.energy-charts.info" target="_blank" rel="noopener">Energy-Charts</a> (Fraunhofer ISE), mis à jour chaque heure par le dépôt.<br>
+  <b>Rivières et nappes</b> — <a href="https://hubeau.eaufrance.fr" target="_blank" rel="noopener">Hub'Eau</a> (OFB / BRGM, Système d'information sur l'eau&nbsp;; Eaufrance&nbsp;: « sauf mention contraire, contenus sous licence Etalab 2.0 »)&nbsp;: hydrométrie (débits moyens journaliers QmnJ), température des cours d'eau, piézométrie (niveaux des nappes)&nbsp;; mis à jour chaque jour par le dépôt. Température de l'air au site&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (réanalyse ERA5 de Copernicus, CC BY 4.0). Production des réacteurs et indisponibilités «&nbsp;causes externes liées à l'environnement&nbsp;»&nbsp;: API RTE.<br>
+  <b>Europe</b> — mix, intensité carbone, demande et échanges&nbsp;: <a href="https://ember-energy.org" target="_blank" rel="noopener">Ember</a>, Yearly / Monthly Electricity Data, licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>&nbsp;; prix day-ahead par zone de prix&nbsp;: <a href="https://www.energy-charts.info" target="_blank" rel="noopener">Energy-Charts.info</a> (Fraunhofer ISE, données Bundesnetzagentur | SMARD.de, CC BY 4.0) — Italie&nbsp;: zone Nord&nbsp;; Allemagne&nbsp;: zone DE-LU (DE-AT-LU avant octobre 2018)&nbsp;; pas de prix pour le Royaume-Uni.<br>
   <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Grégoire David), issu d'Admin Express IGN, Licence Ouverte&nbsp;; pays&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> (Natural Earth, domaine public). Simplifiés et embarqués.
 </footer>
 <div class="tip" id="tip" role="tooltip"></div>
@@ -1531,6 +1590,320 @@ function renderPrices() {
 document.querySelectorAll("#prScale .tab").forEach(b => b.onclick = () => { pstate.scale = b.dataset.v; document.querySelectorAll("#prScale .tab").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPrHist(); renderPrScatter(); });
 document.querySelectorAll("#prX .tab").forEach(b => b.onclick = () => { pstate.x = b.dataset.v; document.querySelectorAll("#prX .tab").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPrScatter(); });
 
+/* ---------- Rivières et nucléaire (Hub'Eau, Open-Meteo, RTE) ---------- */
+const HB = window.HUBEAU;
+const rvs = { plant: null, year: null };
+const summerDate = (y, i) => new Date(y, 4, 1 + i);
+// Petit graphique journalier sur la fenêtre d'été : couches « area », « line » et « band » (v = [bas, haut])
+function dayChart(host, year, n, layers, { H = 120, yfmt = v => fr(v), ymin } = {}) {
+  host.replaceChildren(); const W = host.clientWidth, M = { l: 46, r: 8, t: 6, b: 20 };
+  const x = d3.scaleTime().domain([summerDate(year, 0), summerDate(year, n - 1)]).range([M.l, W - M.r]);
+  const all = layers.flatMap(l => l.kind === "band" ? [...l.v[0], ...l.v[1]] : l.v).filter(v => v != null);
+  const lo = ymin ?? Math.min(0, d3.min(all) ?? 0), y = d3.scaleLinear().domain([lo, d3.max(all) ?? 1]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(3).tickSize(-(W - M.l - M.r)).tickFormat(yfmt));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(d3.timeMonth.every(1)).tickSize(0).tickPadding(6).tickFormat(d3.timeFormat(W < 500 ? "%b" : "%B")));
+  const X = i => x(summerDate(year, i));
+  layers.forEach(l => {
+    if (l.kind === "band") svg.append("path").datum(d3.range(n)).attr("fill", l.color).attr("opacity", .16)
+      .attr("d", d3.area().defined(i => l.v[0][i] != null && l.v[1][i] != null).x(X).y0(i => y(l.v[0][i])).y1(i => y(l.v[1][i])));
+    else if (l.kind === "area") svg.append("path").datum(l.v).attr("fill", l.color).attr("opacity", .35)
+      .attr("d", d3.area().defined(v => v != null).x((v, i) => X(i)).y0(y(Math.max(lo, 0))).y1(v => y(v)).curve(d3.curveStepAfter));
+    if (l.kind !== "band") svg.append("path").datum(l.v).attr("fill", "none").attr("stroke", l.color).attr("stroke-width", l.w || 1.6).attr("stroke-dasharray", l.dash || null)
+      .attr("d", d3.line().defined(v => v != null).x((v, i) => X(i)).y(v => y(v)).curve(l.kind === "area" ? d3.curveStepAfter : d3.curveMonotoneX));
+  });
+  return { svg, x, y, X, W, H, M, n };
+}
+function dayHover(ch, year, rowsFor) {
+  const cross = ch.svg.append("line").attr("y1", ch.M.t).attr("y2", ch.H - ch.M.b).attr("stroke", "var(--text)").attr("opacity", 0);
+  ch.svg.append("rect").attr("x", ch.M.l).attr("width", ch.W - ch.M.l - ch.M.r).attr("height", ch.H).attr("fill", "transparent").on("pointermove", e => {
+    const i = Math.max(0, Math.min(ch.n - 1, Math.round((ch.x.invert(d3.pointer(e)[0]) - summerDate(year, 0)) / 864e5)));
+    cross.attr("x1", ch.X(i)).attr("x2", ch.X(i)).attr("opacity", .5);
+    showTip(e, t => { t.append(el("div", "t", summerDate(year, i).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long", year: "numeric" }))); rowsFor(t, i); }); })
+    .on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+}
+const envEps = units => units.flatMap(u => (HB.rivers.env[u]?.eps || []).map(e => ({ u, s: tUTC(e[0]), e: tUTC(e[1]), mw: e[2], mwh: e[3] })));
+function envLostYear(name, year) { // MWh perdus pendant l'année (épisodes coupés au 1er janvier)
+  const a = new Date(year, 0, 1), b = new Date(Math.min(+new Date(year + 1, 0, 1), Date.now())); // déclaré à venir : non compté
+  return d3.sum(HB.rivers.env[name]?.eps || [], e => { const s = tUTC(e[0]), f = tUTC(e[1]); const h = (Math.min(+b, +f) - Math.max(+a, +s)) / 3600e3; return h > 0 ? e[3] * h / ((f - s) / 3600e3) : 0; });
+}
+function legendItems(host, items) { host.replaceChildren(); items.forEach(([c, label, line, dash]) => { const s = el("span"), sw = el("span", "sw" + (line ? " line" : "")); sw.style.background = dash ? `repeating-linear-gradient(90deg, ${c} 0 4px, transparent 4px 7px)` : c; if (!line) sw.style.opacity = .7; s.append(sw, document.createTextNode(label)); host.append(s); }); }
+function renderRivers() {
+  const blk = document.getElementById("riverBlock"); if (!HB || !HB.rivers.plants.length) { blk.style.display = "none"; return; }
+  const R = HB.rivers, P = R.plants;
+  if (!rvs.plant) { rvs.plant = (P.find(p => p.key === "BUGEY") || P[0]).key; rvs.year = R.years.at(-1); }
+  const pt = document.getElementById("rvPlant");
+  if (!pt.childElementCount) P.forEach(p => { const b = el("button", "tab", p.name); b.dataset.v = p.key; b.onclick = () => { rvs.plant = p.key; renderRivers(); }; pt.append(b); });
+  pt.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === rvs.plant));
+  const yt = document.getElementById("rvYear");
+  if (!yt.childElementCount) R.years.forEach(y => { const b = el("button", "tab", String(y)); b.dataset.v = y; b.onclick = () => { rvs.year = y; renderRivers(); }; yt.append(b); });
+  yt.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-pressed", +b.dataset.v === rvs.year));
+  const p = P.find(q => q.key === rvs.plant), Y = rvs.year, S2 = p.series[Y], n = S2.flow.length, cap = p.mw * 24 / 1000;
+  const now = new Date(); const upto = Y === now.getFullYear() ? Math.min(n, Math.round((now - summerDate(Y, 0)) / 864e5) + 1) : n;
+  document.getElementById("rvTitle").textContent = `${p.name} · ${p.river} · ${p.units.length} réacteur${p.units.length > 1 ? "s" : ""}, ${fr(p.mw)} MW · été ${Y}`;
+  // Production
+  const eps = envEps(p.units).filter(e => e.e > summerDate(Y, 0) && e.s < summerDate(Y, n));
+  const envDay = d3.range(n).map(i => { const a = summerDate(Y, i), b = new Date(Math.min(+summerDate(Y, i + 1), Date.now())); return d3.sum(eps, e => { const h = (Math.min(+b, +e.e) - Math.max(+a, +e.s)) / 3600e3; return h > 0 ? e.mwh * h / ((e.e - e.s) / 3600e3) : 0; }) / 1000; });
+  const hasProd = S2.prod.some(v => v != null);
+  legendItems(document.getElementById("rvLabP"), [[col("nucleaire"), "Production de la centrale (GWh/jour)"], ["var(--text-2)", "Maximum théorique", true, true], [css("--imp"), "Arrêt ou baisse « environnement »"]]);
+  const chP = dayChart(document.getElementById("rvProd"), Y, n, [{ kind: "area", v: S2.prod, color: col("nucleaire") }, { kind: "line", v: d3.range(n).map(() => cap), color: css("--text-2"), dash: "4 3", w: 1 }], { H: 130, yfmt: v => fr(v) });
+  chP.svg.insert("g", ":first-child").selectAll("rect").data(eps).join("rect").attr("x", e => chP.x(new Date(Math.max(+e.s, +summerDate(Y, 0))))).attr("y", chP.M.t)
+    .attr("width", e => Math.max(1.5, chP.x(new Date(Math.min(+e.e, +summerDate(Y, n - 1)))) - chP.x(new Date(Math.max(+e.s, +summerDate(Y, 0)))))).attr("height", chP.H - chP.M.t - chP.M.b)
+    .attr("fill", css("--imp")).attr("opacity", .12);
+  if (!hasProd) chP.svg.append("text").attr("x", chP.W / 2).attr("y", chP.H / 2).attr("text-anchor", "middle").style("font", "11px 'IBM Plex Mono'").style("fill", "var(--muted)").text("historique de production en cours de constitution");
+  dayHover(chP, Y, (t, i) => { t.append(el("div", "big", S2.prod[i] == null ? "—" : fr(S2.prod[i], 1) + " GWh")); row(t, null, "Taux de charge", S2.prod[i] == null ? "—" : fr(S2.prod[i] / cap * 100) + " %");
+    if (envDay[i] > .05) row(t, css("--imp"), "Perdu (environnement)", fr(envDay[i], 1) + " GWh"); });
+  // Débit
+  const [q10, q50, q90] = S2.clim;
+  legendItems(document.getElementById("rvLabF"), [[col("hydraulique"), `Débit ${Y} (m³/s)`, true], [col("hydraulique"), "Médiane des autres années", true, true], [col("hydraulique"), "10 % – 90 % des autres années"]]);
+  const chF = dayChart(document.getElementById("rvFlow"), Y, n, [{ kind: "band", v: [q10, q90], color: col("hydraulique") }, { kind: "line", v: q50, color: col("hydraulique"), dash: "3 3", w: 1 }, { kind: "line", v: S2.flow, color: col("hydraulique"), w: 2 }], { H: 120 });
+  dayHover(chF, Y, (t, i) => { t.append(el("div", "big", S2.flow[i] == null ? "—" : fr(S2.flow[i]) + " m³/s")); row(t, null, "Médiane", q50[i] == null ? "—" : fr(q50[i]) + " m³/s"); row(t, null, "10 % des années sous", q10[i] == null ? "—" : fr(q10[i]) + " m³/s"); });
+  // Températures
+  const hasW = S2.water.some(v => v != null);
+  legendItems(document.getElementById("rvLabT"), [[css("--imp"), "Température max de l'air au site (°C)", true], ...(hasW ? [[css("--accent"), "Température max de l'eau (°C)", true]] : [])]);
+  const chT = dayChart(document.getElementById("rvTemp"), Y, n, [{ kind: "line", v: S2.air, color: css("--imp"), w: 1.3 }, ...(hasW ? [{ kind: "line", v: S2.water, color: css("--accent"), w: 2 }] : [])], { H: 110, ymin: 0, yfmt: v => v + "°" });
+  if (chT.y.domain()[1] >= 30) chT.svg.append("line").attr("x1", chT.M.l).attr("x2", chT.W - chT.M.r).attr("y1", chT.y(30)).attr("y2", chT.y(30)).attr("stroke", css("--imp")).attr("stroke-dasharray", "2 4").attr("opacity", .6);
+  dayHover(chT, Y, (t, i) => { row(t, css("--imp"), "Air (max)", S2.air[i] == null ? "—" : fr(S2.air[i], 1) + " °C"); if (hasW) row(t, css("--accent"), "Eau (max)", S2.water[i] == null ? "—" : fr(S2.water[i], 1) + " °C"); });
+  // Chiffres de l'été
+  const prodSum = d3.sum(S2.prod.slice(0, upto)), daysP = S2.prod.slice(0, upto).filter(v => v != null).length;
+  const low = d3.range(upto).filter(i => S2.flow[i] != null && q10[i] != null && S2.flow[i] < q10[i]).length, hot = d3.range(upto).filter(i => S2.air[i] >= 30).length;
+  const lost = d3.sum(envDay);
+  const st = document.getElementById("rvStats"); st.replaceChildren();
+  const add = (k, v) => { const d = el("div"); d.append(document.createTextNode(k + " "), el("b", null, v)); st.append(d); };
+  add("Production mai–octobre", daysP ? fr(prodSum / 1000, 2) + " TWh" : "—"); if (daysP) add("Taux de charge moyen", fr(prodSum / (cap * daysP) * 100) + " %");
+  add("Jours de débit sous le 10ᵉ centile", fr(low)); add("Jours ≥ 30 °C (air)", fr(hot));
+  add("Perdu pour causes environnementales", eps.length ? fr(lost, lost < 10 ? 1 : 0) + " GWh" : Y < 2026 ? "non disponible" : "0");
+  const fs = p.flowStation, ts = p.tempStation;
+  document.getElementById("rvNote").textContent = `Débit : ${fs ? `${fs.name} (${fr(fs.km, 0)} km)` : "pas de station de débit pertinente (estuaire)"}. Eau : ${ts ? `${ts.name} (${fr(ts.km, 0)} km), mesures jusqu'au ${new Date(ts.last).toLocaleDateString("fr-FR")}` : "pas de mesure publique récente de la température de l'eau près du site"}. Les seuils réglementaires propres à chaque centrale (arrêtés de rejet) ne sont pas représentés.`;
+  renderEnvList();
+}
+function renderEnvList() {
+  const Y = rvs.year, R = HB.rivers, rows = Object.keys(R.env).map(u => ({ u, mwh: envLostYear(u, Y) })).filter(r => r.mwh > 0).sort((a, b) => b.mwh - a.mwh);
+  document.getElementById("envTitle").textContent = `Production perdue pour « causes externes liées à l'environnement », ${Y} · tout le parc (GWh)`;
+  const host = document.getElementById("envList"); host.replaceChildren(); const mx = d3.max(rows, r => r.mwh) || 1;
+  const plantOf = u => R.plants.find(p => p.units.includes(u));
+  rows.slice(0, 16).forEach(r => { const d = el("div"), b = el("button", null, r.u), bar = el("div", "ebar"); bar.style.width = (r.mwh / mx * 100) + "%"; const pl = plantOf(r.u);
+    if (pl) b.onclick = () => { rvs.plant = pl.key; renderRivers(); }; else { b.style.cursor = "default"; b.title = "centrale de bord de mer"; }
+    d.append(b, el("div", null), el("b", "num", fr(r.mwh / 1000, r.mwh < 1e4 ? 1 : 0))); d.children[1].append(bar); host.append(d); });
+  if (rows.length > 16) host.append(el("div", "note", `+ ${rows.length - 16} autres réacteurs, ${fr(d3.sum(rows.slice(16), r => r.mwh) / 1000)} GWh`));
+  const first = d3.min(Object.values(R.env).flatMap(x => x.eps.map(e => e[0])));
+  document.getElementById("envNote").textContent = rows.length ? `${rows.length} réacteurs concernés, ${fr(d3.sum(rows, r => r.mwh) / 1000)} GWh au total jusqu'à aujourd'hui (puissance indisponible déclarée × durée, versions successives sans double compte ; la suite déjà annoncée n'est pas comptée). Cliquez un réacteur de bord de rivière pour voir sa centrale. Bord de mer : chaleur de l'eau, algues, méduses…`
+    : `Pas d'indisponibilité de ce type dans l'historique conservé pour ${Y} (déclarations RTE disponibles depuis ${first ? new Date(first.slice(0, 10)).toLocaleDateString("fr-FR", { month: "long", year: "numeric" }) : "—"}).`;
+}
+
+/* ---------- Nappes phréatiques ---------- */
+const NP_COL = ["#c4161c", "#f06c24", "#f7c948", "#59b36b", "#7ec3e8", "#2f7fd1", "#1a3f9c"];
+const nps = { month: null, station: null, play: null, months: [] };
+const monthDiff = (a, b) => (+b.slice(0, 4) - +a.slice(0, 4)) * 12 + (+b.slice(5) - +a.slice(5));
+const npAt = (st, m, k) => { const i = monthDiff(st.m0, m); return i >= 0 && i < st[k].length ? st[k][i] : null; };
+function renderNappes() {
+  const blk = document.getElementById("nappeBlock"); if (!HB || !HB.nappes.stations.length) { blk.style.display = "none"; return; }
+  const ST = HB.nappes.stations, CL = HB.nappes.classes;
+  if (!nps.months.length) {
+    const last = d3.max(ST, s => { const i = s.cls.findLastIndex(c => c != null); const [y, m] = s.m0.split("-").map(Number); return ymKey(new Date(y, m - 1 + i, 1)); });
+    for (let d = new Date(2000, 0, 1); ymKey(d) <= last; d.setMonth(d.getMonth() + 1)) nps.months.push(ymKey(d));
+    // dernier mois renseigné pour au moins la moitié des stations
+    const curM = ymKey(new Date()); // mois en cours incomplet : on part du dernier mois achevé
+    nps.month = [...nps.months].reverse().find(m => m < curM && ST.filter(s => npAt(s, m, "cls") != null).length >= ST.length / 2) || nps.months.at(-1);
+    nps.station = d3.greatest(ST, s => s.lvl.filter(v => v != null).length).code;
+    const sl = document.getElementById("npSlider"); sl.max = nps.months.length - 1; sl.oninput = () => { stopNpPlay(); nps.month = nps.months[+sl.value]; drawNpMonth(); };
+    document.getElementById("npPlay").onclick = () => { if (nps.play) return stopNpPlay(); document.getElementById("npPlay").textContent = "❚❚";
+      if (nps.months.indexOf(nps.month) >= nps.months.length - 2) nps.month = nps.months[0];
+      nps.play = setInterval(() => { const i = nps.months.indexOf(nps.month); if (i >= nps.months.length - 1) return stopNpPlay(); nps.month = nps.months[i + 1]; drawNpMonth(); }, REDUCED ? 600 : 180); };
+    const lg = document.getElementById("npLegend"); CL.forEach((c, i) => { const s = el("span"), sw = el("span", "sw"); sw.style.background = NP_COL[i]; sw.style.borderRadius = "50%"; s.append(sw, document.createTextNode(c)); lg.append(s); });
+  }
+  // Carte
+  const host = document.getElementById("npMap"); host.replaceChildren(); const W = host.clientWidth, H = Math.round(W * .95);
+  const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[8, 8], [W - 8, H - 8]], GEO.regions), path = d3.geoPath(proj);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").selectAll("path").data(GEO.regions.features).join("path").attr("d", path).attr("fill", "var(--land)").attr("stroke", "var(--line)");
+  nps.dots = svg.append("g").selectAll("circle").data(ST).join("circle").attr("cx", s => proj([s.lon, s.lat])[0]).attr("cy", s => proj([s.lon, s.lat])[1]).attr("r", W < 500 ? 4.5 : 6.5)
+    .style("cursor", "pointer").on("click", (e, s) => { nps.station = s.code; drawNpMonth(); renderNpChron(); })
+    .on("pointermove", (e, s) => showTip(e, t => { const c = npAt(s, nps.month, "cls"), v = npAt(s, nps.month, "lvl");
+      t.append(el("div", "t", `${s.commune || "—"} (${s.dep}) · ${monthName(nps.month)}`)); t.append(el("div", "big", c == null ? "pas de mesure" : CL[c]));
+      row(t, null, "Niveau moyen", v == null ? "—" : fr(v, 2) + " m NGF"); row(t, null, "Suivi depuis", s.m0.slice(0, 4)); if (s.nappe) t.append(el("div", "note", s.nappe)); }))
+    .on("pointerleave", hideTip);
+  nps.narrow = W < 500;
+  nps.mapTitle = svg.append("text").attr("x", 10).attr("y", 20).style("font", "600 16px 'IBM Plex Mono'");
+  nps.mapSub = svg.append("text").attr("x", 10).attr("y", 38).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--muted)");
+  renderNpFrise(); renderNpChron(); drawNpMonth();
+}
+function stopNpPlay() { clearInterval(nps.play); nps.play = null; const b = document.getElementById("npPlay"); if (b) b.textContent = "▶"; }
+function drawNpMonth() {
+  const ST = HB.nappes.stations, CL = HB.nappes.classes;
+  nps.dots.attr("fill", s => { const c = npAt(s, nps.month, "cls"); return c == null ? "none" : NP_COL[c]; }).attr("stroke", s => s.code === nps.station ? "var(--text)" : npAt(s, nps.month, "cls") == null ? "var(--muted)" : "var(--bg)")
+    .attr("stroke-width", s => s.code === nps.station ? 2.2 : 1);
+  const cs = ST.map(s => npAt(s, nps.month, "cls")).filter(c => c != null), lowN = cs.filter(c => c <= 1).length, highN = cs.filter(c => c >= 5).length;
+  nps.mapTitle.text(monthName(nps.month));
+  const lp = fr(lowN / (cs.length || 1) * 100), hp = fr(highN / (cs.length || 1) * 100);
+  nps.mapSub.text(nps.narrow ? `${cs.length} points · ${lp} % bas · ${hp} % hauts` : `${cs.length} piézomètres · ${lp} % bas ou très bas · ${hp} % haut ou très haut`);
+  document.getElementById("npSlider").value = nps.months.indexOf(nps.month); document.getElementById("npLabel").textContent = MS[+nps.month.slice(5) - 1] + " " + nps.month.slice(0, 4);
+  if (nps.cursor) nps.cursor.attr("x", nps.fx(nps.month)); if (nps.chronCursor) nps.chronCursor();
+}
+function renderNpFrise() {
+  const host = document.getElementById("npFrise"); host.replaceChildren(); const ST = HB.nappes.stations, CL = HB.nappes.classes, M0 = nps.months;
+  const W = host.clientWidth, H = 110, M = { l: 42, r: 6, t: 6, b: 18 }, bw = (W - M.l - M.r) / M0.length;
+  const fx = m => M.l + M0.indexOf(m) * bw; nps.fx = fx;
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H), y = d3.scaleLinear().domain([0, 1]).range([H - M.b, M.t]);
+  const cols = M0.map(m => { const cnt = CL.map(() => 0); let n = 0; ST.forEach(s => { const c = npAt(s, m, "cls"); if (c != null) { cnt[c]++; n++; } }); return { m, cnt, n }; });
+  const g = svg.append("g");
+  cols.forEach(c => { let acc = 0; c.cnt.forEach((k, i) => { if (!k) return; const h = k / c.n; g.append("rect").attr("x", fx(c.m)).attr("width", Math.max(1, bw + .3)).attr("y", y(acc + h)).attr("height", y(acc) - y(acc + h)).attr("fill", NP_COL[i]); acc += h; }); });
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(2).tickFormat(v => v * 100 + " %"));
+  const years = M0.filter(m => m.endsWith("-01") && +m.slice(0, 4) % (W < 600 ? 5 : 2) === 0);
+  svg.append("g").selectAll("text").data(years).join("text").attr("x", m => fx(m)).attr("y", H - 4).style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)").text(m => m.slice(0, 4));
+  nps.cursor = svg.append("rect").attr("y", M.t - 2).attr("width", Math.max(2, bw)).attr("height", H - M.t - M.b + 4).attr("fill", "none").attr("stroke", "var(--text)").attr("stroke-width", 1.5).attr("x", fx(nps.month));
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").style("cursor", "pointer")
+    .on("pointermove", e => { const i = Math.max(0, Math.min(M0.length - 1, Math.floor((d3.pointer(e)[0] - M.l) / bw))), c = cols[i];
+      showTip(e, t => { t.append(el("div", "t", monthName(c.m) + ` · ${c.n} piézomètres`)); [...CL].map((n, k) => [n, k]).reverse().forEach(([n, k]) => row(t, NP_COL[k], n, fr(c.cnt[k] / (c.n || 1) * 100) + " %")); }); })
+    .on("pointerleave", hideTip).on("click", e => { stopNpPlay(); const i = Math.max(0, Math.min(M0.length - 1, Math.floor((d3.pointer(e)[0] - M.l) / bw))); nps.month = M0[i]; drawNpMonth(); });
+}
+function renderNpChron() {
+  const s = HB.nappes.stations.find(x => x.code === nps.station), host = document.getElementById("npChron"); host.replaceChildren();
+  document.getElementById("npStTitle").textContent = `${s.commune || s.code} (${s.dep}) · niveau moyen mensuel (m NGF), 20 dernières années`;
+  const [y0, m0] = s.m0.split("-").map(Number), all = s.lvl.map((v, i) => ({ t: new Date(y0, m0 - 1 + i, 15), v, c: s.cls[i] })).filter(r => r.v != null);
+  const since = new Date(new Date().getFullYear() - 20, 0, 1), rows = all.filter(r => r.t >= since); // 20 dernières années, lisibles
+  const byCal = d3.range(12).map(k => all.filter(r => r.t.getMonth() === k).map(r => r.v).sort(d3.ascending));
+  const band = rows.map(r => ({ t: r.t, lo: d3.quantile(byCal[r.t.getMonth()], .1), hi: d3.quantile(byCal[r.t.getMonth()], .9) }));
+  const W = host.clientWidth, H = 230, M = { l: 52, r: 8, t: 8, b: 20 };
+  const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain(d3.extent(rows, r => r.v)).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => fr(v, 1)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 8).tickSize(0).tickPadding(6));
+  svg.append("path").datum(band).attr("fill", "var(--text-2)").attr("opacity", .13).attr("d", d3.area().x(r => x(r.t)).y0(r => y(r.lo)).y1(r => y(r.hi)));
+  svg.append("path").datum(rows).attr("fill", "none").attr("stroke", "var(--text-2)").attr("stroke-width", 1).attr("d", d3.line().x(r => x(r.t)).y(r => y(r.v)));
+  svg.append("g").selectAll("circle").data(rows.filter(r => r.c != null)).join("circle").attr("cx", r => x(r.t)).attr("cy", r => y(r.v)).attr("r", 1.8).attr("fill", r => NP_COL[r.c]);
+  const cur = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--accent)").attr("stroke-width", 1.2);
+  nps.chronCursor = () => { const [yy, mm] = nps.month.split("-").map(Number), t = new Date(yy, mm - 1, 15); cur.attr("x1", x(t)).attr("x2", x(t)).attr("opacity", t >= x.domain()[0] && t <= x.domain()[1] ? .8 : 0); };
+  nps.chronCursor();
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const r = rows[d3.bisector(r => r.t).center(rows, x.invert(d3.pointer(e)[0]))];
+    showTip(e, t => { t.append(el("div", "t", r.t.toLocaleDateString("fr-FR", { month: "long", year: "numeric" }))); t.append(el("div", "big", fr(r.v, 2) + " m"));
+      if (r.c != null) row(t, NP_COL[r.c], "Classe", HB.nappes.classes[r.c]); }); }).on("pointerleave", hideTip);
+  document.getElementById("npStNote").textContent = `Piézomètre ${s.code}${s.nappe ? " · " + s.nappe : ""}, suivi depuis ${s.m0.slice(0, 4)}. Bande grise : 10 % – 90 % des niveaux du même mois calendaire sur toute la chronique. Cliquez un autre point de la carte pour changer de station.`;
+}
+
+/* ---------- La France et ses voisins (Ember, Energy-Charts) ---------- */
+const EU = window.EUROPE;
+const EU_FUEL = { Nuclear: ["nucleaire", "Nucléaire"], Hydro: ["hydraulique", "Hydraulique"], Wind: ["eolien", "Éolien"], Solar: ["solaire", "Solaire"], Bioenergy: ["bioenergies", "Bioénergies"],
+  "Other Renewables": [null, "Autres renouvelables"], Gas: ["gaz", "Gaz"], Coal: ["charbon", "Charbon"], "Other Fossil": ["fioul", "Autres fossiles"] };
+const euFuelCol = f => EU_FUEL[f][0] ? col(EU_FUEL[f][0]) : "#7fc8a9";
+const LOWF = ["Nuclear", "Hydro", "Wind", "Solar", "Bioenergy", "Other Renewables"], RENF = LOWF.slice(1);
+const eus = { metric: "co2", year: null, hi: null };
+const euName = c => EU.zones.find(z => z.code === c).name;
+function euYearPrice(c, y) { const P = EU.prices[c]; if (!P) return null; const ms = P.monthly.filter(m => m[0].startsWith(y + "-")); const n = d3.sum(ms, m => m[2]); return n ? d3.sum(ms, m => m[1] * m[2]) / n : null; }
+function euValue(c, y, metric) {
+  if (metric === "price") return euYearPrice(c, y);
+  const r = EU.yearly[c]?.[y]; if (!r) return null; if (metric === "co2") return r.co2;
+  const tot = d3.sum(r.mix), f = metric === "low" ? LOWF : RENF; return tot ? d3.sum(f, k => r.mix[EU.fuels.indexOf(k)]) / tot : null;
+}
+const EU_METRIC = { co2: { t: "Intensité carbone", f: v => fr(v) + " g", scheme: d3.interpolateRgb("#2fbf71", "#5a2a2a"), dom: [0, 700] },
+  low: { t: "Part bas carbone", f: v => fr(v * 100) + " %", scheme: d3.interpolateRgb("#5a2a2a", "#2fbf71"), dom: [0, 1] },
+  ren: { t: "Part renouvelable", f: v => fr(v * 100) + " %", scheme: d3.interpolateRgb("#3a3f4a", "#2ee6c5"), dom: [0, 1] },
+  price: { t: "Prix day-ahead moyen", f: v => fr(v) + " €", scheme: d3.interpolateRgb("#1e5f8a", "#ffb627"), dom: null } };
+const EU_LABEL = { "250": [2.4, 46.6], "826": [-1.6, 52.6], "380": [12.2, 43.4], "620": [-8.1, 39.7], "724": [-3.6, 40.2], "756": [8.2, 46.85], "056": [4.6, 50.6], "528": [5.6, 52.3], "040": [14.5, 47.6], "616": [19.3, 52.1], "276": [10.3, 51.1] };
+function renderEurope() {
+  const blk = document.getElementById("euBlock"); if (!EU) { blk.style.display = "none"; return; }
+  const years = Object.keys(EU.yearly.FR).filter(y => EU.zones.filter(z => EU.yearly[z.code]?.[y]).length >= 10);
+  if (!eus.year) eus.year = years.at(-1);
+  const yt = document.getElementById("euYear");
+  if (!yt.childElementCount) years.slice(-7).forEach(y => { const b = el("button", "tab", y); b.dataset.v = y; b.onclick = () => { eus.year = y; renderEurope(); }; yt.append(b); });
+  yt.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === eus.year));
+  document.querySelectorAll("#euMetric .tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === eus.metric));
+  document.getElementById("euSource").textContent = `Ember (CC BY 4.0), version annuelle du ${EU.meta.emberYearly ? new Date(EU.meta.emberYearly).toLocaleDateString("fr-FR") : "—"} ; prix : Energy-Charts.info (CC BY 4.0). Italie : zone de prix Nord.`;
+  renderEuMap(); renderEuMix(); renderEuCo2(); renderEuPrice(); renderEuTable();
+}
+function renderEuMap() {
+  const host = document.getElementById("euMap"); host.replaceChildren(); const W = host.clientWidth, H = Math.round(W * (W < 560 ? 1.05 : .85)), M2 = EU_METRIC[eus.metric], Y = eus.year;
+  document.getElementById("euMapT").textContent = `${M2.t} · ${Y}${eus.metric === "price" ? " (moyenne des prix journaliers)" : ""}`;
+  const frame = { type: "MultiPoint", coordinates: [[-9.6, 36.2], [24.2, 36.2], [-9.6, 58.6], [24.2, 58.6]] };
+  const proj = d3.geoConicConformal().parallels([40, 55]).rotate([-7, 0]).fitExtent([[4, 4], [W - 4, H - 4]], frame), path = d3.geoPath(proj);
+  const byGeo = new Map(EU.zones.filter(z => z.geo).map(z => [z.geo, z]));
+  const vals = EU.zones.filter(z => z.geo).map(z => euValue(z.code, Y, eus.metric)).filter(v => v != null);
+  const dom = M2.dom || d3.extent(vals), color = d3.scaleSequential(M2.scheme).domain(dom);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("rect").attr("width", W).attr("height", H).attr("fill", "var(--sea)");
+  svg.append("g").selectAll("path").data(GEO.countries.features).join("path").attr("d", path)
+    .attr("fill", d => { const z = byGeo.get(d.properties.id), v = z && euValue(z.code, Y, eus.metric); return v != null ? color(v) : "var(--land)"; })
+    .attr("stroke", d => d.properties.id === "250" ? "var(--accent)" : "var(--line)").attr("stroke-width", d => d.properties.id === "250" ? 1.4 : .7)
+    .on("pointermove", (e, d) => { const z = byGeo.get(d.properties.id); if (!z) return hideTip(); euTip(e, z.code); }).on("pointerleave", hideTip);
+  byGeo.forEach((z, id) => { const v = euValue(z.code, Y, eus.metric); if (v == null || !EU_LABEL[id]) return; const [px, py] = proj(EU_LABEL[id]);
+    svg.append("text").attr("x", px).attr("y", py).attr("text-anchor", "middle").style("font", `600 ${W < 500 ? 10 : 11.5}px 'IBM Plex Mono'`).style("fill", "#fff").style("paint-order", "stroke").style("stroke", "rgba(0,0,0,.55)").style("stroke-width", 3).style("pointer-events", "none").text(M2.f(v)); });
+  const gw = Math.min(200, W - 40), gx = 12, gy = H - 26, lg = svg.append("g");
+  const gid = "eugrad" + eus.metric, defs = svg.append("defs").append("linearGradient").attr("id", gid);
+  d3.range(0, 1.01, .1).forEach(t => defs.append("stop").attr("offset", t).attr("stop-color", color(dom[0] + t * (dom[1] - dom[0]))));
+  lg.append("rect").attr("x", gx).attr("y", gy).attr("width", gw).attr("height", 7).attr("fill", `url(#${gid})`);
+  lg.append("text").attr("x", gx).attr("y", gy + 19).style("font", "10px 'IBM Plex Mono'").style("fill", "var(--text-2)").text(M2.f(dom[0]));
+  lg.append("text").attr("x", gx + gw).attr("y", gy + 19).attr("text-anchor", "end").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--text-2)").text(M2.f(dom[1]));
+  if (eus.metric === "price" && !EU.prices.GB) svg.append("text").attr("x", W - 8).attr("y", H - 8).attr("text-anchor", "end").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)").text("Royaume-Uni : prix non disponible");
+}
+function euTip(e, c) { const Y = eus.year, r = EU.yearly[c]?.[Y]; showTip(e, t => { t.append(el("div", "t", euName(c) + " · " + Y));
+  const co2 = euValue(c, Y, "co2"); t.append(el("div", "big", co2 == null ? "—" : fr(co2) + " gCO₂/kWh"));
+  row(t, null, "Bas carbone", euValue(c, Y, "low") == null ? "—" : fmtPct(euValue(c, Y, "low"))); row(t, null, "Renouvelable", euValue(c, Y, "ren") == null ? "—" : fmtPct(euValue(c, Y, "ren")));
+  if (r) { row(t, null, "Production", fmtTWh(d3.sum(r.mix))); if (r.imports != null) row(t, null, r.imports >= 0 ? "Imports nets" : "Exports nets", fmtTWh(Math.abs(r.imports))); }
+  const p = euYearPrice(c, Y); row(t, null, "Prix moyen", p == null ? "—" : fmtEur(p)); }); }
+function renderEuMix() {
+  const host = document.getElementById("euMix"); host.replaceChildren(); const Y = eus.year, F = EU.fuels;
+  document.getElementById("euMixT").textContent = `Mix de production ${Y} · trié par intensité carbone`;
+  const zs = EU.zones.filter(z => EU.yearly[z.code]?.[Y]).map(z => ({ ...z, r: EU.yearly[z.code][Y] })).sort((a, b) => (a.r.co2 ?? 1e9) - (b.r.co2 ?? 1e9));
+  const W = host.clientWidth, rowH = 24, M = { l: W < 500 ? 84 : 118, r: 54, t: 4, b: 4 }, H = M.t + zs.length * rowH + M.b;
+  const x = d3.scaleLinear().domain([0, 1]).range([M.l, W - M.r]), svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  zs.forEach((z, i) => { const tot = d3.sum(z.r.mix), yy = M.t + i * rowH; let acc = 0;
+    const g = svg.append("g").on("pointermove", e => showTip(e, t => { t.append(el("div", "t", z.name + " · " + Y)); t.append(el("div", "big", fmtTWh(tot)));
+      F.forEach((f, k) => { if (z.r.mix[k] > 0) row(t, euFuelCol(f), EU_FUEL[f][1], `${fmtTWh(z.r.mix[k])} · ${fr(z.r.mix[k] / tot * 100, z.r.mix[k] / tot < .1 ? 1 : 0)} %`); }); })).on("pointerleave", hideTip);
+    F.forEach((f, k) => { const w = z.r.mix[k] / tot; if (w <= 0) return; g.append("rect").attr("x", x(acc)).attr("width", Math.max(0, x(acc + w) - x(acc) - .5)).attr("y", yy + 3).attr("height", rowH - 6).attr("fill", euFuelCol(f)); acc += w; });
+    svg.append("text").attr("x", M.l - 8).attr("y", yy + rowH / 2).attr("dy", ".35em").attr("text-anchor", "end").style("font", `${z.code === "FR" ? 600 : 400} 12px 'Space Grotesk'`).style("fill", z.code === "FR" ? "var(--accent)" : "var(--text)").text(W < 500 && z.code === "EU" ? "UE" : z.name);
+    svg.append("text").attr("x", W - M.r + 6).attr("y", yy + rowH / 2).attr("dy", ".35em").style("font", "11px 'IBM Plex Mono'").style("fill", "var(--text-2)").text(z.r.co2 == null ? "—" : fr(z.r.co2) + " g"); });
+  const lg = document.getElementById("euMixLg"); lg.replaceChildren(); F.forEach(f => { const b = el("span", "lg"), sw = el("span", "sw"); sw.style.background = euFuelCol(f); b.append(sw, document.createTextNode(EU_FUEL[f][1])); lg.append(b); });
+}
+// Courbes multiples : la France en évidence, les autres en gris ; cliquer la légende met une zone en avant
+function euLines(hostId, lgId, series, { yfmt, H = 230, tfmt }) {
+  const host = document.getElementById(hostId); host.replaceChildren(); const W = host.clientWidth, M = { l: 44, r: 8, t: 8, b: 20 };
+  const all = series.flatMap(s => s.pts), x = d3.scaleTime().domain(d3.extent(all, p => p.t)).range([M.l, W - M.r]);
+  const hiQ = d3.quantile(all.map(p => p.v).sort(d3.ascending), .997);
+  const y = d3.scaleLinear().domain([Math.min(0, d3.min(all, p => p.v)), hiQ]).nice().range([H - M.b, M.t]).clamp(true);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - M.l - M.r)).tickFormat(yfmt));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 8).tickSize(0).tickPadding(6));
+  const pal = d3.schemeTableau10, colorOf = (s, i) => s.code === "FR" ? css("--accent") : s.code === "EU" ? css("--text") : pal[i % 10];
+  const focus = eus.hi;
+  const order = [...series].sort((a, b) => (a.code === "FR") - (b.code === "FR") || (a.code === focus) - (b.code === focus));
+  order.forEach(s => { const i = series.indexOf(s), on = s.code === "FR" || s.code === focus;
+    svg.append("path").datum(s.pts).attr("fill", "none").attr("stroke", on ? colorOf(s, i) : "var(--muted)").attr("stroke-width", on ? 2.4 : 1).attr("opacity", on ? 1 : .45)
+      .attr("stroke-dasharray", s.code === "EU" ? "4 3" : null).attr("d", d3.line().x(p => x(p.t)).y(p => y(p.v)).curve(d3.curveMonotoneX)); });
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--text)").attr("opacity", 0);
+  const ts = [...new Set(all.map(p => +p.t))].sort((a, b) => a - b);
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const t0 = ts[d3.bisector(d => d).center(ts, +x.invert(d3.pointer(e)[0]))]; cross.attr("x1", x(t0)).attr("x2", x(t0)).attr("opacity", .4);
+    const at = series.map((s, i) => ({ s, i, p: s.pts.find(p => +p.t === t0) })).filter(o => o.p).sort((a, b) => b.p.v - a.p.v);
+    showTip(e, t => { t.append(el("div", "t", tfmt(new Date(t0)))); at.forEach(o => row(t, colorOf(o.s, o.i), o.s.name, yfmt(o.p.v))); }); })
+    .on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+  const lg = document.getElementById(lgId); lg.replaceChildren();
+  series.forEach((s, i) => { const b = el("button", "lg" + (s.code === "FR" || s.code === focus || !focus ? "" : " dim")), sw = el("span", "sw line"); sw.style.background = colorOf(s, i);
+    b.append(sw, document.createTextNode(s.name)); b.onclick = () => { eus.hi = eus.hi === s.code || s.code === "FR" ? null : s.code; renderEuCo2(); renderEuPrice(); }; lg.append(b); });
+}
+function renderEuCo2() {
+  const series = EU.zones.map(z => ({ code: z.code, name: z.name, pts: Object.entries(EU.yearly[z.code] || {}).filter(([, r]) => r.co2 != null).map(([y, r]) => ({ t: new Date(+y, 6, 1), v: r.co2 })) })).filter(s => s.pts.length);
+  euLines("euCo2", "euCo2Lg", series, { yfmt: v => fr(v) + " g", tfmt: d => String(d.getFullYear()) });
+}
+function renderEuPrice() {
+  const series = EU.zones.filter(z => EU.prices[z.code]).map(z => ({ code: z.code, name: z.name, pts: EU.prices[z.code].monthly.filter(m => m[2] >= 20 || m === EU.prices[z.code].monthly.at(-1)).map(([k, v]) => ({ t: new Date(k + "-15T12:00:00"), v })) }));
+  euLines("euPrice", "euPriceLg", series, { yfmt: v => fr(v) + " €", tfmt: d => d.toLocaleDateString("fr-FR", { month: "long", year: "numeric" }) });
+}
+function renderEuTable() {
+  const t = document.getElementById("euPriceTable"); t.replaceChildren(); const fr0 = EU.prices.FR; if (!fr0) return;
+  const lastM = fr0.monthly.at(-1)[0], curY = lastM.slice(0, 4), prevY = String(+curY - 1);
+  const avgDaily = (c, from) => { const d = EU.prices[c].daily.filter(([k]) => k >= from); return d.length ? d3.mean(d, x => x[1]) : null; };
+  const from12 = (() => { const d = new Date(fr0.daily.at(-1)[0] + "T12:00:00"); d.setFullYear(d.getFullYear() - 1); return d.toISOString().slice(0, 10); })();
+  const cols = [[`${MONTHS[+lastM.slice(5) - 1]} ${curY.slice(2)}*`, c => EU.prices[c].monthly.find(m => m[0] === lastM)?.[1]], [`${curY} à date`, c => euYearPrice(c, curY)], ["12 mois", c => avgDaily(c, from12)], [prevY, c => euYearPrice(c, prevY)]];
+  const head = el("tr"); head.append(el("th", null, "Zone")); cols.forEach(([h]) => head.append(el("th", null, h))); head.append(el("th", null, "écart FR (12 mois)")); t.append(head);
+  const fr12 = avgDaily("FR", from12);
+  EU.zones.filter(z => EU.prices[z.code]).map(z => ({ z, v12: avgDaily(z.code, from12) })).sort((a, b) => a.v12 - b.v12).forEach(({ z, v12 }) => {
+    const r = el("tr", z.code === "FR" ? "fr" : null); r.append(el("td", null, z.name)); cols.forEach(([, f]) => { const v = f(z.code); r.append(el("td", "num", v == null ? "—" : fr(v, 1))); });
+    r.append(el("td", "num", z.code === "FR" ? "—" : (v12 - fr12 >= 0 ? "+" : "−") + fr(Math.abs(v12 - fr12), 1))); t.append(r); });
+  document.getElementById("euPriceNote").textContent = `€/MWh, moyennes des prix journaliers (heure de Paris). * Mois en cours, jusqu'au ${new Date(fr0.daily.at(-1)[0] + "T12:00:00").toLocaleDateString("fr-FR")}. Données Energy-Charts.info (CC BY 4.0), mises à jour chaque jour.`;
+}
+document.querySelectorAll("#euMetric .tab").forEach(b => b.onclick = () => { eus.metric = b.dataset.v; renderEurope(); });
+
 /* ---------- Commandes ---------- */
 function tabs(id, onPick, multi) { document.querySelectorAll(`#${id} .tab`).forEach(b => b.onclick = () => {
   if (multi) { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); } else document.querySelectorAll(`#${id} .tab`).forEach(x => x.setAttribute("aria-pressed", x === b));
@@ -1546,7 +1919,7 @@ tabs("flowMode", v => { state.flowMode = v; state.flowPicked = true; stopFlowPla
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
   try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} update(); };
 try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); renderEcowatt(); renderTempo(); renderFlex(); }
+function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); renderEcowatt(); renderTempo(); renderFlex(); stopNpPlay(); renderRivers(); renderNappes(); renderEurope(); }
 let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(update, 150); });
 update();
 loadLive(); setInterval(loadLive, 15 * 60 * 1000);

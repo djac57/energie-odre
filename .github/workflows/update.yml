@@ -47,6 +47,21 @@ jobs:
         continue-on-error: true
         run: python scripts/fetch_gaz_petrole.py data/raw
 
+      - name: Rivières et nappes (Hub'Eau, Open-Meteo)
+        if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'   # quotidien : débits et niveaux journaliers
+        continue-on-error: true
+        run: python scripts/fetch_hubeau.py data/raw
+
+      - name: Prix day-ahead des voisins (Energy-Charts, CC BY 4.0)
+        if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'
+        continue-on-error: true
+        run: python scripts/fetch_prices_eu.py data/raw
+
+      - name: Mix européen (Ember, CC BY 4.0)
+        if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'   # ne retélécharge que si Ember a publié (≈ mensuel)
+        continue-on-error: true
+        run: python scripts/fetch_ember.py data/raw
+
       - name: Construire data.js
         if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'  # besoin des exports ODRÉ du jour
         run: python scripts/build.py data/raw site/data.js
@@ -56,6 +71,12 @@ jobs:
         run: |
           python scripts/build_rte.py data/raw site/rte.js
           python scripts/build_prices.py data/raw site/prices.js
+
+      - name: Construire hubeau.js et europe.js
+        continue-on-error: true
+        run: |
+          python scripts/build_hubeau.py data/raw site/hubeau.js
+          python scripts/build_europe.py data/raw site/europe.js
 
       - name: Construire gazpetrole.js
         continue-on-error: true

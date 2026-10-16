@@ -1,0 +1,16 @@
+{
+"license": "The data provided herein is for private and internal use only. The utilization of any data, whether in its raw or derived form, for external or commercial purposes is expressly prohibited. Should you require licensing for market-related data, please direct your inquiries to the original data providers, including but not limited to EPEX SPOT SE.",
+"attribution": "Energy-Charts.info",
+"zones": {
+"FR": "FR",
+"DE": "DE-LU",
+"BE": "BE",
+"ES": "ES",
+"IT": "IT-North",
+"CH": "CH",
+"NL": "NL",
+"AT": "AT",
+"PL": "PL",
+"PT": "PT"
+}
+}

@@ -7,6 +7,7 @@ API utilisées (données publiques, réutilisables avec mention de la source —
 - Generation Forecast v3 : prévisions éolien / solaire (J-1, intrajournalier, « current ») ;
 - Consumption v1 (short_term) : consommation réalisée et prévue (J-1, intrajournalier) ;
 - Balancing Energy v5 : prix et volumes d'ajustement, déséquilibre.
+- Actual Generation v1, par groupe : historique journalier des réacteurs nucléaires depuis 2019 (rempli progressivement).
 L'API Wholesale Market (données EPEX SPOT / Nord Pool, non redistribuables) n'est volontairement pas utilisée.
 
 Les séries sont stockées agrégées au pas horaire (clés UTC « AAAA-MM-JJTHH »), fusionnées à chaque passage
@@ -431,10 +432,51 @@ def step_reserves(api):
     return f"{len(rv['need'])} jours de besoins"
 
 
+def step_nuclear_history(api):
+    """Production journalière (MWh, jour de Paris) de chaque réacteur depuis 2019, pour comparer les étés
+    (chaleur et débit des rivières). Fusion vers l'avant à chaque passage, puis remontée progressive du passé :
+    au plus 8 appels de 7 jours par passage, jusqu'au 1er janvier 2019."""
+    hist = load("nuclear_daily.json", {"units": {}, "from": None, "to": None})
+    first = dt.datetime(2019, 1, 1, tzinfo=PARIS)
+    todo = []
+    if hist["to"]:
+        todo += list(windows(dt.datetime.fromisoformat(hist["to"]).replace(tzinfo=PARIS) - dt.timedelta(days=2), NOW, 7))
+    else:
+        todo += list(windows(NOW - dt.timedelta(days=14), NOW, 7))
+    if not hist["from"] or dt.datetime.fromisoformat(hist["from"]).replace(tzinfo=PARIS) > first:
+        end = dt.datetime.fromisoformat(hist["from"]).replace(tzinfo=PARIS) if hist["from"] else day_floor(NOW - dt.timedelta(days=14))
+        back = list(windows(max(first, end - dt.timedelta(days=7 * 8)), end, 7))
+        todo += back[::-1]
+    try:
+        _nuclear_windows(api, hist, todo)
+    finally:  # garder ce qui a été reçu même si un appel échoue
+        save("nuclear_daily.json", hist)
+    return f"{len(todo)} fenêtres, historique du {hist['from']} au {hist['to']}"
+
+
+def _nuclear_windows(api, hist, todo):
+    for a, b in todo:
+        res = api.get("actual_generation/v1/actual_generations_per_unit", {"start_date": local_iso(a), "end_date": local_iso(b)})
+        for u in res.get("actual_generations_per_unit", []):
+            if u["unit"]["production_type"] != "NUCLEAR":
+                continue
+            rec = hist["units"].setdefault(u["unit"]["eic_code"], {"name": u["unit"]["name"].strip(), "d": {}})
+            days = defaultdict(float)
+            for v in u["values"]:
+                if v.get("value") is not None:
+                    days[parse(v["start_date"]).astimezone(PARIS).strftime("%Y-%m-%d")] += v["value"]
+            for k, mwh in days.items():
+                rec["d"][k] = round(mwh)
+        a_s, b_s = a.strftime("%Y-%m-%d"), b.strftime("%Y-%m-%d")
+        hist["from"] = min(hist["from"] or a_s, a_s)
+        hist["to"] = max(hist["to"] or b_s, b_s)
+
+
 STEPS = [("capacités installées", step_capacities), ("stocks hydrauliques", step_water_reserves), ("production par groupe", step_actual_units), ("production par filière", step_actual_types),
          ("indisponibilités", step_unavailabilities), ("consommation", step_consumption), ("prévisions de production", step_generation_forecast),
          ("ajustement", step_balancing), ("Ecowatt", step_ecowatt), ("flux physiques", step_physical_flows), ("Tempo", step_tempo),
-         ("effacement", step_demand_response), ("réserves", step_reserves)]
+         ("effacement", step_demand_response), ("réserves", step_reserves),
+         ("historique nucléaire", step_nuclear_history)]
 
 
 def main():
