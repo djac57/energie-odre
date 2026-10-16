@@ -4,3 +4,10 @@ __pycache__/
 *.new
 # Exports nationaux complets (~40 Mo) : retéléchargés à chaque mise à jour
 data/raw/eco2mix-national-*.csv
+
+# Vue personnelle des prix EPEX (redistribution interdite) : jamais publiée
+local/
+
+# Générés par le workflow avant déploiement (reconstruits à chaque passage, non versionnés)
+site/rte.js
+site/prices.js

@@ -4,7 +4,8 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "23 4 * * *"  # chaque jour à 04:23 UTC (l'historique consolidé RTE évolue chaque mois, le temps réel est chargé en direct par la page)
+    - cron: "23 4 * * *"   # quotidien : export ODRÉ complet (éCO2mix consolidé, ~40 Mo)
+    - cron: "41 * * * *"   # horaire : API RTE (pilotage) et prix spot — dans les fréquences recommandées par RTE
   workflow_dispatch:
 
 permissions:
@@ -27,10 +28,29 @@ jobs:
           python-version: "3.12"
 
       - name: Télécharger éCO2mix et la météo régionale (ODRÉ)
+        if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'
         run: python scripts/fetch.py data/raw
 
+      - name: Données de pilotage RTE (data.rte-france.com)
+        continue-on-error: true  # secrets absents ou API en panne : on garde les dernières données versionnées
+        env:
+          RTE_CLIENT_ID: ${{ secrets.RTE_CLIENT_ID }}
+          RTE_CLIENT_SECRET: ${{ secrets.RTE_CLIENT_SECRET }}
+        run: python scripts/fetch_rte.py data/raw
+
+      - name: Prix spot France (Energy-Charts / SMARD, CC BY 4.0)
+        continue-on-error: true
+        run: python scripts/fetch_prices.py data/raw
+
       - name: Construire data.js
+        if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'  # besoin des exports ODRÉ du jour
         run: python scripts/build.py data/raw site/data.js
+
+      - name: Construire rte.js et prices.js
+        continue-on-error: true
+        run: |
+          python scripts/build_rte.py data/raw site/rte.js
+          python scripts/build_prices.py data/raw site/prices.js
 
       - name: Committer les nouvelles données
         run: |
@@ -38,7 +58,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data site
-            git commit -m "Données ODRÉ mises à jour ($(date -u +%Y-%m-%d))"
+            git commit -m "Données mises à jour ($(date -u '+%Y-%m-%d %H:%M') UTC)"
             git push
           else
             echo "Aucune nouvelle donnée."

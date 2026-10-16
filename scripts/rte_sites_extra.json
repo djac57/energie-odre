@@ -1,0 +1,14 @@
+{
+  "_doc": "Coordonnées des sites RTE ≥ 100 MW absents de la base JRC-PPDB-OPEN (2019). Clé : nom du site dans l'API Generation Installed Capacities. precision = site (coordonnées publiées de l'installation) ou commune (centre de la commune d'implantation, approximatif).",
+  "FLAMANVILLE 3": {"lat": 49.537, "lon": -1.883, "precision": "site", "source": "Wikidata Q390252 (CC0)"},
+  "BANC DE GUERANDE": {"lat": 47.16, "lon": -2.627, "precision": "site", "source": "Wikidata Q22249034 (CC0)"},
+  "FECAMP": {"lat": 49.904, "lon": 0.22, "precision": "site", "source": "Wikidata Q3364826 (CC0)"},
+  "FERME EOLIENNE DE RIDENS-DE-DIEPPE": {"lat": 50.149, "lon": 1.124, "precision": "site", "source": "Wikidata Q65152435 (CC0)"},
+  "FERME EOLIENNE DE VENT-DES-ILES": {"lat": 47.016, "lon": -2.289, "precision": "commune", "source": "geo.api.gouv.fr, Noirmoutier-en-l'Île 85163 (Licence Ouverte) — parc en mer au large"},
+  "PARC EOLIEN EN MER DE LA BAIE DE ST-BRIEUC": {"lat": 48.618, "lon": -2.457, "precision": "commune", "source": "geo.api.gouv.fr, Erquy 22054 (Licence Ouverte) — parc en mer au large"},
+  "COGENERATION NORMANDIE (AMFARD)": {"lat": 49.506, "lon": 0.583, "precision": "commune", "source": "geo.api.gouv.fr, Port-Jérôme-sur-Seine 76476 (Licence Ouverte)"},
+  "COMPAGNIE ELECTRIQUE DE BRETAGNE": {"lat": 48.516, "lon": -4.061, "precision": "commune", "source": "geo.api.gouv.fr, Landivisiau 29105 (Licence Ouverte)"},
+  "FR_CPCUCOGEVI_GP": {"lat": 48.789, "lon": 2.395, "precision": "commune", "source": "geo.api.gouv.fr, Vitry-sur-Seine 94081 (Licence Ouverte)"},
+  "FR_CPCUSO_GP": {"lat": 48.912, "lon": 2.333, "precision": "commune", "source": "geo.api.gouv.fr, Saint-Ouen-sur-Seine 93070 (Licence Ouverte)"},
+  "BESS_AFD7_BARBAN_SAUCATS": {"lat": 44.648, "lon": -0.638, "precision": "commune", "source": "geo.api.gouv.fr, Saucats 33501 (Licence Ouverte)"}
+}

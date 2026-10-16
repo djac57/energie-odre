@@ -11,6 +11,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="data.js?v=b21ad0c625"></script>
 <script src="geo.js"></script>
+<script src="rte.js"></script>
+<script src="prices.js"></script>
 <style>
 /* Direction : salle de contrôle — sombre par défaut, accents lumineux, chiffres en mono */
 :root, :root[data-theme="dark"] {
@@ -133,6 +135,16 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .rticks { display: flex; justify-content: space-between; max-width: 320px; font: 11px "IBM Plex Mono", monospace; color: var(--text-2); margin-top: 2px; }
 .pictos { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; font: 11px "IBM Plex Mono", monospace; color: var(--text-2); margin-top: 4px; }
 .pictos span { display: inline-flex; align-items: center; gap: 4px; }
+.pcard h3 { font-size: 22px; margin: 2px 0 4px; letter-spacing: -.01em; }
+.pcard .meta { font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
+.pcard .glist { display: grid; gap: 2px; margin: 10px 0; font: 12px "IBM Plex Mono", monospace; }
+.pcard .glist div { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 3px 0; border-bottom: 1px solid var(--line); }
+.pcard .ev { font: 12px "IBM Plex Mono", monospace; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.pcard .ev b.P { color: var(--accent); } .pcard .ev b.F { color: var(--imp); }
+.pcard .evs { max-height: 260px; overflow: auto; }
+.st-running { color: var(--ok); } .st-stopped { color: var(--muted); } .st-unavailable { color: var(--imp); }
+.stat { font: 12px "IBM Plex Mono", monospace; color: var(--text-2); margin-top: 10px; display: grid; gap: 4px; }
+.stat b { color: var(--text); font-size: 15px; }
 .flist { display: none; gap: 2px; margin-top: 8px; font-size: 12.5px; }
 .flist div { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--line); }
 .flist .exp { color: var(--exp); } .flist .imp { color: var(--imp); }
@@ -236,17 +248,80 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <div class="records" id="records"></div>
 </div></section>
 
+<div id="rteBlock">
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">08 — CENTRALES</div><h2>Les grands groupes, en ce moment</h2>
+    <p>Tous les sites d'au moins 100&nbsp;MW. Forme et couleur&nbsp;: filière&nbsp;; taille&nbsp;: puissance installée&nbsp;; contour&nbsp;: <b style="color:var(--ok)">en production</b>, <b style="color:var(--muted)">à l'arrêt</b>, <b style="color:var(--imp)">indisponible</b>. Cliquez un site pour sa fiche.</p>
+    <div class="tabs" id="plantFilter"></div><p class="note" id="plantStamp"></p></div>
+  <div class="maps"><div class="panel"><div id="plantMap"></div><div class="pictos" id="plantLegend"></div></div>
+    <div class="panel" id="plantCard"></div></div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">09 — INDISPONIBILITÉS</div><h2>Arrêts du parc</h2>
+    <p>Chaque ligne est un réacteur nucléaire&nbsp;: les barres montrent les périodes d'indisponibilité déclarées par l'exploitant, <b style="color:var(--accent)">programmées</b> (maintenance, rechargement) ou <b style="color:var(--imp)">fortuites</b> (pannes). Plus la barre est opaque, plus la part de puissance perdue est grande.</p>
+    <div class="tabs" id="unavWin"><button class="tab" data-v="180" aria-pressed="false">±6 mois</button><button class="tab" data-v="90" aria-pressed="true">±3 mois</button><button class="tab" data-v="30" aria-pressed="false">±1 mois</button></div></div>
+  <div><div class="panel"><div id="unavFrise"></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Puissance indisponible totale (GW) · tous moyens de production déclarés</div><div id="unavTotal"></div><div class="legend" id="unavLegend"></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Stocks hydrauliques (lacs et réservoirs, TWh) · relevé du lundi</div><div id="water"></div></div></div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">10 — PRÉVU / RÉALISÉ</div><h2>Ce que RTE avait prévu</h2>
+    <p>Prévisions de la veille (J-1) et du jour même (intrajournalier) comparées au réalisé, heure par heure. En bas&nbsp;: l'erreur de la prévision de la veille.</p>
+    <div class="tabs" id="fcSeries"><button class="tab" data-v="conso" aria-pressed="true">Consommation</button><button class="tab" data-v="wind" aria-pressed="false">Éolien</button><button class="tab" data-v="solar" aria-pressed="false">Solaire</button></div>
+    <div class="tabs" id="fcWin"><button class="tab" data-v="3" aria-pressed="false">3 j</button><button class="tab" data-v="14" aria-pressed="true">14 j</button><button class="tab" data-v="60" aria-pressed="false">60 j</button><button class="tab" data-v="120" aria-pressed="false">120 j</button></div>
+    <div id="fcStats"></div></div>
+  <div class="panel"><div id="fcChart"></div><div id="fcErr"></div><div class="legend" id="fcLegend"></div></div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">11 — AJUSTEMENT</div><h2>Équilibrer à chaque instant</h2>
+    <p>Quand la production et la consommation s'écartent, RTE active des réserves&nbsp;: <b style="color:var(--exp)">à la hausse</b> (produire plus) ou <b style="color:var(--imp)">à la baisse</b>. En haut&nbsp;: le déséquilibre du système&nbsp;; au milieu&nbsp;: les volumes activés&nbsp;; en bas&nbsp;: les prix marginaux d'activation.</p>
+    <div class="tabs" id="beWin"><button class="tab" data-v="3" aria-pressed="false">3 j</button><button class="tab" data-v="14" aria-pressed="true">14 j</button><button class="tab" data-v="60" aria-pressed="false">60 j</button><button class="tab" data-v="120" aria-pressed="false">120 j</button></div>
+    <div id="beStats"></div></div>
+  <div class="panel"><div id="beImb"></div><div id="beVol"></div><div id="bePrice"></div></div>
+</div></section>
+</div>
+
+<section class="band" id="priceBlock"><div class="band-in">
+  <div class="side"><div class="no">12 — PRIX</div><h2>Le prix de l'électricité, heure par heure</h2>
+    <p>Prix spot de la veille pour le lendemain (day-ahead), zone France. Bande&nbsp;: minimum et maximum de chaque jour&nbsp;; trait&nbsp;: moyenne mensuelle. La crise de 2022 écrase tout le reste&nbsp;: changez l'échelle pour lire les années calmes.</p>
+    <div class="tabs" id="prScale"><button class="tab" data-v="lin" aria-pressed="true">Linéaire</button><button class="tab" data-v="cap" aria-pressed="false">Plafond 300 €</button></div>
+    <p class="note" id="prSource"></p></div>
+  <div>
+    <div class="panel"><div id="prHist"></div></div>
+    <div class="maps" style="margin-top:16px">
+      <div class="panel"><div class="maptitle" id="prDayT"></div><div id="prDay"></div></div>
+      <div class="panel"><div class="maptitle">Heures à prix négatif par an</div><div id="prNeg"></div></div>
+    </div>
+    <div class="maps" style="margin-top:16px">
+      <div class="panel"><div class="maptitle">Profil journalier moyen (€/MWh, heure de Paris)</div><div class="tabs" id="prYear"></div><div id="prProf"></div><div class="legend" id="prProfLg"></div></div>
+      <div class="panel"><div class="maptitle">Prix du jour face au mix (un point par jour)</div>
+        <div class="tabs" id="prX"><button class="tab" data-v="ren" aria-pressed="true">% renouvelable</button><button class="tab" data-v="exp" aria-pressed="false">Exportations nettes</button><button class="tab" data-v="nuc" aria-pressed="false">Nucléaire</button></div>
+        <div id="prScatter"></div><div class="note" id="prScatterNote"></div></div>
+    </div>
+  </div>
+</div></section>
+
 <footer>
   <b>Données</b> — RTE, éCO2mix, sur <a href="https://odre.opendatasoft.com" target="_blank" rel="noopener">ODRÉ</a> (Open Data Réseaux Énergies), Licence Ouverte&nbsp;: nationales consolidées et définitives (<span class="mono">eco2mix-national-cons-def</span>) + temps réel (<span class="mono">eco2mix-national-tr</span>)&nbsp;; régionales (<span class="mono">eco2mix-regional-cons-def</span>, <span class="mono">eco2mix-regional-tr</span>)&nbsp;;
   météo régionale Weathernews France (<span class="mono">rayonnement-solaire-vitesse-vent-tri-horaires-regionaux</span>, vent à 100&nbsp;m et rayonnement solaire global, tri-horaire, depuis 2016, Licence Ouverte 2.0) — sans direction du vent&nbsp;: les éoliennes de la carte en indiquent la force, pas l'orientation.
   Le temps réel est provisoire. « Bas carbone » = nucléaire, hydraulique, éolien, solaire, bioénergies&nbsp;; « ENR » = hydraulique, éolien, solaire, bioénergies. Échanges commerciaux&nbsp;: les exportations et importations de chaque mois sont cumulées séparément sur les pas fins.<br>
   <b>En direct</b> — production régionale et nationale : API ODRÉ (<span class="mono">eco2mix-regional-tr</span>, <span class="mono">eco2mix-national-tr</span>), interrogée par votre navigateur et rafraîchie toutes les 15 min&nbsp;; météo actuelle&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (données CC BY 4.0), au centroïde de chaque région.<br>
+  <b>Pilotage RTE</b> — API du portail <a href="https://data.rte-france.com" target="_blank" rel="noopener">data.rte-france.com</a> (données publiques, réutilisation autorisée avec mention de la source, CGU art.&nbsp;9) : Actual Generation (production par filière et par groupe), Generation Installed Capacities, Unavailability Additional Information, Generation Forecast, Consumption, Balancing Energy&nbsp;; mises à jour chaque heure par le dépôt. Les prix de marché de gros (EPEX SPOT / Nord Pool) ne sont pas affichés.
+  Coordonnées des centrales&nbsp;: <a href="https://data.jrc.ec.europa.eu/dataset/9810feeb-f062-49cd-8e76-8d8cfd488a05" target="_blank" rel="noopener">JRC Open Power Plants Database</a> (Commission européenne, CC BY 4.0), rapprochée par code EIC, complétée par Wikidata (CC0) et, à défaut, le centre de la commune (geo.api.gouv.fr, Licence Ouverte).<br>
+  <b>Prix spot</b> — day-ahead zone France&nbsp;: Bundesnetzagentur | SMARD.de, licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, via l'API <a href="https://api.energy-charts.info" target="_blank" rel="noopener">Energy-Charts</a> (Fraunhofer ISE), mis à jour chaque heure par le dépôt.<br>
   <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Grégoire David), issu d'Admin Express IGN, Licence Ouverte&nbsp;; pays&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> (Natural Earth, domaine public). Simplifiés et embarqués.
 </footer>
 <div class="tip" id="tip" role="tooltip"></div>
 
 <script>
 const D = window.DATA, GEO = window.GEO;
+d3.timeFormatDefaultLocale({ dateTime: "%A %e %B %Y à %X", date: "%d/%m/%Y", time: "%H:%M:%S", periods: ["AM", "PM"],
+  days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"], shortDays: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+  months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+  shortMonths: ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."] });
 const S = D.sources;
 const NAMES = { nucleaire: "Nucléaire", hydraulique: "Hydraulique", eolien: "Éolien", solaire: "Solaire", bioenergies: "Bioénergies", gaz: "Gaz", charbon: "Charbon", fioul: "Fioul", thermique: "Thermique fossile" };
 const LOW_CARBON = ["nucleaire", "hydraulique", "eolien", "solaire", "bioenergies"], RENEW = ["hydraulique", "eolien", "solaire", "bioenergies"];
@@ -871,6 +946,311 @@ function renderRecords() {
     if (!r) return; const b = el("div", "rec"), kk = el("div", "k"), sw = el("span", "sw"); sw.style.background = css(c); kk.append(sw, document.createTextNode(k)); b.append(kk, el("div", "v", f(r[0])), el("div", "d", when(r[1]))); host.append(b); });
 }
 
+/* ---------- 08-11 Pilotage RTE ---------- */
+const RT = window.RTE;
+const RTYPE = { NUCLEAR: ["nucleaire", d3.symbolCircle, "Nucléaire"], HYDRO_PUMPED_STORAGE: ["hydraulique", d3.symbolTriangle, "Hydraulique (STEP)"],
+  HYDRO_WATER_RESERVOIR: ["hydraulique", d3.symbolTriangle, "Hydraulique (lacs)"], HYDRO_RUN_OF_RIVER_AND_POUNDAGE: ["hydraulique", d3.symbolTriangle, "Hydraulique (fil de l'eau)"],
+  FOSSIL_GAS: ["gaz", d3.symbolSquare, "Gaz"], FOSSIL_HARD_COAL: ["charbon", d3.symbolDiamond, "Charbon"], FOSSIL_OIL: ["fioul", d3.symbolDiamond, "Fioul"],
+  WIND_OFFSHORE: ["eolien", d3.symbolWye, "Éolien en mer"], WIND_ONSHORE: ["eolien", d3.symbolWye, "Éolien"], SOLAR: ["solaire", d3.symbolStar, "Solaire"],
+  BIOMASS: ["bioenergies", d3.symbolCross, "Biomasse"], WASTE: ["bioenergies", d3.symbolCross, "Déchets"], OTHER: ["charbon", d3.symbolCircle, "Autre (stockage…)"], MARINE: ["hydraulique", d3.symbolCircle, "Marémotrice"] };
+const rtype = t => RTYPE[t] || ["charbon", d3.symbolCircle, t];
+const REASON = { FORESEEN_MAINTENANCE: "maintenance prévue", COMPLEMENTARY_INFORMATION: "information complémentaire", FAILURE: "panne", SHUTDOWN: "arrêt" };
+const FAMILY = [["all", "Tout"], ["nucleaire", "Nucléaire"], ["hydraulique", "Hydraulique"], ["gaz", "Gaz"], ["eolien", "Éolien en mer"], ["autres", "Autres"]];
+const rstate = { family: "all", site: null, unavWin: 90, fc: "conso", fcWin: 14, beWin: 14 };
+const fmtMW = v => v == null ? "—" : fr(v) + " MW";
+const tUTC = s => new Date(s.length === 13 ? s + ":00:00Z" : (s.length === 16 ? s + ":00Z" : s));
+function siteState(site) {
+  const gs = site.groups.map(g => RT.groups[g]).filter(Boolean);
+  if (!gs.length) return "nd";
+  const st = gs.map(g => g.state);
+  if (st.includes("running")) return st.includes("unavailable") ? "partial" : "running";
+  return st.every(s => s === "unavailable") ? "unavailable" : st.includes("unavailable") ? "partial" : "stopped";
+}
+const STATE_LABEL = { running: "en production", stopped: "à l'arrêt", unavailable: "indisponible", partial: "en production (partiel)", nd: "pas de production publiée par groupe" };
+const stateColor = st => st === "running" || st === "partial" ? "var(--ok)" : st === "unavailable" ? "var(--imp)" : "var(--muted)";
+const siteNow = site => d3.sum(site.groups, g => RT.groups[g]?.lastMW || 0);
+function renderPlants() {
+  const host = document.getElementById("plantMap"); host.replaceChildren();
+  const W = host.clientWidth, H = Math.round(W * .95);
+  const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[8, 8], [W - 8, H - 8]], { type: "FeatureCollection", features: GEO.regions.features });
+  const path = d3.geoPath(proj), svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
+  svg.append("g").selectAll("path").data(GEO.countries.features).join("path").attr("d", path).attr("fill", d => d.properties.id === "250" ? "var(--land-hi)" : "var(--land)").attr("stroke", "var(--line)").attr("stroke-width", .6);
+  svg.append("g").selectAll("path").data(GEO.regions.features).join("path").attr("d", path).attr("fill", "none").attr("stroke", "var(--line)").attr("stroke-width", .6);
+  const fam = s => { const k = rtype(s.type)[0]; return ["nucleaire", "hydraulique", "gaz", "eolien"].includes(k) ? k : "autres"; };
+  const sites = RT.sites.filter(s => s.lat != null && (rstate.family === "all" || fam(s) === rstate.family)).sort((a, b) => b.mw - a.mw);
+  const area = d3.scaleSqrt().domain([0, d3.max(RT.sites, s => s.mw)]).range([0, W / 22]);
+  const g = svg.append("g");
+  sites.forEach(s => { const [x, y] = proj([s.lon, s.lat]), st = siteState(s), [k, sym] = rtype(s.type), r = Math.max(3, area(s.mw));
+    const node = g.append("path").attr("transform", `translate(${x},${y})`).attr("d", d3.symbol(sym, Math.PI * r * r)())
+      .attr("fill", css("--f-" + k)).attr("fill-opacity", st === "stopped" || st === "nd" ? .35 : .85)
+      .attr("stroke", stateColor(st)).attr("stroke-width", s.id === rstate.site ? 3 : 1.6).attr("stroke-dasharray", st === "unavailable" ? "3 2" : null)
+      .style("cursor", "pointer").on("click", () => { rstate.site = s.id; renderPlants(); renderPlantCard(); })
+      .on("pointermove", e => showTip(e, t => { t.append(el("div", "t", rtype(s.type)[2] + " · " + STATE_LABEL[st])); t.append(el("div", "big", s.name));
+        row(t, null, "Puissance installée", fmtMW(s.mw)); row(t, null, "Production (dernière heure)", s.groups.length ? fmtMW(siteNow(s)) : "n.d.");
+        if (s.prec === "commune") row(t, null, "Position", "approx. (commune)"); }))
+      .on("pointerleave", hideTip); });
+  const lg = document.getElementById("plantLegend"); lg.replaceChildren();
+  [["NUCLEAR"], ["HYDRO_WATER_RESERVOIR"], ["FOSSIL_GAS"], ["FOSSIL_HARD_COAL"], ["FOSSIL_OIL"], ["WIND_OFFSHORE"], ["BIOMASS"]].forEach(([t]) => {
+    const [k, sym, n] = rtype(t), sp = el("span"), sv = d3.select(sp).append("svg").attr("width", 16).attr("height", 16);
+    sv.append("path").attr("transform", "translate(8,8)").attr("d", d3.symbol(sym, 60)()).attr("fill", css("--f-" + k)); sp.append(document.createTextNode(n.replace(/ \(.*\)/, ""))); lg.append(sp); });
+  const unloc = RT.sites.filter(s => s.lat == null).map(s => s.name);
+  document.getElementById("plantStamp").textContent = `Production : dernière heure publiée par RTE (${RT.groups && Object.values(RT.groups)[0]?.last ? tUTC(d3.max(Object.values(RT.groups), g => g.last || "")).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}). ${RT.sites.length} sites, ${unloc.length} non localisés (${unloc.join(", ")}).`;
+}
+function lineChart(host, series, { H = 150, unit = "MW", h0, keys, colors, dashes, yfmt, fill } = {}) {
+  host.replaceChildren(); const W = host.clientWidth, M = { l: 46, r: 6, t: 8, b: 20 };
+  const n = series[0].length, x = d3.scaleTime().domain([new Date(h0), new Date(+new Date(h0) + (n - 1) * 3600e3)]).range([M.l, W - M.r]);
+  const all = series.flat().filter(v => v != null), y = d3.scaleLinear().domain([Math.min(0, d3.min(all) ?? 0), d3.max(all) || 1]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(yfmt || (v => fr(v))));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickSize(0).tickPadding(6).tickFormat(W < 500 ? d3.timeFormat("%d/%m") : null));
+  const t = i => new Date(+new Date(h0) + i * 3600e3);
+  series.forEach((s, k) => { const ln = d3.line().defined(v => v != null).x((v, i) => x(t(i))).y(v => y(v));
+    if (fill && fill[k]) svg.append("path").datum(s).attr("fill", colors[k]).attr("opacity", .25).attr("d", d3.area().defined(v => v != null).x((v, i) => x(t(i))).y0(y(0)).y1(v => y(v)));
+    svg.append("path").datum(s).attr("fill", "none").attr("stroke", colors[k]).attr("stroke-width", k ? 1.4 : 1.8).attr("stroke-dasharray", dashes?.[k] || null).attr("d", ln); });
+  return { svg, x, y, t, W, H, M };
+}
+function addHover(ch, series, names, colors, fmt) {
+  const cross = ch.svg.append("line").attr("y1", ch.M.t).attr("y2", ch.H - ch.M.b).attr("stroke", "var(--accent)").attr("opacity", 0);
+  ch.svg.append("rect").attr("x", ch.M.l).attr("y", 0).attr("width", ch.W - ch.M.l - ch.M.r).attr("height", ch.H).attr("fill", "transparent")
+    .on("pointermove", e => { const d = ch.x.invert(d3.pointer(e)[0]), i = Math.max(0, Math.min(series[0].length - 1, Math.round((d - ch.t(0)) / 3600e3)));
+      cross.attr("x1", ch.x(ch.t(i))).attr("x2", ch.x(ch.t(i))).attr("opacity", .7);
+      showTip(e, tt => { tt.append(el("div", "t", ch.t(i).toLocaleString("fr-FR", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })));
+        series.forEach((s, k) => row(tt, colors[k], names[k], s[i] == null ? "—" : fmt(s[i]))); }); })
+    .on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+}
+function renderPlantCard() {
+  const box = document.getElementById("plantCard"); box.replaceChildren(); box.classList.add("pcard");
+  const s = RT.sites.find(x => x.id === rstate.site) || [...RT.sites].sort((a, b) => siteNow(b) - siteNow(a))[0]; rstate.site = s.id;
+  const st = siteState(s), [k, , tn] = rtype(s.type);
+  box.append(el("div", "maptitle", tn + " · " + STATE_LABEL[st]));
+  box.append(el("h3", null, s.name));
+  box.append(el("div", "meta", `${fmtMW(s.mw)} installés · ${s.owner || "exploitant n.d."}${s.kv ? " · raccordé en " + s.kv + " kV" : ""}${s.prec === "commune" ? " · position approximative (commune)" : ""}`));
+  const gl = el("div", "glist");
+  s.groups.map(g => RT.groups[g]).filter(Boolean).forEach(g => { const r2 = el("div"); r2.append(el("span", null, g.name), el("span", "st-" + g.state, STATE_LABEL[g.state]), el("b", null, fmtMW(g.lastMW))); gl.append(r2); });
+  if (!s.groups.length) gl.append(el("div", "note", "RTE ne publie pas la production de ce site groupe par groupe."));
+  box.append(gl);
+  if (s.groups.length) { const sum = RT.groups[s.groups[0]].curve.map((v, i) => { const xs = s.groups.map(g => RT.groups[g]?.curve[i]); return xs.every(x => x == null) ? null : d3.sum(xs, x => x || 0); });
+    box.append(el("div", "maptitle", "Production horaire · 14 derniers jours (MW)")); const c = el("div"); box.append(c);
+    const ch = lineChart(c, [sum], { H: 140, h0: RT.curveStart, colors: [css("--f-" + k)], fill: [true] }); addHover(ch, [sum], ["Production"], [css("--f-" + k)], fmtMW); }
+  const evs = RT.events.filter(e => s.groups.includes(e.g)).sort((a, b) => b.s.localeCompare(a.s)).slice(0, 40);
+  box.append(el("div", "maptitle", `Indisponibilités déclarées (${evs.length ? "plus récentes d'abord" : "aucune sur la fenêtre"})`));
+  const list = el("div", "evs");
+  evs.forEach(e => { const d = el("div", "ev"); const b = el("b", e.k, e.k === "P" ? "Programmée" : "Fortuite"); d.append(b);
+    d.append(document.createTextNode(` · ${e.n} · ${REASON[e.r] || e.r || ""} · −${fmtMW(e.u)} · ${tUTC(e.s).toLocaleDateString("fr-FR")} → ${e.e ? tUTC(e.e).toLocaleDateString("fr-FR") : "?"}${e.rm ? " · « " + e.rm + " »" : ""}`)); list.append(d); });
+  box.append(list);
+}
+function renderFrise() {
+  const host = document.getElementById("unavFrise"); host.replaceChildren();
+  const now = new Date(RT.updated), win = rstate.unavWin, t0 = new Date(+now - win * 864e5), t1 = new Date(+now + win * 864e5);
+  const evs = RT.events.filter(e => e.f === "NUCLEAR" && e.u > 0 && tUTC(e.s) < t1 && (!e.e || tUTC(e.e) > t0));
+  const reactors = [...new Set(RT.events.filter(e => e.f === "NUCLEAR").map(e => e.n))].sort((a, b) => a.localeCompare(b, "fr", { numeric: true }));
+  const W = host.clientWidth, rowH = W < 560 ? 9 : 11, M = { l: W < 560 ? 92 : 120, r: 8, t: 22, b: 6 }, H = M.t + reactors.length * rowH + M.b;
+  const x = d3.scaleTime().domain([t0, t1]).range([M.l, W - M.r]), y = r => M.t + reactors.indexOf(r) * rowH;
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${M.t - 4})`).call(d3.axisTop(x).ticks(W < 560 ? 4 : 8).tickSize(-(H - M.t - M.b)).tickFormat(W < 560 ? d3.timeFormat("%b") : null));
+  reactors.forEach((r, i) => { if (i % 2 === 0) svg.append("rect").attr("x", M.l).attr("y", y(r)).attr("width", W - M.l - M.r).attr("height", rowH).attr("fill", "var(--panel-2)").attr("opacity", .5);
+    svg.append("text").attr("x", M.l - 6).attr("y", y(r) + rowH / 2).attr("dy", ".35em").attr("text-anchor", "end").style("font", `${rowH < 10 ? 8 : 9.5}px 'IBM Plex Mono'`).style("fill", "var(--text-2)").text(r); });
+  svg.append("g").selectAll("rect").data(evs).join("rect").attr("x", e => x(new Date(Math.max(+t0, +tUTC(e.s))))).attr("y", e => y(e.n) + 1)
+    .attr("width", e => Math.max(1.5, x(new Date(Math.min(+t1, e.e ? +tUTC(e.e) : +t1))) - x(new Date(Math.max(+t0, +tUTC(e.s)))))).attr("height", rowH - 2)
+    .attr("fill", e => e.k === "P" ? "var(--accent)" : "var(--imp)").attr("opacity", e => .25 + .7 * Math.min(1, e.u / (e.mw || e.u)))
+    .on("pointermove", (ev, e) => showTip(ev, t => { t.append(el("div", "t", `${e.n} · ${e.k === "P" ? "programmée" : "fortuite"}`)); t.append(el("div", "big", "−" + fmtMW(e.u)));
+      row(t, null, "Motif", REASON[e.r] || e.r || "—"); row(t, null, "Du", tUTC(e.s).toLocaleString("fr-FR")); row(t, null, "Au", e.e ? tUTC(e.e).toLocaleString("fr-FR") : "non précisé");
+      if (e.rm) t.append(el("div", "note", e.rm)); })).on("pointerleave", hideTip);
+  svg.append("line").attr("x1", x(now)).attr("x2", x(now)).attr("y1", M.t - 8).attr("y2", H).attr("stroke", "var(--accent-2)").attr("stroke-width", 1.5);
+  svg.append("text").attr("x", x(now) + 4).attr("y", 10).style("font", "10px 'IBM Plex Mono'").style("fill", "var(--accent-2)").text("aujourd'hui");
+}
+function renderUnavTotal() {
+  const host = document.getElementById("unavTotal"); host.replaceChildren(); const U = RT.unavTotal, n = U.NP.length;
+  const rows = d3.range(n).map(i => ({ t: new Date(+new Date(U.t0) + i * U.stepH * 3600e3), NP: U.NP[i] / 1000, NF: U.NF[i] / 1000, OP: U.OP[i] / 1000, OF: U.OF[i] / 1000 }));
+  const keys = ["NP", "NF", "OP", "OF"], names = { NP: "Nucléaire programmée", NF: "Nucléaire fortuite", OP: "Autres programmées", OF: "Autres fortuites" };
+  const colors = { NP: css("--f-nucleaire"), NF: css("--imp"), OP: css("--f-hydraulique"), OF: "#c76b8f" };
+  const W = host.clientWidth, H = 180, M = { l: 40, r: 6, t: 8, b: 20 }, st = d3.stack().keys(keys)(rows);
+  const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, d3.max(st.at(-1), d => d[1])]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " GW"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 3 : 8).tickSize(0).tickPadding(6).tickFormat(W < 500 ? d3.timeFormat("%b %y") : null));
+  svg.append("g").selectAll("path").data(st).join("path").attr("fill", d => colors[d.key]).attr("opacity", .85).attr("d", d3.area().x(d => x(d.data.t)).y0(d => y(d[0])).y1(d => y(d[1])).curve(d3.curveStepAfter));
+  const now = new Date(RT.updated);
+  svg.append("line").attr("x1", x(now)).attr("x2", x(now)).attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--accent-2)").attr("stroke-width", 1.5);
+  svg.append("text").attr("x", x(now) + 4).attr("y", M.t + 10).style("font", "10px 'IBM Plex Mono'").style("fill", "var(--accent-2)").text("aujourd'hui → déclaré à l'avance");
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--text)").attr("opacity", 0);
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const r = rows[d3.bisector(r => r.t).center(rows, x.invert(d3.pointer(e)[0]))]; cross.attr("x1", x(r.t)).attr("x2", x(r.t)).attr("opacity", .5);
+    showTip(e, t => { t.append(el("div", "t", r.t.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }))); t.append(el("div", "big", fr(d3.sum(keys, k => r[k]), 1) + " GW"));
+      [...keys].reverse().forEach(k => row(t, colors[k], names[k], fr(r[k], 1) + " GW")); }); }).on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+  const lg = document.getElementById("unavLegend"); lg.replaceChildren(); keys.forEach(k => { const b = el("span", "lg"), sw = el("span", "sw"); sw.style.background = colors[k]; b.append(sw, document.createTextNode(names[k])); lg.append(b); });
+}
+function renderWater() {
+  const host = document.getElementById("water"); host.replaceChildren(); if (!RT.water?.length) return;
+  const rows = RT.water.map(([d, v]) => ({ t: new Date(d), v: v / 1e6 })), W = host.clientWidth, H = 120, M = { l: 40, r: 6, t: 8, b: 20 };
+  const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, d3.max(rows, r => r.v)]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(3).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " TWh"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickSize(0).tickPadding(6).tickFormat(W < 500 ? d3.timeFormat("%b %y") : null));
+  svg.append("path").datum(rows).attr("fill", css("--f-hydraulique")).attr("opacity", .3).attr("d", d3.area().x(r => x(r.t)).y0(y(0)).y1(r => y(r.v)));
+  svg.append("path").datum(rows).attr("fill", "none").attr("stroke", css("--f-hydraulique")).attr("stroke-width", 1.8).attr("d", d3.line().x(r => x(r.t)).y(r => y(r.v)));
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const r = rows[d3.bisector(r => r.t).center(rows, x.invert(d3.pointer(e)[0]))]; showTip(e, t => { t.append(el("div", "t", "Semaine du " + r.t.toLocaleDateString("fr-FR"))); t.append(el("div", "big", fr(r.v, 2) + " TWh")); }); }).on("pointerleave", hideTip);
+}
+function sliceLast(obj, days) { const n = obj.n, cut = Math.max(0, n - 24 - days * 24); const h0 = new Date(+new Date(obj.h0) + cut * 3600e3).toISOString(); return { cut, h0, end: n }; }
+function renderForecast() {
+  const F = RT.forecast, ser = F[rstate.fc], { cut, h0 } = sliceLast(F, rstate.fcWin);
+  const real = ser.REALISED.slice(cut), d1 = ser["D-1"].slice(cut), id = ser.ID.slice(cut);
+  const col1 = rstate.fc === "conso" ? css("--conso") : rstate.fc === "wind" ? css("--f-eolien") : css("--f-solaire");
+  const ch = lineChart(document.getElementById("fcChart"), [real, d1, id], { H: 230, h0, colors: [col1, css("--accent-2"), css("--accent")], dashes: [null, "5 3", "2 3"], yfmt: v => fr(v / 1000) + " GW" });
+  addHover(ch, [real, d1, id], ["Réalisé", "Prévision J-1", "Prévision intrajournalière"], [col1, css("--accent-2"), css("--accent")], fmtMW);
+  const err = d1.map((v, i) => v == null || real[i] == null ? null : v - real[i]);
+  const ce = lineChart(document.getElementById("fcErr"), [err], { H: 110, h0, colors: [css("--imp")], fill: [true], yfmt: v => fr(v / 1000, 1) + " GW" });
+  addHover(ce, [err], ["Erreur J-1 (prévu − réalisé)"], [css("--imp")], v => (v > 0 ? "+" : "") + fmtMW(v));
+  const pairs = err.map((e, i) => [e, real[i]]).filter(([e, r]) => e != null && r != null);
+  const mae = d3.mean(pairs, p => Math.abs(p[0])), bias = d3.mean(pairs, p => p[0]), mean = d3.mean(pairs, p => p[1]);
+  const st = document.getElementById("fcStats"); st.replaceChildren(); st.className = "stat";
+  [["Erreur absolue moyenne (J-1)", fmtMW(mae) + (mean ? ` · ${fr(mae / mean * 100, 1)} %` : "")], ["Biais moyen (J-1)", (bias > 0 ? "sur-prévision " : "sous-prévision ") + fmtMW(Math.abs(bias))], ["Heures comparées", fr(pairs.length)]]
+    .forEach(([k, v]) => { const d = el("div"); d.append(document.createTextNode(k + " "), el("b", null, v)); st.append(d); });
+  const lg = document.getElementById("fcLegend"); lg.replaceChildren();
+  [["Réalisé", col1, null], ["Prévision J-1", css("--accent-2"), "5 3"], ["Prévision intrajournalière", css("--accent"), "2 3"], ["Erreur J-1", css("--imp"), null]].forEach(([n, c]) => { const b = el("span", "lg"), sw = el("span", "sw line"); sw.style.background = c; b.append(sw, document.createTextNode(n)); lg.append(b); });
+}
+function renderBalancing() {
+  const B = RT.balancing, { cut, h0 } = sliceLast(B, rstate.beWin);
+  const imb = B.imb.slice(cut), up = B.upVol.slice(cut), dn = B.dnVol.slice(cut).map(v => v == null ? null : -v), upP = B.upPrice.slice(cut), dnP = B.dnPrice.slice(cut);
+  const c1 = lineChart(document.getElementById("beImb"), [imb], { H: 120, h0, colors: [css("--accent-2")], fill: [true], yfmt: v => fr(v) + " MW" });
+  c1.svg.append("text").attr("x", c1.M.l + 4).attr("y", c1.M.t + 10).style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)").text("DÉSÉQUILIBRE DU SYSTÈME (MW)");
+  addHover(c1, [imb], ["Déséquilibre"], [css("--accent-2")], fmtMW);
+  const c2 = lineChart(document.getElementById("beVol"), [up, dn], { H: 150, h0, colors: [css("--exp"), css("--imp")], fill: [true, true], yfmt: v => fr(v) + " MW" });
+  c2.svg.append("text").attr("x", c2.M.l + 4).attr("y", c2.M.t + 10).style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)").text("VOLUMES ACTIVÉS · HAUSSE (+) / BAISSE (−) · MW MOYENS");
+  addHover(c2, [up, dn], ["À la hausse", "À la baisse"], [css("--exp"), css("--imp")], v => fmtMW(Math.abs(v)));
+  const c3 = lineChart(document.getElementById("bePrice"), [upP, dnP], { H: 150, h0, colors: [css("--exp"), css("--imp")], yfmt: v => fr(v) + " €" });
+  c3.svg.append("text").attr("x", c3.M.l + 4).attr("y", c3.M.t + 10).style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)").text("PRIX MARGINAL D'ACTIVATION · €/MWh");
+  addHover(c3, [upP, dnP], ["Prix à la hausse", "Prix à la baisse"], [css("--exp"), css("--imp")], v => fr(v, 1) + " €/MWh");
+  const st = document.getElementById("beStats"); st.replaceChildren(); st.className = "stat";
+  const e = x => d3.sum(x.filter(v => v != null), v => Math.abs(v)) / 1e3;
+  [["Énergie activée à la hausse", fr(e(up), 1) + " GWh"], ["Énergie activée à la baisse", fr(e(dn), 1) + " GWh"], ["Prix moyen hausse / baisse", `${fr(d3.mean(upP.filter(v => v != null)) || 0)} / ${fr(d3.mean(dnP.filter(v => v != null)) || 0)} €/MWh`]]
+    .forEach(([k, v]) => { const d = el("div"); d.append(document.createTextNode(k + " "), el("b", null, v)); st.append(d); });
+}
+function renderRte() {
+  const block = document.getElementById("rteBlock");
+  if (!RT) { block.style.display = "none"; return; }
+  if (!document.querySelector("#plantFilter .tab")) FAMILY.forEach(([v, n]) => { const b = el("button", "tab", n); b.dataset.v = v; b.setAttribute("aria-pressed", v === rstate.family); b.onclick = () => {
+    rstate.family = v; document.querySelectorAll("#plantFilter .tab").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPlants(); }; document.getElementById("plantFilter").append(b); });
+  renderPlants(); renderPlantCard(); renderFrise(); renderUnavTotal(); renderWater(); renderForecast(); renderBalancing();
+}
+[["unavWin", v => { rstate.unavWin = +v; renderFrise(); }], ["fcSeries", v => { rstate.fc = v; renderForecast(); }], ["fcWin", v => { rstate.fcWin = +v; renderForecast(); }], ["beWin", v => { rstate.beWin = +v; renderBalancing(); }]]
+  .forEach(([id, f]) => document.querySelectorAll(`#${id} .tab`).forEach(b => b.onclick = () => { document.querySelectorAll(`#${id} .tab`).forEach(x => x.setAttribute("aria-pressed", x === b)); f(b.dataset.v); }));
+
+/* ---------- 12 Prix spot ---------- */
+const PR = window.PRICES;
+const pstate = { scale: "lin", year: null, x: "ren" };
+const SEASONS = [["hiver", "#4b8fe0"], ["printemps", "#5bd67a"], ["été", "#ffb627"], ["automne", "#ff7a45"]];
+const fmtEur = v => v == null ? "—" : fr(v, Math.abs(v) < 10 ? 1 : 0) + " €/MWh";
+function renderPrHist() {
+  const host = document.getElementById("prHist"); host.replaceChildren();
+  const rows = PR.daily.map(([d, m, lo, hi]) => ({ t: new Date(d + "T12:00:00"), d, m, lo, hi }));
+  const monthly = d3.rollups(rows, v => d3.mean(v, r => r.m), r => r.d.slice(0, 7)).map(([k, v]) => ({ t: new Date(k + "-15T12:00:00"), k, v }));
+  const W = host.clientWidth, H = W < 560 ? 260 : 340, M = { l: 52, r: 8, t: 10, b: 22 }, cap = pstate.scale === "cap" ? 300 : null;
+  const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]);
+  // Échelle : quelques pics horaires isolés (jusqu'à ~3 000 €) écraseraient tout ; on s'arrête au quantile 99,8 % des maximums journaliers
+  const hiQ = d3.quantile(rows.map(r => r.hi).sort(d3.ascending), .998), loQ = d3.quantile(rows.map(r => r.lo).sort(d3.ascending), .002);
+  const y = d3.scaleLinear().domain([Math.min(0, cap ? Math.max(-100, loQ) : loQ), cap || hiQ]).nice().range([H - M.b, M.t]).clamp(true);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " €"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 560 ? 5 : 12).tickSize(0).tickPadding(6));
+  svg.append("path").datum(rows).attr("fill", "var(--accent)").attr("opacity", .18).attr("d", d3.area().x(r => x(r.t)).y0(r => y(r.lo)).y1(r => y(r.hi)));
+  svg.append("path").datum(rows).attr("fill", "none").attr("stroke", "var(--accent)").attr("stroke-width", .8).attr("opacity", .7).attr("d", d3.line().x(r => x(r.t)).y(r => y(r.m)));
+  svg.append("path").datum(monthly).attr("fill", "none").attr("stroke", "var(--accent-2)").attr("stroke-width", 2.2).attr("d", d3.line().x(r => x(r.t)).y(r => y(r.v)).curve(d3.curveMonotoneX));
+  svg.append("line").attr("x1", M.l).attr("x2", W - M.r).attr("y1", y(0)).attr("y2", y(0)).attr("stroke", "var(--text-2)").attr("stroke-width", .8);
+  const peak = monthly.reduce((a, b) => b.v > a.v ? b : a);
+  svg.append("text").attr("x", x(peak.t) + 8).attr("y", y(Math.min(peak.v, cap || peak.v)) + 4).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--accent-2)").text(`crise 2022 · ${fr(peak.v)} €/MWh en ${monthName(peak.k)}`);
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--text)").attr("opacity", 0);
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const r = rows[d3.bisector(r => r.t).center(rows, x.invert(d3.pointer(e)[0]))], mo = monthly.find(m => m.k === r.d.slice(0, 7));
+    cross.attr("x1", x(r.t)).attr("x2", x(r.t)).attr("opacity", .5);
+    showTip(e, t => { t.append(el("div", "t", new Date(r.d + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })));
+      t.append(el("div", "big", fmtEur(r.m))); row(t, null, "Minimum du jour", fmtEur(r.lo)); row(t, null, "Maximum du jour", fmtEur(r.hi)); if (mo) row(t, css("--accent-2"), "Moyenne du mois", fmtEur(mo.v)); }); })
+    .on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+}
+function renderPrDay() {
+  const host = document.getElementById("prDay"); host.replaceChildren();
+  const ld = PR.lastDay, dayStart = new Date(ld + "T00:00:00"), pts = PR.recent.filter(([t]) => t * 1000 >= +dayStart);
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+  const isTomorrow = ld === `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, "0")}-${String(tomorrow.getDate()).padStart(2, "0")}`;
+  const stepMin = pts.length > 1 ? (pts[1][0] - pts[0][0]) / 60 : 60;
+  document.getElementById("prDayT").textContent = `${isTomorrow ? "Demain" : "Dernier jour publié"} · ${new Date(ld + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })} · pas de ${stepMin} min`;
+  const W = host.clientWidth, H = 200, M = { l: 46, r: 6, t: 8, b: 20 };
+  const rows = pts.map(([t, p]) => ({ t: new Date(t * 1000), p })); if (rows.length) rows.push({ t: new Date(+rows.at(-1).t + stepMin * 60e3), p: rows.at(-1).p });
+  const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain([Math.min(0, d3.min(rows, r => r.p)), d3.max(rows, r => r.p)]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " €"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(6).tickSize(0).tickPadding(6).tickFormat(d3.timeFormat("%H h")));
+  svg.append("path").datum(rows).attr("fill", "var(--accent)").attr("opacity", .15).attr("d", d3.area().curve(d3.curveStepAfter).x(r => x(r.t)).y0(y(0)).y1(r => y(r.p)));
+  svg.append("path").datum(rows).attr("fill", "none").attr("stroke", "var(--accent)").attr("stroke-width", 1.8).attr("d", d3.line().curve(d3.curveStepAfter).x(r => x(r.t)).y(r => y(r.p)));
+  const ext = [d3.least(pts, p => p[1]), d3.greatest(pts, p => p[1])];
+  ext.forEach(([t, p], i) => svg.append("text").attr("x", x(new Date(t * 1000))).attr("y", y(p) + (i ? -6 : 14)).attr("text-anchor", "middle").style("font", "10.5px 'IBM Plex Mono'").style("fill", i ? "var(--accent-2)" : "var(--exp)").text(fr(p) + " €"));
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const tt = x.invert(d3.pointer(e)[0]); const r = [...rows].reverse().find(r => r.t <= tt) || rows[0];
+    showTip(e, t => { t.append(el("div", "t", r.t.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) + " – " + new Date(+r.t + stepMin * 60e3).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }))); t.append(el("div", "big", fmtEur(r.p))); }); })
+    .on("pointerleave", hideTip);
+}
+function renderPrNeg() {
+  const host = document.getElementById("prNeg"); host.replaceChildren();
+  const rows = Object.entries(PR.negHours).map(([y, h]) => ({ y, h })), W = host.clientWidth, H = 200, M = { l: 40, r: 6, t: 14, b: 20 };
+  const x = d3.scaleBand().domain(rows.map(r => r.y)).range([M.l, W - M.r]).padding(.2), y = d3.scaleLinear().domain([0, d3.max(rows, r => r.h) || 1]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickSize(0).tickPadding(6).tickFormat(v => "’" + v.slice(2)));
+  svg.selectAll("rect.b").data(rows).join("rect").attr("class", "b").attr("x", r => x(r.y)).attr("width", x.bandwidth()).attr("y", r => y(r.h)).attr("height", r => y(0) - y(r.h)).attr("fill", "var(--exp)")
+    .on("pointermove", (e, r) => showTip(e, t => { t.append(el("div", "t", r.y + (r.y === String(lastYear) ? " (en cours)" : ""))); t.append(el("div", "big", fr(r.h) + " h")); t.append(el("div", null, "à prix spot négatif")); })).on("pointerleave", hideTip);
+  rows.filter(r => r.h > 0).forEach(r => svg.append("text").attr("x", x(r.y) + x.bandwidth() / 2).attr("y", y(r.h) - 3).attr("text-anchor", "middle").style("font", "9.5px 'IBM Plex Mono'").style("fill", "var(--text-2)").text(fr(r.h)));
+}
+function renderPrProf() {
+  const years = [...new Set(Object.keys(PR.profiles).map(k => k.split("|")[0]))].sort();
+  if (!pstate.year) pstate.year = years.at(-1);
+  const tb = document.getElementById("prYear"); if (!tb.childElementCount) years.slice(-6).forEach(y => { const b = el("button", "tab", y); b.dataset.v = y; b.onclick = () => { pstate.year = y; renderPrProf(); }; tb.append(b); });
+  tb.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === pstate.year));
+  const host = document.getElementById("prProf"); host.replaceChildren(); const W = host.clientWidth, H = 200, M = { l: 40, r: 6, t: 8, b: 20 };
+  const ser = SEASONS.map(([s, c]) => ({ s, c, v: PR.profiles[`${pstate.year}|${s}`] })).filter(x => x.v);
+  const all = ser.flatMap(x => x.v).filter(v => v != null);
+  const x = d3.scaleLinear().domain([0, 23]).range([M.l, W - M.r]), y = d3.scaleLinear().domain([Math.min(0, d3.min(all)), d3.max(all)]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " €"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(6).tickSize(0).tickPadding(6).tickFormat(v => v + " h"));
+  ser.forEach(o => svg.append("path").datum(o.v).attr("fill", "none").attr("stroke", o.c).attr("stroke-width", 2).attr("d", d3.line().defined(v => v != null).x((v, i) => x(i)).y(v => y(v)).curve(d3.curveMonotoneX)));
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--text)").attr("opacity", 0);
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const h = Math.max(0, Math.min(23, Math.round(x.invert(d3.pointer(e)[0])))); cross.attr("x1", x(h)).attr("x2", x(h)).attr("opacity", .5);
+    showTip(e, t => { t.append(el("div", "t", `${pstate.year} · ${h} h – ${h + 1} h`)); ser.forEach(o => row(t, o.c, o.s, fmtEur(o.v[h]))); }); }).on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+  const lg = document.getElementById("prProfLg"); lg.replaceChildren(); ser.forEach(o => { const b = el("span", "lg"), sw = el("span", "sw line"); sw.style.background = o.c; b.append(sw, document.createTextNode(o.s)); lg.append(b); });
+}
+function renderPrScatter() {
+  const host = document.getElementById("prScatter"); host.replaceChildren();
+  const byDay = new Map(PR.daily.map(r => [r[0], r[1]])), pts = [];
+  for (let i = 0; i <= LASTDAY; i++) { const dd = dayDate(i), k = `${dd.getFullYear()}-${String(dd.getMonth() + 1).padStart(2, "0")}-${String(dd.getDate()).padStart(2, "0")}`, p = byDay.get(k); if (p == null) continue;
+    const prod = d3.sum(S, s => D.daily[s][i] || 0); if (!prod) continue;
+    const xv = pstate.x === "ren" ? d3.sum(RENEW, s => D.daily[s][i] || 0) / prod * 100 : pstate.x === "nuc" ? (D.daily.nucleaire[i] || 0) / prod * 100 : -(D.daily.ech_physiques[i] || 0) * 24 / 1000;
+    pts.push({ k, yr: dd.getFullYear(), x: xv, y: p }); }
+  const W = host.clientWidth, H = 260, M = { l: 46, r: 8, t: 8, b: 30 }, cap = pstate.scale === "cap" ? 300 : null;
+  const x = d3.scaleLinear().domain(d3.extent(pts, p => p.x)).nice().range([M.l, W - M.r]), y = d3.scaleLinear().domain([Math.min(0, d3.min(pts, p => p.y)), cap || d3.max(pts, p => p.y)]).nice().range([H - M.b, M.t]).clamp(true);
+  const c = d3.scaleSequential(d3.interpolateRgb(css("--muted"), css("--accent"))).domain(d3.extent(pts, p => p.yr));
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " €"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(5).tickSize(-(H - M.t - M.b)));
+  svg.append("text").attr("x", W - M.r).attr("y", H - 2).attr("text-anchor", "end").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--muted)")
+    .text(pstate.x === "ren" ? "part renouvelable de la production (%)" : pstate.x === "nuc" ? "part du nucléaire (%)" : "exportations nettes du jour (GWh)");
+  svg.append("g").selectAll("circle").data(pts).join("circle").attr("cx", p => x(p.x)).attr("cy", p => y(p.y)).attr("r", 2).attr("fill", p => c(p.yr)).attr("opacity", .55)
+    .on("pointermove", (e, p) => showTip(e, t => { t.append(el("div", "t", new Date(p.k + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }))); t.append(el("div", "big", fmtEur(p.y)));
+      row(t, null, pstate.x === "exp" ? "Export net" : pstate.x === "nuc" ? "Nucléaire" : "Renouvelables", pstate.x === "exp" ? fr(p.x) + " GWh" : fr(p.x, 1) + " %"); })).on("pointerleave", hideTip);
+  const mx = d3.mean(pts, p => p.x), my = d3.mean(pts, p => p.y);
+  const r = d3.sum(pts, p => (p.x - mx) * (p.y - my)) / Math.sqrt(d3.sum(pts, p => (p.x - mx) ** 2) * d3.sum(pts, p => (p.y - my) ** 2));
+  document.getElementById("prScatterNote").textContent = `${fr(pts.length)} jours depuis ${pts[0]?.k.slice(0, 4)}, du gris (ancien) au cyan (récent). Corrélation r = ${fr(r, 2)}. Mix : éCO2mix (RTE).`;
+}
+function renderPrices() {
+  const blk = document.getElementById("priceBlock"); if (!PR) { blk.style.display = "none"; return; }
+  const last = PR.daily.at(-1);
+  document.getElementById("prSource").textContent = `Source : ${PR.license}, via Energy-Charts (Fraunhofer ISE). Données du ${PR.daily[0][0].split("-").reverse().join("/")} au ${last[0].split("-").reverse().join("/")}, actualisées chaque heure.`;
+  renderPrHist(); renderPrDay(); renderPrNeg(); renderPrProf(); renderPrScatter();
+}
+document.querySelectorAll("#prScale .tab").forEach(b => b.onclick = () => { pstate.scale = b.dataset.v; document.querySelectorAll("#prScale .tab").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPrHist(); renderPrScatter(); });
+document.querySelectorAll("#prX .tab").forEach(b => b.onclick = () => { pstate.x = b.dataset.v; document.querySelectorAll("#prX .tab").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPrScatter(); });
+
 /* ---------- Commandes ---------- */
 function tabs(id, onPick, multi) { document.querySelectorAll(`#${id} .tab`).forEach(b => b.onclick = () => {
   if (multi) { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); } else document.querySelectorAll(`#${id} .tab`).forEach(x => x.setAttribute("aria-pressed", x === b));
@@ -885,7 +1265,7 @@ tabs("flowMode", v => { state.flowMode = v; stopFlowPlay(); syncFlowPlayer(); re
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
   try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} update(); };
 try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); }
+function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); }
 let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(update, 150); });
 update();
 loadLive(); setInterval(loadLive, 15 * 60 * 1000);
