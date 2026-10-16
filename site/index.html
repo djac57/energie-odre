@@ -160,6 +160,11 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .tcount div { background: var(--panel); padding: 10px 12px; font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
 .tcount b { display: block; font-size: 22px; color: var(--text); }
 @media (max-width: 560px) { .ecobar { grid-template-columns: 1fr; padding: 4px 16px 16px; } .ecobar .hist { grid-column: 1; } .ecobar .day { grid-template-columns: 70px minmax(0, 1fr); } .ecobar .day .msg { display: none; } }
+#flowToday { display: none; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 10px; }
+#flowToday > div { background: var(--panel); padding: 8px; min-width: 0; }
+#flowToday .lab { font: 11px "IBM Plex Mono", monospace; color: var(--text-2); display: flex; justify-content: space-between; gap: 6px; }
+#flowToday .lab b { color: var(--text); }
+@media (max-width: 560px) { #flowToday { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .flist { display: none; gap: 2px; margin-top: 8px; font-size: 12.5px; }
 .flist div { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--line); }
 .flist .exp { color: var(--exp); } .flist .imp { color: var(--imp); }
@@ -215,11 +220,13 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 
 <section class="band"><div class="band-in">
   <div class="side"><div class="no">02 — FRONTIÈRES</div><h2>Ce qui entre, ce qui sort</h2>
-    <p>Chaque couloir montre les deux sens&nbsp;: <b style="color:var(--exp)">exportations</b> vers le voisin, <b style="color:var(--imp)">importations</b> vers la France. Épaisseur et débit des particules suivent les volumes. RTE publie Allemagne et Belgique ensemble.</p>
+    <p>Chaque couloir montre les deux sens&nbsp;: <b style="color:var(--exp)">exportations</b> vers le voisin, <b style="color:var(--imp)">importations</b> vers la France. Épaisseur et débit des particules suivent les volumes. Pour les échanges commerciaux, RTE publie Allemagne et Belgique ensemble&nbsp;; les flux physiques les distinguent.</p>
     <div class="tabs" id="flowSource"><button class="tab" data-v="commercial" aria-pressed="true">Échanges commerciaux</button><button class="tab" data-v="physical" aria-pressed="false">Flux physiques</button></div>
-    <div class="tabs" id="flowMode"><button class="tab" data-v="period" aria-pressed="true">Toute la période</button><button class="tab" data-v="month" aria-pressed="false">Mois par mois</button></div></div>
+    <div class="tabs" id="flowMode"><button class="tab" data-v="live" aria-pressed="false" id="flowLiveTab"><span class="ldot"></span> LIVE</button><button class="tab" data-v="period" aria-pressed="true">Toute la période</button><button class="tab" data-v="month" aria-pressed="false">Mois par mois</button></div></div>
   <div class="panel">
+    <div class="lstatus" id="flowLiveStatus" style="margin-bottom:6px"></div>
     <div id="flowMap"></div><div id="flowList" class="flist"></div>
+    <div id="flowToday"></div>
     <div class="player" id="flowPlayer"><button class="play" id="flowPlay" aria-label="Lecture">▶</button><input type="range" id="flowSlider" aria-label="Mois"><div class="mlabel" id="flowLabel"></div></div>
     <div class="note">Solde exportateur mois par mois depuis 2012</div><div id="exportTrend"></div>
   </div>
@@ -508,8 +515,45 @@ const PHYS_CORRIDORS = [
 const physicalOn = () => state.flowSource === "physical" && window.RTE && RTE.physical;
 const flowCorridors = () => physicalOn() ? PHYS_CORRIDORS : CORRIDORS;
 const flow = { timer: null, play: null, particles: [] };
+// LIVE : échanges commerciaux programmés du jour (eco2mix-national-tr, navigateur) ou dernière heure des flux physiques (build horaire)
+const BLIVE = { ok: false, loading: false, rows: [], error: null, fetched: null };
+const BORDER_KEYS = ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse", "ech_comm_allemagne_belgique"];
+async function loadBordersLive() {
+  BLIVE.loading = true; syncFlowLive();
+  try {
+    const t = new Date(), day = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+    const q = new URLSearchParams({ select: "date_heure," + BORDER_KEYS.join(","), where: `date_heure >= date'${day}' and ech_comm_angleterre is not null`,
+      order_by: "date_heure asc", limit: "100", timezone: "Europe/Paris" });
+    const r = await getJSON(ODRE + "eco2mix-national-tr/records?" + q);
+    if (!r.results?.length) throw new Error("réponse vide");
+    Object.assign(BLIVE, { ok: true, error: null, rows: r.results, fetched: new Date() });
+    if (!state.flowPicked) state.flowMode = "live";
+  } catch (e) {
+    BLIVE.error = e.name === "AbortError" ? "délai dépassé" : e.message;
+    if (state.flowMode === "live" && !BLIVE.ok && !physicalOn()) state.flowMode = "period";
+  } finally { BLIVE.loading = false; syncFlowLive(); syncFlowPlayer(); renderFlows(); }
+}
+// Quart d'heure en cours : les échanges commerciaux sont des programmes connus pour toute la journée
+const currentRow = () => { const now = Date.now(); let best = null; BLIVE.rows.forEach(r => { if (+new Date(r.date_heure) <= now) best = r; }); return best || BLIVE.rows[0]; };
+const liveFlows = () => state.flowMode === "live";
+function syncFlowLive() {
+  const tab = document.getElementById("flowLiveTab"), st = document.getElementById("flowLiveStatus"), live = liveFlows();
+  tab.querySelector(".ldot").classList.toggle("on", BLIVE.ok);
+  document.querySelectorAll("#flowMode .tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === state.flowMode));
+  st.classList.toggle("err", !!BLIVE.error && !BLIVE.ok);
+  if (BLIVE.loading && !BLIVE.ok) st.textContent = "● connexion au temps réel…";
+  else if (live && physicalOn()) { const last = Object.values(RTE.physicalRecent || {})[0]?.at(-1)?.[0];
+    st.textContent = last ? `● EN DIRECT · flux physiques RTE, dernière heure publiée : ${tUTC(last).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}–${new Date(+tUTC(last) + 3600e3).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} (mise à jour horaire)` : "Flux physiques récents indisponibles"; }
+  else if (live && BLIVE.ok) { const r = currentRow(); st.textContent = `● EN DIRECT · échanges commerciaux programmés pour le quart d'heure de ${hhmm(r.date_heure)} · actualisé toutes les 15 min`; }
+  else st.textContent = BLIVE.error && !BLIVE.ok ? `Temps réel indisponible (${BLIVE.error}) — affichage de l'historique` : "";
+}
 function commercial(k, months) { let ex = 0, im = 0; months.forEach(([m, i]) => { const v = D.borders[k][i]; if (v) { ex += v[0]; im += v[1]; } }); return { ex, im }; }
 function flowValues() {
+  if (liveFlows()) {
+    if (physicalOn()) return PHYS_CORRIDORS.map(c => { const r = RTE.physicalRecent?.[c.p]?.at(-1) || [null, 0, 0]; return { ...c, ex: r[1], im: r[2], net: r[1] - r[2], live: true, stamp: r[0] }; });
+    const row = BLIVE.ok ? currentRow() : null;
+    return CORRIDORS.map(c => { const v = row ? row[c.k] || 0 : 0; return { ...c, ex: Math.max(0, -v), im: Math.max(0, v), net: -v, live: true, stamp: row?.date_heure }; });
+  }
   const list = monthsInRange(D.borderMonths);
   const months = state.flowMode === "month" && state.flowMonth != null ? list.filter(([m]) => m === state.flowMonth) : list;
   const hours = d3.sum(months, ([m]) => monthHours(m));
@@ -531,7 +575,7 @@ function renderFlows() {
   const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[6, 6], [W - 6, H - 6]], frame);
   const path = d3.geoPath(proj);
   const svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
-  const vals = flowValues(), maxV = d3.max(vals, v => Math.max(v.ex, v.im)) || 1;
+  const vals = flowValues(), fv = liveFlows() ? fmtGW : fmtTWh, maxV = d3.max(vals, v => Math.max(v.ex, v.im)) || 1;
   const neighbor = new Map(flowCorridors().flatMap(c => c.ids.map(id => [id, c])));
   svg.append("rect").attr("width", W).attr("height", H).attr("fill", "var(--sea)");
   svg.append("g").selectAll("path").data(GEO.countries.features).join("path").attr("d", path)
@@ -549,7 +593,7 @@ function renderFlows() {
   vals.forEach(v => {
     const A = proj(v.a), B = proj(v.b), dx = B[0] - A[0], dy = B[1] - A[1], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
     [["ex", A, B, 1, "var(--exp)"], ["im", B, A, -1, "var(--imp)"]].forEach(([kind, P, Q, side, color]) => {
-      const val = v[kind]; if (val <= 0.005) return;
+      const val = v[kind]; if (val <= (liveFlows() ? 5 : 0.005)) return;
       const off = 4 + wScale(val) / 2, o = [nx * off * side, ny * off * side];
       const mid = [(P[0] + Q[0]) / 2 + o[0] * 2.2, (P[1] + Q[1]) / 2 + o[1] * 2.2];
       const d = `M${P[0] + o[0]},${P[1] + o[1]} Q${mid[0]},${mid[1]} ${Q[0] + o[0]},${Q[1] + o[1]}`;
@@ -568,23 +612,25 @@ function renderFlows() {
     g.append("text").attr("x", dxl).attr("y", -16).attr("text-anchor", anchor).style("font", `600 ${small ? 11 : 12}px 'Space Grotesk'`)
       .style("paint-order", "stroke").style("stroke", "var(--sea)").style("stroke-width", 3).text(small && v.name.length > 12 ? "All.+Belg." : v.name);
     if (small) return; // sur mobile, les chiffres passent dans la liste sous la carte
-    g.append("text").attr("x", dxl).attr("y", -2).attr("text-anchor", anchor).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--exp)").text("↗ " + fmtTWh(v.ex));
-    g.append("text").attr("x", dxl).attr("y", 12).attr("text-anchor", anchor).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--imp)").text("↙ " + fmtTWh(v.im));
+    g.append("text").attr("x", dxl).attr("y", -2).attr("text-anchor", anchor).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--exp)").text("↗ " + fv(v.ex));
+    g.append("text").attr("x", dxl).attr("y", 12).attr("text-anchor", anchor).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--imp)").text("↙ " + fv(v.im));
   });
   const list = document.getElementById("flowList"); list.replaceChildren(); list.style.display = W < 560 ? "grid" : "none";
-  if (W < 560) vals.forEach(v => { const r = el("div"); r.append(el("span", null, v.name), el("b", "num exp", "↗ " + fmtTWh(v.ex)), el("b", "num imp", "↙ " + fmtTWh(v.im))); list.append(r); });
+  if (W < 560) vals.forEach(v => { const r = el("div"); r.append(el("span", null, v.name), el("b", "num exp", "↗ " + fv(v.ex)), el("b", "num imp", "↙ " + fv(v.im))); list.append(r); });
   const tot = d3.sum(vals, v => v.net);
-  svg.append("text").attr("x", 12).attr("y", 20).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--muted)").text(state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth).toUpperCase() : periodLabel().toUpperCase());
-  svg.append("text").attr("x", 12).attr("y", 42).style("font", "600 18px 'IBM Plex Mono'").style("fill", tot >= 0 ? "var(--exp)" : "var(--imp)").text(`${tot >= 0 ? "Export" : "Import"} net ${fmtTWh(Math.abs(tot))}`);
+  svg.append("text").attr("x", 12).attr("y", 20).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--muted)").text(liveFlows() ? (physicalOn() ? "FLUX PHYSIQUES · DERNIÈRE HEURE" : "ÉCHANGES PROGRAMMÉS · QUART D'HEURE EN COURS") : state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth).toUpperCase() : periodLabel().toUpperCase());
+  svg.append("text").attr("x", 12).attr("y", 42).style("font", "600 18px 'IBM Plex Mono'").style("fill", tot >= 0 ? "var(--exp)" : "var(--imp)").text(`${tot >= 0 ? "Export" : "Import"} net ${fv(Math.abs(tot))}${liveFlows() ? " en ce moment" : ""}`);
   const draw = el => { flow.particles.forEach(p => { const pt = p.node.getPointAtLength(p.t * p.L); p.el.attr("cx", pt.x).attr("cy", pt.y).attr("r", p.r).attr("opacity", Math.sin(p.t * Math.PI)); }); };
+  renderFlowToday();
   if (REDUCED) { draw(); return; }
   let last = 0;
   flow.timer = d3.timer(el => { const dt = Math.min(.05, (el - last) / 1000); last = el; flow.particles.forEach(p => { p.t = (p.t + p.speed * dt) % 1; }); draw(); });
 }
-function flowTip(e, v) { showTip(e, t => { t.append(el("div", "t", v.name + " · " + (state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth) : periodLabel())));
-  row(t, css("--exp"), "Exportations", fmtTWh(v.ex)); row(t, css("--imp"), "Importations", fmtTWh(v.im)); t.append(el("hr"));
-  t.append(el("div", "big", (v.net >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.net)))); t.append(el("div", null, v.net >= 0 ? "solde exportateur" : "solde importateur"));
-  if (v.hours) row(t, null, "Puissance moyenne", fmtGW((v.ex - v.im) * 1e6 / v.hours));
+function flowTip(e, v) { const fv = v.live ? fmtGW : fmtTWh; showTip(e, t => {
+  t.append(el("div", "t", v.name + " · " + (v.live ? "en direct · " + (v.stamp ? (v.stamp.length === 13 ? tUTC(v.stamp) : new Date(v.stamp)).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "—") : state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth) : periodLabel())));
+  row(t, css("--exp"), "Exportations", fv(v.ex)); row(t, css("--imp"), "Importations", fv(v.im)); t.append(el("hr"));
+  t.append(el("div", "big", (v.net >= 0 ? "+" : "−") + fv(Math.abs(v.net)))); t.append(el("div", null, v.net >= 0 ? "solde exportateur" : "solde importateur"));
+  if (v.hours && !v.live) row(t, null, "Puissance moyenne", fmtGW((v.ex - v.im) * 1e6 / v.hours));
   if (v.gap != null) { t.append(el("hr")); row(t, null, v.grouped ? "Solde physique All. + Belg." : "Solde physique", (v.physGroupNet >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.physGroupNet)));
     row(t, null, "Solde commercial", (v.commNet >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.commNet))); row(t, null, "Écart (boucles, transits)", (v.gap >= 0 ? "+" : "−") + fmtTWh(Math.abs(v.gap))); } }); }
 function syncFlowPlayer() {
@@ -603,6 +649,37 @@ document.getElementById("flowPlay").onclick = () => {
   document.getElementById("flowPlay").textContent = "❚❚"; syncFlowPlayer(); renderFlows();
   flow.play = setInterval(() => { const i = list.indexOf(state.flowMonth); if (i >= list.length - 1) return stopFlowPlay(); state.flowMonth = list[i + 1]; syncFlowPlayer(); renderFlows(); }, list.length > 36 ? 450 : 1100);
 };
+function renderFlowToday() {
+  const box = document.getElementById("flowToday"); box.replaceChildren();
+  if (!liveFlows()) { box.style.display = "none"; return; }
+  const mid = new Date(); mid.setHours(0, 0, 0, 0); const end = new Date(+mid + 864e5), now = new Date();
+  let series;
+  if (physicalOn()) series = PHYS_CORRIDORS.map(c => ({ name: c.name, pts: (RTE.physicalRecent?.[c.p] || []).map(([h, ex, im]) => ({ t: tUTC(h), v: ex - im })).filter(p => p.t >= mid) }));
+  else if (BLIVE.ok) series = CORRIDORS.map(c => ({ name: c.name, pts: BLIVE.rows.map(r => ({ t: new Date(r.date_heure), v: -(r[c.k] || 0) })) }));
+  else { box.style.display = "none"; return; }
+  box.style.display = "grid";
+  const all = series.flatMap(s => s.pts.map(p => p.v)), lim = Math.max(500, d3.max(all, Math.abs) || 1);
+  series.forEach(s => { const cell = el("div"), last = [...s.pts].reverse().find(p => p.t <= now) || s.pts.at(-1);
+    const lab = el("div", "lab"); lab.append(el("span", null, s.name), el("b", null, last ? (last.v >= 0 ? "↗ " : "↙ ") + fmtGW(Math.abs(last.v)) : "—")); cell.append(lab); box.append(cell);
+    const W = cell.clientWidth - 16 || 120, H = 54, x = d3.scaleTime().domain([mid, end]).range([0, W]), y = d3.scaleLinear().domain([-lim, lim]).range([H - 2, 2]);
+    const svg = d3.select(cell).append("svg").attr("width", W).attr("height", H);
+    svg.append("line").attr("x1", 0).attr("x2", W).attr("y1", y(0)).attr("y2", y(0)).attr("stroke", "var(--line)");
+    const past = s.pts.filter(p => p.t <= now), future = s.pts.filter(p => p.t >= (past.at(-1)?.t || mid));
+    const area = d3.area().curve(d3.curveStepAfter).x(p => x(p.t)).y0(y(0)).y1(p => y(p.v)), line = d3.line().curve(d3.curveStepAfter).x(p => x(p.t)).y(p => y(p.v));
+    // aire au-dessus de l'axe : export (cyan) ; en dessous : import (orange)
+    svg.append("path").datum(past).attr("fill", css("--exp")).attr("opacity", .3).attr("d", d3.area().curve(d3.curveStepAfter).x(p => x(p.t)).y0(y(0)).y1(p => y(Math.max(0, p.v))));
+    svg.append("path").datum(past).attr("fill", css("--imp")).attr("opacity", .3).attr("d", d3.area().curve(d3.curveStepAfter).x(p => x(p.t)).y0(y(0)).y1(p => y(Math.min(0, p.v))));
+    svg.append("path").datum(past).attr("fill", "none").attr("stroke", css("--text-2")).attr("stroke-width", 1.2).attr("d", line);
+    if (future.length > 1) svg.append("path").datum(future).attr("fill", "none").attr("stroke", css("--muted")).attr("stroke-dasharray", "2 2").attr("d", line);
+    svg.append("line").attr("x1", x(now)).attr("x2", x(now)).attr("y1", 0).attr("y2", H).attr("stroke", "var(--accent-2)");
+    svg.append("rect").attr("width", W).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+      const tt = x.invert(d3.pointer(e)[0]), p = [...s.pts].reverse().find(q => q.t <= tt) || s.pts[0]; if (!p) return;
+      showTip(e, t => { t.append(el("div", "t", `${s.name} · ${p.t.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}${p.t > now ? " (programmé)" : ""}`)); t.append(el("div", "big", fmtGW(Math.abs(p.v)))); t.append(el("div", null, p.v >= 0 ? "export" : "import")); }); })
+      .on("pointerleave", hideTip); });
+  const note = el("div"); note.style.cssText = "grid-column:1/-1;font:11px 'IBM Plex Mono',monospace;color:var(--muted)";
+  note.textContent = physicalOn() ? "Aujourd'hui, depuis minuit : flux physiques horaires (au-dessus de l'axe : export)." : "Aujourd'hui, depuis minuit : échanges commerciaux au quart d'heure (au-dessus de l'axe : export ; pointillés : programme à venir).";
+  box.append(note);
+}
 function renderExportTrend() {
   const th = document.getElementById("exportTrend"); th.replaceChildren();
   const months = D.borderMonths.map((m, i) => ({ m, date: new Date(+m.slice(0, 4), +m.slice(5) - 1, 15), s: d3.sum(CORRIDORS, c => { const v = D.borders[c.k][i]; return v ? v[0] - v[1] : 0; }) }));
@@ -1461,8 +1538,8 @@ document.querySelectorAll("#regSource button").forEach(b => b.onclick = () => {
   state.sourcePicked = true; state.regSource = b.dataset.v; stopRegPlay();
   if (b.dataset.v === "live" && !LIVE.ok && !LIVE.loading) loadLive(); renderRegionMap(); renderCorr(); });
 tabs("regMode", v => { state.regMode = v; stopRegPlay(); renderRegionMap(); renderCorr(); }); tabs("overlays", (v, on) => { state[v] = on; renderRegionMap(); }, true);
-tabs("flowSource", v => { state.flowSource = v; renderFlows(); });
-tabs("flowMode", v => { state.flowMode = v; stopFlowPlay(); syncFlowPlayer(); renderFlows(); renderExportTrend(); });
+tabs("flowSource", v => { state.flowSource = v; syncFlowLive(); renderFlows(); });
+tabs("flowMode", v => { state.flowMode = v; state.flowPicked = true; stopFlowPlay(); if (v === "live" && !BLIVE.ok && !BLIVE.loading) loadBordersLive(); syncFlowLive(); syncFlowPlayer(); renderFlows(); renderExportTrend(); });
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
   try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} update(); };
 try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
@@ -1470,6 +1547,7 @@ function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs()
 let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(update, 150); });
 update();
 loadLive(); setInterval(loadLive, 15 * 60 * 1000);
+loadBordersLive(); setInterval(loadBordersLive, 15 * 60 * 1000);
 </script>
 </body>
 </html>

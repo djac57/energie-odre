@@ -71,6 +71,21 @@ def physical_monthly(pf):
     return {nb: dict(sorted(ms.items())) for nb, ms in out.items()}
 
 
+def physical_recent(pf, hours=48):
+    """Dernières heures de flux physiques par voisin : {voisin: [[heure UTC, export MW, import MW], …]}."""
+    keys = sorted({h for ser in pf.get("hourly", {}).values() for h in ser})[-hours:]
+    out = defaultdict(lambda: {h: [0, 0] for h in keys})
+    for key, ser in pf.get("hourly", {}).items():
+        a, b = key.split(">")
+        idx, nb = (0, NEIGHBOURS.get(b)) if a == "France" else (1, NEIGHBOURS.get(a)) if b == "France" else (None, None)
+        if nb is None:
+            continue
+        for h in keys:
+            if h in ser:
+                out[nb][h][idx] += ser[h]
+    return {nb: [[h, round(v[0]), round(v[1])] for h, v in sorted(d.items())] for nb, d in out.items()}
+
+
 def main():
     meta = load("meta.json")
     caps = load("capacities_units.json")
@@ -265,6 +280,7 @@ def main():
             "capacityByType": caps.get("types", {}), "curveStart": h0.isoformat(),
             "ecowatt": sorted(load("ecowatt.json").items()), "tempo": load("tempo.json"),
             "physical": physical_monthly(load("physical_flows.json", {"monthly": {}, "hourly": {}})),
+            "physicalRecent": physical_recent(load("physical_flows.json", {"monthly": {}, "hourly": {}})),
             "demandResponse": load("demand_response.json", {}).get("operators", {}),
             "reserves": load("reserves.json", {}).get("need", {})}
     with open(OUT, "w", encoding="utf-8") as fh:
