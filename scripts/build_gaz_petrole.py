@@ -12,7 +12,7 @@ import sys
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ais_ports import PORT_LIST, decode_destination, offshore_of, port_at  # noqa: E402
+from ais_ports import PORT_LIST, decode_destination, guess_origin, is_french, nm, offshore_of, port_at, region  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "..", "data", "raw"), "gaz_petrole")
@@ -415,7 +415,7 @@ def ais():
     if not os.path.exists(os.path.join(base, "snapshot.json")):
         return None
     rd = lambda n: json.load(open(os.path.join(base, n + ".json"), encoding="utf-8")) if os.path.exists(os.path.join(base, n + ".json")) else {}
-    snap, tracks, voyages = rd("snapshot"), rd("tracks"), rd("voyages")
+    snap, tracks, voyages, static, watch = rd("snapshot"), rd("tracks"), rd("voyages"), rd("static"), rd("watchlist")
     ships = []
     for x in snap.get("ships", []):
         x = dict(x)
@@ -423,34 +423,52 @@ def ais():
         x["cap"] = capacity(x)
         x["flag"] = MID.get(str(x["mmsi"])[:3], "")
         x.pop("lngdest", None)
+        x["enroute"] = x["mmsi"] in watch  # repéré dans le monde avec une destination française
+        if x["enroute"]:
+            x["spotted"] = watch[x["mmsi"]].get("since")
+        x["zone"] = region(x["lat"], x["lon"])
         # Destination déclarée -> port (code UN/LOCODE ou nom libre), sinon non décodée
         port, how = decode_destination(x.get("dest"))
         x["port"] = {"id": port["id"], "name": port["name"], "code": port["code"], "lat": port["lat"], "lon": port["lon"], "how": how} if port else None
-        # Trace observée (1 point / 20 min au plus pour la page) et départ déduit de l'historique
+        # Trace observée (1 point / 20 min au plus pour la page)
         tr, last = [], None
         for p in tracks.get(x["mmsi"], []):
             if last is None or p[0] - last >= 1200:
-                tr.append([p[0], p[1], p[2]])
+                tr.append([p[0], round(p[1], 3), round(p[2], 3)])
                 last = p[0]
         x["track"] = tr
         v = voyages.get(x["mmsi"], {})
         stop, prev, first = v.get("stop"), v.get("prev"), v.get("first")
-        here = port_at(x["lat"], x["lon"]) if (x.get("sog") or 0) < 0.5 else None
+        here = port_at(x["lat"], x["lon"]) if (x.get("sog") or 0) < 0.5 and not x.get("approx") else None
         if here and stop and stop["id"] == here["id"]:
             x["atPort"] = {"name": stop["name"], "since": stop["t0"]}
             dep = prev
         else:
             x["atPort"] = {"name": here["name"], "since": None} if here else None
-            dep = stop
+            dep = stop if not (stop and port and stop["id"] == port["id"]) else prev
+        # Départ, du plus sûr au moins sûr : observé à quai, destination précédente, estimation
+        f = first or (tr[0] if tr else [x["t"], x["lat"], x["lon"]])
+        if tr and (not first or tr[0][0] < first[0]):
+            f = tr[0]
+        near, dist = offshore_of(f[1], f[2])
+        x["first"] = {"name": near, "nm": dist, "t": f[0], "lat": f[1], "lon": f[2]}
         if dep:
             x["dep"] = {"kind": "port", "name": dep["name"], "t": dep["t"], "lat": dep["lat"], "lon": dep["lon"]}
         else:
-            f = first or (tr[0] if tr else [x["t"], x["lat"], x["lon"]])
-            near, dist = offshore_of(f[1], f[2])
-            x["dep"] = {"kind": "first", "name": near, "nm": dist, "t": f[0], "lat": f[1], "lon": f[2]}
+            x["dep"] = None
+            for t, d in reversed((static.get(x["mmsi"]) or {}).get("dests", [])[:-1]):
+                pp, _ = decode_destination(d)
+                if pp and not (port and pp["id"] == port["id"]) and not is_french(pp):
+                    x["dep"] = {"kind": "prevdest", "name": pp["name"], "raw": d, "t": t, "lat": pp["lat"], "lon": pp["lon"]}
+                    break
+            if not x["dep"] and x["enroute"] and nm((f[1], f[2]), (port["lat"], port["lon"]) if port else (f[1], f[2])) > 150:
+                g = guess_origin(x["cap"]["kind"], f[1], f[2], x.get("cog"), x.get("sog"), (port["lat"], port["lon"]) if port else None)
+                if g:
+                    x["dep"] = {"kind": "guess", "name": g["name"], "lat": g["lat"], "lon": g["lon"]}
         ships.append(x)
     ports = [{"name": p["name"], "code": p["code"], "lat": p["lat"], "lon": p["lon"], "rank": p["rank"]} for p in PORT_LIST]
-    return {"t": snap.get("t"), "seconds": snap.get("seconds"), "messages": snap.get("messages"), "ships": ships, "ports": ports}
+    return {"t": snap.get("t"), "seconds": snap.get("seconds"), "scanSeconds": snap.get("scanSeconds"), "trackSeconds": snap.get("trackSeconds"),
+            "counts": snap.get("counts"), "watch": snap.get("watch"), "messages": snap.get("messages"), "ships": ships, "ports": ports}
 
 
 # ---------------------------------------------------------------- Charbon, uranium, prix (FMI)

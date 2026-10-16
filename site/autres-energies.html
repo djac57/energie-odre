@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="autresenergies.js?v=3bdeb784cd"></script>
+<script src="autresenergies.js?v=d88185ba3c"></script>
 <script src="geo.js"></script>
 <script src="geo_world.js"></script>
 <style>
@@ -148,6 +148,8 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .shipcard dd { line-height: 1.35; }
 .shipcard dt { color: var(--muted); }
 .shipcard dd { margin: 0; color: var(--text); }
+.aiscount { font-size: 15px; font-weight: 600; color: var(--text); margin: 2px 0 10px; }
+.lg2 svg { flex: none; }
 .aisbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 8px; }
 .aisbar input { font: 13px "IBM Plex Mono", monospace; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); padding: 6px 10px; width: 240px; max-width: 100%; }
 .aisbar input:focus { outline: none; border-color: var(--accent); }
@@ -241,15 +243,17 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 </div></section>
 
 <section class="band"><div class="band-in">
-  <div class="side"><div class="no">G2 — EN APPROCHE</div><h3>Pétroliers et méthaniers attendus</h3>
-    <p>Navires-citernes de mer déclarant un port français, ou au mouillage tout près d'un terminal. Zoomez jusqu'au port, cliquez un navire ou cherchez-le par son nom&nbsp;: sa fiche, son trajet observé depuis son départ et sa route estimée jusqu'au port déclaré.</p>
+  <div class="side"><div class="no">G2 — EN ROUTE</div><h3>Pétroliers et méthaniers en route vers la France</h3>
+    <p>Les navires-citernes qui déclarent un port français, repérés dans le monde entier, du golfe du Mexique au golfe Persique, et ceux au mouillage près des terminaux. Pour chaque voyage&nbsp;: départ (observé, d'après la destination précédente, ou estimé), trajet reçu, trous de couverture et route jusqu'au port déclaré. Zoomez jusqu'au port, cliquez un navire ou cherchez-le par son nom.</p>
     <p class="note" id="aisNote"></p>
   </div>
   <div class="stack">
     <div class="panel"><div class="ptitle" id="aisTitle"></div>
+      <div class="aiscount mono" id="aisCount"></div>
+      <div class="ctlrow"><div class="tabs" id="aisTerm"></div><div class="tabs" id="aisType"></div></div>
       <div class="aisbar"><input type="search" id="aisSearch" list="aisNames" placeholder="Chercher un navire…" aria-label="Chercher un navire par son nom" autocomplete="off"><datalist id="aisNames"></datalist><span class="note" id="aisFound"></span></div>
-      <div id="aisMap"></div><div class="legend" id="aisLegend"></div>
-      <p class="note">Molette, pincement ou boutons pour zoomer, glisser pour se déplacer. Cliquez un navire : trait plein = trajet observé, pointillé = route estimée jusqu'au port déclaré.</p></div>
+      <div id="aisMap"></div><div class="legend" id="aisLegend"></div><div class="legend lg2" id="aisLegend2"></div>
+      <p class="note">Molette, pincement ou boutons pour zoomer, glisser pour se déplacer. Cliquez un navire pour sa fiche et son voyage.</p></div>
     <div class="term-cards" id="termCards"></div>
     <div class="panel"><div class="ptitle">Navires retenus</div><div class="tscroll"><table id="aisTable"></table></div></div>
   </div>
@@ -712,8 +716,7 @@ function renderPipes() {
   };
   let showDetail = () => {};
   M = zoomMap(host, W, H, { kmax: 16, onZoom: t => { draw(t); showDetail(t.k); }, onEnd: t => { pView = t; } });
-  M.base.append("g").selectAll("path").data(GW.world.features).join("path").attr("d", d3.geoPath(proj)).attr("fill", css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5);
-  showDetail = drawBasemap(M, proj, "pipe", 4);
+  showDetail = drawBasemap(M, proj, "pipe", 4, true);
   M.base.selectAll("g path").filter(f => f && EU_IDS.has(f.properties.id)).attr("fill", f => f.properties.id === "250" ? css("--france") : css("--land-2"));
   if (pView) M.set(pView); else draw(d3.zoomIdentity);
   // totaux : entrées dans l'UE (frontières hors UE → UE) + GNL de l'UE
@@ -757,7 +760,7 @@ function zoomMap(host, W, H, opts = {}) {
   // cadrer un ensemble de points écran (à l'échelle 1) : zoom animé
   const fly = (pts, kmax = 24, kmin = 1, padR = 0) => { const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
     const [x0, x1] = d3.extent(xs), [y0, y1] = d3.extent(ys), w = W - padR;  // padR : place prise par une fiche à droite
-    const k = Math.max(kmin, Math.min(kmax, .75 / Math.max((x1 - x0) / w, (y1 - y0) / H, 1e-6)));
+    const k = Math.max(kmin, Math.min(kmax, .66 / Math.max((x1 - x0) / w, (y1 - y0) / H, 1e-6)));
     svg.transition().duration(900).call(zoom.transform, d3.zoomIdentity.translate(w / 2, H / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2)); };
   return { svg, base, over, zoom, fly, wrap, t: () => cur, set: t => svg.call(zoom.transform, t) };
 }
@@ -766,8 +769,10 @@ const COAST_SRC = "geo_coast10.js?v=1ea9e11a66";
 let coastReq = null;
 function loadCoast() { if (window.GEOC) return Promise.resolve(); if (!coastReq) coastReq = new Promise((res, rej) => { const s = document.createElement("script"); s.src = COAST_SRC; s.onload = res; s.onerror = rej; document.head.append(s); }); return coastReq; }
 // Fond de carte : 50 m partout, 10 m dans son rectangle (le 50 m y est masqué) dès que le zoom le justifie
-function drawBasemap(M, proj, idp, detailK = 3) {
+function drawBasemap(M, proj, idp, detailK = 3, world = false) {
   const path = d3.geoPath(proj), fill = f => f.properties.id === "250" ? css("--france") : css("--land");
+  if (world) { const eu = new Set(GW.europe.features.map(f => f.properties.id));  // monde 110 m hors pays déjà dessinés en 50 m
+    M.base.append("g").selectAll("path").data(GW.world.features.filter(f => !eu.has(f.properties.id))).join("path").attr("d", path).attr("fill", css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5); }
   const g50 = M.base.append("g"), g10 = M.base.append("g").style("display", "none");
   g50.selectAll("path").data(GW.europe.features).join("path").attr("d", path).attr("fill", fill).attr("stroke", css("--line")).attr("stroke-width", .6);
   let ready = false;
@@ -785,30 +790,39 @@ function drawBasemap(M, proj, idp, detailK = 3) {
   return show;
 }
 
-/* ---------- G2. Navires en approche ---------- */
+/* ---------- G2. Navires en route vers la France ---------- */
 const TERMS = { "Le Havre-Rouen": [49.55, 0.10], "Dunkerque": [51.05, 2.25], "Montoir-Donges": [47.30, -2.10], "Fos-Lavéra": [43.40, 4.90], "Gironde": [45.20, -0.75], "La Rochelle": [46.16, -1.22], "Sète": [43.40, 3.70] };
-// Points de passage maritimes schématiques (lat, lon) et voisinages
+// Points de passage maritimes schématiques (lat, lon) : façade française détaillée, grandes routes du monde ensuite
 const WP = { GIB: [35.95, -5.6], GATA: [36.6, -2.0], VALM: [39.5, 1.5], LION: [42.6, 4.2], LIG: [43.4, 7.8], STV: [36.9, -9.4], FIN: [43.3, -9.8], BISC: [45.5, -3.5], OUE: [48.4, -5.6],
-  LOIRE: [47.05, -2.6], CHAN: [49.9, -3.0], WIGHT: [50.2, -1.0], SEINE: [49.75, -0.2], PAS: [50.95, 1.45], NSEA: [51.7, 2.8], GIR: [45.6, -1.6], SARD: [38.6, 8.0], SICI: [37.4, 11.6] };
+  LOIRE: [47.05, -2.6], CHAN: [49.9, -3.0], WIGHT: [50.2, -1.0], SEINE: [49.75, -0.2], PAS: [50.95, 1.45], NSEA: [51.7, 2.8], GIR: [45.6, -1.6], SARD: [38.6, 8.0], SICI: [37.4, 11.6],
+  CANA: [28.5, -16.0], CVER: [15.0, -21.0], GUIN: [2.5, 2.0], ANGO: [-8.0, 10.0], CAPE: [-36.0, 18.5], MADA: [-25.0, 45.0], AZOR: [38.0, -27.0], MIDA: [41.0, -45.0],
+  NYA: [39.0, -69.0], FLOR: [24.6, -80.5], GOMX: [26.5, -90.0], ANEG: [18.6, -63.5], CARIB: [15.0, -70.0], TRIN: [11.2, -60.2],
+  EMED: [34.0, 24.0], PSAI: [31.6, 32.3], SUEZ: [29.6, 32.6], REDS: [20.0, 38.8], BABM: [12.6, 43.4], ADEN: [12.3, 48.0], ARAB: [17.0, 58.0], HORM: [26.4, 56.6], PGUL: [27.0, 51.5],
+  AEGE: [38.0, 25.0], BOSP: [41.2, 29.1], BLKS: [43.0, 34.0], NSE2: [57.5, 3.5], NORW: [64.0, 6.0], NCAP: [71.5, 25.0], BARE: [72.0, 45.0], KARA: [73.5, 62.0],
+  SKAG: [57.9, 10.7], BALT: [55.6, 15.5], GFIN: [59.7, 24.0] };
 const WP_EDGES = [["GIB", "GATA"], ["GATA", "VALM"], ["VALM", "LION"], ["LION", "LIG"], ["VALM", "SARD"], ["SARD", "SICI"], ["GATA", "SARD"], ["GIB", "STV"], ["STV", "FIN"], ["FIN", "BISC"], ["FIN", "OUE"],
-  ["BISC", "GIR"], ["BISC", "LOIRE"], ["OUE", "LOIRE"], ["OUE", "CHAN"], ["CHAN", "WIGHT"], ["WIGHT", "SEINE"], ["WIGHT", "PAS"], ["BISC", "OUE"], ["PAS", "NSEA"], ["SEINE", "PAS"]];
+  ["BISC", "GIR"], ["BISC", "LOIRE"], ["OUE", "LOIRE"], ["OUE", "CHAN"], ["CHAN", "WIGHT"], ["WIGHT", "SEINE"], ["WIGHT", "PAS"], ["BISC", "OUE"], ["PAS", "NSEA"], ["SEINE", "PAS"],
+  ["STV", "CANA"], ["GIB", "CANA"], ["CANA", "CVER"], ["CVER", "GUIN"], ["GUIN", "ANGO"], ["ANGO", "CAPE"], ["CAPE", "MADA"], ["MADA", "ARAB"], ["CANA", "AZOR"], ["FIN", "AZOR"], ["OUE", "MIDA"],
+  ["AZOR", "MIDA"], ["MIDA", "NYA"], ["NYA", "FLOR"], ["FLOR", "GOMX"], ["AZOR", "ANEG"], ["ANEG", "CARIB"], ["ANEG", "FLOR"], ["CARIB", "TRIN"], ["ANEG", "TRIN"], ["TRIN", "CVER"],
+  ["SICI", "EMED"], ["EMED", "PSAI"], ["PSAI", "SUEZ"], ["SUEZ", "REDS"], ["REDS", "BABM"], ["BABM", "ADEN"], ["ADEN", "ARAB"], ["ARAB", "HORM"], ["HORM", "PGUL"],
+  ["EMED", "AEGE"], ["AEGE", "BOSP"], ["BOSP", "BLKS"], ["NSEA", "NSE2"], ["NSE2", "NORW"], ["NORW", "NCAP"], ["NCAP", "BARE"], ["BARE", "KARA"], ["NSE2", "SKAG"], ["SKAG", "BALT"], ["BALT", "GFIN"]];
 const nmd = (a, b) => { const r = Math.PI / 180, la1 = a[0] * r, la2 = b[0] * r, dl = (b[1] - a[1]) * r, dp = la2 - la1;
   return 3440.065 * 2 * Math.asin(Math.sqrt(Math.sin(dp / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dl / 2) ** 2)); };
+const WP_ADJ = (() => { const adj = Object.fromEntries(Object.keys(WP).map(n => [n, []])); WP_EDGES.forEach(([a, b]) => { const d = nmd(WP[a], WP[b]); adj[a].push([b, d]); adj[b].push([a, d]); }); return adj; })();
 // Route maritime schématique (plus court chemin entre points de passage) de from à dest, en [lat, lon]
 function routeTo(from, dest) {
   if (nmd(from, dest) < 40) return [from, dest];
-  const nodes = Object.keys(WP), adj = Object.fromEntries(nodes.map(n => [n, []]));
-  WP_EDGES.forEach(([a, b]) => { const d = nmd(WP[a], WP[b]); adj[a].push([b, d]); adj[b].push([a, d]); });
-  const near = p => nodes.reduce((best, n) => nmd(p, WP[n]) < nmd(p, WP[best]) ? n : best, nodes[0]);
+  const nodes = Object.keys(WP), near = p => nodes.reduce((best, n) => nmd(p, WP[n]) < nmd(p, WP[best]) ? n : best, nodes[0]);
   const start = near(from), goal = near(dest);
   if (start === goal) return [from, dest];
   const dist = { [start]: 0 }, prev = {}, todo = new Set(nodes);
-  while (todo.size) { let u = null; todo.forEach(n => { if (dist[n] != null && (u == null || dist[n] < dist[u])) u = n; }); if (u == null) break; todo.delete(u);
-    adj[u].forEach(([v, d]) => { if (dist[v] == null || dist[u] + d < dist[v]) { dist[v] = dist[u] + d; prev[v] = u; } }); }
+  while (todo.size) { let u = null; todo.forEach(n => { if (dist[n] != null && (u == null || dist[n] < dist[u])) u = n; }); if (u == null || u === goal) break; todo.delete(u);
+    WP_ADJ[u].forEach(([v, d]) => { if (dist[v] == null || dist[u] + d < dist[v]) { dist[v] = dist[u] + d; prev[v] = u; } }); }
   const seq = []; for (let n = goal; n; n = prev[n]) { seq.unshift(n); if (n === start) break; }
   if (seq[0] !== start) return [from, dest];
-  // ne pas revenir en arrière vers le premier point de passage s'il est derrière le navire
+  // ne pas revenir vers un point de passage déjà dépassé, ni aller au-delà du dernier
   if (seq.length > 1 && nmd(from, WP[seq[1]]) < nmd(WP[seq[0]], WP[seq[1]])) seq.shift();
+  if (seq.length > 1 && nmd(dest, WP[seq.at(-2)]) < nmd(WP[seq.at(-1)], WP[seq.at(-2)])) seq.pop();
   return [from, ...seq.map(n => WP[n]), dest];
 }
 const pathNm = pts => d3.sum(pts.slice(1), (p, i) => nmd(pts[i], p));
@@ -817,60 +831,83 @@ function etaDeclared(e, now) { if (!e || !e[0] || !e[1] || e[0] > 12 || e[1] > 3
 function shipIcon(kind) { return kind === "lng" ? "M0,-9 L4,-5 L4,8 L-4,8 L-4,-5 Z M0,-3 a2.2,2.2 0 1,0 0.01,0 M0,3 a2.2,2.2 0 1,0 0.01,0" : "M0,-9 L4,-4 L4,8 L-4,8 L-4,-4 Z"; }
 const dtShort = d => d ? d.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—";
 const CAPS = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
-let aisSel = null, aisView = null;
+const DEP_LBL = { port: "observé", prevdest: "d'après la destination précédente", guess: "estimation" };
+let aisSel = null, aisView = null, aisTerm = "all", aisType = "all";
 function renderAIS() {
   const S = A.ais; const host = document.getElementById("aisMap"); host.replaceChildren();
   if (!S?.ships?.length) { host.append(el("p", "note", "Pas d'instantané AIS disponible.")); return; }
   const now = new Date(S.t * 1000);
-  const W = widthOf("aisMap"), H = Math.round(W * (W < 560 ? 1.15 : .7));
-  const proj = d3.geoConicConformal().rotate([-1.5, 0]).parallels([42, 50]).fitExtent([[4, 4], [W - 4, H - 4]], { type: "MultiPoint", coordinates: [[-12, 35], [14, 35], [-12, 55.5], [14, 55.5]] });
-  const ships = S.ships.map(s => { const term = (s.terminal || "").replace(" (à proximité)", "");
+  const all = S.ships.map(s => { const term = (s.terminal || "").replace(" (à proximité)", "");
     const pos = [s.lat, s.lon], dest = s.port ? [s.port.lat, s.port.lon] : TERMS[term] || null;
     const arrived = s.atPort && (!s.port || s.atPort.name === s.port.name || nmd(pos, dest) < 6);
-    const r = dest && !arrived && (s.sog > 1 || nmd(pos, dest) > 8) ? routeTo(pos, dest) : null;
+    const r = dest && !arrived && (s.sog > 1 || s.sog == null || nmd(pos, dest) > 8) ? routeTo(pos, dest) : null;
     const dist = r ? pathNm(r) : dest ? nmd(pos, dest) : null;
     const etaEst = r && s.sog > 3 ? new Date(now.getTime() + dist / s.sog * 3600e3) : null;
-    return { ...s, term, r, dist, etaEst, arrived, etaDecl: etaDeclared(s.eta, now), key: String(s.mmsi) }; });
+    // trace observée découpée : segments reçus, et trous de couverture (> 60 milles et > 3 h) refaits par la route
+    const tr = [...(s.track || []).map(p => [p[1], p[2], p[0]])]; if (!tr.length || nmd(tr.at(-1), pos) > .5) tr.push([s.lat, s.lon, s.t]);
+    const seen = [[tr[0]]], gaps = [];
+    for (let i = 1; i < tr.length; i++) { const a = tr[i - 1], b = tr[i];
+      if (nmd(a, b) > 60 && b[2] - a[2] > 3 * 3600) { gaps.push(routeTo(a, b)); seen.push([b]); } else seen.at(-1).push(b); }
+    const lead = s.dep && !arrived ? (s.dep.kind === "port" && nmd([s.dep.lat, s.dep.lon], tr[0]) < 3 ? null : routeTo([s.dep.lat, s.dep.lon], tr[0])) : null;
+    return { ...s, term, r, dist, etaEst, arrived, etaDecl: etaDeclared(s.eta, now), key: String(s.mmsi), seen, gaps, lead }; });
+  const terms = [...new Set(all.map(s => s.term))].filter(t => TERMS[t]);
+  setTabs("aisTerm", [["all", "Tous les ports"], ...terms.map(t => [t, t])], aisTerm, v => { aisTerm = v; aisView = null; renderAIS(); });
+  setTabs("aisType", [["all", "Tous"], ["lng", "Méthaniers"], ["oil", "Pétroliers"]], aisType, v => { aisType = v; aisView = null; renderAIS(); });
+  const ships = all.filter(s => (aisTerm === "all" || s.term === aisTerm) && (aisType === "all" || s.cap?.kind === aisType));
+  // compteur : navires en route (repérés avec une destination française, pas encore arrivés)
+  const go = ships.filter(s => s.enroute && !s.arrived);
+  const m3 = d3.sum(go.filter(s => s.cap?.kind === "lng"), s => s.cap.m3), dwt = d3.sum(go.filter(s => s.cap?.kind === "oil"), s => s.cap.dwt);
+  document.getElementById("aisCount").textContent = `${go.length} navire${go.length > 1 ? "s" : ""} en route vers la France · ${fr(m3 / 1e6, 2)} Mm³ de GNL · ${fr(dwt / 1e6, 2)} Mt de pétrole et produits (capacités estimées)` +
+    ` · ${ships.length - go.length} à quai ou au mouillage près des terminaux`;
+  const W = widthOf("aisMap"), H = Math.round(W * (W < 560 ? 1.15 : .62));
+  // vue initiale : tous les navires, leurs départs et leurs ports, au moins la façade française
+  const pts = [[-8, 42], [9, 51.5]]; ships.forEach(s => { pts.push([s.lon, s.lat]); if (s.dep && !s.arrived) pts.push([s.dep.lon, s.dep.lat]); });
+  const proj = d3.geoMercator().fitExtent([[24, 24], [W - 24, H - 24]], { type: "MultiPoint", coordinates: pts });
+  const pxDeg = proj.scale() * Math.PI / 180 / Math.cos(46 * Math.PI / 180);  // pixels par degré de longitude vers 46° N à l'échelle 1
+  const kmax = Math.max(40, 2500 / pxDeg), kDetail = Math.max(2, 70 / pxDeg);
   const colOf = s => s.cap?.kind === "lng" ? css("--o-lng") : css("--oil");
   let M;
   const draw = t => {
     const P = ll => t.apply(proj([ll[1], ll[0]])), o = M.over; o.selectAll("*").remove();
-    const line = d3.line(), sel = ships.find(s => s.key === aisSel);
-    // ports et terminaux : les noms apparaissent avec le zoom
-    const minRank = t.k >= 7 ? 3 : t.k >= 2.5 ? 2 : 1;
+    const line = d3.line(), curve = d3.line().curve(d3.curveCatmullRom.alpha(.5)), sel = ships.find(s => s.key === aisSel);
+    const pd = pxDeg * t.k, minRank = pd >= 300 ? 3 : pd >= 90 ? 2 : pd >= 25 ? 1 : 0;
     (S.ports || []).filter(p => p.rank <= minRank).forEach(p => { const [x, y] = P([p.lat, p.lon]); if (x < -20 || y < -20 || x > W + 20 || y > H + 20) return;
       if (p.rank === 1) o.append("rect").attr("x", x - 4).attr("y", y - 4).attr("width", 8).attr("height", 8).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.5);
       else o.append("circle").attr("cx", x).attr("cy", y).attr("r", 2.5).attr("fill", css("--accent")).attr("opacity", .8);
-      if (W > 520 || t.k >= 2 || p.rank > 1) o.append("text").attr("x", x + 7).attr("y", y + 4).attr("class", "mono maplab").style("font-size", p.rank === 1 ? "11px" : "10px")
-        .text(p.name + (t.k >= 7 && p.code ? ` · ${p.code}` : "")); });
-    ships.forEach(s => { const on = !sel || sel === s, op = on ? 1 : .22, c = colOf(s), w = sel === s ? 2.6 : 1.5;
-      const tr = (s.track || []).map(p => [p[1], p[2]]);
-      const dep = s.dep && !s.arrived ? [s.dep.lat, s.dep.lon] : null;
-      // départ → première position observée : trajet non observé, pointillé fin
-      if (dep && tr.length && nmd(dep, tr[0]) > 3) o.append("path").attr("d", line([P(dep), P(tr[0])])).attr("fill", "none").attr("stroke", c).attr("stroke-width", 1).attr("stroke-dasharray", "1 4").attr("opacity", .6 * op);
-      // trace observée
-      const obs = [...tr, [s.lat, s.lon]]; if (obs.length > 1) o.append("path").attr("d", line(obs.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", w).attr("stroke-linejoin", "round").attr("opacity", .85 * op);
-      // route projetée jusqu'au port déclaré
-      if (s.r) o.append("path").attr("d", d3.line().curve(d3.curveCatmullRom.alpha(.5))(s.r.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", sel === s ? 2 : 1.2).attr("stroke-dasharray", "3 5").attr("opacity", .75 * op);
-      if (dep && (sel === s)) { const [x, y] = P(dep); o.append("circle").attr("cx", x).attr("cy", y).attr("r", 5).attr("fill", css("--bg")).attr("stroke", c).attr("stroke-width", 2);
-        o.append("text").attr("x", x + 8).attr("y", y - 6).attr("class", "mono maplab strong").text(s.dep.kind === "port" ? `départ : ${s.dep.name}` : "1re observation"); }
-      if (s.r && sel === s) { const [x, y] = P(s.r.at(-1)); o.append("circle").attr("cx", x).attr("cy", y).attr("r", 5).attr("fill", c);
-        o.append("text").attr("x", x + 8).attr("y", y + 14).attr("class", "mono maplab strong").text(`arrivée : ${s.port?.name || s.term}`); } });
+      if (W > 520 || pd >= 60 || p.rank > 1) o.append("text").attr("x", x + 7).attr("y", y + 4).attr("class", "mono maplab").style("font-size", p.rank === 1 ? "11px" : "10px")
+        .text(p.name + (pd >= 300 && p.code ? ` · ${p.code}` : "")); });
+    if (minRank === 0) Object.entries(TERMS).forEach(([n, ll]) => { const [x, y] = P(ll); o.append("rect").attr("x", x - 3).attr("y", y - 3).attr("width", 6).attr("height", 6).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.2); });
+    ships.forEach(s => { const on = !sel || sel === s, op = on ? 1 : .2, c = colOf(s), w = sel === s ? 2.6 : 1.5, isSel = sel === s;
+      // origine probable (destination précédente ou estimation) : pointillé fin ; départ observé non relié : route hors couverture
+      if (s.lead) o.append("path").attr("d", curve(s.lead.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 1.6 : 1)
+        .attr("stroke-dasharray", s.dep.kind === "port" ? "6 5" : "1 4").attr("stroke-linecap", "round").attr("opacity", .75 * op);
+      s.gaps.forEach(g => o.append("path").attr("d", curve(g.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 1.8 : 1.1).attr("stroke-dasharray", "6 5").attr("opacity", .7 * op));
+      s.seen.forEach(seg => { if (seg.length > 1) o.append("path").attr("d", line(seg.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", w).attr("stroke-linejoin", "round").attr("opacity", .9 * op);
+        else { const [x, y] = P(seg[0]); o.append("circle").attr("cx", x).attr("cy", y).attr("r", isSel ? 3 : 2).attr("fill", c).attr("opacity", .9 * op); } });
+      if (s.r) o.append("path").attr("d", curve(s.r.map(P))).attr("fill", "none").attr("stroke", c).attr("stroke-width", isSel ? 2 : 1.1).attr("stroke-dasharray", "6 5").attr("opacity", .7 * op);
+      if (s.dep && !s.arrived && (isSel || (!sel && s.dep.kind !== "port" && pd < 25))) { const [x, y] = P([s.dep.lat, s.dep.lon]);
+        o.append("circle").attr("cx", x).attr("cy", y).attr("r", isSel ? 5 : 3.5).attr("fill", s.dep.kind === "port" ? c : css("--bg")).attr("stroke", c).attr("stroke-width", 1.8).attr("opacity", op);
+        if (isSel) o.append("text").attr("x", x + 8).attr("y", y - 6).attr("class", "mono maplab strong")
+          .text(s.dep.kind === "port" ? `départ observé : ${s.dep.name}` : `origine probable : ${s.dep.name}${W < 560 ? "" : ` (${DEP_LBL[s.dep.kind]})`}`); }
+      if (isSel) { const big = s.gaps.concat(s.r && s.dist > 100 ? [s.r] : []).sort((a, b) => pathNm(b) - pathNm(a))[0];
+        if (big && W >= 560) { const m = P(big[Math.floor(big.length / 2)]); o.append("text").attr("x", m[0] + 6).attr("y", m[1] + 14).attr("class", "mono maplab").text("hors couverture AIS · route estimée"); }
+        if (s.r) { const [x, y] = P(s.r.at(-1)); o.append("circle").attr("cx", x).attr("cy", y).attr("r", 5).attr("fill", c);
+          o.append("text").attr("x", x + 8).attr("y", y + 14).attr("class", "mono maplab strong").text(`arrivée : ${s.port?.name || s.term}`); } } });
     // navires : taille constante à l'écran, orientés selon le cap (corrigé de la projection)
     const sc = d3.scaleLinear().domain([80, 350]).range([.8, 1.6]).clamp(true);
     ships.slice().sort((a, b) => (a.key === aisSel) - (b.key === aisSel)).forEach(s => { const [x, y] = P([s.lat, s.lon]); const hd = s.hdg != null && s.hdg < 360 ? s.hdg : s.cog || 0;
       const r = Math.PI / 180, q = P([s.lat + .05 * Math.cos(hd * r), s.lon + .05 * Math.sin(hd * r) / Math.cos(s.lat * r)]), ang = Math.atan2(q[0] - x, y - q[1]) / r;
-      const g = o.append("g").attr("transform", `translate(${x},${y}) rotate(${ang}) scale(${sc(s.len || 100) * (s.key === aisSel ? 1.35 : 1)})`).style("cursor", "pointer").attr("opacity", !sel || sel === s ? 1 : .45)
-        .on("pointermove", e => showTip(e, [["big", s.name || s.mmsi], ["type", s.cap?.kind === "lng" ? "méthanier" : "pétrolier / chimiquier"], ["vitesse", fr(s.sog, 1) + " nœuds"],
-          ["destination", s.port ? s.port.name : s.dest || "—"]], "cliquer pour la fiche")).on("pointerleave", hideTip)
+      const g = o.append("g").attr("transform", `translate(${x},${y}) rotate(${s.sog == null && s.cog == null ? 0 : ang}) scale(${sc(s.len || 100) * (s.key === aisSel ? 1.35 : 1)})`).style("cursor", "pointer").attr("opacity", !sel || sel === s ? 1 : .45)
+        .on("pointermove", e => showTip(e, [["big", s.name || s.mmsi], ["type", s.cap?.kind === "lng" ? "méthanier" : "pétrolier / chimiquier"], ["vitesse", s.sog != null ? fr(s.sog, 1) + " nœuds" : "—"],
+          ["destination", s.port ? s.port.name : s.dest || "—"], ["zone", s.zone || "—"]], "cliquer pour la fiche")).on("pointerleave", hideTip)
         .on("click", e => { e.stopPropagation(); hideTip(); pick(s.key, true); });
       g.append("circle").attr("r", 14).attr("fill", "transparent");  // zone de clic confortable au doigt
       if (s.key === aisSel) g.append("circle").attr("r", 13).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.5);
-      g.append("path").attr("d", shipIcon(s.cap?.kind)).attr("fill", colOf(s)).attr("stroke", css("--bg")).attr("stroke-width", .8); });
+      g.append("path").attr("d", shipIcon(s.cap?.kind)).attr("fill", colOf(s)).attr("stroke", css("--bg")).attr("stroke-width", .8).attr("opacity", s.stale ? .6 : 1); });
   };
   let showDetail = () => {};
-  M = zoomMap(host, W, H, { kmax: 80, onZoom: t => { draw(t); showDetail(t.k); }, onEnd: t => { aisView = t; } });
-  showDetail = drawBasemap(M, proj, "ais");
+  M = zoomMap(host, W, H, { kmax, onZoom: t => { draw(t); showDetail(t.k); }, onEnd: t => { aisView = t; } });
+  showDetail = drawBasemap(M, proj, "ais", kDetail, true);
   M.svg.on("click", () => { if (aisSel) pick(null); });
   const card = el("div", "shipcard"); card.hidden = true; M.wrap.append(card);
   function pick(key, fly) {
@@ -880,24 +917,27 @@ function renderAIS() {
     card.hidden = false; card.replaceChildren();
     const head = el("div", "sc-h"); head.append(el("b", null, s.name || s.mmsi)); const x = el("button", "zbtn", "×"); x.setAttribute("aria-label", "Fermer la fiche"); x.onclick = e => { e.stopPropagation(); pick(null); }; head.append(x); card.append(head);
     const hd = s.hdg != null && s.hdg < 360 ? s.hdg : s.cog;
+    const f = s.first, firstTxt = f ? `vu pour la première fois ${f.nm == null ? "en " + f.name : f.nm > 3 ? `à ${f.nm} milles au large de ${f.name}` : `près de ${f.name}`} le ${dtShort(new Date(f.t * 1000))}` : "";
     const depTxt = s.arrived ? (s.atPort.since ? `à quai à ${s.atPort.name} depuis le ${dtShort(new Date(s.atPort.since * 1000))}` : `à l'arrêt à ${s.atPort.name}`)
-      : s.dep?.kind === "port" ? `${s.dep.name} (vu à quai jusqu'au ${dtShort(new Date(s.dep.t * 1000))})`
-      : s.dep ? `inconnu : vu pour la première fois ${s.dep.nm > 3 ? `à ${s.dep.nm} milles au large de ${s.dep.name}` : `près de ${s.dep.name}`} le ${dtShort(new Date(s.dep.t * 1000))}` : "—";
+      : s.dep?.kind === "port" ? `${s.dep.name} (observé, vu à quai jusqu'au ${dtShort(new Date(s.dep.t * 1000))})`
+      : s.dep?.kind === "prevdest" ? `${s.dep.name} (d'après la destination précédente « ${s.dep.raw} »)`
+      : s.dep?.kind === "guess" ? `${s.dep.name} (estimation) · ${firstTxt}` : `inconnu : ${firstTxt}`;
     const rows = [["Type", `${s.cap?.kind === "lng" ? "méthanier" : "pétrolier / chimiquier"} · ${s.cap?.cls || ""}`], ["Pavillon", s.flag || "—"],
       ["Longueur · tirant d'eau", `${s.len || "—"} m · ${fr(s.draught, 1)} m`],
       ["Capacité estimée", s.cap?.kind === "lng" ? `${fr(s.cap.m3 / 1000, 0)} k m³ GNL ≈ ${fr(s.cap.gwh, 0)} GWh` : `${fr(s.cap?.dwt / 1000, 0)} kt de port en lourd`],
       ["Chargement (inféré)", s.cap?.laden == null ? "inconnu" : s.cap.laden ? "plutôt chargé" : "plutôt lège"],
-      ["Vitesse · cap", `${fr(s.sog, 1)} nœuds · ${hd != null ? Math.round(hd) + "° " + CAPS[Math.round(hd / 45) % 8] : "—"}`],
-      ["Départ", depTxt],
+      ["Vitesse · cap", `${s.sog != null ? fr(s.sog, 1) + " nœuds" : "—"} · ${hd != null ? Math.round(hd) + "° " + CAPS[Math.round(hd / 45) % 8] : "—"}`],
+      ["Départ", depTxt], ["Zone actuelle", s.zone || "—"],
       ["Destination déclarée", s.dest || "—"],
       ["Port reconnu", s.port ? `${s.port.name}${s.port.code ? " (" + s.port.code + ")" : ""}` : `non décodable${s.term ? " · rattaché à " + s.term + " par proximité" : ""}`],
-      ["ETA déclarée", dtShort(s.etaDecl)], ["ETA estimée", s.arrived ? "arrivé" : s.etaEst ? dtShort(s.etaEst) : s.sog <= 1 ? "à l'arrêt" : "—"],
-      ["Distance restante", s.arrived ? "—" : s.dist != null ? `${fr(s.dist, 0)} milles (${fr(s.dist * 1.852, 0)} km)` : "—"],
-      ["Dernière position", dtShort(new Date(s.t * 1000))], ["MMSI · IMO", `${s.mmsi} · ${s.imo || "—"}`]];
+      ["ETA déclarée", dtShort(s.etaDecl)], ["ETA estimée", s.arrived ? "arrivé" : s.etaEst ? dtShort(s.etaEst) : s.sog != null && s.sog <= 1 ? "à l'arrêt" : "—"],
+      ["Distance restante", s.arrived ? "—" : s.dist != null ? `${fr(s.dist, 0)} milles (${fr(s.dist * 1.852, 0)} km), route estimée` : "—"],
+      ["Dernière position", `${dtShort(new Date(s.t * 1000))}${s.stale ? " (non reçu à ce passage)" : s.approx ? " (approchée)" : ""}`],
+      ...(s.spotted ? [["Repéré", dtShort(new Date(s.spotted * 1000))]] : []), ["MMSI · IMO", `${s.mmsi} · ${s.imo || "—"}`]];
     const dl = el("dl"); rows.forEach(([k, v]) => dl.append(el("dt", null, k), el("dd", null, v))); card.append(dl);
     draw(M.t());
     if (fly) { const pts = [[s.lat, s.lon], ...(s.r ? [s.r.at(-1)] : []), ...(s.dep && !s.arrived ? [[s.dep.lat, s.dep.lon]] : [])].map(ll => proj([ll[1], ll[0]]));
-      M.fly(pts, pts.length > 1 ? 30 : 40, pts.length > 1 ? 1 : 30, matchMedia("(max-width: 560px)").matches ? 0 : Math.min(356, W * .45)); }
+      const kPort = 300 / pxDeg; M.fly(pts, pts.length > 1 ? kmax : kmax, pts.length > 1 ? 1 : kPort, matchMedia("(max-width: 560px)").matches ? 0 : Math.min(356, W * .45)); }
   }
   // recherche par nom
   const q = document.getElementById("aisSearch"), dlst = document.getElementById("aisNames");
@@ -907,26 +947,32 @@ function renderAIS() {
     document.getElementById("aisFound").textContent = s ? "" : "aucun navire de ce nom dans l'instantané"; if (s) pick(s.key, true); };
   if (aisView) M.set(aisView); else draw(d3.zoomIdentity);
   const tAge = Math.round((Date.now() / 1000 - S.t) / 60);
-  document.getElementById("aisTitle").textContent = `${ships.length} navires-citernes · instantané du ${now.toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}${tAge > 0 ? ` (il y a ${tAge < 120 ? tAge + " min" : Math.round(tAge / 60) + " h"})` : ""}`;
-  document.getElementById("aisNote").textContent = `Instantané horaire, couverture AIS côtière (AISStream.io), positions déclarées par les navires · écoute de ${Math.round((S.seconds || 0) / 60)} min, ${(S.messages || 0).toLocaleString("fr-FR")} messages. L'AIS ne donne ni le port de départ ni la cargaison : le départ est le dernier port où le navire a été vu à quai, la capacité est estimée d'après la longueur, le chargement d'après le tirant d'eau.`;
+  document.getElementById("aisTitle").textContent = `Navires-citernes vers la France · instantané du ${now.toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}${tAge > 0 ? ` (il y a ${tAge < 120 ? tAge + " min" : Math.round(tAge / 60) + " h"})` : ""}`;
+  const C = S.counts || {};
+  document.getElementById("aisNote").textContent = `Couverture gratuite d'AISStream.io : des stations côtières, pas de satellites. En haute mer les navires ne sont pas reçus : leurs traces ont des trous, refaits en pointillés le long d'une route plausible. Repérage dans le monde entier (${Math.round((S.scanSeconds || 0) / 60)} min, ${(C.scan || 0).toLocaleString("fr-FR")} messages), suivi de ${S.watch || 0} navires (${Math.round((S.trackSeconds || 0) / 60)} min), écoute côtière française (${Math.round((S.seconds || 0) / 60)} min). L'AIS ne donne ni le port de départ ni la cargaison : capacités estimées d'après la longueur, chargement d'après le tirant d'eau.`;
   legend("aisLegend", [[css("--oil"), "pétrolier / produits"], [css("--o-lng"), "méthanier"], [css("--accent"), "terminal / port"]]);
-  // cartes par terminal : en approche sous 72 h, navires cliquables
+  const lg2 = document.getElementById("aisLegend2"); lg2.replaceChildren();
+  [["", "trajet observé (positions reçues)"], ["6 5", "route estimée hors couverture AIS"], ["1 4", "depuis l'origine probable (destination précédente ou estimation)"]].forEach(([d, t]) => {
+    const sp = el("span"); const sv = d3.select(sp).append("svg").attr("width", 26).attr("height", 8); sv.append("line").attr("x1", 1).attr("x2", 25).attr("y1", 4).attr("y2", 4).attr("stroke", css("--text-2")).attr("stroke-width", 2).attr("stroke-dasharray", d || null).attr("stroke-linecap", "round");
+    sp.append(document.createTextNode(t)); lg2.append(sp); });
+  { const sp = el("span"); sp.append(document.createTextNode("départ : ● observé · ○ destination précédente ou estimation")); lg2.append(sp); }
+  // cartes par terminal, navires cliquables
   const cards = document.getElementById("termCards"); cards.replaceChildren();
   Object.keys(TERMS).forEach(t => { const list = ships.filter(s => s.term === t); if (!list.length) return;
-    const soon = list.filter(s => s.sog <= 1 || (s.etaEst && s.etaEst - now < 72 * 3600e3) || (s.etaDecl && s.etaDecl - now < 72 * 3600e3 && s.etaDecl > now - 864e5));
-    const lng = d3.sum(soon.filter(s => s.cap?.kind === "lng" && s.cap.laden !== false), s => s.cap.gwh), oil = d3.sum(soon.filter(s => s.cap?.kind === "oil" && s.cap.laden !== false), s => s.cap.dwt);
+    const way = list.filter(s => s.enroute && !s.arrived), soon = list.filter(s => s.sog != null && s.sog <= 1 || (s.etaEst && s.etaEst - now < 72 * 3600e3) || (s.etaDecl && s.etaDecl - now < 72 * 3600e3 && s.etaDecl > now - 864e5));
+    const lng = d3.sum(way.filter(s => s.cap?.kind === "lng"), s => s.cap.gwh), oil = d3.sum(way.filter(s => s.cap?.kind === "oil"), s => s.cap.dwt);
     const c = el("div"); c.append(el("div", "k", t), el("div", "v mono", `${list.length} navire${list.length > 1 ? "s" : ""}`),
-      el("div", "d", `sous 72 h ou à quai : ${soon.length}${lng ? ` · GNL ≈ ${fr(lng, 0)} GWh` : ""}${oil ? ` · ≈ ${fr(oil / 1000, 0)} kt` : ""}`));
+      el("div", "d", `en route : ${way.length}${lng ? ` · GNL ≈ ${fr(lng, 0)} GWh` : ""}${oil ? ` · ≈ ${fr(oil / 1000, 0)} kt` : ""} · sous 72 h ou à quai : ${soon.length}`));
     const chips = el("div", "chips"); list.forEach(s => { const b = el("button", "shipchip", s.name || s.key); b.dataset.k = s.key; b.onclick = () => { pick(s.key, true); M.wrap.scrollIntoView({ behavior: "smooth", block: "nearest" }); }; chips.append(b); });
     c.append(chips); cards.append(c); });
   // tableau
   const tb = document.getElementById("aisTable"); tb.replaceChildren(); const h = el("tr");
-  ["Navire", "Type · classe", "Pavillon", "Départ", "Destination", "Vitesse", "ETA", "Capacité estimée"].forEach(x => h.append(el("th", null, x))); tb.append(h);
+  ["Navire", "Type · classe", "Pavillon", "Zone", "Départ", "Destination", "Vitesse", "ETA", "Capacité estimée"].forEach(x => h.append(el("th", null, x))); tb.append(h);
   ships.sort((a, b) => (a.term || "").localeCompare(b.term || "") || (a.dist || 0) - (b.dist || 0)).forEach(s => { const tr = el("tr"); tr.dataset.k = s.key; tr.className = "click";
-    tr.append(el("td", null, s.name || s.mmsi), el("td", null, `${s.cap?.kind === "lng" ? "méthanier" : "pétrolier"} · ${s.cap?.cls || ""}`), el("td", null, s.flag || "—"),
-      el("td", null, s.arrived ? "à quai" : s.dep?.kind === "port" ? s.dep.name : "inconnu"),
-      el("td", null, `${s.dest || "—"} → ${s.port ? s.port.name : s.terminal}`), el("td", "num", fr(s.sog, 1) + " nd"),
-      el("td", null, s.sog <= 1 ? "à quai / mouillage" : (s.etaEst || s.etaDecl) ? dtShort(s.etaEst || s.etaDecl) + (s.etaEst ? " (estim.)" : " (décl.)") : "—"),
+    tr.append(el("td", null, s.name || s.mmsi), el("td", null, `${s.cap?.kind === "lng" ? "méthanier" : "pétrolier"} · ${s.cap?.cls || ""}`), el("td", null, s.flag || "—"), el("td", null, s.zone || "—"),
+      el("td", null, s.arrived ? "à quai" : s.dep ? `${s.dep.name}${s.dep.kind === "port" ? "" : s.dep.kind === "guess" ? " (estim.)" : " (dest. préc.)"}` : "inconnu"),
+      el("td", null, `${s.dest || "—"} → ${s.port ? s.port.name : s.terminal}`), el("td", "num", s.sog != null ? fr(s.sog, 1) + " nd" : "—"),
+      el("td", null, s.sog != null && s.sog <= 1 ? "à quai / mouillage" : (s.etaEst || s.etaDecl) ? dtShort(s.etaEst || s.etaDecl) + (s.etaEst ? " (estim.)" : " (décl.)") : "—"),
       el("td", null, s.cap?.kind === "lng" ? `${fr(s.cap.m3 / 1000, 0)} k m³` : `${fr(s.cap?.dwt / 1000, 0)} kt`));
     tr.onclick = () => { pick(s.key, true); M.wrap.scrollIntoView({ behavior: "smooth", block: "nearest" }); }; tb.append(tr); });
   if (aisSel && ships.some(s => s.key === aisSel)) pick(aisSel, false); else aisSel = null;
