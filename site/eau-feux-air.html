@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eau, feux &amp; air</title>
+<meta name="description" content="Feux en direct (NASA FIRMS) et depuis 2001, feux de forêt, danger d'incendie, santé des forêts, restrictions d'eau et qualité de l'air en France.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="eaufeuxair.js?v=5fd4ab301c"></script>
+<script src="geo_world.js"></script>
+<style>
+/* Même direction que les pages électricité et autres énergies : salle de contrôle, chiffres en mono */
+:root, :root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #06090d; --panel: #0b1117; --panel-2: #101921; --line: #1b2833; --grid: #15202a;
+  --text: #e3eef5; --text-2: #9db1bf; --muted: #5f7686; --accent: #4de1ff; --accent-2: #ffb627;
+  --glow: 0 0 18px rgba(77,225,255,.25); --land: #101b24; --land-2: #16242f; --france: #12303c; --sea: #070c11;
+  --gas: #4de1ff; --gas-2: #2e8fbf; --ind: #b48cff; --dp: #4de1ff; --oil: #ffb627; --brent: #ff7a45; --coal: #a7b4c2; --uran: #c6f36b;
+  --ok: #5bd67a; --warn: #ffb627; --bad: #ff4d6a; --band: rgba(77,225,255,.12);
+  --o-no: #4de1ff; --o-ru: #ff4d6a; --o-dz: #5bd67a; --o-ly: #9be29b; --o-az: #ffb627; --o-uk: #b48cff; --o-lng: #ff8a3d; --o-other: #8aa0b2; --b-entry: #eef3f7; --b-intra: #e879f9;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #eef2f5; --panel: #ffffff; --panel-2: #f4f7f9; --line: #d3dce3; --grid: #e4eaef;
+  --text: #0b1720; --text-2: #3b5162; --muted: #6f8597; --accent: #0077b6; --accent-2: #b97400;
+  --glow: none; --land: #e3e9ee; --land-2: #d6dfe6; --france: #cfe6f1; --sea: #f3f7fa;
+  --gas: #0077b6; --gas-2: #4aa3d4; --ind: #7a4fc4; --dp: #0077b6; --oil: #b97400; --brent: #d4541c; --coal: #4b545c; --uran: #5d8f12;
+  --ok: #2f9e55; --warn: #b97400; --bad: #d63a50; --band: rgba(0,119,182,.12);
+  --o-no: #0077b6; --o-ru: #d63a50; --o-dz: #2f9e55; --o-ly: #6aa84f; --o-az: #b97400; --o-uk: #7a4fc4; --o-lng: #d4541c; --o-other: #6f8597; --b-entry: #1f2a33; --b-intra: #b5179e;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 "Space Grotesk", system-ui, sans-serif;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px; background-attachment: fixed; }
+.mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; }
+a { color: var(--accent); }
+.bar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 28px;
+  background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.brand { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 8px; margin-right: auto; }
+.brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 10px var(--ok); animation: pulse 2s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+.navlink { font: 500 12px "IBM Plex Mono", monospace; text-decoration: none; border: 1px solid var(--line); padding: 6px 10px; color: var(--text-2); background: var(--panel); }
+.navlink:hover { border-color: var(--accent); color: var(--accent); }
+.tab { border: 1px solid var(--line); background: var(--panel); padding: 5px 10px; cursor: pointer; font: 500 12px "IBM Plex Mono", monospace; color: var(--text-2); letter-spacing: .03em; }
+.tab[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent), var(--glow); }
+.icon-btn { border: 1px solid var(--line); background: var(--panel); width: 34px; height: 34px; cursor: pointer; display: grid; place-items: center; }
+.hero { padding: 56px 28px 36px; max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+.eyebrow { font: 600 12px "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+h1 { font-weight: 700; font-size: clamp(34px, 5.6vw, 70px); line-height: .95; letter-spacing: -.035em; margin: 0 0 18px; }
+h1 em { font-style: normal; color: var(--accent); text-shadow: var(--glow); }
+.lede { color: var(--text-2); font-size: 17px; max-width: 660px; margin: 0; }
+.source { font: 12.5px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 14px; }
+.readout, .panel { position: relative; border: 1px solid var(--line); background: var(--panel); }
+.readout { padding: 16px 18px; }
+.panel { padding: 16px; min-width: 0; }
+.readout::before, .readout::after, .panel::before, .panel::after { content: ""; position: absolute; width: 10px; height: 10px; border-color: var(--accent); border-style: solid; }
+.readout::before, .panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.readout::after, .panel::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.readout .k, .kpi .k { font: 11px "IBM Plex Mono", monospace; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; display: flex; align-items: center; gap: 8px; }
+.readout .rows { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px 18px; margin-top: 10px; }
+.readout .v { font: 600 26px "IBM Plex Mono", monospace; letter-spacing: -.02em; }
+.readout .s { font-size: 12px; color: var(--text-2); }
+.ldot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); display: inline-block; }
+.ldot.on { background: #ff3b3b; box-shadow: 0 0 8px #ff3b3b; animation: pulse 1.4s infinite; }
+.kpis { max-width: 1400px; margin: 0 auto; padding: 0 28px 8px; display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); border-top: 1px solid var(--line); }
+.kpi { padding: 18px 14px 18px 0; border-right: 1px solid var(--line); margin-right: 14px; min-width: 0; }
+.kpi:last-child { border-right: none; }
+.kpi .v { font: 600 30px "IBM Plex Mono", monospace; letter-spacing: -.03em; margin-top: 4px; }
+.kpi .d { font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
+.ecobar { max-width: 1400px; margin: 0 auto 8px; padding: 10px 28px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--line); }
+.ecobar .ttl { font: 600 12px "IBM Plex Mono", monospace; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); }
+.ecobar .cells { display: flex; gap: 2px; flex-wrap: wrap; }
+.ecobar .cells span { width: 14px; height: 14px; }
+.ecobar .note { font: 12px "IBM Plex Mono", monospace; color: var(--muted); }
+.part { max-width: 1400px; margin: 0 auto; padding: 46px 28px 6px; border-top: 2px solid var(--accent); display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.part .pno { font: 600 13px "IBM Plex Mono", monospace; color: var(--accent); letter-spacing: .2em; }
+.part h2 { font-size: clamp(30px, 4vw, 46px); margin: 0; letter-spacing: -.03em; }
+.part p { color: var(--text-2); margin: 0; max-width: 700px; }
+section.band { border-top: 1px solid var(--line); }
+.band-in { max-width: 1400px; margin: 0 auto; padding: 36px 28px; display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 32px; }
+.side .no { font: 12px "IBM Plex Mono", monospace; color: var(--accent); letter-spacing: .14em; }
+.side h3 { font-weight: 700; font-size: 28px; line-height: 1.05; letter-spacing: -.02em; margin: 8px 0 10px; }
+.side p { color: var(--text-2); font-size: 14px; margin: 0 0 14px; }
+.side .tabs, .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.stack { display: grid; gap: 16px; min-width: 0; }
+.ptitle { font: 600 12px "IBM Plex Mono", monospace; color: var(--text-2); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+svg text { fill: var(--text); }
+.axis text { fill: var(--muted); font: 11px "IBM Plex Mono", monospace; }
+.axis path, .axis line { stroke: var(--grid); }
+.axis .domain { display: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 8px; font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 10px; flex: none; display: inline-block; }
+.sw.line { height: 2px; width: 16px; }
+.note { font: 12px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 8px; }
+.note.warn { color: var(--warn); }
+.tip { position: fixed; pointer-events: none; z-index: 100; background: var(--panel); border: 1px solid var(--accent); box-shadow: var(--glow), 0 8px 30px rgba(0,0,0,.35);
+  padding: 10px 12px; font: 12px "IBM Plex Mono", monospace; min-width: 170px; max-width: 320px; opacity: 0; transition: opacity .1s; }
+.tip .t { color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
+.tip .r { display: flex; justify-content: space-between; gap: 12px; padding: 1px 0; }
+.tip .r .n { color: var(--text-2); display: flex; align-items: center; gap: 6px; }
+.tip .key { width: 10px; height: 10px; display: inline-block; }
+.tip .big { font-size: 20px; font-weight: 600; }
+.two { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; }
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; }
+.rank { font: 12.5px "IBM Plex Mono", monospace; max-height: 520px; overflow: auto; }
+.rank .row { display: grid; grid-template-columns: 18px 1fr auto; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--grid); }
+.rank .bar { height: 4px; margin-top: 3px; }
+.fuelgrid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.fuelgrid div { background: var(--panel); padding: 10px; }
+.fuelgrid .k { font: 11px "IBM Plex Mono", monospace; color: var(--muted); text-transform: uppercase; }
+.fuelgrid .v { font: 600 22px "IBM Plex Mono", monospace; }
+.fuelgrid .d { font: 11px "IBM Plex Mono", monospace; color: var(--text-2); }
+table { width: 100%; border-collapse: collapse; font: 12.5px "IBM Plex Mono", monospace; }
+th { text-align: left; color: var(--muted); font-weight: 500; text-transform: uppercase; font-size: 11px; letter-spacing: .06em; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+td { padding: 6px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+td.num, th.num { text-align: right; }
+.tscroll { overflow-x: auto; }
+canvas { display: block; width: 100%; }
+.player { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.play { width: 34px; height: 34px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; display: grid; place-items: center; flex: none; }
+input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
+.plabel { font: 600 15px "IBM Plex Mono", monospace; min-width: 110px; text-align: right; }
+@keyframes flow { to { stroke-dashoffset: -28; } }
+.flowline { stroke-linecap: round; fill: none; animation: flow linear infinite; }
+.zmap { position: relative; }
+.ctlrow { display: flex; flex-wrap: wrap; gap: 0 16px; justify-content: space-between; }
+.zsvg { display: block; touch-action: none; cursor: grab; }
+.zsvg:active { cursor: grabbing; }
+.zbase path { vector-effect: non-scaling-stroke; }
+.zctl { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px; }
+.zbtn { width: 32px; height: 32px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: 600 16px "IBM Plex Mono", monospace; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.zbtn:hover { border-color: var(--accent); color: var(--accent); }
+.maplab { font-size: 10.5px; fill: var(--text-2); paint-order: stroke; stroke: var(--sea); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.maplab.strong { fill: var(--text); font-weight: 600; }
+.shipcard { position: absolute; top: 8px; right: 8px; width: 340px; max-height: calc(100% - 16px); overflow: auto; background: var(--panel); border: 1px solid var(--accent); box-shadow: var(--glow), 0 8px 30px rgba(0,0,0,.3); padding: 10px 12px; font: 12px "IBM Plex Mono", monospace; }
+.shipcard .sc-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+.shipcard .sc-h b { font-size: 15px; }
+.shipcard .sc-h .zbtn { width: 26px; height: 26px; flex: none; }
+.shipcard dl { margin: 0; display: grid; grid-template-columns: minmax(0, 118px) minmax(0, 1fr); gap: 4px 10px; }
+.shipcard dt { line-height: 1.35; }
+.shipcard dd { line-height: 1.35; }
+.shipcard dt { color: var(--muted); }
+.shipcard dd { margin: 0; color: var(--text); }
+.aiscount { font-size: 15px; font-weight: 600; color: var(--text); margin: 2px 0 10px; }
+.aiscount .sub { font-size: 12.5px; font-weight: 500; color: var(--text-2); margin-top: 2px; }
+.lg2 svg { flex: none; }
+.aisbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 8px; }
+.aisbar input { font: 13px "IBM Plex Mono", monospace; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); padding: 6px 10px; width: 240px; max-width: 100%; }
+.aisbar input:focus { outline: none; border-color: var(--accent); }
+.aisbar .note { margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.shipchip { font: 11px "IBM Plex Mono", monospace; border: 1px solid var(--line); background: var(--panel-2); color: var(--text-2); padding: 2px 6px; cursor: pointer; }
+.shipchip:hover, .shipchip.on { border-color: var(--accent); color: var(--accent); }
+tr.click { cursor: pointer; }
+tr.click:hover td, tr.click.on td { background: var(--band); }
+.gscale { height: 10px; margin-top: 8px; }
+.gscale-l { display: flex; justify-content: space-between; font: 11px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 3px; }
+.rank .row.me { color: var(--accent); font-weight: 600; }
+.rank .row.eu { color: var(--text-2); font-style: italic; }
+.term-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 12px; }
+.term-cards > div { background: var(--panel); padding: 10px; }
+.term-cards .k { font: 600 12px "IBM Plex Mono", monospace; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; }
+.term-cards .v { font: 600 20px "IBM Plex Mono", monospace; }
+.term-cards .d { font: 11.5px "IBM Plex Mono", monospace; color: var(--muted); }
+footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; line-height: 1.7; }
+@media (max-width: 1000px) {
+  .band-in { grid-template-columns: minmax(0, 1fr); gap: 16px; } .hero { grid-template-columns: 1fr; gap: 24px; } .two, .mapwrap { grid-template-columns: 1fr; }
+  .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } .kpi:nth-child(2n) { border-right: none; } .fuelgrid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .rank { max-height: 320px; }
+}
+@media (max-width: 560px) {
+  .bar { padding: 8px 16px; position: static; } .hero { padding: 32px 16px 24px; } .kpis { padding: 0 16px 8px; } .band-in { padding: 28px 16px; } .part { padding: 36px 16px 6px; }
+  .shipcard { position: static; width: auto; max-height: none; margin-top: 8px; box-shadow: none; }
+  .kpi .v { font-size: 22px; } .kpi { padding-right: 8px; margin-right: 8px; } .readout .v { font-size: 20px; } .ecobar { padding: 10px 16px; } footer { padding: 24px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .brand .dot, .ldot.on, .flowline { animation: none; } }
+
+.part a { color: var(--accent); }
+.kpis { grid-template-columns: repeat(5, minmax(0,1fr)); }
+.tscroll { overflow-x: auto; }
+#bCmp td, #bCmp th { white-space: nowrap; }
+@media (max-width: 1000px) { .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="brand"><span class="dot"></span>Réseau · eau, feux &amp; air</div>
+  <a class="navlink" href="#feux">Feux</a><a class="navlink" href="#forets">Forêts</a><a class="navlink" href="#eau">Sécheresse</a><a class="navlink" href="#air">Air</a>
+  <a class="navlink" href="index.html">← Électricité</a><a class="navlink" href="autres-energies.html">Autres énergies →</a>
+  <button class="icon-btn" id="theme" title="Thème clair / sombre" aria-label="Changer de thème">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</div>
+
+<header class="hero">
+  <div>
+    <div class="eyebrow">Eau · feux · forêts · air</div>
+    <h1>Ce que le climat fait <em>au territoire</em></h1>
+    <p class="lede">Les feux vus par satellite en direct et depuis 2001, les forêts qui brûlent, dépérissent ou reculent, les restrictions d'eau qui s'étendent avec la sécheresse, et l'air que l'on respire, commune par commune.</p>
+    <p class="source" id="source"></p>
+  </div>
+  <div class="readout" id="readout"></div>
+</header>
+<section class="kpis" id="kpis"></section>
+
+<!-- ======================= FEUX ======================= -->
+<div class="part" id="feux"><span class="pno">F — FEUX</span><h2>Les feux, vus de l'espace</h2>
+  <p>Chaque point est une anomalie thermique détectée par les satellites VIIRS (NASA / NOAA), quelques heures après leur passage.</p></div>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">F1 — EN DIRECT</div><h3>Points chauds des 72 dernières heures</h3>
+    <p>Couleur selon l'ancienneté, taille selon la puissance radiative (MW). Au-delà de 3 jours, les détections sont regroupées par cellules. Zoomez pour descendre jusqu'à la commune.</p>
+    <div class="tabs" id="fAge"></div>
+    <div class="tabs" id="fFixed"></div>
+    <p class="note">Détections satellite de points chauds, pas uniquement des feux de forêt : brûlages agricoles, torchères, sites industriels… Les sources fixes connues (repérées dans les archives NASA comme « autre source terrestre fixe ») sont masquées par défaut. Ce masque ne couvre que la France, l'Espagne, le Portugal, l'Italie et la Grèce : en Algérie, Libye ou Égypte, beaucoup de points sont des torchères pétrolières.</p>
+  </div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle" id="fTitle"></div><div id="fMap"></div><div class="legend" id="fLegend"></div></div>
+    <div class="two">
+      <div class="panel"><div class="ptitle">Principaux foyers · 24 h</div><div class="rank" id="fFoyers"></div></div>
+      <div class="panel"><div class="ptitle">Détections par pays</div><div class="tabs" id="fCtySpan"></div><div class="rank" id="fCty"></div></div>
+    </div>
+    <div class="panel"><div class="ptitle">Jour après jour · France (hors sources fixes)</div><div id="fDaily"></div></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">F2 — DEPUIS 2001</div><h3>Les grandes années de feux</h3>
+    <p>Archives NASA FIRMS par pays, limitées aux feux de végétation présumés (sources fixes, volcans et plateformes en mer exclus). MODIS couvre 2001→, VIIRS (plus fin) 2012→. Lancez la lecture : 2022 embrase la Gironde et les Landes.</p>
+    <div class="tabs" id="hProd"></div>
+  </div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle">Détections par an et par pays</div><div id="hYears"></div><div class="legend" id="hLegend"></div></div>
+    <div class="panel"><div class="ptitle" id="hMapTitle"></div><div id="hMap"></div>
+      <div class="player"><button class="play" id="hPlay" aria-label="Lecture">▶</button><input type="range" id="hSlider" aria-label="Année"><div class="plabel" id="hLabel"></div></div>
+      <div class="legend" id="hMapLegend"></div></div>
+    <div class="panel"><div class="ptitle">Saisonnalité · France · détections par mois</div><div id="hMonths"></div></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">F3 — FEUX DE FORÊT EN FRANCE</div><h3>Surfaces brûlées, département par département</h3>
+    <p>Base de données sur les incendies de forêt (BDIFF) : chaque feu de forêt déclaré depuis 2006, avec sa surface. À droite, pour la même année : surfaces brûlées, détections satellite et pertes de couvert arboré dues au feu.</p>
+    <div class="tabs" id="bYearTabs"></div>
+  </div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle">Surface parcourue par année · France (ha)</div><div id="bYears"></div></div>
+    <div class="mapwrap">
+      <div class="panel"><div class="ptitle" id="bMapTitle"></div><div id="bMap"></div><div class="gscale" id="bScale"></div><div class="gscale-l" id="bScaleL"></div></div>
+      <div class="panel"><div class="ptitle">Plus grands feux de l'année</div><div class="rank" id="bBig"></div></div>
+    </div>
+    <div class="panel"><div class="ptitle" id="bCmpTitle"></div><div class="tscroll"><table id="bCmp"></table></div>
+      <p class="note">Trois mesures différentes : la BDIFF déclare des surfaces parcourues, FIRMS compte des points chauds (pixels de 375 m), Global Forest Watch estime par satellite la perte de couvert arboré attribuée au feu. Elles se recoupent sans se confondre.</p></div>
+  </div>
+</div></section>
+
+<!-- ======================= FORÊTS ======================= -->
+<div class="part" id="forets"><span class="pno">G — FORÊTS</span><h2>Des forêts sous tension</h2>
+  <p>Le danger d'incendie prévu par Météo-France, et l'état des forêts : couvert, arbres qui dépérissent, bois mort, pertes de couvert.</p></div>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">G1 — DANGER D'INCENDIE</div><h3>La météo des forêts</h3>
+    <p>Chaque jour de la saison (juin à septembre, parfois au-delà), Météo-France évalue le danger météorologique d'incendie par département, pour le lendemain et le surlendemain.</p>
+    <div class="tabs" id="mDay"></div><div class="tabs" id="mView"></div>
+    <p class="note" id="mNote"></p>
+  </div>
+  <div class="stack">
+    <div class="mapwrap">
+      <div class="panel"><div class="ptitle" id="mTitle"></div><div id="mMap"></div><div class="legend" id="mLegend"></div></div>
+      <div class="panel"><div class="ptitle">Départements au danger élevé ou plus</div><div id="mSeason"></div><div class="legend" id="mSeasonLg"></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">G2 — SANTÉ DES FORÊTS</div><h3>Couvert, dépérissement, pertes</h3>
+    <p>Inventaire forestier national (IGN) : taux de boisement et part des arbres dépérissants. Global Forest Watch : perte de couvert arboré par satellite depuis 2001, dont la part due aux feux.</p>
+    <div class="tabs" id="sView"></div>
+    <p class="note" id="sNote"></p>
+  </div>
+  <div class="stack">
+    <div class="mapwrap">
+      <div class="panel"><div class="ptitle" id="sTitle"></div><div id="sMap"></div><div class="gscale" id="sScale"></div><div class="gscale-l" id="sScaleL"></div></div>
+      <div class="panel"><div class="ptitle" id="sRankTitle"></div><div class="rank" id="sRank"></div></div>
+    </div>
+    <div class="two">
+      <div class="panel"><div class="ptitle">Perte de couvert arboré · France (ha/an)</div><div id="sLoss"></div><div class="legend" id="sLossLg"></div></div>
+      <div class="panel"><div class="ptitle">Arbres dépérissants par essence · France · 2021-2024</div><div class="rank" id="sMort"></div><p class="note">Part des tiges vivantes de chaque essence présentant plus de 50 % de branches mortes (IGN), moyenne des départements où l'essence est mesurée, pondérée par le nombre de tiges.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ======================= EAU ======================= -->
+<div class="part" id="eau"><span class="pno">E — EAU</span><h2>Sécheresse et restrictions d'eau</h2>
+  <p>Quand les rivières et les nappes baissent, les préfets restreignent les usages : vigilance, alerte, alerte renforcée, crise. Voir aussi <a href="index.html#nappeBlock">l'état des nappes phréatiques</a> sur la page électricité.</p></div>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">E1 — AUJOURD'HUI</div><h3>Le niveau de restriction le plus élevé</h3>
+    <p>Niveau maximal en vigueur dans chaque département, d'après VigiEau, chargé en direct. Un département en « crise » peut ne l'être que sur une partie de son territoire.</p>
+    <div class="tabs" id="vType"></div>
+    <p class="note" id="vStatus"></p>
+  </div>
+  <div class="stack">
+    <div class="mapwrap">
+      <div class="panel"><div class="ptitle" id="vTitle"></div><div id="vMap"></div><div class="legend" id="vLegend"></div></div>
+      <div class="panel"><div class="ptitle">Départements par niveau</div><div class="rank" id="vBars"></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">E2 — DEPUIS 2012</div><h3>Les étés de restrictions</h3>
+    <p>Nombre de départements sous arrêté, semaine par semaine, selon le niveau le plus élevé. En bas, chaque année comparée : nombre de départements en crise au fil de l'année.</p>
+  </div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle">Départements sous restriction, chaque semaine</div><div id="vWeekly"></div><div class="legend" id="vWeeklyLg"></div></div>
+    <div class="panel"><div class="ptitle">Départements en crise, année par année</div><div id="vYears"></div><div class="legend" id="vYearsLg"></div></div>
+  </div>
+</div></section>
+
+<!-- ======================= AIR ======================= -->
+<div class="part" id="air"><span class="pno">A — AIR</span><h2>L'air que l'on respire</h2>
+  <p>L'indice ATMO résume chaque jour, pour chaque commune, l'ozone, le dioxyde d'azote et les particules fines. Publié par les associations agréées de surveillance (Atmo France).</p></div>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">A1 — AUJOURD'HUI ET DEMAIN</div><h3>Qualité de l'air par département</h3>
+    <p>Couleur : classe d'indice la plus fréquente parmi les communes du département. Survolez pour la répartition et les polluants responsables quand l'air est dégradé.</p>
+    <div class="tabs" id="aDay"></div>
+  </div>
+  <div class="stack">
+    <div class="mapwrap">
+      <div class="panel"><div class="ptitle" id="aTitle"></div><div id="aMap"></div><div class="legend" id="aLegend"></div></div>
+      <div class="panel"><div class="ptitle" id="aRankTitle">Jours d'air mauvais</div><div class="rank" id="aRank"></div></div>
+    </div>
+    <div class="panel"><div class="ptitle">Part des communes par classe, jour après jour</div><div id="aSeries"></div></div>
+  </div>
+</div></section>
+
+<footer id="footer"></footer>
+<div class="tip" id="tip"></div>
+<script>
+const D = window.EFA, GW = window.GEOW;
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const el = (t, c, txt) => { const e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
+const fmt = (v, d = 0) => v == null || isNaN(v) ? "—" : v.toLocaleString("fr-FR", { maximumFractionDigits: d, minimumFractionDigits: d });
+const fmtHa = v => v >= 1e4 ? fmt(v / 1000, 0) + " k ha" : fmt(v) + " ha";
+const tip = document.getElementById("tip");
+function showTip(e, build) { tip.replaceChildren(); build(tip); tip.style.opacity = 1; moveTip(e); }
+function moveTip(e) { const r = tip.getBoundingClientRect(); let x = e.clientX + 14, y = e.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14; if (y + r.height > innerHeight - 8) y = e.clientY - r.height - 14;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px"; }
+const hideTip = () => tip.style.opacity = 0;
+const tRow = (t, name, val, color) => { const r = el("div", "r"), n = el("span", "n"); if (color) { const k = el("span", "key"); k.style.background = color; n.append(k); }
+  n.append(document.createTextNode(name)); r.append(n, el("b", null, val)); t.append(r); };
+function tabs(host, items, cur, onPick) { const h = document.getElementById(host); h.replaceChildren();
+  items.forEach(([v, l]) => { const b = el("button", "tab", l); b.setAttribute("aria-pressed", v === cur); b.onclick = () => { h.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-pressed", x === b)); onPick(v); }; h.append(b); }); }
+const W = id => Math.max(280, document.getElementById(id).clientWidth);
+const isMobile = () => innerWidth < 560;
+const DEPN = D.depNames || {};
+// zone affichée : Europe, Maghreb et Méditerranée (le flux « Afrique du Nord » de FIRMS couvre aussi le Proche-Orient)
+const ROWS = D.firms.rows.filter(r => r[1] >= -25 && r[1] <= 40 && r[0] >= 27);
+// pays hors du fond européen (Libye, Égypte, Turquie…) : recherche dans le fond mondial Natural Earth
+const WFR = { Libya: "Libye", Egypt: "Égypte", Turkey: "Turquie", Syria: "Syrie", Lebanon: "Liban", Israel: "Israël", Jordan: "Jordanie", Cyprus: "Chypre", "N. Cyprus": "Chypre du Nord", Palestine: "Palestine", Georgia: "Géorgie", Russia: "Russie", Kazakhstan: "Kazakhstan", Iraq: "Irak", "Saudi Arabia": "Arabie saoudite", Morocco: "Maroc", "W. Sahara": "Sahara occidental" };
+const WB = GW.world.features.map(f => [f, d3.geoBounds(f)]);
+ROWS.forEach(r => { if (r[7] !== "—") return; const p = [r[1], r[0]];
+  const hit = WB.find(([f, b]) => p[0] >= b[0][0] && p[0] <= b[1][0] && p[1] >= b[0][1] && p[1] <= b[1][1] && d3.geoContains(f, p));
+  r[9] = hit ? (WFR[hit[0].properties.nom] || hit[0].properties.nom) : "En mer"; });
+const rowCty = r => r[7] !== "—" ? ctyName(r[7]) : r[9];
+const depName = c => DEPN[c] || c;
+
+/* ---------- palettes ---------- */
+const AGE = [[6, "#ff3b1f", "≤ 6 h"], [24, "#ff8a3d", "6–24 h"], [72, "#ffd166", "1–3 j"]];
+const ageColor = h => (AGE.find(a => h <= a[0]) || AGE[2])[1];
+const VIG = { vigilance: ["#ffe08a", "Vigilance"], alerte: ["#ffb627", "Alerte"], alerte_renforcee: ["#ff7a45", "Alerte renforcée"], crise: ["#d6243b", "Crise"] };
+const VIGI = ["", "vigilance", "alerte", "alerte_renforcee", "crise"];
+const MDFC = { 1: ["#6fcf8a", "Faible"], 2: ["#ffd166", "Modéré"], 3: ["#ff8a3d", "Élevé"], 4: ["#e5383b", "Très élevé"], 5: ["#8a1c3b", "Exceptionnel"] };
+const ATMO = [["#9aa5ad", "Absent"], ["#50F0E6", "Bon"], ["#50CCAA", "Moyen"], ["#F0E641", "Dégradé"], ["#FF5050", "Mauvais"], ["#960032", "Très mauvais"], ["#872181", "Extrêmement mauvais"]];
+const POL = { no2: "NO₂", o3: "Ozone", pm10: "PM10", pm25: "PM2,5", so2: "SO₂" };
+const CTY = D.countryNames || {};
+const ctyName = c => c === "—" ? "Hors Europe ou en mer" : (CTY[c] || c);
+const ISO_FR = { FR: "France", ES: "Espagne", PT: "Portugal", IT: "Italie", GR: "Grèce" };
+const ISO_COL = { FR: "var(--accent)", ES: "#ffb627", PT: "#5bd67a", IT: "#ff7a45", GR: "#b48cff" };
+
+/* ---------- carte de France (départements) ---------- */
+function franceMap(host, fillFn, tipFn, opts = {}) {
+  const h = document.getElementById(host); h.replaceChildren();
+  const w = W(host), H = Math.round(w * (isMobile() ? 0.98 : 0.92));
+  const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitSize([w, H], D.deps);
+  const path = d3.geoPath(proj);
+  const svg = d3.select(h).append("svg").attr("width", w).attr("height", H);
+  svg.append("g").selectAll("path").data(D.deps.features).join("path").attr("d", path)
+    .attr("fill", f => fillFn(f.properties.code) || css("--land")).attr("stroke", css("--bg")).attr("stroke-width", .6)
+    .on("pointermove", (e, f) => tipFn && showTip(e, t => tipFn(t, f.properties.code)))
+    .on("pointerleave", hideTip)
+    .on("click", (e, f) => opts.onClick && opts.onClick(f.properties.code));
+  return { svg, proj };
+}
+function scaleBar(id, idL, interp, lo, hi, fmtF) {
+  const s = document.getElementById(id); s.style.background = `linear-gradient(90deg, ${d3.range(0, 1.01, .1).map(t => interp(t)).join(",")})`;
+  const l = document.getElementById(idL); l.replaceChildren(el("span", null, fmtF(lo)), el("span", null, fmtF((lo + hi) / 2)), el("span", null, fmtF(hi)));
+}
+function legend(id, items) { const l = document.getElementById(id); l.replaceChildren();
+  items.forEach(([c, t, shape]) => { const s = el("span"); const sw = el("span", "sw" + (shape === "line" ? " line" : "")); sw.style.background = c; if (shape === "dot") sw.style.borderRadius = "50%"; s.append(sw, document.createTextNode(t)); l.append(s); }); }
+function rankList(host, items, max, color) { const h = document.getElementById(host); h.replaceChildren();
+  items.forEach(([lab, v, vtxt, sub], i) => { const r = el("div", "row"); r.append(el("span", null, i + 1));
+    const m = el("div"); m.append(el("div", null, lab)); if (sub) { const s = el("div", "note", sub); s.style.margin = 0; m.append(s); }
+    const bar = el("div", "bar"); bar.style.width = Math.max(2, v / (max || 1) * 100) + "%"; bar.style.background = color; m.append(bar); r.append(m, el("b", null, vtxt)); h.append(r); }); }
+
+/* ---------- en-tête ---------- */
+function renderHeader() {
+  const f = D.firms, now = new Date();
+  const last = f.last ? new Date(f.last.replace("Z", ":00Z")) : null;
+  document.getElementById("source").innerHTML = `Sources : données publiques NASA FIRMS, VigiEau, BDIFF, Météo-France, Atmo France, IGN, Global Forest Watch — dernière détection satellite ${last ? last.toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) : "—"}.`;
+  const r24 = ROWS.filter(r => r[2] <= 24 && !r[6]);
+  const fr24 = r24.filter(r => r[7] === "FR").length;
+  const ro = document.getElementById("readout"); ro.replaceChildren();
+  const k = el("div", "k"); const dot = el("span", "ldot on"); k.append(dot, document.createTextNode("Points chauds · 24 h"));
+  const rows = el("div", "rows");
+  [[fmt(fr24), "en France"], [fmt(r24.length), "Europe et Méditerranée"]].forEach(([v, s]) => { const d = el("div"); d.append(el("div", "v", v), el("div", "s", s)); rows.append(d); });
+  ro.append(k, rows);
+  const k2 = document.getElementById("kpis"); k2.replaceChildren();
+  const vnow = D.vigieau.now.deps || {}, crise = Object.values(vnow).filter(v => v.max === "crise").length;
+  const bdYears = Object.keys(D.bdiff).sort(), by = bdYears.at(-1), bsurf = by ? d3.sum(Object.values(D.bdiff[by].deps), v => v[1]) : null;
+  const mdfLast = D.mdf.last, mdfHigh = mdfLast ? Object.values(mdfLast.deps).filter(v => v[0] >= 3).length : null;
+  const at = D.atmo.today || {}, tot = d3.sum(Object.values(at), v => d3.sum(v.n.slice(1))), bad = d3.sum(Object.values(at), v => d3.sum(v.n.slice(3)));
+  [["Départements en crise", fmt(crise), "restriction d'eau maximale (VigiEau)", "vk"],
+   ["Danger d'incendie élevé+", mdfHigh == null ? "—" : fmt(mdfHigh), mdfLast ? "départements au dernier bulletin (" + new Date(mdfLast.date).toLocaleDateString("fr-FR") + ")" : "", ""],
+   ["Feux de forêt " + (by || ""), bsurf == null ? "—" : fmtHa(bsurf), by ? fmt(d3.sum(Object.values(D.bdiff[by].deps), v => v[0])) + " feux déclarés (BDIFF)" : "", ""],
+   ["Air dégradé ou pire", tot ? fmt(bad / tot * 100) + " %" : "—", "des communes, " + (D.atmo.todayDate ? new Date(D.atmo.todayDate).toLocaleDateString("fr-FR") : ""), ""],
+   ["Sources fixes masquées", fmt(f.static.length), "sites industriels repérés dans les archives", ""]].forEach(([kk, v, d, id]) => {
+    const c = el("div", "kpi"); c.append(el("div", "k", kk)); const vv = el("div", "v", v); if (id) vv.id = id; c.append(vv, el("div", "d", d)); k2.append(c); });
+}
+
+/* ---------- F1 : carte en direct ---------- */
+let fAge = 72, fShowFixed = false, fCtySpan = 1;
+function renderFires() {
+  const host = document.getElementById("fMap"); host.replaceChildren();
+  const w = W("fMap"), H = Math.round(Math.min(640, w * (isMobile() ? 1.05 : .62)));
+  const proj = d3.geoMercator().fitExtent([[6, 6], [w - 6, H - 6]], { type: "MultiPoint", coordinates: [[-11, 27.5], [36, 61.5]] });
+  const path = d3.geoPath(proj);
+  const wrap = el("div", "zmap"); host.append(wrap);
+  const svg = d3.select(wrap).append("svg").attr("width", w).attr("height", H).attr("class", "zsvg");
+  svg.append("rect").attr("width", w).attr("height", H).attr("fill", css("--sea"));
+  const g = svg.append("g"), base = g.append("g").attr("class", "zbase"), dots = g.append("g");
+  const euIds = new Set(GW.europe.features.map(f => f.properties.id));
+  base.append("g").selectAll("path").data(GW.world.features.filter(f => !euIds.has(f.properties.id))).join("path").attr("d", path).attr("fill", css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5);
+  base.append("g").selectAll("path").data(GW.europe.features).join("path").attr("d", path).attr("fill", f => f.properties.id === "250" ? css("--france") : css("--land")).attr("stroke", css("--line")).attr("stroke-width", .6);
+  const depLayer = base.append("g").style("display", "none");
+  depLayer.selectAll("path").data(D.deps.features).join("path").attr("d", path).attr("fill", "none").attr("stroke", css("--text-2")).attr("stroke-opacity", .35).attr("stroke-width", .5);
+  // 3 à 7 jours : cellules
+  const older = fAge >= 168 ? D.firms.older : [];
+  const r = f => Math.max(1.2, Math.min(9, Math.sqrt(f) * .9));
+  const cells = dots.append("g").selectAll("rect").data(older).join("rect")
+    .attr("x", d => proj([d[1] - .05, d[0] + .05])[0]).attr("y", d => proj([d[1] - .05, d[0] + .05])[1])
+    .attr("width", d => Math.max(1, proj([d[1] + .05, d[0]])[0] - proj([d[1] - .05, d[0]])[0])).attr("height", d => Math.max(1, proj([d[1], d[0] - .05])[1] - proj([d[1], d[0] + .05])[1]))
+    .attr("fill", "#b36a3c").attr("opacity", .55)
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", "3 à 7 jours · cellule 0,1°")); tRow(t, "Détections", fmt(d[2])); tRow(t, "Puissance cumulée", fmt(d[3]) + " MW"); }))
+    .on("pointerleave", hideTip);
+  const rows = ROWS.filter(d => d[2] <= Math.min(fAge, 72) && (fShowFixed || !d[6])).sort((a, b) => b[2] - a[2]);
+  const pts = dots.append("g").selectAll("circle").data(rows).join("circle")
+    .attr("cx", d => proj([d[1], d[0]])[0]).attr("cy", d => proj([d[1], d[0]])[1]).attr("r", d => r(d[3]))
+    .attr("fill", d => d[6] ? "#8a96a3" : ageColor(d[2])).attr("fill-opacity", d => d[6] ? .6 : .85)
+    .attr("stroke", d => d[2] <= 6 && !d[6] ? "#fff3" : "none")
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", (d[6] ? "Source fixe probable · " : "") + rowCty(d) + (d[8] ? " · " + depName(d[8]) : "")));
+      t.append(el("div", "big", fmt(d[3]) + " MW")); tRow(t, "Il y a", fmt(d[2]) + " h"); tRow(t, "Satellite", ["S-NPP", "NOAA-20", "NOAA-21"][d[4]]); tRow(t, "Confiance", ["faible", "nominale", "haute"][d[5]]);
+      tRow(t, "Position", d[0].toFixed(3) + ", " + d[1].toFixed(3)); }))
+    .on("pointerleave", hideTip);
+  const zoom = d3.zoom().scaleExtent([1, 80]).on("zoom", e => { g.attr("transform", e.transform);
+    pts.attr("r", d => r(d[3]) / Math.sqrt(e.transform.k)); depLayer.style("display", e.transform.k >= 3 ? null : "none"); });
+  svg.call(zoom);
+  const ctl = el("div", "zctl");
+  [["+", "Zoomer", () => svg.transition().duration(300).call(zoom.scaleBy, 2)], ["−", "Dézoomer", () => svg.transition().duration(300).call(zoom.scaleBy, .5)],
+   ["⌂", "Recentrer", () => svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity)],
+   ["FR", "Zoomer sur la France", () => { const [x0, y0] = proj([-5.2, 51.2]), [x1, y1] = proj([9.7, 41.3]); const k = Math.min(w / (x1 - x0), H / (y1 - y0)) * .92;
+     svg.transition().duration(800).call(zoom.transform, d3.zoomIdentity.translate(w / 2, H / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2)); }]].forEach(([t, l, f]) => {
+    const b = el("button", "zbtn", t); b.title = l; b.setAttribute("aria-label", l); b.onclick = f; if (t === "FR") b.style.fontSize = "11px"; ctl.append(b); });
+  wrap.append(ctl);
+  const shown = rows.filter(d => !d[6]).length;
+  document.getElementById("fTitle").textContent = `${fmt(shown)} points chauds · ${fAge >= 168 ? "72 h (+ cellules 3–7 j)" : fAge + " dernières heures"}${fShowFixed ? " · sources fixes affichées en gris" : ""}`;
+  legend("fLegend", [...AGE.map(a => [a[1], a[2], "dot"]), ...(fAge >= 168 ? [["#b36a3c", "3–7 j (cellules)"]] : []), ...(fShowFixed ? [["#8a96a3", "source fixe probable", "dot"]] : [])]);
+  renderFoyers(); renderCountries();
+}
+function renderFoyers() {
+  // regroupe les détections des dernières 24 h, hors sources fixes, par voisinage (~2 km)
+  const pts = ROWS.filter(d => d[2] <= 24 && !d[6]);
+  const key = d => `${Math.round(d[0] / .02)},${Math.round(d[1] / .02)}`;
+  const cells = new Map(); pts.forEach(p => { const k = key(p); if (!cells.has(k)) cells.set(k, []); cells.get(k).push(p); });
+  const seen = new Set(), groups = [];
+  for (const k of cells.keys()) { if (seen.has(k)) continue; const stack = [k], grp = []; seen.add(k);
+    while (stack.length) { const c = stack.pop(); grp.push(...cells.get(c)); const [a, b] = c.split(",").map(Number);
+      for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) { const n = `${a + i},${b + j}`; if (cells.has(n) && !seen.has(n)) { seen.add(n); stack.push(n); } } }
+    groups.push(grp); }
+  const top = groups.map(gp => ({ n: gp.length, frp: d3.sum(gp, p => p[3]), lat: d3.mean(gp, p => p[0]), lon: d3.mean(gp, p => p[1]), cty: rowCty(gp[0]), dep: gp.find(p => p[8])?.[8] }))
+    .sort((a, b) => b.frp - a.frp).slice(0, 14);
+  const max = top[0]?.frp || 1;
+  rankList("fFoyers", top.map(t => [`${t.cty}${t.dep ? " · " + depName(t.dep) : ""}`, t.frp, fmt(t.frp) + " MW", `${t.n} détection${t.n > 1 ? "s" : ""} · ${t.lat.toFixed(2)}, ${t.lon.toFixed(2)}`]), max, "#ff8a3d");
+  if (!top.length) document.getElementById("fFoyers").append(el("p", "note", "Aucun foyer détecté ces dernières 24 h."));
+}
+function renderCountries() {
+  tabs("fCtySpan", [[1, "24 h"], [3, "3 jours"], [7, "7 jours"]], fCtySpan, v => { fCtySpan = v; renderCountries(); });
+  const days = Object.keys(D.firms.countryDay).sort().slice(-fCtySpan - (fCtySpan === 1 ? 0 : 0));
+  let agg = {};
+  if (fCtySpan === 1) { ROWS.filter(d => d[2] <= 24 && !d[6]).forEach(d => { const k = rowCty(d); agg[k] = agg[k] || [0, 0]; agg[k][0]++; agg[k][1] += d[3]; }); }
+  else days.slice(-fCtySpan).forEach(d => Object.entries(D.firms.countryDay[d]).forEach(([c0, v]) => { const c = ctyName(c0); agg[c] = agg[c] || [0, 0]; agg[c][0] += v[0]; agg[c][1] += v[1]; }));
+  delete agg["En mer"]; delete agg[ctyName("—")];
+  const items = Object.entries(agg).sort((a, b) => b[1][0] - a[1][0]).slice(0, 15);
+  const max = items[0]?.[1][0] || 1;
+  rankList("fCty", items.map(([c, v]) => [c, v[0], fmt(v[0]), fmt(v[1]) + " MW cumulés"]), max, "var(--accent)");
+}
+function renderFireDaily() {
+  const host = document.getElementById("fDaily"); host.replaceChildren();
+  const days = Object.keys(D.firms.countryDay).sort();
+  const data = days.map(d => ({ d, n: D.firms.countryDay[d].FR?.[0] || 0, f: D.firms.countryDay[d].FR?.[1] || 0 }));
+  const w = W("fDaily"), H = 170, M = { l: 40, r: 10, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const x = d3.scaleBand().domain(days).range([M.l, w - M.r]).padding(.2), y = d3.scaleLinear().domain([0, d3.max(data, d => d.n) || 1]).nice().range([H - M.b, M.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - M.l - M.r)).tickFormat(v => fmt(v)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickValues(days.filter((d, i) => i % Math.ceil(days.length / 8) === 0)).tickFormat(d => d.slice(8) + "/" + d.slice(5, 7)).tickSize(0).tickPadding(6));
+  svg.append("g").selectAll("rect").data(data).join("rect").attr("x", d => x(d.d)).attr("width", x.bandwidth()).attr("y", d => y(d.n)).attr("height", d => y(0) - y(d.n)).attr("fill", "#ff8a3d")
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", new Date(d.d).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }))); tRow(t, "Détections", fmt(d.n)); tRow(t, "Puissance cumulée", fmt(d.f) + " MW"); }))
+    .on("pointerleave", hideTip);
+  if (days.length < 20) host.append(el("p", "note", `Historique en cours de constitution : ${days.length} jours enregistrés depuis la mise en service (un passage par heure).`));
+}
+
+/* ---------- F2 : archives ---------- */
+let hProd = "viirs-snpp", hYear = null, hTimer = null;
+function renderHistYears() {
+  tabs("hProd", [["viirs-snpp", "VIIRS 2012→"], ["modis", "MODIS 2001→"]], hProd, v => { hProd = v; renderHistYears(); renderMonths(); });
+  const host = document.getElementById("hYears"); host.replaceChildren();
+  const isos = Object.keys(ISO_FR);
+  const yrs = [...new Set(isos.flatMap(i => Object.keys(D.archive.years[i]?.[hProd] || {})))].sort();
+  const data = yrs.map(y => { const o = { y }; isos.forEach(i => o[i] = D.archive.years[i]?.[hProd]?.[y]?.[0] || 0); return o; });
+  const w = W("hYears"), H = isMobile() ? 220 : 260, M = { l: 48, r: 10, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const series = d3.stack().keys(isos)(data);
+  const x = d3.scaleBand().domain(yrs).range([M.l, w - M.r]).padding(.18), y = d3.scaleLinear().domain([0, d3.max(series.at(-1), d => d[1]) || 1]).nice().range([H - M.b, M.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(w - M.l - M.r)).tickFormat(v => v >= 1000 ? fmt(v / 1000) + " k" : v));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickValues(yrs.filter((d, i) => i % (isMobile() ? 4 : 2) === 0)).tickSize(0).tickPadding(6));
+  svg.append("g").selectAll("g").data(series).join("g").attr("fill", s => ISO_COL[s.key]).selectAll("rect").data(s => s.map(d => ({ ...d, key: s.key }))).join("rect")
+    .attr("x", d => x(d.data.y)).attr("width", x.bandwidth()).attr("y", d => y(d[1])).attr("height", d => y(d[0]) - y(d[1]))
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", d.data.y + " · " + (hProd === "modis" ? "MODIS" : "VIIRS"))); isos.slice().reverse().forEach(i => tRow(t, ISO_FR[i], fmt(d.data[i]), ISO_COL[i])); }))
+    .on("pointerleave", hideTip);
+  legend("hLegend", isos.map(i => [ISO_COL[i], ISO_FR[i]]));
+}
+function renderHistMap() {
+  const yrs = Object.keys(D.archive.grid).sort(); if (!yrs.length) return;
+  if (hYear == null) hYear = yrs.includes("2022") ? "2022" : yrs.at(-1);
+  const sl = document.getElementById("hSlider"); sl.min = 0; sl.max = yrs.length - 1; sl.value = yrs.indexOf(hYear);
+  document.getElementById("hLabel").textContent = hYear;
+  const host = document.getElementById("hMap"); host.replaceChildren();
+  const w = W("hMap"), H = Math.round(Math.min(560, w * (isMobile() ? .95 : .6)));
+  const proj = d3.geoMercator().fitExtent([[4, 4], [w - 4, H - 4]], { type: "MultiPoint", coordinates: [[-10, 35.5], [28.5, 51.5]] });
+  const path = d3.geoPath(proj);
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  svg.append("rect").attr("width", w).attr("height", H).attr("fill", css("--sea"));
+  svg.append("g").selectAll("path").data(GW.europe.features).join("path").attr("d", path).attr("fill", f => f.properties.id === "250" ? css("--france") : css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5);
+  const g = D.archive.grid[hYear], cells = [];
+  Object.entries(g).forEach(([iso, flat]) => { for (let i = 0; i < flat.length; i += 4) cells.push([flat[i] / 10, flat[i + 1] / 10, flat[i + 2], flat[i + 3], iso]); });
+  const color = d3.scaleSequentialLog(d3.interpolateYlOrRd).domain([1, 200]);
+  svg.append("g").selectAll("rect").data(cells).join("rect")
+    .attr("x", d => proj([d[1] - .05, d[0] + .05])[0]).attr("y", d => proj([d[1] - .05, d[0] + .05])[1])
+    .attr("width", d => Math.max(1, proj([d[1] + .05, d[0]])[0] - proj([d[1] - .05, d[0]])[0])).attr("height", d => Math.max(1, proj([d[1], d[0] - .05])[1] - proj([d[1], d[0] + .05])[1]))
+    .attr("fill", d => color(Math.max(1, Math.min(200, d[2])))).attr("opacity", .9)
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", `${ISO_FR[d[4]]} · ${hYear} · cellule ${d[0].toFixed(1)}, ${d[1].toFixed(1)}`)); tRow(t, "Détections", fmt(d[2])); tRow(t, "Puissance cumulée", fmt(d[3]) + " MW"); }))
+    .on("pointerleave", hideTip);
+  const tot = d3.sum(cells, c => c[2]);
+  document.getElementById("hMapTitle").textContent = `Densité des feux de végétation · ${hYear} · ${fmt(tot)} détections VIIRS (FR, ES, PT, IT, GR)`;
+  legend("hMapLegend", [[color(1), "1 détection / cellule de 0,1°"], [color(10), "10"], [color(50), "50"], [color(200), "200 et +"]]);
+}
+function renderMonths() {
+  const host = document.getElementById("hMonths"); host.replaceChildren();
+  const ys = D.archive.years.FR?.[hProd] || {}; const yrs = Object.keys(ys).sort();
+  const w = W("hMonths"), H = 200, M = { l: 40, r: 10, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const x = d3.scalePoint().domain(d3.range(12)).range([M.l, w - M.r]), y = d3.scaleLinear().domain([0, d3.max(yrs, y => d3.max(ys[y][2])) || 1]).nice().range([H - M.b, M.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - M.l - M.r)).tickFormat(v => fmt(v)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickFormat(i => ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"][i]).tickSize(0).tickPadding(6));
+  const line = d3.line().x((d, i) => x(i)).y(d => y(d)).curve(d3.curveMonotoneX);
+  yrs.forEach(yy => { const hi = yy === hYear || yy === "2022";
+    svg.append("path").datum(ys[yy][2]).attr("d", line).attr("fill", "none").attr("stroke", yy === hYear ? "#ff3b1f" : yy === "2022" ? "#ff8a3d" : css("--muted")).attr("stroke-width", hi ? 2.2 : 1).attr("opacity", hi ? 1 : .45)
+      .on("pointermove", e => showTip(e, t => { t.append(el("div", "t", "France · " + yy)); ys[yy][2].forEach((v, i) => { if (v) tRow(t, ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."][i], fmt(v)); }); }))
+      .on("pointerleave", hideTip); });
+  host.append(el("p", "note", `En rouge : ${hYear}${hYear !== "2022" ? " ; en orange : 2022" : ""}. Le pic de mars correspond surtout aux écobuages (brûlages pastoraux) des Pyrénées et du Massif central.`));
+}
+document.getElementById("hSlider").oninput = e => { stopH(); hYear = Object.keys(D.archive.grid).sort()[+e.target.value]; renderHistMap(); renderMonths(); };
+function stopH() { clearInterval(hTimer); hTimer = null; document.getElementById("hPlay").textContent = "▶"; }
+document.getElementById("hPlay").onclick = () => { if (hTimer) return stopH(); const yrs = Object.keys(D.archive.grid).sort(); let i = yrs.indexOf(hYear); if (i >= yrs.length - 1) i = -1;
+  document.getElementById("hPlay").textContent = "❚❚"; hTimer = setInterval(() => { i++; if (i >= yrs.length) return stopH(); hYear = yrs[i]; renderHistMap(); renderMonths(); }, 1100); };
+
+/* ---------- F3 : BDIFF ---------- */
+let bYear = null;
+function renderBdiff() {
+  const yrs = Object.keys(D.bdiff).sort(); if (!yrs.length) return;
+  if (!bYear) bYear = yrs.includes("2022") ? "2022" : yrs.at(-1);
+  tabs("bYearTabs", [yrs.at(-1), "2022", "2019", "2017"].filter((v, i, a) => yrs.includes(v) && a.indexOf(v) === i).map(y => [y, y]), bYear, v => { bYear = v; renderBdiff(); });
+  // barres annuelles
+  const host = document.getElementById("bYears"); host.replaceChildren();
+  const data = yrs.map(y => ({ y, s: d3.sum(Object.values(D.bdiff[y].deps), v => v[1]), n: d3.sum(Object.values(D.bdiff[y].deps), v => v[0]) }));
+  const w = W("bYears"), H = 200, M = { l: 50, r: 10, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const x = d3.scaleBand().domain(yrs).range([M.l, w - M.r]).padding(.2), y = d3.scaleLinear().domain([0, d3.max(data, d => d.s)]).nice().range([H - M.b, M.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - M.l - M.r)).tickFormat(v => fmt(v / 1000) + " k"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickValues(yrs.filter((d, i) => i % (isMobile() ? 4 : 2) === 0)).tickSize(0).tickPadding(6));
+  svg.append("g").selectAll("rect").data(data).join("rect").attr("x", d => x(d.y)).attr("width", x.bandwidth()).attr("y", d => y(d.s)).attr("height", d => y(0) - y(d.s))
+    .attr("fill", d => d.y === bYear ? "#ff3b1f" : "#ff8a3d").attr("opacity", d => d.y === bYear ? 1 : .6).style("cursor", "pointer")
+    .on("click", (e, d) => { bYear = d.y; renderBdiff(); })
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", "Feux de forêt · " + d.y)); t.append(el("div", "big", fmtHa(d.s))); tRow(t, "Feux déclarés", fmt(d.n)); }))
+    .on("pointerleave", hideTip);
+  // carte
+  const deps = D.bdiff[bYear].deps, max = d3.max(Object.values(deps), v => v[1]) || 1;
+  const interp = t => d3.interpolateYlOrRd(.08 + .92 * t), sc = d3.scaleSqrt().domain([0, max]).range([0, 1]);
+  franceMap("bMap", c => deps[c] && deps[c][1] > 0 ? interp(sc(deps[c][1])) : null, (t, c) => { t.append(el("div", "t", depName(c) + " · " + bYear));
+    const v = deps[c]; if (!v) { t.append(el("div", null, "Aucun feu de forêt déclaré")); return; } t.append(el("div", "big", fmtHa(v[1]))); tRow(t, "Feux", fmt(v[0])); tRow(t, "Dont forêt", fmtHa(v[2])); },
+    { onClick: c => {} });
+  document.getElementById("bMapTitle").textContent = `Surface parcourue par les feux de forêt · ${bYear}`;
+  scaleBar("bScale", "bScaleL", interp, 0, max, v => fmtHa(v));
+  const big = D.bdiff[bYear].grands.slice(0, 15);
+  rankList("bBig", big.map(g => [`${g[1]} (${g[0]})`, g[3], fmtHa(g[3]), new Date(g[2]).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })]), big[0]?.[3] || 1, "#ff3b1f");
+  // comparaison des trois mesures
+  const fd = D.archive.frDeps[bYear] || {}, gf = {};
+  Object.entries(D.gfw).forEach(([name, v]) => { const c = D.gfwCodes[name]; if (c) gf[c] = v.fire?.[bYear] || 0; });
+  const codes = [...new Set([...Object.keys(deps), ...Object.keys(fd)])].filter(c => (deps[c]?.[1] || 0) >= 50 || (fd[c]?.[0] || 0) >= 30)
+    .sort((a, b) => (deps[b]?.[1] || 0) - (deps[a]?.[1] || 0)).slice(0, 15);
+  const tb = document.getElementById("bCmp"); tb.replaceChildren();
+  const hr = el("tr"); ["Département", "Surface BDIFF", "Feux", "Détections FIRMS", "Perte de couvert par le feu (GFW)"].forEach((h, i) => { const th = el("th", i ? "num" : "", h); hr.append(th); }); tb.append(hr);
+  codes.forEach(c => { const tr = el("tr"); [depName(c), fmtHa(deps[c]?.[1] || 0), fmt(deps[c]?.[0] || 0), fd[c] ? fmt(fd[c][0]) : "—", gf[c] != null && bYear <= "2024" ? fmtHa(gf[c]) : "—"]
+    .forEach((v, i) => tr.append(el("td", i ? "num" : "", v))); tb.append(tr); });
+  document.getElementById("bCmpTitle").textContent = `Même territoire, même année · ${bYear}`;
+}
+
+/* ---------- G1 : météo des forêts ---------- */
+let mDay = 0, mView = "bulletin", mYear = null;
+function renderMdf() {
+  const M = D.mdf; if (!M.last) return;
+  const years = Object.keys(M.season).sort(); if (!mYear) mYear = years.at(-1);
+  tabs("mView", [["bulletin", "Dernier bulletin"], ...years.slice().reverse().map(y => ["s" + y, "Saison " + y])], mView === "bulletin" ? "bulletin" : "s" + mYear, v => { if (v === "bulletin") mView = "bulletin"; else { mView = "season"; mYear = v.slice(1); } renderMdf(); });
+  document.getElementById("mDay").style.display = mView === "bulletin" ? "" : "none";
+  tabs("mDay", [[0, "Demain"], [1, "Après-demain"]], mDay, v => { mDay = v; renderMdf(); });
+  const date = new Date(M.last.date);
+  const stale = (Date.now() - date) / 864e5 > 3;
+  document.getElementById("mNote").textContent = stale ? `Dernier bulletin publié le ${date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })} : la saison de diffusion est terminée.` : "";
+  if (mView === "bulletin") {
+    franceMap("mMap", c => M.last.deps[c] ? MDFC[M.last.deps[c][mDay]]?.[0] : null, (t, c) => { t.append(el("div", "t", depName(c))); const v = M.last.deps[c];
+      if (!v) { t.append(el("div", null, "Non couvert")); return; } tRow(t, "Lendemain", MDFC[v[0]]?.[1] || v[0], MDFC[v[0]]?.[0]); tRow(t, "Surlendemain", MDFC[v[1]]?.[1] || v[1], MDFC[v[1]]?.[0]); });
+    const d2 = new Date(date); d2.setDate(d2.getDate() + 1 + mDay);
+    document.getElementById("mTitle").textContent = `Danger météorologique d'incendie · ${d2.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}`;
+    legend("mLegend", Object.values(MDFC).map(([c, t]) => [c, t]));
+  } else {
+    const s = M.season[mYear] || {}, max = d3.max(Object.values(s), v => v[1]) || 1;
+    const interp = t => d3.interpolateOrRd(.1 + .9 * t);
+    franceMap("mMap", c => s[c] ? (s[c][1] ? interp(s[c][1] / max) : css("--land-2")) : null, (t, c) => { t.append(el("div", "t", depName(c) + " · saison " + mYear)); const v = s[c];
+      if (!v) { t.append(el("div", null, "Non couvert")); return; } t.append(el("div", "big", fmt(v[1]) + " j")); tRow(t, "Jours à danger élevé ou plus", fmt(v[1])); tRow(t, "Dont très élevé ou plus", fmt(v[2])); tRow(t, "Bulletins", fmt(v[0])); });
+    document.getElementById("mTitle").textContent = `Jours à danger élevé ou plus · saison ${mYear}`;
+    legend("mLegend", [[interp(0), "0 jour"], [interp(.5), fmt(max / 2) + " j"], [interp(1), fmt(max) + " j"]]);
+  }
+  // saisons comparées
+  const host = document.getElementById("mSeason"); host.replaceChildren();
+  const w = W("mSeason"), H = 240, Mg = { l: 32, r: 10, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const doy = d => { const x = new Date(d); return (x - new Date(x.getFullYear(), 0, 1)) / 864e5; };
+  const x = d3.scaleLinear().domain([140, 290]).range([Mg.l, w - Mg.r]), y = d3.scaleLinear().domain([0, d3.max(years, yy => d3.max(M.national[yy], r => r[1])) || 1]).nice().range([H - Mg.b, Mg.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${Mg.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - Mg.l - Mg.r)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - Mg.b})`).call(d3.axisBottom(x).tickValues([152, 182, 213, 244, 274]).tickFormat(v => ["juin", "juil.", "août", "sept.", "oct."][[152, 182, 213, 244, 274].indexOf(v)]).tickSize(0).tickPadding(6));
+  const cols = ["#ff3b1f", "#ffb627", "#8a96a3"];
+  years.slice().reverse().forEach((yy, i) => svg.append("path").datum(M.national[yy]).attr("fill", "none").attr("stroke", cols[i] || css("--muted")).attr("stroke-width", i ? 1.3 : 2.2)
+    .attr("d", d3.line().x(r => x(doy(r[0]))).y(r => y(r[1])).curve(d3.curveMonotoneX)));
+  legend("mSeasonLg", years.slice().reverse().map((yy, i) => [cols[i] || css("--muted"), yy, "line"]));
+}
+
+/* ---------- G2 : santé des forêts ---------- */
+let sView = "boisement";
+function ifnLatest(obj) { if (!obj) return null; const k = Object.keys(obj).sort((a, b) => a.slice(-4).localeCompare(b.slice(-4))).at(-1); return k ? [k, obj[k]] : null; }
+function deperisPct(dep) { const d = D.ifn[dep]?.deperis; if (!d) return null; const k = Object.keys(d).sort().at(-1); let s = 0, w = 0;
+  Object.values(d[k]).forEach(([v, pct]) => { if (v && pct != null) { s += v * pct; w += v; } }); return w ? [k, s / w, w] : null; }
+function gfwByCode() { const o = {}; Object.entries(D.gfw).forEach(([name, v]) => { const c = D.gfwCodes[name]; if (c) o[c] = v; }); return o; }
+function renderHealth() {
+  tabs("sView", [["boisement", "Taux de boisement"], ["deperis", "Arbres dépérissants"], ["perte", "Perte de couvert 2001→"], ["feu", "Perte due au feu"]], sView, v => { sView = v; renderHealth(); });
+  const g = gfwByCode(); let val = {}, title = "", fmtV = v => fmt(v, 1) + " %", note = "", interp = t => d3.interpolateYlGn(.1 + .9 * t), sub = c => "";
+  if (sView === "boisement") { Object.keys(D.ifn).forEach(c => { const l = ifnLatest(D.ifn[c].tx_bois); if (l && l[1][0] != null) val[c] = l[1][0]; });
+    title = "Taux de boisement · campagnes 2020-2024"; note = "Part de la surface du département couverte de forêt (IGN, Inventaire forestier national)."; fmtV = v => fmt(v) + " %"; }
+  else if (sView === "deperis") { Object.keys(D.ifn).forEach(c => { const p = deperisPct(c); if (p) val[c] = p[1]; });
+    title = "Part des arbres dépérissants · 2021-2024"; interp = t => d3.interpolateOrRd(.08 + .92 * t); note = "Tiges vivantes présentant plus de 50 % de branches mortes dans le houppier, toutes essences, d'après l'IGN. Estimations à précision variable selon les départements.";
+    sub = c => { const d = D.ifn[c]?.deperis; if (!d) return ""; const k = Object.keys(d).sort().at(-1); const top = Object.entries(d[k]).filter(([, v]) => v[1]).sort((a, b) => b[1][1] - a[1][1])[0]; return top ? `essence la plus touchée : ${top[0]} (${fmt(top[1][1])} %)` : ""; }; }
+  else if (sView === "perte") { Object.entries(g).forEach(([c, v]) => { val[c] = d3.sum(Object.values(v.loss)) / (v.extent2000 || 1) * 100; });
+    title = "Perte de couvert arboré cumulée 2001-2024 (% du couvert 2000)"; interp = t => d3.interpolateYlOrBr(.08 + .92 * t); note = "Global Forest Watch (Hansen / UMD), couvert à plus de 30 %. Inclut coupes forestières, tempêtes, scolytes et feux : une perte n'est pas forcément une déforestation."; }
+  else { Object.entries(g).forEach(([c, v]) => { val[c] = d3.sum(Object.values(v.fire || {})); });
+    title = "Perte de couvert due aux feux, 2001-2024 (ha)"; interp = t => d3.interpolateYlOrRd(.08 + .92 * t); fmtV = v => fmtHa(v); note = "Part de la perte de couvert arboré attribuée aux incendies (Global Forest Watch)."; }
+  const vals = Object.values(val), lo = sView === "boisement" ? d3.min(vals) : 0, hi = d3.max(vals) || 1;
+  const sc = sView === "feu" ? d3.scaleSqrt().domain([0, hi]).range([0, 1]) : d3.scaleLinear().domain([lo, hi]).range([0, 1]);
+  franceMap("sMap", c => val[c] != null ? interp(sc(val[c])) : null, (t, c) => { t.append(el("div", "t", depName(c))); if (val[c] == null) { t.append(el("div", null, "Pas de donnée")); return; }
+    t.append(el("div", "big", fmtV(val[c]))); const s = sub(c); if (s) t.append(el("div", null, s));
+    if (g[c]) { tRow(t, "Couvert 2000", fmtHa(g[c].extent2000)); tRow(t, "Perte 2001-2024", fmtHa(d3.sum(Object.values(g[c].loss)))); tRow(t, "dont feux", fmtHa(d3.sum(Object.values(g[c].fire || {})))); } });
+  document.getElementById("sTitle").textContent = title; document.getElementById("sNote").textContent = note;
+  scaleBar("sScale", "sScaleL", interp, lo, hi, fmtV);
+  const items = Object.entries(val).sort((a, b) => b[1] - a[1]).slice(0, 14);
+  document.getElementById("sRankTitle").textContent = "Départements les plus " + { boisement: "boisés", deperis: "touchés par le dépérissement", perte: "touchés par les pertes", feu: "touchés par les feux" }[sView];
+  rankList("sRank", items.map(([c, v]) => [depName(c), v, fmtV(v), sub(c)]), items[0]?.[1] || 1, interp(.85));
+  // pertes nationales par an
+  const host = document.getElementById("sLoss"); host.replaceChildren();
+  const yrs = [...new Set(Object.values(D.gfw).flatMap(v => Object.keys(v.loss)))].sort();
+  const data = yrs.map(y => { const tot = d3.sum(Object.values(D.gfw), v => v.loss[y] || 0), fire = d3.sum(Object.values(D.gfw), v => v.fire?.[y] || 0); return { y, fire, other: tot - fire }; });
+  const w = W("sLoss"), H = 220, M = { l: 44, r: 8, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const st = d3.stack().keys(["fire", "other"])(data);
+  const x = d3.scaleBand().domain(yrs).range([M.l, w - M.r]).padding(.18), y = d3.scaleLinear().domain([0, d3.max(st.at(-1), d => d[1]) || 1]).nice().range([H - M.b, M.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - M.l - M.r)).tickFormat(v => fmt(v / 1000) + " k"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickValues(yrs.filter((d, i) => i % 4 === 0)).tickSize(0).tickPadding(6));
+  const cols = { fire: "#ff3b1f", other: "#5bd67a" };
+  svg.append("g").selectAll("g").data(st).join("g").attr("fill", s => cols[s.key]).selectAll("rect").data(s => s).join("rect").attr("x", d => x(d.data.y)).attr("width", x.bandwidth()).attr("y", d => y(d[1])).attr("height", d => y(d[0]) - y(d[1]))
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", "France · " + d.data.y)); tRow(t, "Feux", fmtHa(d.data.fire), cols.fire); tRow(t, "Autres causes", fmtHa(d.data.other), cols.other); }))
+    .on("pointerleave", hideTip);
+  legend("sLossLg", [[cols.fire, "dont feux"], [cols.other, "autres causes (coupes, tempêtes, scolytes…)"]]);
+  // dépérissement par essence, agrégé France
+  const ess = {}; Object.values(D.ifn).forEach(d => { const dp = d.deperis; if (!dp) return; const k = Object.keys(dp).sort().at(-1);
+    Object.entries(dp[k]).forEach(([e, [v, pct]]) => { if (v && pct != null) { ess[e] = ess[e] || [0, 0, 0]; ess[e][0] += v * pct; ess[e][1] += v; ess[e][2]++; } }); });
+  const ei = Object.entries(ess).filter(([, v]) => v[2] >= 5).map(([e, v]) => [e, v[0] / v[1], v[2]]).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  rankList("sMort", ei.map(([e, p, v]) => [e.charAt(0).toUpperCase() + e.slice(1), p, fmt(p, 1) + " %", "mesuré dans " + v + " départements"]), ei[0]?.[1] || 1, "#b48cff");
+}
+
+/* ---------- E1 / E2 : VigiEau ---------- */
+let vType = "max", vLive = null;
+function vigData() { return vLive || D.vigieau.now; }
+function renderVigNow() {
+  tabs("vType", [["max", "Tous usages"], ["sup", "Eaux superficielles"], ["sou", "Eaux souterraines"], ["aep", "Eau potable"]], vType, v => { vType = v; renderVigNow(); });
+  const now = vigData(), deps = now.deps || {};
+  franceMap("vMap", c => deps[c]?.[vType] ? VIG[deps[c][vType]][0] : null, (t, c) => { t.append(el("div", "t", depName(c))); const v = deps[c];
+    if (!v) { t.append(el("div", null, "Pas de donnée")); return; } t.append(el("div", "big", v[vType] ? VIG[v[vType]][1] : "Aucune restriction"));
+    [["sup", "Eaux superficielles"], ["sou", "Eaux souterraines"], ["aep", "Eau potable"]].forEach(([k, l]) => tRow(t, l, v[k] ? VIG[v[k]][1] : "—", v[k] ? VIG[v[k]][0] : null)); });
+  document.getElementById("vTitle").textContent = "Restriction maximale en vigueur · " + { max: "tous usages", sup: "eaux superficielles", sou: "eaux souterraines", aep: "eau potable" }[vType];
+  legend("vLegend", [...Object.values(VIG).map(([c, t]) => [c, t]), [css("--land"), "Aucune"]]);
+  document.getElementById("vStatus").textContent = (vLive ? "● En direct (API VigiEau) · " : "Instantané du dépôt · ") + new Date(now.date || Date.now()).toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+  const counts = VIGI.slice(1).map(k => [k, Object.values(deps).filter(v => v[vType] === k).length]);
+  const none = Object.keys(deps).length - d3.sum(counts, c => c[1]);
+  rankList("vBars", [...counts.reverse().map(([k, n]) => [VIG[k][1], n, fmt(n)]), ["Aucune restriction", none, fmt(none)]], Object.keys(deps).length, "var(--accent)");
+  const kv = document.getElementById("vk"); if (kv) kv.textContent = fmt(Object.values(deps).filter(v => v.max === "crise").length);
+}
+async function loadVigLive() {
+  try { const r = await fetch("https://api.vigieau.gouv.fr/api/departements", { cache: "no-store" }); if (!r.ok) throw new Error(r.status);
+    const a = await r.json(); const deps = {}; a.forEach(d => deps[d.code] = { nom: d.nom, max: d.niveauGraviteMax, sup: d.niveauGraviteSupMax, sou: d.niveauGraviteSouMax, aep: d.niveauGraviteAepMax });
+    vLive = { date: new Date().toISOString(), deps }; renderVigNow(); } catch (e) { /* repli sur l'instantané */ }
+}
+function renderVigHistory() {
+  const wk = D.vigieau.weekly; if (!wk.length) return;
+  const host = document.getElementById("vWeekly"); host.replaceChildren();
+  const keys = ["v", "a", "ar", "c"], cols = [VIG.vigilance[0], VIG.alerte[0], VIG.alerte_renforcee[0], VIG.crise[0]];
+  const data = wk.map(r => ({ d: new Date(r[0]), v: r[1], a: r[2], ar: r[3], c: r[4] }));
+  const w = W("vWeekly"), H = isMobile() ? 220 : 260, M = { l: 32, r: 8, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const st = d3.stack().keys(keys.slice().reverse())(data);
+  const x = d3.scaleTime().domain(d3.extent(data, d => d.d)).range([M.l, w - M.r]), y = d3.scaleLinear().domain([0, d3.max(st.at(-1), d => d[1]) || 1]).nice().range([H - M.b, M.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(w - M.l - M.r)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(isMobile() ? 5 : 10).tickSize(0).tickPadding(6));
+  const colOf = k => cols[keys.indexOf(k)];
+  svg.append("g").selectAll("path").data(st).join("path").attr("fill", s => colOf(s.key)).attr("d", d3.area().x(d => x(d.data.d)).y0(d => y(d[0])).y1(d => y(d[1])).curve(d3.curveStepAfter));
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", css("--text")).attr("opacity", 0);
+  svg.append("rect").attr("x", M.l).attr("y", M.t).attr("width", w - M.l - M.r).attr("height", H - M.t - M.b).attr("fill", "transparent")
+    .on("pointermove", e => { const dx = x.invert(d3.pointer(e)[0]); const i = Math.max(0, Math.min(data.length - 1, d3.bisector(d => d.d).left(data, dx))); const d = data[i];
+      cross.attr("x1", x(d.d)).attr("x2", x(d.d)).attr("opacity", .5);
+      showTip(e, t => { t.append(el("div", "t", "Semaine du " + d.d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }))); [["c", "Crise"], ["ar", "Alerte renforcée"], ["a", "Alerte"], ["v", "Vigilance"]].forEach(([k, l]) => tRow(t, l, fmt(d[k]), colOf(k))); }); })
+    .on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+  legend("vWeeklyLg", keys.map((k, i) => [cols[i], ["Vigilance", "Alerte", "Alerte renforcée", "Crise"][i]]));
+  // années comparées : départements en crise par semaine de l'année
+  const h2 = document.getElementById("vYears"); h2.replaceChildren();
+  const byY = d3.group(data, d => d.d.getFullYear()); const yrs = [...byY.keys()].sort();
+  const H2 = 230, svg2 = d3.select(h2).append("svg").attr("width", w).attr("height", H2);
+  const wy = d => (d - new Date(d.getFullYear(), 0, 1)) / 6048e5;
+  const x2 = d3.scaleLinear().domain([0, 52]).range([M.l, w - M.r]), y2 = d3.scaleLinear().domain([0, d3.max(data, d => d.c) || 1]).nice().range([H2 - M.b, M.t]);
+  svg2.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y2).ticks(4).tickSize(-(w - M.l - M.r)));
+  const mt = [0, 8.6, 17.3, 26, 34.7, 43.3]; svg2.append("g").attr("class", "axis").attr("transform", `translate(0,${H2 - M.b})`).call(d3.axisBottom(x2).tickValues(mt).tickFormat((v, i) => ["janv.", "mars", "mai", "juil.", "sept.", "nov."][i]).tickSize(0).tickPadding(6));
+  const cur = yrs.at(-1), hl = { [cur]: "#ff3b1f", 2022: "#ffb627", 2023: "#b48cff" };
+  yrs.forEach(yy => svg2.append("path").datum(byY.get(yy)).attr("fill", "none").attr("stroke", hl[yy] || css("--muted")).attr("stroke-width", hl[yy] ? 2.2 : 1).attr("opacity", hl[yy] ? 1 : .4)
+    .attr("d", d3.line().x(d => x2(wy(d.d))).y(d => y2(d.c)).curve(d3.curveStepAfter))
+    .on("pointermove", e => showTip(e, t => { t.append(el("div", "t", "Année " + yy)); tRow(t, "Maximum de départements en crise", fmt(d3.max(byY.get(yy), d => d.c))); })).on("pointerleave", hideTip));
+  legend("vYearsLg", [[hl[cur], String(cur), "line"], ["#ffb627", "2022", "line"], ["#b48cff", "2023", "line"], [css("--muted"), "autres années (2012→)", "line"]]);
+}
+
+/* ---------- A1 : qualité de l'air ---------- */
+let aDay = "today";
+function renderAir() {
+  const A = D.atmo; const opts = [["today", "Aujourd'hui"]]; if (A.tomorrow) opts.push(["tomorrow", "Demain (prévision)"]);
+  tabs("aDay", opts, aDay, v => { aDay = v; renderAir(); });
+  const day = aDay === "tomorrow" ? A.tomorrow : A.today, date = aDay === "tomorrow" ? A.tomorrowDate : A.todayDate;
+  const mode = v => { let b = 1; for (let i = 1; i < 7; i++) if (v.n[i] > v.n[b]) b = i; return b; };
+  franceMap("aMap", c => day?.[c] && d3.sum(day[c].n.slice(1)) ? ATMO[mode(day[c])][0] : null, (t, c) => { t.append(el("div", "t", depName(c))); const v = day?.[c];
+    if (!v) { t.append(el("div", null, "Pas de donnée")); return; } const tot = d3.sum(v.n.slice(1)); t.append(el("div", "big", ATMO[mode(v)][1]));
+    for (let i = 1; i < 7; i++) if (v.n[i]) tRow(t, ATMO[i][1], fmt(v.n[i] / tot * 100) + " %", ATMO[i][0]);
+    const pol = Object.entries(v.pol || {}).sort((a, b) => b[1] - a[1]); if (pol.length) tRow(t, "Polluant en cause", pol.map(([p]) => POL[p] || p).slice(0, 2).join(", ")); });
+  document.getElementById("aTitle").textContent = `Indice ATMO · ${date ? new Date(date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) : ""}`;
+  legend("aLegend", ATMO.slice(1).map(([c, t]) => [c, t]));
+  const bad = Object.entries(A.badDays).sort((a, b) => b[1] - a[1]).slice(0, 14);
+  document.getElementById("aRankTitle").textContent = `Jours d'air mauvais ou pire${A.first ? " depuis le " + new Date(A.first).toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) : ""}`;
+  rankList("aRank", bad.map(([c, n]) => [depName(c), n, fmt(n) + " j"]), bad[0]?.[1] || 1, ATMO[4][0]);
+  if (!bad.length) document.getElementById("aRank").append(el("p", "note", "Aucun jour où au moins 10 % des communes d'un département ont un air mauvais."));
+  // série
+  const host = document.getElementById("aSeries"); host.replaceChildren();
+  const s = A.series.map(r => { const tot = d3.sum(r.slice(2)) || 1; const o = { d: new Date(r[0]) }; for (let i = 1; i < 7; i++) o[i] = r[i + 1] / tot; return o; });
+  if (!s.length) return;
+  const w = W("aSeries"), H = 200, M = { l: 36, r: 8, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const st = d3.stack().keys([1, 2, 3, 4, 5, 6])(s);
+  const x = d3.scaleTime().domain(d3.extent(s, d => d.d)).range([M.l, w - M.r]), y = d3.scaleLinear().domain([0, 1]).range([H - M.b, M.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(v => Math.round(v * 100) + " %").tickSize(-(w - M.l - M.r)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(isMobile() ? 4 : 8).tickSize(0).tickPadding(6));
+  svg.append("g").selectAll("path").data(st).join("path").attr("fill", d => ATMO[d.key][0]).attr("d", d3.area().x(d => x(d.data.d)).y0(d => y(d[0])).y1(d => y(d[1])).curve(d3.curveStepAfter));
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", css("--text")).attr("opacity", 0);
+  svg.append("rect").attr("x", M.l).attr("y", M.t).attr("width", w - M.l - M.r).attr("height", H - M.t - M.b).attr("fill", "transparent")
+    .on("pointermove", e => { const dx = x.invert(d3.pointer(e)[0]); const i = Math.max(0, Math.min(s.length - 1, d3.bisector(d => d.d).left(s, dx))); const d = s[i];
+      cross.attr("x1", x(d.d)).attr("x2", x(d.d)).attr("opacity", .5);
+      showTip(e, t => { t.append(el("div", "t", d.d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }))); for (let k = 6; k >= 1; k--) if (d[k] > .001) tRow(t, ATMO[k][1], fmt(d[k] * 100, 1) + " %", ATMO[k][0]); }); })
+    .on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+}
+
+/* ---------- pied de page ---------- */
+function renderFooter() {
+  document.getElementById("footer").innerHTML = `
+  <b>Feux en direct et archives</b> — <a href="https://firms.modaps.eosdis.nasa.gov" target="_blank" rel="noopener">NASA FIRMS</a> : « We acknowledge the use of data and imagery from LANCE FIRMS operated by NASA's Earth Science Data and Information System (ESDIS) with funding provided by NASA Headquarters. » Détections VIIRS (S-NPP, NOAA-20, NOAA-21) et MODIS, données libres d'usage. Sources fixes : cellules où les archives VIIRS signalent des « autres sources terrestres fixes » (type 2) au moins deux années, masquées dans un rayon d'environ 1 km.<br>
+  <b>Feux de forêt</b> — <a href="https://bdiff.agriculture.gouv.fr" target="_blank" rel="noopener">BDIFF</a> (ministère de l'Agriculture), Licence Ouverte 2.0. <b>Météo des forêts</b> — Météo-France, Licence Ouverte 2.0.<br>
+  <b>Forêts</b> — IGN, Inventaire forestier national (indicateurs départementaux), Licence Ouverte 2.0 ; <a href="https://www.globalforestwatch.org" target="_blank" rel="noopener">Global Forest Watch</a> (Hansen/UMD/Google/USGS/NASA), CC BY 4.0.<br>
+  <b>Restrictions d'eau</b> — <a href="https://vigieau.gouv.fr" target="_blank" rel="noopener">VigiEau</a> (ministère de la Transition écologique), API et arrêtés, Licence Ouverte 2.0.<br>
+  <b>Qualité de l'air</b> — Atmo France et les AASQA, indice ATMO par commune, <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> : les agrégats départementaux affichés ici (et publiés dans le dépôt du site) sont distribués sous la même licence.<br>
+  <b>Fonds de carte</b> — départements : france-geojson (G. David, d'après IGN Admin Express), Licence Ouverte ; pays : Natural Earth, domaine public.`;
+}
+
+function renderAll() { renderHeader(); renderFires(); renderFireDaily(); renderHistYears(); renderHistMap(); renderMonths(); renderBdiff(); renderMdf(); renderHealth(); renderVigNow(); renderVigHistory(); renderAir(); renderFooter();
+  tabs("fAge", [[6, "6 h"], [24, "24 h"], [72, "72 h"], [168, "7 jours"]], fAge, v => { fAge = v; renderFires(); });
+  tabs("fFixed", [[false, "Sources fixes masquées"], [true, "Afficher les sources fixes"]], fShowFixed, v => { fShowFixed = v; renderFires(); }); }
+document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
+  try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} renderAll(); };
+try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(renderAll, 200); });
+renderAll(); loadVigLive();
+</script>
+</body>
+</html>

@@ -85,6 +85,10 @@ jobs:
           ENTSOE_TOKEN: ${{ secrets.ENTSOE_TOKEN }}
         run: python scripts/fetch_entsoe.py data/raw
 
+      - name: Eau, feux & air (FIRMS, VigiEau, BDIFF, Météo des forêts, Atmo, IFN, GFW)
+        continue-on-error: true  # chaque source a sa propre fraîcheur ; une source en panne garde ses données précédentes
+        run: python scripts/fetch_eau_feux_air.py data/raw
+
       - name: Construire data.js
         if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'  # besoin des exports ODRÉ du jour
         run: python scripts/build.py data/raw site/data.js
@@ -108,6 +112,10 @@ jobs:
       - name: Construire autresenergies.js
         continue-on-error: true
         run: python scripts/build_gaz_petrole.py data/raw site/autresenergies.js
+
+      - name: Construire eaufeuxair.js
+        continue-on-error: true
+        run: python scripts/build_eau_feux_air.py data/raw site/eaufeuxair.js
 
       - name: Committer les nouvelles données
         continue-on-error: true  # un échec d'envoi ne doit jamais empêcher le déploiement du site
