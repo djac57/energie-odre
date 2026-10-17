@@ -63,6 +63,11 @@ jobs:
         continue-on-error: true
         run: python scripts/fetch_hubeau.py data/raw
 
+      - name: Neige modélisée sur les massifs (Open-Meteo, ERA5)
+        if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'
+        continue-on-error: true
+        run: python scripts/fetch_snow.py data/raw
+
       - name: Prix day-ahead des voisins (Energy-Charts, CC BY 4.0)
         if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'
         continue-on-error: true

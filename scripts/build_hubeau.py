@@ -4,7 +4,8 @@ Entrées (voir fetch_hubeau.py et fetch_rte.py) :
 - data/raw/hubeau/stations.json, rivers.json : débit QmnJ (m³/s), température de l'eau, température max de l'air ;
 - data/raw/rte/nuclear_daily.json : production journalière de chaque réacteur (RTE, depuis 2019) ;
 - data/raw/rte/unavailabilities.json : indisponibilités dont la remarque cite des « causes externes liées à l'environnement » ;
-- data/raw/hubeau/nappes.json : niveaux mensuels moyens d'un piézomètre par département.
+- data/raw/hubeau/nappes.json : niveaux mensuels moyens d'un piézomètre par département ;
+- data/raw/snow/snow.json : hauteur de neige modélisée sur quatre massifs (Open-Meteo, ERA5).
 
 Niveau relatif des nappes : pour chaque piézomètre et chaque mois calendaire, la valeur du mois est classée parmi
 toutes les valeurs du même mois calendaire de sa chronique (rang centile, au moins 10 années) ; sept classes,
@@ -182,8 +183,21 @@ def nappes():
     return {"stations": stations, "classes": [c[1] for c in CLASSES]}
 
 
+def snow():
+    """Hauteur de neige modélisée (cm) par massif, série journalière continue depuis le 1er septembre 2015 (voir fetch_snow.py)."""
+    sn = load("snow", "snow.json", default={})
+    out = {}
+    for name, rec in sn.items():
+        d = rec.get("d", {})
+        if not d:
+            continue
+        d0 = dt.date.fromisoformat(min(d)); n = (dt.date.fromisoformat(max(d)) - d0).days + 1
+        out[name] = {"elev": rec.get("elev"), "d0": d0.isoformat(), "v": [d.get((d0 + dt.timedelta(days=i)).isoformat()) for i in range(n)]}
+    return out
+
+
 def main():
-    out = {"rivers": rivers(), "nappes": nappes(), "built": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes")}
+    out = {"rivers": rivers(), "nappes": nappes(), "snow": snow(), "built": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes")}
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("window.HUBEAU = " + json.dumps(out, ensure_ascii=False, separators=(",", ":")) + ";\n")
     print(f"hubeau.js : {len(out['rivers']['plants'])} centrales, {len(out['nappes']['stations'])} piézomètres, {os.path.getsize(OUT) // 1024} Ko")

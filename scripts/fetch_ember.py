@@ -1,7 +1,7 @@
 """Ember (ember-energy.org) : exports publics annuels et mensuels, sans clé — licence CC BY 4.0
 (« All content is released under a Creative Commons Attribution Licence (CC-BY-4.0) »).
 
-Ne garde qu'un extrait compact : France, voisins et agrégats européens ; mix par filière (TWh), production totale,
+Ne garde qu'un extrait compact : pays d'Europe et agrégat UE ; mix par filière (TWh), production totale,
 intensité carbone (gCO2/kWh), demande, imports nets et (mensuel) prix day-ahead.
 Ne retélécharge que si le fichier publié a changé (en-tête Last-Modified), ce qui arrive environ une fois par mois.
 
@@ -19,8 +19,12 @@ RAW = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file_
 OUT = os.path.join(RAW, "ember")
 BASE = "https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/"
 FILES = {"yearly": ("yearly_full_release_long_format.csv", "Year"), "monthly": ("monthly_full_release_long_format.csv", "Date")}
-AREAS = {"France": "FR", "Germany": "DE", "Belgium": "BE", "Spain": "ES", "Italy": "IT", "Switzerland": "CH", "Netherlands": "NL",
-         "United Kingdom": "GB", "Austria": "AT", "Poland": "PL", "Portugal": "PT", "EU": "EU"}
+# Pays européens (code ISO 3 d'Ember → code à deux lettres de la page) et agrégat « EU »
+ISO3 = {"FRA": "FR", "DEU": "DE", "BEL": "BE", "ESP": "ES", "ITA": "IT", "CHE": "CH", "NLD": "NL", "GBR": "GB", "AUT": "AT", "POL": "PL", "PRT": "PT",
+        "IRL": "IE", "DNK": "DK", "NOR": "NO", "SWE": "SE", "FIN": "FI", "CZE": "CZ", "SVK": "SK", "HUN": "HU", "SVN": "SI", "HRV": "HR", "ROU": "RO",
+        "BGR": "BG", "SRB": "RS", "BIH": "BA", "MNE": "ME", "MKD": "MK", "ALB": "AL", "GRC": "GR", "EST": "EE", "LVA": "LV", "LTU": "LT", "LUX": "LU",
+        "UKR": "UA", "MDA": "MD", "TUR": "TR", "XKX": "XK", "BLR": "BY", "CYP": "CY", "MLT": "MT", "ISL": "IS"}
+AREAS = {"EU": "EU"}
 KEEP = {("Electricity generation", "Fuel"): "gen", ("Electricity generation", "Total"): "gen",
         ("Power sector emissions", "CO2 intensity"): "co2", ("Electricity demand", "Demand"): "demand",
         ("Electricity imports", "Electricity imports"): "imports", ("Electricity prices", "Day-ahead electricity price"): "price"}
@@ -47,7 +51,7 @@ def main():
                 text = io.TextIOWrapper(r, encoding="utf-8")
                 out = defaultdict(lambda: defaultdict(dict))
                 for row in csv.DictReader(text):
-                    code = AREAS.get(row["Area"])
+                    code = AREAS.get(row["Area"]) or ISO3.get(row.get("ISO 3 code") or "")
                     grp = KEEP.get((row["Category"], row["Subcategory"]))
                     if not code or not grp or row["Value"] in ("", None):
                         continue

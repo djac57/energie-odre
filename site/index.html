@@ -201,6 +201,21 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .netlist > div.fr { color: var(--accent); font-weight: 600; border-bottom: 1px solid var(--accent); }
 .netlist .nb { height: 8px; justify-self: end; } .netlist .nb.ex { background: var(--exp); justify-self: start; } .netlist .nb.im { background: var(--imp); }
 .netlist .nbw { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.ecobar .wcells { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 1px; }
+.ecobar .wcells span { height: 18px; border-radius: 1px; position: relative; }
+.ecobar .wcells span.best { outline: 2px solid var(--ok); outline-offset: -2px; }
+.ecobar .whours { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); font: 9.5px "IBM Plex Mono", monospace; color: var(--muted); }
+.ecobar .wsum { font: 12px "IBM Plex Mono", monospace; color: var(--text-2); }
+.ecobar .wsum b { color: var(--ok); } .ecobar .wsum i { font-style: normal; color: var(--imp); }
+.fgrid { display: grid; gap: 1px; font: 11px "IBM Plex Mono", monospace; }
+.fgrid > div { display: grid; grid-template-columns: 150px repeat(7, minmax(0, 1fr)); gap: 1px; }
+.fgrid span { padding: 5px 4px; text-align: center; min-width: 0; overflow: hidden; white-space: nowrap; }
+.fgrid .rl { text-align: left; color: var(--text-2); }
+.fgrid .hd { color: var(--muted); }
+.fgrid .nat { font-weight: 600; }
+@media (max-width: 560px) { .fgrid > div { grid-template-columns: 88px repeat(7, minmax(0, 1fr)); } .fgrid span { padding: 4px 1px; font-size: 10px; } }
+.snowgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 560px) { .snowgrid { grid-template-columns: 1fr; } }
 .navlink { font: 12px "IBM Plex Mono", monospace; color: var(--accent); text-decoration: none; border: 1px solid var(--line); padding: 6px 10px; white-space: nowrap; }
 .navlink:hover { border-color: var(--accent); }
 .note { font: 12px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 8px; }
@@ -239,6 +254,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 
 <section class="kpis" id="kpis"></section>
 <section class="ecobar" id="ecowatt"></section>
+<section class="ecobar" id="whenUse"></section>
 
 <section class="band"><div class="band-in">
   <div class="side"><div class="no">01 — MIX</div><h2>Le mix, jour après jour</h2>
@@ -433,6 +449,35 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
       <div class="panel"><div class="maptitle">7 derniers jours, zone par zone</div><div class="tscroll"><table class="eutable" id="imbTable"></table></div><div class="note" id="imbNote"></div></div></div></div>
 </div></section>
 
+<section class="band" id="fcBlock"><div class="band-in">
+  <div class="side"><div class="no">20 — PROCHAINS JOURS</div><h2>La météo qui fera l'électricité</h2>
+    <p>Prévisions à 7 jours du vent à 100&nbsp;m (hauteur des éoliennes), de l'ensoleillement et de la température, au centre de chaque région. Le froid fait monter la consommation (chauffage électrique), le vent et le soleil la production renouvelable.</p>
+    <div class="tabs" id="fcMetric"><button class="tab" data-v="wind" aria-pressed="true">Vent 100 m</button><button class="tab" data-v="sun" aria-pressed="false">Ensoleillement</button><button class="tab" data-v="tmax" aria-pressed="false">Température max</button><button class="tab" data-v="tmin" aria-pressed="false">Température min</button></div>
+    <p class="note" id="fcwStatus"></p></div>
+  <div><div class="panel"><div class="maptitle" id="fcwTitle"></div><div class="fgrid" id="fcwGrid"></div><div class="note">Prévisions Open-Meteo (modèles Météo-France et ECMWF combinés, CC BY 4.0), interrogées par votre navigateur. Valeurs journalières&nbsp;: vent moyen à 100&nbsp;m, rayonnement solaire cumulé, températures extrêmes.</div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Ce que RTE prévoit pour demain (prévision de la veille, J-1)</div><div id="fcRte"></div><div class="legend" id="fcRteLg"></div><div class="stat" id="fcRteStats"></div></div></div>
+</div></section>
+
+<section class="band" id="lakeBlock"><div class="band-in">
+  <div class="side"><div class="no">21 — LACS ET NEIGE</div><h2>L'eau en réserve</h2>
+    <p>Les lacs de barrage stockent l'énergie hydraulique de l'année&nbsp;: ils se remplissent à la fonte des neiges, au printemps, et se vident en hiver, quand l'électricité vaut le plus. Le stock de cette année comparé aux années depuis 2015, puis la neige qui alimentera les prochains remplissages.</p>
+    <div class="stat" id="lakeStats"></div></div>
+  <div><div class="panel"><div class="maptitle">Stock des réservoirs hydrauliques (TWh, relevé hebdomadaire RTE)</div><div id="lakeChart"></div><div class="legend" id="lakeLg"></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Hauteur de neige modélisée, hiver en cours face aux hivers depuis 2015-2016 (cm)</div><div class="snowgrid" id="snowGrid"></div>
+      <div class="note">Open-Meteo, réanalyse ERA5 / ERA5-Land de Copernicus (CC BY 4.0)&nbsp;: hauteur de neige moyenne d'une maille d'une dizaine de kilomètres, à l'altitude de la maille. Ce n'est pas une mesure de station&nbsp;; elle sert à comparer les hivers.</div></div></div>
+</div></section>
+
+<section class="band" id="co2Block"><div class="band-in">
+  <div class="side"><div class="no">22 — CO₂ EN EUROPE</div><h2>Le CO₂ de chaque kWh, pays par pays</h2>
+    <p>Intensité carbone de la production d'électricité (émissions directes des centrales ÷ production) mois par mois dans toute l'Europe, et la France en direct.</p>
+    <div class="player"><button class="play" id="co2Play" aria-label="Lecture">▶</button><input type="range" id="co2Slider" min="0" max="0" value="0" aria-label="Mois"><span class="mlabel" id="co2Label"></span></div>
+    <div class="stat" id="co2Live"></div>
+    <p class="note">Europe&nbsp;: Ember, Monthly Electricity Data (CC BY 4.0), publié avec un à trois mois de décalage. France en direct&nbsp;: éCO2mix (RTE, <span class="mono">eco2mix-national-tr</span>), estimation des émissions directes du parc. Les deux sources comptent les émissions directes, pas le cycle de vie.</p></div>
+  <div><div class="maps"><div class="panel"><div id="co2Map"></div></div>
+      <div class="panel"><div class="maptitle" id="co2CmpT">France : éCO2mix face à Ember (gCO₂/kWh, moyenne mensuelle)</div><div id="co2Cmp"></div><div class="legend" id="co2CmpLg"></div><div class="note" id="co2CmpNote"></div></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">France, 7 derniers jours au quart d'heure (gCO₂/kWh, éCO2mix temps réel)</div><div id="co2Week"></div><div class="note" id="co2WeekNote"></div></div></div>
+</div></section>
+
 <footer>
   <b>Données</b> — RTE, éCO2mix, sur <a href="https://odre.opendatasoft.com" target="_blank" rel="noopener">ODRÉ</a> (Open Data Réseaux Énergies), Licence Ouverte&nbsp;: nationales consolidées et définitives (<span class="mono">eco2mix-national-cons-def</span>) + temps réel (<span class="mono">eco2mix-national-tr</span>)&nbsp;; régionales (<span class="mono">eco2mix-regional-cons-def</span>, <span class="mono">eco2mix-regional-tr</span>)&nbsp;;
   météo régionale Weathernews France (<span class="mono">rayonnement-solaire-vitesse-vent-tri-horaires-regionaux</span>, vent à 100&nbsp;m et rayonnement solaire global, tri-horaire, depuis 2016, Licence Ouverte 2.0) — sans direction du vent&nbsp;: les éoliennes de la carte en indiquent la force, pas l'orientation.
@@ -445,6 +490,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <b>Rivières et nappes</b> — <a href="https://hubeau.eaufrance.fr" target="_blank" rel="noopener">Hub'Eau</a> (OFB / BRGM, Système d'information sur l'eau&nbsp;; Eaufrance&nbsp;: « sauf mention contraire, contenus sous licence Etalab 2.0 »)&nbsp;: hydrométrie (débits moyens journaliers QmnJ), température des cours d'eau, piézométrie (niveaux des nappes)&nbsp;; mis à jour chaque jour par le dépôt. Température de l'air au site&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (réanalyse ERA5 de Copernicus, CC BY 4.0). Production des réacteurs et indisponibilités «&nbsp;causes externes liées à l'environnement&nbsp;»&nbsp;: API RTE.<br>
   <b>Europe</b> — mix, intensité carbone, demande et échanges&nbsp;: <a href="https://ember-energy.org" target="_blank" rel="noopener">Ember</a>, Yearly / Monthly Electricity Data, licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>&nbsp;; prix day-ahead par zone de prix&nbsp;: <a href="https://www.energy-charts.info" target="_blank" rel="noopener">Energy-Charts.info</a> (Fraunhofer ISE, données Bundesnetzagentur | SMARD.de, CC BY 4.0) — Italie&nbsp;: zone Nord&nbsp;; Allemagne&nbsp;: zone DE-LU (DE-AT-LU avant octobre 2018)&nbsp;; pas de prix pour le Royaume-Uni.<br>
   <b>ENTSO-E</b> — <a href="https://transparency.entsoe.eu" target="_blank" rel="noopener">ENTSO-E Transparency Platform</a>, données de la «&nbsp;List of data available for free re-use&nbsp;» sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>&nbsp;: flux physiques transfrontaliers (art. 12.1.g du règlement 543/2013) et prix des écarts (art. 17.1.g), agrégés à l'heure ou au jour par le dépôt. Les données des interconnexions IFA et Nemo Link, exclues de cette licence, ne sont pas reprises&nbsp;: la frontière France–Royaume-Uni vient des flux physiques RTE (IFA, IFA2), Belgique–Royaume-Uni n'est pas représentée.<br>
+  <b>Prévisions, lacs et neige</b> — prévisions météo à 7 jours et hauteur de neige modélisée&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0&nbsp;; neige&nbsp;: réanalyse ERA5 / ERA5-Land, Copernicus)&nbsp;; prévisions de consommation et de production, stocks hydrauliques hebdomadaires depuis 2015&nbsp;: API RTE. «&nbsp;Quand consommer&nbsp;?&nbsp;»&nbsp;: calcul de la page à partir d'Ecowatt (RTE), du prix day-ahead (SMARD / Energy-Charts, CC BY 4.0) et des prévisions RTE.<br>
   <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Grégoire David), issu d'Admin Express IGN, Licence Ouverte&nbsp;; pays (et carte européenne)&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> (Natural Earth, domaine public). Simplifiés et embarqués.
 </footer>
 <div class="tip" id="tip" role="tooltip"></div>
@@ -1268,7 +1314,7 @@ function lineChart(host, series, { H = 150, unit = "MW", h0, keys, colors, dashe
   const all = series.flat().filter(v => v != null), y = d3.scaleLinear().domain([Math.min(0, d3.min(all) ?? 0), d3.max(all) || 1]).nice().range([H - M.b, M.t]);
   const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
   svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(yfmt || (v => fr(v))));
-  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickSize(0).tickPadding(6).tickFormat(W < 500 ? d3.timeFormat("%d/%m") : null));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickSize(0).tickPadding(6).tickFormat(W < 500 ? d3.timeFormat("%d/%m") : d => d.getHours() ? d3.timeFormat("%H h")(d) : d3.timeFormat("%a %d")(d)));
   const t = i => new Date(+new Date(h0) + i * 3600e3);
   series.forEach((s, k) => { const ln = d3.line().defined(v => v != null).x((v, i) => x(t(i))).y(v => y(v));
     if (fill && fill[k]) svg.append("path").datum(s).attr("fill", colors[k]).attr("opacity", .25).attr("d", d3.area().defined(v => v != null).x((v, i) => x(t(i))).y0(y(0)).y1(v => y(v)));
@@ -1658,7 +1704,7 @@ function envLostYear(name, year) { // MWh perdus pendant l'année (épisodes cou
   const a = new Date(year, 0, 1), b = new Date(Math.min(+new Date(year + 1, 0, 1), Date.now())); // déclaré à venir : non compté
   return d3.sum(HB.rivers.env[name]?.eps || [], e => { const s = tUTC(e[0]), f = tUTC(e[1]); const h = (Math.min(+b, +f) - Math.max(+a, +s)) / 3600e3; return h > 0 ? e[3] * h / ((f - s) / 3600e3) : 0; });
 }
-function legendItems(host, items) { host.replaceChildren(); items.forEach(([c, label, line, dash]) => { const s = el("span"), sw = el("span", "sw" + (line ? " line" : "")); sw.style.background = dash ? `repeating-linear-gradient(90deg, ${c} 0 4px, transparent 4px 7px)` : c; if (!line) sw.style.opacity = .7; s.append(sw, document.createTextNode(label)); host.append(s); }); }
+function legendItems(host, items) { host.replaceChildren(); host.classList.add("chartlab"); items.forEach(([c, label, line, dash]) => { const s = el("span"), sw = el("span", "sw" + (line ? " line" : "")); sw.style.background = dash ? `repeating-linear-gradient(90deg, ${c} 0 4px, transparent 4px 7px)` : c; if (!line) sw.style.opacity = .7; s.append(sw, document.createTextNode(label)); host.append(s); }); }
 function renderRivers() {
   const blk = document.getElementById("riverBlock"); if (!HB || !HB.rivers.plants.length) { blk.style.display = "none"; return; }
   const R = HB.rivers, P = R.plants;
@@ -2126,6 +2172,252 @@ function renderImbTable() {
   document.getElementById("imbNote").textContent = "€/MWh, quarts d'heure des 7 derniers jours publiés ; σ : écart-type ; < 0 : part des quarts d'heure à prix négatif ; day-ahead : moyenne des mêmes 7 jours. Prix des écarts : ENTSO-E (CC BY 4.0). Day-ahead : Energy-Charts (CC BY 4.0). Allemagne absente (prix publié par zone de réglage, non retenu).";
 }
 
+/* ---------- Quand consommer ? (Ecowatt + day-ahead + prévisions RTE, calcul dans la page) ---------- */
+const ymdL = t => `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+// Score d'une heure (0 = idéale, 1 = à éviter) : moyenne du rang centile du prix day-ahead et du rang centile de la
+// charge résiduelle prévue (consommation − éolien − solaire : plus elle est basse, moins les centrales fossiles tournent),
+// sur les 48 heures d'aujourd'hui et demain ; bonus si Ecowatt signale une production décarbonée, « à éviter » si Ecowatt est orange ou rouge.
+function whenHours() {
+  const F = RT?.forecast, now = new Date(), d0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()), fh0 = F ? +new Date(F.h0) : 0;
+  const daMap = new Map(); (PR?.recent || []).forEach(([t, p]) => { const k = Math.floor(t / 3600); (daMap.get(k) || daMap.set(k, []).get(k)).push(p); });
+  const eco = new Map((RT?.ecowatt || []).map(([d, v]) => [d, v.h]));
+  const fc = (s, i) => { const o = F?.[s]; if (!o || i < 0 || i >= F.n) return null; return o.ID?.[i] ?? o["D-1"]?.[i] ?? null; };
+  const H = [];
+  for (let dd = 0; dd < 2; dd++) for (let h = 0; h < 24; h++) {
+    const t = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() + dd, h), i = Math.round((+t - fh0) / 3600e3);
+    const c = fc("conso", i), w = fc("wind", i), so = fc("solar", i), pa = daMap.get(Math.floor(+t / 3600e3));
+    H.push({ t, dd, h, price: pa ? d3.mean(pa) : null, resid: c != null && w != null && so != null ? c - w - so : null, ew: eco.get(ymdL(t))?.[h] ?? null });
+  }
+  const rank = key => { const v = H.map(x => x[key]).filter(x => x != null).sort(d3.ascending); return x => x == null || v.length < 2 ? null : d3.bisectLeft(v, x) / (v.length - 1); };
+  const rp = rank("price"), rr = rank("resid");
+  H.forEach(x => { const parts = [rp(x.price), rr(x.resid)].filter(v => v != null); x.score = parts.length ? d3.mean(parts) - (x.ew === 0 ? .1 : 0) : null; if (x.ew >= 2) x.score = 1.2; });
+  const sc = H.map(x => x.score).filter(v => v != null).sort(d3.ascending), q25 = d3.quantile(sc, .25), q80 = d3.quantile(sc, .8);
+  H.forEach(x => { x.cls = x.score == null ? null : x.ew >= 2 || x.score >= q80 ? "avoid" : x.score <= q25 ? "good" : "mid"; });
+  return H;
+}
+function renderWhenUse() {
+  const box = document.getElementById("whenUse"); box.replaceChildren();
+  if (!RT?.forecast || !PR) { box.style.display = "none"; return; } box.style.display = "";
+  const H = whenHours(), now = new Date(); if (!H.some(x => x.score != null)) { box.style.display = "none"; return; }
+  const t = el("div"); t.append(el("div", "ttl", "Quand consommer ?"), el("div", "note", "machines, recharge, chauffe-eau : heures conseillées")); box.append(t);
+  const days = el("div", "days"), color = s => s == null ? "var(--line)" : d3.interpolateRgb(css("--ok"), css("--imp"))(Math.max(0, Math.min(1, s)));
+  [0, 1].forEach(dd => { const hs = H.filter(x => x.dd === dd);
+    if (!hs.some(x => x.score != null)) { const r = el("div", "day"); r.style.gridTemplateColumns = "92px minmax(0, 1fr)"; r.append(el("span", null, hs[0].t.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })), el("span", "wsum", "prix et prévisions publiés vers 13 h – 19 h")); days.append(r); return; }
+    const r = el("div", "day"); r.style.gridTemplateColumns = "92px minmax(0, 1fr)"; r.append(el("span", null, hs[0].t.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })));
+    // meilleur créneau de 3 heures à venir
+    let best = null; for (let i = 0; i + 2 < 24; i++) { const w = hs.slice(i, i + 3); if (w.some(x => x.score == null || +x.t + 3600e3 < +now)) continue; const s = d3.sum(w, x => x.score); if (!best || s < best.s) best = { i, s }; }
+    const cells = el("div", "wcells"); hs.forEach((x, i) => { const c = el("span"); c.style.background = color(x.score); if (+x.t + 3600e3 < +now) c.style.opacity = .3;
+      if (best && i >= best.i && i < best.i + 3) c.className = "best";
+      c.onpointermove = e => showTip(e, tt => { tt.append(el("div", "t", `${x.t.toLocaleDateString("fr-FR", { weekday: "long" })} · ${x.h} h – ${x.h + 1} h`));
+        tt.append(el("div", "big", x.cls === "good" ? "Bon moment" : x.cls === "avoid" ? "À éviter" : x.cls ? "Moyen" : "—"));
+        row(tt, null, "Prix day-ahead", x.price == null ? "non publié" : fmtEur(x.price)); row(tt, null, "Charge résiduelle prévue", x.resid == null ? "—" : fmtGW(x.resid));
+        row(tt, null, "Ecowatt", x.ew == null ? "—" : (ECO[x.ew] || ["", "—"])[1]); }); c.onpointerleave = hideTip; cells.append(c); });
+    const wrap = el("div"); wrap.append(cells);
+    const good = hs.filter(x => x.cls === "good" && +x.t + 3600e3 >= +now), avoid = hs.filter(x => x.cls === "avoid" && +x.t + 3600e3 >= +now);
+    const spans = list => { const out = []; list.forEach(x => { const l = out.at(-1); if (l && l[1] === x.h) l[1] = x.h + 1; else out.push([x.h, x.h + 1]); }); return out.map(([a, b]) => `${a} h–${b} h`).join(", "); };
+    const sum = el("div", "wsum"); sum.innerHTML = "";
+    if (best) { sum.append(document.createTextNode("Meilleur créneau : ")); sum.append(el("b", null, `${hs[best.i].h} h – ${hs[best.i].h + 3} h`)); }
+    if (good.length) sum.append(document.createTextNode(` · bonnes heures : ${spans(good)}`));
+    if (avoid.length) { sum.append(document.createTextNode(" · à éviter : ")); sum.append(el("i", null, spans(avoid))); }
+    if (!hs.some(x => x.price != null)) sum.append(document.createTextNode(" · prix de demain publiés vers 13 h : score provisoire"));
+    wrap.append(sum); r.append(wrap); days.append(r); });
+  const axis = el("div", "day"); axis.style.gridTemplateColumns = "92px minmax(0, 1fr)"; axis.append(el("span")); const hrs = el("div", "whours"); for (let h = 0; h < 24; h++) hrs.append(el("span", null, h % 3 === 0 ? h + "h" : "")); axis.append(hrs); days.append(axis);
+  box.append(days);
+  box.append(el("div", "hist", "Score : moyenne du classement du prix day-ahead et de la charge résiduelle prévue par RTE (consommation − éolien − solaire, plus elle est basse, moins on brûle de gaz) sur ces 48 h ; bonus si Ecowatt est vert foncé, « à éviter » s'il est orange ou rouge. Contour vert : meilleur créneau de 3 h à venir. Indicatif."));
+}
+
+/* ---------- Les prochains jours (Open-Meteo dans le navigateur, prévisions RTE) ---------- */
+const FCW = { ok: false, loading: false, error: null, regions: [], metric: "wind" };
+async function loadForecastWeather() {
+  FCW.loading = true; renderFcWeather();
+  try {
+    const feats = GEO.regions.features.filter(f => D.regions[f.properties.nom]), pts = feats.map(f => d3.geoCentroid(f));
+    const q = new URLSearchParams({ latitude: pts.map(p => p[1].toFixed(3)).join(","), longitude: pts.map(p => p[0].toFixed(3)).join(","),
+      daily: "temperature_2m_max,temperature_2m_min,shortwave_radiation_sum", hourly: "wind_speed_100m", wind_speed_unit: "ms", timezone: "Europe/Paris", forecast_days: "7" });
+    const res = await getJSON("https://api.open-meteo.com/v1/forecast?" + q, 15000), list = Array.isArray(res) ? res : [res];
+    FCW.regions = feats.map((f, i) => { const r = list[i]; if (!r) return null; const days = r.daily.time;
+      const wind = days.map((d, k) => d3.mean(r.hourly.wind_speed_100m.slice(k * 24, k * 24 + 24).filter(v => v != null)));
+      return { name: f.properties.nom, days, wind, sun: r.daily.shortwave_radiation_sum, tmax: r.daily.temperature_2m_max, tmin: r.daily.temperature_2m_min }; }).filter(Boolean);
+    FCW.ok = FCW.regions.length > 0; FCW.error = null; FCW.fetched = new Date();
+  } catch (e) { FCW.error = e.name === "AbortError" ? "délai dépassé" : e.message; }
+  finally { FCW.loading = false; renderFcWeather(); }
+}
+const FCW_M = { wind: { t: "Vent moyen à 100 m (m/s)", f: v => fr(v, 1), c: v => d3.interpolateRgb(css("--panel-2"), css("--f-eolien"))(Math.min(1, v / 12)) },
+  sun: { t: "Rayonnement solaire (kWh/m²/jour)", f: v => fr(v / 3.6, 1), c: v => d3.interpolateRgb(css("--panel-2"), css("--f-solaire"))(Math.min(1, v / 28)) },
+  tmax: { t: "Température maximale (°C)", f: v => fr(v), c: v => d3.interpolateRdYlBu(1 - Math.max(0, Math.min(1, (v + 5) / 40))) },
+  tmin: { t: "Température minimale (°C)", f: v => fr(v), c: v => d3.interpolateRdYlBu(1 - Math.max(0, Math.min(1, (v + 10) / 35))) } };
+function renderFcWeather() {
+  const st = document.getElementById("fcwStatus"), g = document.getElementById("fcwGrid"); g.replaceChildren();
+  document.querySelectorAll("#fcMetric .tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === FCW.metric));
+  const M2 = FCW_M[FCW.metric]; document.getElementById("fcwTitle").textContent = M2.t + " · 7 jours";
+  st.textContent = FCW.loading ? "Chargement des prévisions…" : FCW.error ? `Prévisions indisponibles (${FCW.error}).` : FCW.ok ? `Prévisions reçues à ${FCW.fetched.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}.` : "";
+  if (!FCW.ok) return;
+  const R = FCW.regions, days = R[0].days, small = g.clientWidth < 520;
+  const head = el("div"); head.append(el("span", "rl hd", "")); days.forEach(d => head.append(el("span", "hd", new Date(d + "T12:00:00").toLocaleDateString("fr-FR", small ? { weekday: "narrow", day: "numeric" } : { weekday: "short", day: "numeric" })))); g.append(head);
+  const rowOf = (label, vals, cls) => { const r = el("div", cls); r.append(el("span", "rl", label)); vals.forEach(v => { const c = el("span", "num", v == null ? "—" : M2.f(v)); if (v != null) { c.style.background = M2.c(v); const L = d3.lab(c.style.background).l; c.style.color = L > 60 ? "#111" : "#fff"; } r.append(c); }); g.append(r); };
+  rowOf(small ? "France" : "France (moyenne)", days.map((_, k) => d3.mean(R, r => r[FCW.metric][k])), "nat");
+  const short = n => n.replace("Provence-Alpes-Côte d'Azur", "PACA").replace("Bourgogne-Franche-Comté", "Bourgogne-F.-C.").replace("Auvergne-Rhône-Alpes", "Auvergne-Rh.-Alpes").replace("Centre-Val de Loire", "Centre-Val de L.").replace("Nouvelle-Aquitaine", small ? "N.-Aquitaine" : "Nouvelle-Aquitaine").replace("Pays de la Loire", small ? "Pays de Loire" : "Pays de la Loire");
+  R.forEach(r => rowOf(short(r.name), r[FCW.metric]));
+}
+function renderFcRte() {
+  const F = RT?.forecast, host = document.getElementById("fcRte"); if (!F) { document.getElementById("fcBlock").querySelector(".panel + .panel").style.display = "none"; return; }
+  const now = new Date(), d0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()), fh0 = +new Date(F.h0), i0 = Math.round((+d0 - fh0) / 3600e3);
+  const get = (s, k) => d3.range(48).map(j => { const i = i0 + j; return i >= 0 && i < F.n ? F[s][k]?.[i] ?? null : null; });
+  const pick = s => { const a = get(s, "ID"), b = get(s, "D-1"); return a.map((v, j) => v ?? b[j]); };
+  const series = [get("conso", "REALISED"), pick("conso"), pick("wind"), pick("solar")], names = ["Consommation réalisée", "Consommation prévue", "Éolien prévu", "Solaire prévu"];
+  const cols = [css("--conso"), css("--accent"), col("eolien"), col("solaire")];
+  const ch = lineChart(host, series, { H: 200, h0: d0.toISOString(), colors: cols, dashes: [null, "5 3", null, null], yfmt: v => fr(v / 1000) + " GW" });
+  ch.svg.append("line").attr("x1", ch.x(now)).attr("x2", ch.x(now)).attr("y1", ch.M.t).attr("y2", ch.H - ch.M.b).attr("stroke", "var(--accent-2)").attr("stroke-width", 1.5);
+  addHover(ch, series, names, cols, v => fmtGW(v));
+  const lg = document.getElementById("fcRteLg"); lg.replaceChildren(); names.forEach((n, i) => { const b = el("span", "lg"), sw = el("span", "sw line"); sw.style.background = cols[i]; b.append(sw, document.createTextNode(n)); lg.append(b); });
+  const tm = d3.range(24, 48), st = document.getElementById("fcRteStats"); st.replaceChildren(); const add = (k, v) => { const d = el("div"); d.append(document.createTextNode(k + " "), el("b", null, v)); st.append(d); };
+  const c = tm.map(j => series[1][j]).filter(v => v != null), w = tm.map(j => series[2][j]).filter(v => v != null), so = tm.map(j => series[3][j]).filter(v => v != null);
+  if (c.length) add("Demain, pointe de consommation", fmtGW(d3.max(c))); if (w.length) add("Éolien moyen", fmtGW(d3.mean(w))); if (so.length) add("Pic solaire", fmtGW(d3.max(so)));
+  if (!c.length) add("Prévisions de demain", "publiées dans la soirée");
+}
+tabs("fcMetric", v => { FCW.metric = v; renderFcWeather(); });
+
+/* ---------- Lacs de barrage et neige ---------- */
+function renderLakes() {
+  const blk = document.getElementById("lakeBlock"), W0 = RT?.water; if (!W0?.length) { blk.style.display = "none"; return; }
+  const rows = W0.map(([d, v]) => { const t = new Date(d + "T12:00:00"); return { t, y: t.getFullYear(), wk: Math.min(52, Math.floor((t - new Date(t.getFullYear(), 0, 1)) / 6048e5)), v: v / 1e6 }; });
+  const curY = d3.max(rows, r => r.y), past = rows.filter(r => r.y < curY), wks = d3.range(53);
+  const band = wks.map(k => { const v = past.filter(r => r.wk === k).map(r => r.v); return v.length ? { k, lo: d3.min(v), hi: d3.max(v), m: d3.mean(v) } : null; }).filter(Boolean);
+  const cur = rows.filter(r => r.y === curY), prev = rows.filter(r => r.y === curY - 1);
+  const host = document.getElementById("lakeChart"); host.replaceChildren(); const W = host.clientWidth, H = 240, M = { l: 46, r: 8, t: 8, b: 20 };
+  const x = d3.scaleLinear().domain([0, 52]).range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, d3.max(rows, r => r.v)]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " TWh"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickValues(d3.range(12).map(m => (new Date(2021, m, 1) - new Date(2021, 0, 1)) / 6048e5)).tickSize(0).tickPadding(6).tickFormat((v, i) => W < 500 ? MS[i][0] : MS[i]));
+  const hc = col("hydraulique");
+  svg.append("path").datum(band).attr("fill", hc).attr("opacity", .15).attr("d", d3.area().x(b => x(b.k)).y0(b => y(b.lo)).y1(b => y(b.hi)).curve(d3.curveMonotoneX));
+  svg.append("path").datum(band).attr("fill", "none").attr("stroke", hc).attr("stroke-dasharray", "3 3").attr("d", d3.line().x(b => x(b.k)).y(b => y(b.m)).curve(d3.curveMonotoneX));
+  svg.append("path").datum(prev).attr("fill", "none").attr("stroke", "var(--text-2)").attr("stroke-width", 1.2).attr("d", d3.line().x(r => x(r.wk)).y(r => y(r.v)).curve(d3.curveMonotoneX));
+  svg.append("path").datum(cur).attr("fill", "none").attr("stroke", hc).attr("stroke-width", 2.6).attr("d", d3.line().x(r => x(r.wk)).y(r => y(r.v)).curve(d3.curveMonotoneX));
+  const last = cur.at(-1); if (last) svg.append("circle").attr("cx", x(last.wk)).attr("cy", y(last.v)).attr("r", 4).attr("fill", hc);
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const k = Math.max(0, Math.min(52, Math.round(x.invert(d3.pointer(e)[0])))), b = band.find(z => z.k === k), c = cur.find(r => r.wk === k), p = prev.find(r => r.wk === k);
+    showTip(e, t => { t.append(el("div", "t", `Semaine ${k + 1}`)); if (c) row(t, hc, String(curY), fr(c.v, 2) + " TWh"); if (p) row(t, css("--text-2"), String(curY - 1), fr(p.v, 2) + " TWh");
+      if (b) { row(t, null, `Moyenne ${past[0].y}–${curY - 1}`, fr(b.m, 2) + " TWh"); row(t, null, "Min – max", `${fr(b.lo, 2)} – ${fr(b.hi, 2)}`); } }); }).on("pointerleave", hideTip);
+  const lg = document.getElementById("lakeLg"); lg.replaceChildren(); legendItems(lg, [[hc, String(curY), true], [css("--text-2"), String(curY - 1), true], [hc, `Moyenne ${past[0]?.y}–${curY - 1}`, true, true], [hc, "Minimum – maximum"]]);
+  const st = document.getElementById("lakeStats"); st.replaceChildren(); const add = (k, v) => { const d = el("div"); d.append(document.createTextNode(k + " "), el("b", null, v)); st.append(d); };
+  if (last) { const b = band.find(z => z.k === last.wk); add(`Stock au ${last.t.toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}`, fr(last.v, 2) + " TWh");
+    if (b) { add("Écart à la moyenne", (last.v >= b.m ? "+" : "−") + fr(Math.abs(last.v / b.m - 1) * 100) + " %"); const all = past.filter(r => r.wk === last.wk).map(r => r.v); add("Rang parmi les années", `${all.filter(v => v > last.v).length + 1}ᵉ sur ${all.length + 1}`); } }
+  renderSnow();
+}
+function renderSnow() {
+  const grid = document.getElementById("snowGrid"); grid.replaceChildren(); const SN = HB?.snow; if (!SN || !Object.keys(SN).length) { grid.parentElement.style.display = "none"; return; }
+  const now = new Date(), seasonStart = d => d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1, curS = seasonStart(now);
+  Object.entries(SN).forEach(([name, s]) => {
+    const d0 = new Date(s.d0 + "T12:00:00"), bySeason = {};
+    s.v.forEach((v, i) => { if (v == null) return; const t = d3.timeDay.offset(d0, i), S0 = seasonStart(t), k = Math.round((t - new Date(S0, 8, 1, 12)) / 864e5); if (k > 300) return; (bySeason[S0] ||= [])[k] = v; });
+    const seasons = Object.keys(bySeason).map(Number).sort(), past = seasons.filter(y => y < curS);
+    const band = d3.range(301).map(k => { const v = past.map(y => bySeason[y][k]).filter(x => x != null); return v.length ? { k, lo: d3.min(v), hi: d3.max(v), m: d3.median(v) } : null; }).filter(Boolean);
+    const cur = (bySeason[curS] || []).map((v, k) => ({ k, v })).filter(r => r.v != null);
+    const box = el("div"); box.append(el("div", "chartlab", `${name} · maille à ${fr(s.elev)} m`)); const host = el("div"); box.append(host); grid.append(box);
+    const W = Math.max(200, (grid.clientWidth - (grid.clientWidth > 560 ? 16 : 0)) / (grid.clientWidth > 560 ? 2 : 1)), H = 130, M = { l: 40, r: 6, t: 6, b: 18 };
+    const x = d3.scaleLinear().domain([0, 300]).range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, d3.max(band, b => b.hi) || 10]).nice().range([H - M.b, M.t]);
+    const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+    svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(3).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " cm"));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickValues([0, 61, 122, 183, 242]).tickSize(0).tickPadding(5).tickFormat(v => ({ 0: "sept.", 61: "nov.", 122: "janv.", 183: "mars", 242: "mai" })[v]));
+    svg.append("path").datum(band).attr("fill", "var(--cloud)").attr("opacity", .18).attr("d", d3.area().x(b => x(b.k)).y0(b => y(b.lo)).y1(b => y(b.hi)));
+    svg.append("path").datum(band).attr("fill", "none").attr("stroke", "var(--cloud)").attr("stroke-dasharray", "3 3").attr("d", d3.line().x(b => x(b.k)).y(b => y(b.m)));
+    const prevS = (bySeason[curS - 1] || []).map((v, k) => ({ k, v })).filter(r => r.v != null);
+    svg.append("path").datum(prevS).attr("fill", "none").attr("stroke", "var(--text-2)").attr("stroke-width", 1).attr("opacity", .7).attr("d", d3.line().x(r => x(r.k)).y(r => y(r.v)));
+    svg.append("path").datum(cur).attr("fill", "none").attr("stroke", "var(--accent)").attr("stroke-width", 2.2).attr("d", d3.line().x(r => x(r.k)).y(r => y(r.v)));
+    svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+      const k = Math.max(0, Math.min(300, Math.round(x.invert(d3.pointer(e)[0])))), b = band.find(z => z.k === k), c = bySeason[curS]?.[k], p = bySeason[curS - 1]?.[k];
+      showTip(e, t => { t.append(el("div", "t", `${name} · ${new Date(2001, 8, 1 + k).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}`));
+        row(t, css("--accent"), `Hiver ${curS}-${curS + 1}`, c == null ? "—" : c + " cm"); row(t, css("--text-2"), `Hiver ${curS - 1}-${curS}`, p == null ? "—" : p + " cm");
+        if (b) { row(t, null, "Médiane des hivers", fr(b.m) + " cm"); row(t, null, "Min – max", `${b.lo} – ${b.hi} cm`); } }); }).on("pointerleave", hideTip);
+  });
+  const lg = el("div", "legend"); legendItems(lg, [[css("--accent"), `Hiver ${curS}-${curS + 1}`, true], [css("--text-2"), `Hiver ${curS - 1}-${curS}`, true], [css("--cloud"), "Médiane des hivers précédents", true, true], [css("--cloud"), "Minimum – maximum"]]);
+  lg.className = "chartlab"; grid.append(lg);
+}
+
+/* ---------- CO₂ en Europe (Ember mensuel) et France en direct (éCO2mix) ---------- */
+const co2s = { month: null, months: [], play: null, live: null, week: null };
+const co2Color = v => d3.interpolateRgb("#2fbf71", "#6b2f2f")(Math.max(0, Math.min(1, Math.sqrt(v / 800))));
+function renderCo2Europe() {
+  const blk = document.getElementById("co2Block"); if (!EU?.co2map || !GEU) { blk.style.display = "none"; return; }
+  if (!co2s.months.length) {
+    co2s.months = [...new Set(Object.values(EU.co2map).flatMap(s => s.map(r => r[0])))].sort();
+    // dernier mois couvert par au moins 25 pays
+    co2s.month = [...co2s.months].reverse().find(m => Object.values(EU.co2map).filter(s => s.some(r => r[0] === m)).length >= 25) || co2s.months.at(-1);
+    const sl = document.getElementById("co2Slider"); sl.max = co2s.months.length - 1; sl.oninput = () => { stopCo2Play(); co2s.month = co2s.months[+sl.value]; renderCo2Map(); };
+    document.getElementById("co2Play").onclick = () => { if (co2s.play) return stopCo2Play(); document.getElementById("co2Play").textContent = "❚❚"; if (co2s.month === co2s.months.at(-1)) co2s.month = co2s.months[0];
+      co2s.play = setInterval(() => { const i = co2s.months.indexOf(co2s.month); if (i >= co2s.months.length - 1) return stopCo2Play(); co2s.month = co2s.months[i + 1]; renderCo2Map(); }, REDUCED ? 700 : 300); };
+  }
+  renderCo2Map(); renderCo2Cmp(); renderCo2Week();
+}
+function stopCo2Play() { clearInterval(co2s.play); co2s.play = null; const b = document.getElementById("co2Play"); if (b) b.textContent = "▶"; }
+function renderCo2Map() {
+  const host = document.getElementById("co2Map"); host.replaceChildren(); const W = host.clientWidth, H = Math.round(W * (W < 560 ? 1.15 : .95)), m = co2s.month;
+  document.getElementById("co2Slider").value = co2s.months.indexOf(m); document.getElementById("co2Label").textContent = MS[+m.slice(5) - 1] + " " + m.slice(0, 4);
+  const val = c => EU.co2map[c]?.find(r => r[0] === m)?.[1] ?? null;
+  const frame = { type: "MultiPoint", coordinates: [[-10.5, 36], [30, 36], [-10.5, 70.5], [30, 70.5]] };
+  const proj = d3.geoConicConformal().parallels([40, 62]).rotate([-10, 0]).fitExtent([[4, 4], [W - 4, H - 4]], frame), path = d3.geoPath(proj);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
+  svg.append("rect").attr("width", W).attr("height", H).attr("fill", "var(--sea)");
+  svg.append("g").selectAll("path").data(GEU.features).join("path").attr("d", path).attr("fill", d => { const v = val(d.properties.code); return v == null ? "var(--land)" : co2Color(v); })
+    .attr("stroke", d => d.properties.code === "FR" ? "var(--accent)" : "var(--line)").attr("stroke-width", d => d.properties.code === "FR" ? 1.4 : .6)
+    .on("pointermove", (e, d) => { const v = val(d.properties.code); if (v == null) return hideTip(); showTip(e, t => { t.append(el("div", "t", d.properties.nom + " · " + monthName(m))); t.append(el("div", "big", fr(v) + " gCO₂/kWh"));
+      const fr0 = val("FR"); if (fr0 && d.properties.code !== "FR") t.append(el("div", null, `${fr(v / fr0, 1)} × la France`)); }); }).on("pointerleave", hideTip);
+  if (W >= 420) Object.entries(EN_CENTER).forEach(([c, ll]) => { const v = val(c); if (v == null || ["LU", "ME", "MK", "AL", "SI", "BA", "LV", "EE"].includes(c)) return; const [px, py] = proj(ll);
+    svg.append("text").attr("x", px).attr("y", py).attr("text-anchor", "middle").style("font", "600 10.5px 'IBM Plex Mono'").style("fill", "#fff").style("paint-order", "stroke").style("stroke", "rgba(0,0,0,.55)").style("stroke-width", 3).style("pointer-events", "none").text(fr(v)); });
+  svg.append("text").attr("x", 10).attr("y", 20).style("font", "600 16px 'IBM Plex Mono'").text(monthName(m));
+  const gw = Math.min(200, W - 40), gy = H - 26, gid = "co2grad", defs = svg.append("defs").append("linearGradient").attr("id", gid);
+  d3.range(0, 1.01, .1).forEach(t => defs.append("stop").attr("offset", t).attr("stop-color", co2Color(t * t * 800)));
+  svg.append("rect").attr("x", 12).attr("y", gy).attr("width", gw).attr("height", 7).attr("fill", `url(#${gid})`);
+  [[0, "0 g"], [1, "800 g"]].forEach(([t, l]) => svg.append("text").attr("x", 12 + t * gw).attr("y", gy + 19).attr("text-anchor", t ? "end" : "start").style("font", "10px 'IBM Plex Mono'").style("fill", "var(--text-2)").text(l));
+}
+function renderCo2Cmp() {
+  const host = document.getElementById("co2Cmp"); host.replaceChildren();
+  const ember = (EU.co2map.FR || []).map(([k, v]) => ({ t: new Date(k + "-15T12:00:00"), k, v }));
+  const months = [...new Set(d3.range(D.days).map(i => ymKey(dayDate(i))))].filter(m => m >= "2019-01");
+  const eco = months.map(m => { const [y, mo] = m.split("-").map(Number), a = Math.max(0, dayIndex(new Date(y, mo - 1, 1))), b = Math.min(LASTDAY, dayIndex(new Date(y, mo, 0))); return { t: new Date(m + "-15T12:00:00"), k: m, v: co2Mean(a, b) }; }).filter(r => r.v > 0);
+  const W = host.clientWidth, H = 220, M = { l: 40, r: 8, t: 8, b: 20 }, all = [...ember, ...eco];
+  const x = d3.scaleTime().domain(d3.extent(all, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, d3.max(all, r => r.v)]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " g"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickSize(0).tickPadding(6));
+  svg.append("path").datum(eco).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 2).attr("d", d3.line().x(r => x(r.t)).y(r => y(r.v)));
+  svg.append("path").datum(ember).attr("fill", "none").attr("stroke", css("--accent-2")).attr("stroke-width", 1.6).attr("stroke-dasharray", "4 3").attr("d", d3.line().x(r => x(r.t)).y(r => y(r.v)));
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const t0 = x.invert(d3.pointer(e)[0]), k = ymKey(t0), a = eco.find(r => r.k === k), b = ember.find(r => r.k === k);
+    showTip(e, t => { t.append(el("div", "t", monthName(k))); row(t, css("--accent"), "éCO2mix (RTE)", a ? fr(a.v) + " g" : "—"); row(t, css("--accent-2"), "Ember", b ? fr(b.v) + " g" : "—"); }); }).on("pointerleave", hideTip);
+  legendItems(document.getElementById("co2CmpLg"), [[css("--accent"), "éCO2mix (RTE), moyenne pondérée par la production", true], [css("--accent-2"), "Ember", true, true]]);
+  const pairs = eco.map(a => [a.v, ember.find(b => b.k === a.k)?.v]).filter(p => p[1] != null);
+  document.getElementById("co2CmpNote").textContent = pairs.length ? `Sur ${pairs.length} mois communs, Ember donne en moyenne ${fr(d3.mean(pairs, p => p[1]))} g et éCO2mix ${fr(d3.mean(pairs, p => p[0]))} g : même ordre de grandeur (méthodes et facteurs d'émission différents).` : "";
+}
+async function loadCo2Week() {
+  try {
+    const since = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 19);
+    const q = new URLSearchParams({ select: "date_heure,taux_co2", where: `taux_co2 is not null and date_heure >= '${since}'`, order_by: "date_heure" });
+    const rows = await getJSON(ODRE + "eco2mix-national-tr/exports/json?" + q, 15000);
+    co2s.week = rows.map(r => ({ t: new Date(r.date_heure), v: r.taux_co2 })).filter(r => r.v != null);
+  } catch (e) { co2s.week = { error: e.name === "AbortError" ? "délai dépassé" : e.message }; }
+  renderCo2Week();
+}
+function renderCo2Week() {
+  const host = document.getElementById("co2Week"); host.replaceChildren(); const note = document.getElementById("co2WeekNote"), live = document.getElementById("co2Live"); live.replaceChildren();
+  if (!co2s.week) { note.textContent = "Chargement…"; return; }
+  if (co2s.week.error || !co2s.week.length) { note.textContent = `Données en direct indisponibles (${co2s.week.error || "réponse vide"}).`; return; }
+  const rows = co2s.week, last = rows.at(-1), W = host.clientWidth, H = 170, M = { l: 40, r: 8, t: 8, b: 20 };
+  const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, d3.max(rows, r => r.v)]).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " g"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickSize(0).tickPadding(6));
+  svg.append("path").datum(rows).attr("fill", co2Color(40)).attr("opacity", .3).attr("d", d3.area().x(r => x(r.t)).y0(y(0)).y1(r => y(r.v)));
+  svg.append("path").datum(rows).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.5).attr("d", d3.line().x(r => x(r.t)).y(r => y(r.v)));
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const r = rows[d3.bisector(r => r.t).center(rows, x.invert(d3.pointer(e)[0]))]; showTip(e, t => { t.append(el("div", "t", r.t.toLocaleString("fr-FR", { weekday: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }))); t.append(el("div", "big", fr(r.v) + " gCO₂/kWh")); }); }).on("pointerleave", hideTip);
+  const add = (k, v) => { const d = el("div"); d.append(document.createTextNode(k + " "), el("b", null, v)); live.append(d); };
+  add(`France à ${last.t.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`, fr(last.v) + " gCO₂/kWh");
+  add("Moyenne 7 jours", fr(d3.mean(rows, r => r.v)) + " g"); add("Min – max 7 jours", `${fr(d3.min(rows, r => r.v))} – ${fr(d3.max(rows, r => r.v))} g`);
+  note.textContent = `${rows.length} pas de 15 min. Données temps réel provisoires (RTE), interrogées par votre navigateur.`;
+}
+
 tabs("mixMode", v => { state.mixMode = v; renderMix(); }); tabs("yearMode", v => { state.yearMode = v; renderYears(); }); tabs("hmMetric", v => { state.hm = v; renderHeat(); });
 tabs("regMetric", v => { state.regMetric = v; renderRegionMap(); });
 document.querySelectorAll("#regSource button").forEach(b => b.onclick = () => {
@@ -2137,11 +2429,12 @@ tabs("flowMode", v => { state.flowMode = v; state.flowPicked = true; stopFlowPla
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
   try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} update(); };
 try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); renderEcowatt(); renderTempo(); renderFlex(); stopNpPlay(); renderRivers(); renderNappes(); renderEurope(); stopGridPlay(); renderGrid(); renderImbalance(); }
+function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); renderEcowatt(); renderTempo(); renderFlex(); stopNpPlay(); renderRivers(); renderNappes(); renderEurope(); stopGridPlay(); renderGrid(); renderImbalance(); renderWhenUse(); renderFcWeather(); renderFcRte(); renderLakes(); stopCo2Play(); renderCo2Europe(); }
 let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(update, 150); });
 update();
 loadLive(); setInterval(loadLive, 15 * 60 * 1000);
 loadBordersLive(); setInterval(loadBordersLive, 15 * 60 * 1000);
+loadForecastWeather(); loadCo2Week(); setInterval(loadCo2Week, 15 * 60 * 1000);
 </script>
 </body>
 </html>

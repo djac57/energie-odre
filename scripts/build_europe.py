@@ -48,6 +48,9 @@ def main():
             rows.append([k, m.get("co2", {}).get(k), round(sum(mix[f] for f in LOW) / tot, 4), round(sum(mix[f] for f in REN) / tot, 4),
                          [round(mix[f], 3) for f in FUELS]])
         out["monthly"][c] = rows
+    # Carte du CO₂ : intensité carbone mensuelle de tous les pays européens de l'extrait, depuis 2019
+    out["co2map"] = {c: sorted([k, v] for k, v in z.get("co2", {}).items() if k >= "2019-01") for c, z in em.items() if c != "EU" and z.get("co2")}
+    out["co2year"] = {c: sorted([k, v] for k, v in z.get("co2", {}).items() if k >= "2015") for c, z in ey.items() if c != "EU" and z.get("co2")}
     # Prix : moyennes mensuelles depuis 2015 et journalières sur les 400 derniers jours
     for c, _, _ in ZONES:
         ser = load(os.path.join(RAW, "prices_eu", c + ".json"), {})

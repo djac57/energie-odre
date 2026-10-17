@@ -285,13 +285,17 @@ BALANCING_FIELDS = {
 }
 
 def step_water_reserves(api):
-    """Stocks hydrauliques hebdomadaires (MWh), publiés le mercredi ; 366 jours max par appel."""
+    """Stocks hydrauliques hebdomadaires (MWh), publiés le mercredi ; 366 jours max par appel ; historique depuis 2015."""
     wr = load("water_reserves.json", {})
     if wr and NOW.hour != 3:
         return "à jour (une fois par jour)"
     # Semaines calendaires : début et fin doivent tomber un lundi à minuit (heure de Paris)
     monday = day_floor(NOW) - dt.timedelta(days=day_floor(NOW).weekday())
     start = monday - dt.timedelta(weeks=156 if not wr else 6)
+    # historique publié depuis début 2015 : rattrapé une fois (comparaison aux années passées)
+    first = dt.datetime(2015, 1, 5, tzinfo=PARIS)
+    if wr and min(wr) > "2015-01-31":
+        start = first
     while start < monday:
         end = min(monday, start + dt.timedelta(weeks=52))
         res = api.get("actual_generation/v1/water_reserves", {"start_date": local_iso(start), "end_date": local_iso(end)})
