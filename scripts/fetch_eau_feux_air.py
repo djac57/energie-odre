@@ -45,7 +45,10 @@ NOW = dt.datetime.now(dt.timezone.utc)
 FIRMS = "https://firms.modaps.eosdis.nasa.gov/data/active_fire/{prod}/csv/{name}_{region}_{span}.csv"
 FIRMS_PRODUCTS = [("suomi-npp-viirs-c2", "SUOMI_VIIRS_C2", "N"), ("noaa-20-viirs-c2", "J1_VIIRS_C2", "N20"),
                   ("noaa-21-viirs-c2", "J2_VIIRS_C2", "N21")]
-FIRMS_REGIONS = [("Europe", -90), ("Northern_and_Central_Africa", 27.0)]  # latitude minimale retenue
+# (fichier régional FIRMS, latitude minimale, longitude maximale retenues)
+# Le fichier « Europe » s'arrête à ~35° E : l'est de l'Ukraine, la Russie d'Europe et le Caucase
+# viennent du fichier « Russia_Asia », limité ici à l'ouest de 50° E.
+FIRMS_REGIONS = [("Europe", -90, 180), ("Northern_and_Central_Africa", 27.0, 180), ("Russia_Asia", 35.0, 50.0)]
 RECENT_DAYS = 31  # détections conservées une à une ; au-delà, agrégats quotidiens
 
 VIGIEAU_API = "https://api.vigieau.gouv.fr/api/departements"
@@ -133,7 +136,7 @@ def fetch_firms(meta):
     added = 0
     for span in spans:
         for prod, name, sat in FIRMS_PRODUCTS:
-            for region, latmin in FIRMS_REGIONS:
+            for region, latmin, lonmax in FIRMS_REGIONS:
                 url = FIRMS.format(prod=prod, name=name, region=region, span=span)
                 try:
                     raw = get(url, timeout=240).decode("utf-8", "replace")
@@ -145,7 +148,7 @@ def fetch_firms(meta):
                         lat, lon = round(float(r["latitude"]), 3), round(float(r["longitude"]), 3)
                     except (KeyError, ValueError):
                         continue
-                    if lat < latmin:
+                    if lat < latmin or lon > lonmax:
                         continue
                     t = f"{r['acq_date']}T{r['acq_time'].zfill(4)[:2]}:{r['acq_time'].zfill(4)[2:]}Z"
                     key = (lat, lon, t, sat)
