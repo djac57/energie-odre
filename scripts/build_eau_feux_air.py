@@ -218,7 +218,9 @@ def main():
         data["vigieau"]["weekly"] = out
 
     # ---------------- Qualité de l'air
-    atmo = load("atmo.json", {})
+    raw_atmo = load("atmo.json", {})
+    atmo = dict(raw_atmo.get("_old", {}))  # jours pas encore réagrégés (rattrapage en cours)
+    atmo.update({k: v for k, v in raw_atmo.items() if not k.startswith("_") and v})
     days = sorted(atmo)
     today = TODAY.isoformat()
     tomorrow = (TODAY + dt.timedelta(days=1)).isoformat()
@@ -237,13 +239,34 @@ def main():
             tot = sum(v["n"][1:7])
             if tot and sum(v["n"][4:7]) / tot >= 0.1:
                 per_dep_bad[dep] += 1
-    data["atmo"] = {"today": atmo.get(today) or (atmo[days[-1]] if days else {}),
-                    "todayDate": today if today in atmo else (days[-1] if days else None),
+    today_d = today if today in atmo else ([d for d in days if d <= today] or [None])[-1]
+    cur = {k: dict(v) for k, v in atmo.get(today_d, {}).items()}
+    src = {}  # AASQA de chaque département (pour expliquer les absences)
+    for d in days[-30:]:
+        for dep, v in atmo[d].items():
+            if v.get("src"):
+                src[dep] = v["src"]
+    for d in reversed([x for x in days if x < (today_d or "")][-3:]):  # repli : dernier jour publié (≤ 3 j)
+        for dep, v in atmo[d].items():
+            if dep not in cur:
+                cur[dep] = dict(v, fb=d)
+    data["atmo"] = {"today": cur, "src": src,
+                    "todayDate": today_d,
                     "tomorrow": atmo.get(tomorrow), "tomorrowDate": tomorrow if tomorrow in atmo else None,
                     "series": series, "badDays": dict(per_dep_bad), "first": days[0] if days else None}
 
     # ---------------- Forêts
-    data["ifn"] = load("ifn.json", {})
+    ifn = load("ifn.json", {})
+    REG = {"11": "75 77 78 91 92 93 94 95", "24": "18 28 36 37 41 45", "27": "21 25 39 58 70 71 89 90", "28": "14 27 50 61 76",
+           "32": "02 59 60 62 80", "44": "08 10 51 52 54 55 57 67 68", "52": "44 49 53 72 85", "53": "22 29 35 56",
+           "75": "16 17 19 23 24 33 40 47 64 79 86 87", "76": "09 11 12 30 31 32 34 46 48 65 66 81 82",
+           "84": "01 03 07 15 26 38 42 43 63 69 73 74", "93": "04 05 06 13 83 84", "94": "2A 2B"}
+    dep_reg = {d: r for r, ds in REG.items() for d in ds.split()}
+    data["ifn"] = {k: v for k, v in ifn.items() if not k.startswith("R")}
+    for dep in dep_names:  # département non publié par l'IFN : valeur de la région, signalée comme telle
+        r = ifn.get("R" + dep_reg.get(dep, ""))
+        if dep not in data["ifn"] and r:
+            data["ifn"][dep] = dict(r, reg=r.get("nom"))
     data["gfw"] = load("gfw.json", {})
 
     def norm(s):

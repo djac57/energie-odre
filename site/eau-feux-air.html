@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="eaufeuxair.js?v=48a0e8d6b3"></script>
+<script src="eaufeuxair.js?v=fe9f3beb5b"></script>
 <script src="geo_world.js"></script>
 <style>
 /* Même direction que les pages électricité et autres énergies : salle de contrôle, chiffres en mono */
@@ -185,6 +185,8 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 .part a { color: var(--accent); }
 .kpis { grid-template-columns: repeat(5, minmax(0,1fr)); }
 .tscroll { overflow-x: auto; }
+.sw.hatch { background: repeating-linear-gradient(45deg, var(--land) 0 3px, var(--muted) 3px 4.5px) !important; }
+.sw.hatch2 { background: repeating-linear-gradient(-45deg, var(--accent) 0 3px, var(--bg) 3px 4.5px) !important; }
 #bCmp td, #bCmp th { white-space: nowrap; }
 @media (max-width: 1000px) { .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } }
 </style>
@@ -379,6 +381,7 @@ const depName = c => DEPN[c] || c;
 const AGE = [[6, "#ff3b1f", "≤ 6 h"], [24, "#ff8a3d", "6–24 h"], [72, "#ffd166", "1–3 j"]];
 const ageColor = h => (AGE.find(a => h <= a[0]) || AGE[2])[1];
 const VIG = { vigilance: ["#ffe08a", "Vigilance"], alerte: ["#ffb627", "Alerte"], alerte_renforcee: ["#ff7a45", "Alerte renforcée"], crise: ["#d6243b", "Crise"] };
+const NONE_COL = () => document.documentElement.dataset.theme === "light" ? "#c9e4d6" : "#2c5a4a";
 const VIGI = ["", "vigilance", "alerte", "alerte_renforcee", "crise"];
 const MDFC = { 1: ["#6fcf8a", "Faible"], 2: ["#ffd166", "Modéré"], 3: ["#ff8a3d", "Élevé"], 4: ["#e5383b", "Très élevé"], 5: ["#8a1c3b", "Exceptionnel"] };
 const ATMO = [["#9aa5ad", "Absent"], ["#50F0E6", "Bon"], ["#50CCAA", "Moyen"], ["#F0E641", "Dégradé"], ["#FF5050", "Mauvais"], ["#960032", "Très mauvais"], ["#872181", "Extrêmement mauvais"]];
@@ -395,12 +398,31 @@ function franceMap(host, fillFn, tipFn, opts = {}) {
   const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitSize([w, H], D.deps);
   const path = d3.geoPath(proj);
   const svg = d3.select(h).append("svg").attr("width", w).attr("height", H);
+  // hachures : « pas de donnée publiée » (plein) et « valeur de repli » (par-dessus la couleur)
+  const defs = svg.append("defs"), hid = "h-" + host, fid = "f-" + host;
+  const pat = defs.append("pattern").attr("id", hid).attr("patternUnits", "userSpaceOnUse").attr("width", 6).attr("height", 6).attr("patternTransform", "rotate(45)");
+  pat.append("rect").attr("width", 6).attr("height", 6).attr("fill", css("--land"));
+  pat.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 6).attr("stroke", css("--muted")).attr("stroke-width", 1.6).attr("opacity", .7);
+  defs.append("pattern").attr("id", fid).attr("patternUnits", "userSpaceOnUse").attr("width", 5).attr("height", 5).attr("patternTransform", "rotate(-45)")
+    .append("line").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 5).attr("stroke", css("--bg")).attr("stroke-width", 1.2).attr("opacity", .55);
+  const fills = new Map(D.deps.features.map(f => [f.properties.code, fillFn(f.properties.code)]));
+  const flag = c => opts.flag ? opts.flag(c) : null;
+  const tipAll = (t, c) => { if (fills.get(c) == null) { t.append(el("div", "t", depName(c))); t.append(el("div", "big", "Pas de donnée publiée"));
+      t.append(el("div", null, (opts.missing && opts.missing(c)) || "Aucune valeur publiée par la source pour ce département.")); return; }
+    tipFn && tipFn(t, c); const fl = flag(c); if (fl) { const n = el("div", "note", "▨ " + fl); n.style.margin = "6px 0 0"; t.append(n); } };
   svg.append("g").selectAll("path").data(D.deps.features).join("path").attr("d", path)
-    .attr("fill", f => fillFn(f.properties.code) || css("--land")).attr("stroke", css("--bg")).attr("stroke-width", .6)
-    .on("pointermove", (e, f) => tipFn && showTip(e, t => tipFn(t, f.properties.code)))
+    .attr("fill", f => fills.get(f.properties.code) ?? `url(#${hid})`).attr("stroke", css("--bg")).attr("stroke-width", .6)
+    .on("pointermove", (e, f) => showTip(e, t => tipAll(t, f.properties.code)))
     .on("pointerleave", hideTip)
     .on("click", (e, f) => opts.onClick && opts.onClick(f.properties.code));
-  return { svg, proj };
+  svg.append("g").attr("pointer-events", "none").selectAll("path").data(D.deps.features.filter(f => fills.get(f.properties.code) != null && flag(f.properties.code))).join("path")
+    .attr("d", path).attr("fill", `url(#${fid})`);
+  const res = { svg, proj, missing: [...fills.values()].some(v => v == null), flagged: D.deps.features.some(f => fills.get(f.properties.code) != null && flag(f.properties.code)) };
+  // légende des hachures, sous la carte
+  let lg = h.parentNode.querySelector(":scope > .hlegend"); if (!lg) { lg = el("div", "legend hlegend"); h.parentNode.append(lg); } lg.replaceChildren();
+  if (res.missing) { const s = el("span"); s.append(el("span", "sw hatch"), document.createTextNode(opts.missLabel || "pas de donnée publiée (survol : raison)")); lg.append(s); }
+  if (res.flagged && opts.flagLabel) { const s = el("span"); s.append(el("span", "sw hatch2"), document.createTextNode(opts.flagLabel)); lg.append(s); }
+  return res;
 }
 function scaleBar(id, idL, interp, lo, hi, fmtF) {
   const s = document.getElementById(id); s.style.background = `linear-gradient(90deg, ${d3.range(0, 1.01, .1).map(t => interp(t)).join(",")})`;
@@ -616,9 +638,10 @@ function renderBdiff() {
   // carte
   const deps = D.bdiff[bYear].deps, max = d3.max(Object.values(deps), v => v[1]) || 1;
   const interp = t => d3.interpolateYlOrRd(.08 + .92 * t), sc = d3.scaleSqrt().domain([0, max]).range([0, 1]);
-  franceMap("bMap", c => deps[c] && deps[c][1] > 0 ? interp(sc(deps[c][1])) : null, (t, c) => { t.append(el("div", "t", depName(c) + " · " + bYear));
+  // la BDIFF couvre tous les départements : sans ligne une année donnée = aucun feu de forêt déclaré (0 ha)
+  franceMap("bMap", c => interp(sc(deps[c]?.[1] || 0)), (t, c) => { t.append(el("div", "t", depName(c) + " · " + bYear));
     const v = deps[c]; if (!v) { t.append(el("div", null, "Aucun feu de forêt déclaré")); return; } t.append(el("div", "big", fmtHa(v[1]))); tRow(t, "Feux", fmt(v[0])); tRow(t, "Dont forêt", fmtHa(v[2])); },
-    { onClick: c => {} });
+    {});
   document.getElementById("bMapTitle").textContent = `Surface parcourue par les feux de forêt · ${bYear}`;
   scaleBar("bScale", "bScaleL", interp, 0, max, v => fmtHa(v));
   const big = D.bdiff[bYear].grands.slice(0, 15);
@@ -647,16 +670,18 @@ function renderMdf() {
   const stale = (Date.now() - date) / 864e5 > 3;
   document.getElementById("mNote").textContent = stale ? `Dernier bulletin publié le ${date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })} : la saison de diffusion est terminée.` : "";
   if (mView === "bulletin") {
-    franceMap("mMap", c => M.last.deps[c] ? MDFC[M.last.deps[c][mDay]]?.[0] : null, (t, c) => { t.append(el("div", "t", depName(c))); const v = M.last.deps[c];
-      if (!v) { t.append(el("div", null, "Non couvert")); return; } tRow(t, "Lendemain", MDFC[v[0]]?.[1] || v[0], MDFC[v[0]]?.[0]); tRow(t, "Surlendemain", MDFC[v[1]]?.[1] || v[1], MDFC[v[1]]?.[0]); });
+    franceMap("mMap", c => M.last.deps[c] ? MDFC[M.last.deps[c][mDay]]?.[0] ?? null : null, (t, c) => { t.append(el("div", "t", depName(c))); const v = M.last.deps[c];
+      if (!v) { t.append(el("div", null, "Non couvert")); return; } tRow(t, "Lendemain", MDFC[v[0]]?.[1] || v[0], MDFC[v[0]]?.[0]); tRow(t, "Surlendemain", MDFC[v[1]]?.[1] || v[1], MDFC[v[1]]?.[0]); },
+      { missing: () => "Département absent du dernier bulletin de la Météo des forêts." });
     const d2 = new Date(date); d2.setDate(d2.getDate() + 1 + mDay);
     document.getElementById("mTitle").textContent = `Danger météorologique d'incendie · ${d2.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}`;
     legend("mLegend", Object.values(MDFC).map(([c, t]) => [c, t]));
   } else {
     const s = M.season[mYear] || {}, max = d3.max(Object.values(s), v => v[1]) || 1;
     const interp = t => d3.interpolateOrRd(.1 + .9 * t);
-    franceMap("mMap", c => s[c] ? (s[c][1] ? interp(s[c][1] / max) : css("--land-2")) : null, (t, c) => { t.append(el("div", "t", depName(c) + " · saison " + mYear)); const v = s[c];
-      if (!v) { t.append(el("div", null, "Non couvert")); return; } t.append(el("div", "big", fmt(v[1]) + " j")); tRow(t, "Jours à danger élevé ou plus", fmt(v[1])); tRow(t, "Dont très élevé ou plus", fmt(v[2])); tRow(t, "Bulletins", fmt(v[0])); });
+    franceMap("mMap", c => s[c] ? interp(s[c][1] / max) : null, (t, c) => { t.append(el("div", "t", depName(c) + " · saison " + mYear)); const v = s[c];
+      if (!v) { t.append(el("div", null, "Non couvert")); return; } t.append(el("div", "big", fmt(v[1]) + " j")); tRow(t, "Jours à danger élevé ou plus", fmt(v[1])); tRow(t, "Dont très élevé ou plus", fmt(v[2])); tRow(t, "Bulletins", fmt(v[0])); },
+      { missing: () => "Département absent des bulletins de la Météo des forêts cette saison." });
     document.getElementById("mTitle").textContent = `Jours à danger élevé ou plus · saison ${mYear}`;
     legend("mLegend", [[interp(0), "0 jour"], [interp(.5), fmt(max / 2) + " j"], [interp(1), fmt(max) + " j"]]);
   }
@@ -696,7 +721,10 @@ function renderHealth() {
   const sc = sView === "feu" ? d3.scaleSqrt().domain([0, hi]).range([0, 1]) : d3.scaleLinear().domain([lo, hi]).range([0, 1]);
   franceMap("sMap", c => val[c] != null ? interp(sc(val[c])) : null, (t, c) => { t.append(el("div", "t", depName(c))); if (val[c] == null) { t.append(el("div", null, "Pas de donnée")); return; }
     t.append(el("div", "big", fmtV(val[c]))); const s = sub(c); if (s) t.append(el("div", null, s));
-    if (g[c]) { tRow(t, "Couvert 2000", fmtHa(g[c].extent2000)); tRow(t, "Perte 2001-2024", fmtHa(d3.sum(Object.values(g[c].loss)))); tRow(t, "dont feux", fmtHa(d3.sum(Object.values(g[c].fire || {})))); } });
+    if (g[c]) { tRow(t, "Couvert 2000", fmtHa(g[c].extent2000)); tRow(t, "Perte 2001-2024", fmtHa(d3.sum(Object.values(g[c].loss)))); tRow(t, "dont feux", fmtHa(d3.sum(Object.values(g[c].fire || {})))); } },
+    { flag: c => (sView === "boisement" || sView === "deperis") && D.ifn[c]?.reg ? `Valeur régionale (${D.ifn[c].reg}) : l'IFN ne publie pas ce département séparément.` : null,
+      flagLabel: "valeur régionale (IFN)",
+      missing: () => sView === "boisement" || sView === "deperis" ? "Non publié par l'IFN pour ce département (échantillon insuffisant)." : "Absent des statistiques Global Forest Watch." });
   document.getElementById("sTitle").textContent = title; document.getElementById("sNote").textContent = note;
   scaleBar("sScale", "sScaleL", interp, lo, hi, fmtV);
   const items = Object.entries(val).sort((a, b) => b[1] - a[1]).slice(0, 14);
@@ -730,11 +758,12 @@ function vigData() { return vLive || D.vigieau.now; }
 function renderVigNow() {
   tabs("vType", [["max", "Tous usages"], ["sup", "Eaux superficielles"], ["sou", "Eaux souterraines"], ["aep", "Eau potable"]], vType, v => { vType = v; renderVigNow(); });
   const now = vigData(), deps = now.deps || {};
-  franceMap("vMap", c => deps[c]?.[vType] ? VIG[deps[c][vType]][0] : null, (t, c) => { t.append(el("div", "t", depName(c))); const v = deps[c];
+  franceMap("vMap", c => deps[c] ? (deps[c][vType] ? VIG[deps[c][vType]][0] : NONE_COL()) : null, (t, c) => { t.append(el("div", "t", depName(c))); const v = deps[c];
     if (!v) { t.append(el("div", null, "Pas de donnée")); return; } t.append(el("div", "big", v[vType] ? VIG[v[vType]][1] : "Aucune restriction"));
-    [["sup", "Eaux superficielles"], ["sou", "Eaux souterraines"], ["aep", "Eau potable"]].forEach(([k, l]) => tRow(t, l, v[k] ? VIG[v[k]][1] : "—", v[k] ? VIG[v[k]][0] : null)); });
+    [["sup", "Eaux superficielles"], ["sou", "Eaux souterraines"], ["aep", "Eau potable"]].forEach(([k, l]) => tRow(t, l, v[k] ? VIG[v[k]][1] : "—", v[k] ? VIG[v[k]][0] : null)); },
+    { missing: () => "Département absent de l'API VigiEau." });
   document.getElementById("vTitle").textContent = "Restriction maximale en vigueur · " + { max: "tous usages", sup: "eaux superficielles", sou: "eaux souterraines", aep: "eau potable" }[vType];
-  legend("vLegend", [...Object.values(VIG).map(([c, t]) => [c, t]), [css("--land"), "Aucune"]]);
+  legend("vLegend", [...Object.values(VIG).map(([c, t]) => [c, t]), [NONE_COL(), "Aucune restriction"]]);
   document.getElementById("vStatus").textContent = (vLive ? "● En direct (API VigiEau) · " : "Instantané du dépôt · ") + new Date(now.date || Date.now()).toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
   const counts = VIGI.slice(1).map(k => [k, Object.values(deps).filter(v => v[vType] === k).length]);
   const none = Object.keys(deps).length - d3.sum(counts, c => c[1]);
@@ -784,14 +813,18 @@ function renderVigHistory() {
 /* ---------- A1 : qualité de l'air ---------- */
 let aDay = "today";
 function renderAir() {
-  const A = D.atmo; const opts = [["today", "Aujourd'hui"]]; if (A.tomorrow) opts.push(["tomorrow", "Demain (prévision)"]);
+  const A = D.atmo; const opts = [["today", "Aujourd'hui"]]; if (A.tomorrow) opts.push(["tomorrow", "Demain (prévision partielle)"]);
   tabs("aDay", opts, aDay, v => { aDay = v; renderAir(); });
   const day = aDay === "tomorrow" ? A.tomorrow : A.today, date = aDay === "tomorrow" ? A.tomorrowDate : A.todayDate;
   const mode = v => { let b = 1; for (let i = 1; i < 7; i++) if (v.n[i] > v.n[b]) b = i; return b; };
   franceMap("aMap", c => day?.[c] && d3.sum(day[c].n.slice(1)) ? ATMO[mode(day[c])][0] : null, (t, c) => { t.append(el("div", "t", depName(c))); const v = day?.[c];
     if (!v) { t.append(el("div", null, "Pas de donnée")); return; } const tot = d3.sum(v.n.slice(1)); t.append(el("div", "big", ATMO[mode(v)][1]));
     for (let i = 1; i < 7; i++) if (v.n[i]) tRow(t, ATMO[i][1], fmt(v.n[i] / tot * 100) + " %", ATMO[i][0]);
-    const pol = Object.entries(v.pol || {}).sort((a, b) => b[1] - a[1]); if (pol.length) tRow(t, "Polluant en cause", pol.map(([p]) => POL[p] || p).slice(0, 2).join(", ")); });
+    const pol = Object.entries(v.pol || {}).sort((a, b) => b[1] - a[1]); if (pol.length) tRow(t, "Polluant en cause", pol.map(([p]) => POL[p] || p).slice(0, 2).join(", "));
+    if (v.epci) tRow(t, "Communes couvertes via l'indice intercommunal", fmt(v.epci)); tRow(t, "Source", v.src || A.src?.[c] || "—"); },
+    { flag: c => day?.[c]?.fb ? `Pas d'indice publié ce jour : dernier indice disponible, celui du ${new Date(day[c].fb).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}.` : null,
+      flagLabel: "dernier indice publié (jour précédent)",
+      missing: c => aDay === "tomorrow" ? `${A.src?.[c] || "L'association régionale"} ne publie pas (encore) de prévision pour demain dans le flux national.` : `${A.src?.[c] || "Aucune association régionale"} n'a pas publié d'indice pour ce jour.` });
   document.getElementById("aTitle").textContent = `Indice ATMO · ${date ? new Date(date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) : ""}`;
   legend("aLegend", ATMO.slice(1).map(([c, t]) => [c, t]));
   const bad = Object.entries(A.badDays).sort((a, b) => b[1] - a[1]).slice(0, 14);
@@ -807,7 +840,7 @@ function renderAir() {
   const st = d3.stack().keys([1, 2, 3, 4, 5, 6])(s);
   const x = d3.scaleTime().domain(d3.extent(s, d => d.d)).range([M.l, w - M.r]), y = d3.scaleLinear().domain([0, 1]).range([H - M.b, M.t]);
   svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(v => Math.round(v * 100) + " %").tickSize(-(w - M.l - M.r)));
-  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(isMobile() ? 4 : 8).tickSize(0).tickPadding(6));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(isMobile() ? 4 : 8).tickFormat(d => d.toLocaleDateString("fr-FR", { month: "short" })).tickSize(0).tickPadding(6));
   svg.append("g").selectAll("path").data(st).join("path").attr("fill", d => ATMO[d.key][0]).attr("d", d3.area().x(d => x(d.data.d)).y0(d => y(d[0])).y1(d => y(d[1])).curve(d3.curveStepAfter));
   const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", css("--text")).attr("opacity", 0);
   svg.append("rect").attr("x", M.l).attr("y", M.t).attr("width", w - M.l - M.r).attr("height", H - M.t - M.b).attr("fill", "transparent")

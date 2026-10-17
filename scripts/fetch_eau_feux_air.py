@@ -57,7 +57,11 @@ BDIFF = "https://bdiff.agriculture.gouv.fr"
 MDF = "https://meteofrance.s3.sbg.io.cloud.ovh.net/data/BULLETIN/MDF/mdf_{y}.csv.gz"
 ATMO_WFS = ("https://data.atmo-france.org/geoserver/ind/ows?service=WFS&version=2.0.0&request=GetFeature"
             "&typeNames=ind_atmo_2021&outputFormat=csv&propertyName=code_zone,type_zone,date_ech,code_qual,"
-            "code_no2,code_o3,code_pm10,code_pm25,code_so2&CQL_FILTER=")
+            "code_no2,code_o3,code_pm10,code_pm25,code_so2,source,date_dif&CQL_FILTER=")
+# communes → intercommunalité → département (API Découpage administratif, Licence Ouverte) : certaines AASQA
+# (Air Breizh, Atmo Occitanie, en partie Air Pays de la Loire et Atmo Nouvelle-Aquitaine) publient l'indice par EPCI
+GEO_COMMUNES = "https://geo.api.gouv.fr/communes?fields=code,codeEpci,codeDepartement&format=json"
+ATMO_VERSION = 2  # 2 : types de zone sans casse, EPCI répartis sur leurs communes, doublons de diffusion retirés
 IFN_WFS = ("https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature"
            "&TYPENAMES=test_nl_ifn_stats_2024:stats_2024&OUTPUTFORMAT=application/json&CQL_FILTER=")
 IFN_LABELS = ("ST", "ST_territoire", "tx_bois", "Vmort", "Vvif", "DEPERIS_ESS")
@@ -425,54 +429,107 @@ def fetch_mdf(meta):
 
 
 # ---------------------------------------------------------------- Qualité de l'air
-def atmo_day(day, layer="ind_atmo_2021"):
+def epci_communes(meta):
+    """{epci: {dep: [communes]}} mis en cache un mois."""
+    p = os.path.join(OUT, "epci_communes.json")
+    if os.path.exists(p) and not stale(meta, "epci", 24 * 30):
+        return jload("epci_communes.json", {})
+    try:
+        rows = json.loads(get(GEO_COMMUNES, timeout=120))
+        out = defaultdict(lambda: defaultdict(list))
+        for r in rows:
+            if r.get("codeEpci") and r.get("codeDepartement"):
+                out[r["codeEpci"]][r["codeDepartement"]].append(r["code"])
+        jsave("epci_communes.json", {e: dict(v) for e, v in sorted(out.items())})
+        mark(meta, "epci")
+    except Exception as e:  # noqa: BLE001
+        log(f"  communes/EPCI : échec ({e})")
+    return jload("epci_communes.json", {})
+
+
+def atmo_day(day, layer="ind_atmo_2021", epci=None):
     flt = urllib.parse.quote(f"date_ech='{day}'")
     raw = get(ATMO_WFS.replace("ind_atmo_2021", layer) + flt, timeout=300).decode("utf-8", "replace")
-    per = defaultdict(lambda: {"n": [0] * 7, "pol": defaultdict(int)})
-    count = 0
+    # une ligne par zone : la diffusion la plus récente (la couche historique garde les prévisions successives)
+    zones = {}
     for r in csv.DictReader(io.StringIO(raw)):
-        if r.get("type_zone") != "commune":
+        t = (r.get("type_zone") or "").lower()
+        if t not in ("commune", "epci"):
             continue
-        z = r.get("code_zone") or ""
-        dep = z[:3] if z.startswith("97") else z[:2]
+        k = (t, r.get("code_zone") or "")
+        if k not in zones or (r.get("date_dif") or "") > (zones[k].get("date_dif") or ""):
+            zones[k] = r
+    communes = {z for t, z in zones if t == "commune"}
+    per = defaultdict(lambda: {"n": [0] * 7, "pol": defaultdict(int), "src": defaultdict(int), "epci": 0})
+    count = 0
+    for (t, z), r in zones.items():
         try:
-            q = int(r["code_qual"])
+            q = int(float(r["code_qual"]))
         except (KeyError, ValueError):
             continue
         if not 0 <= q <= 6:
             continue
-        a = per[dep]
-        a["n"][q] += 1
-        count += 1
-        if q >= 3:  # polluant(s) responsable(s) du sous-indice le plus élevé
-            subs = {p: int(r.get(f"code_{p}") or 0) for p in ("no2", "o3", "pm10", "pm25", "so2")}
-            m = max(subs.values())
-            for p, v in subs.items():
-                if v == m:
-                    a["pol"][p] += 1
-    return {d: {"n": v["n"], "pol": dict(v["pol"])} for d, v in per.items()}, count
+        if t == "commune":
+            parts = {(z[:3] if z.startswith("97") else z[:2]): 1}
+        else:  # EPCI : réparti sur ses communes qui n'ont pas leur propre indice
+            parts = {d: sum(1 for c in cs if c not in communes) for d, cs in (epci or {}).get(z, {}).items()}
+        subs = {p: int(float(r.get(f"code_{p}") or 0)) for p in ("no2", "o3", "pm10", "pm25", "so2")}
+        m = max(subs.values())
+        for dep, w in parts.items():
+            if not w:
+                continue
+            a = per[dep]
+            a["n"][q] += w
+            a["src"][r.get("source") or "?"] += w
+            if t == "epci":
+                a["epci"] += w
+            count += w
+            if q >= 3:  # polluant(s) responsable(s) du sous-indice le plus élevé
+                for p, v in subs.items():
+                    if v == m:
+                        a["pol"][p] += w
+    out = {}
+    for d, v in per.items():
+        o = {"n": v["n"], "pol": dict(v["pol"]), "src": max(v["src"], key=v["src"].get)}
+        if v["epci"]:
+            o["epci"] = v["epci"]
+        out[d] = o
+    return out, count
 
 
 def fetch_atmo(meta):
     data = jload("atmo.json", {})
+    if data.get("_v") != ATMO_VERSION:  # jours agrégés avec l'ancienne méthode : à refaire
+        data = {"_v": ATMO_VERSION, "_old": {k: v for k, v in data.items() if not k.startswith("_")}}
+    old = data.get("_old", {})
+    epci = epci_communes(meta)
     days = [TODAY.isoformat(), (TODAY + dt.timedelta(days=1)).isoformat()]
-    # rattrapage progressif de l'historique (365 jours disponibles), 20 jours par passage
+    # rattrapage progressif de l'historique (365 jours disponibles)
+    budget = int(os.environ.get("EFA_ATMO_BUDGET", "40"))
     back = [(TODAY - dt.timedelta(days=i)).isoformat() for i in range(1, 366)]
-    missing = [d for d in back if d not in data][:20]
-    if not stale(meta, "atmo", 3):
+    missing = [d for d in back if d not in data][:budget]
+    if not stale(meta, "atmo", 3) and TODAY.isoformat() in data:
         days = []
+    t0 = time.time()
+    limit = float(os.environ.get("EFA_ATMO_SECONDS", "240"))  # le rattrapage ne doit pas allonger le passage horaire
     for d in days + missing:
+        if d not in days and time.time() - t0 > limit:
+            break
         try:
-            agg, n = atmo_day(d, "ind_atmo_2021" if d in days else "ind_atmo")  # ind_atmo : historique 365 j
-            if n:
+            agg, n = atmo_day(d, "ind_atmo_2021" if d in days else "ind_atmo", epci)  # ind_atmo : historique 365 j
+            if n or d not in days:  # jour d'historique vide : noté pour ne pas le redemander à chaque passage
                 data[d] = agg
+                old.pop(d, None)
             log(f"  Atmo {d} : {n} communes")
         except Exception as e:  # noqa: BLE001
             log(f"  Atmo {d} : échec ({e})")
     if days:
         mark(meta, "atmo")
     cutoff = (TODAY - dt.timedelta(days=400)).isoformat()
-    jsave("atmo.json", {k: v for k, v in sorted(data.items()) if k >= cutoff})
+    data["_old"] = {k: v for k, v in old.items() if k >= cutoff}
+    if not data["_old"]:
+        del data["_old"]
+    jsave("atmo.json", {k: v for k, v in sorted(data.items()) if k.startswith("_") or k >= cutoff})
 
 
 # ---------------------------------------------------------------- Forêts (IFN, GFW)
@@ -480,7 +537,8 @@ def fetch_ifn(meta):
     if not stale(meta, "ifn", 24 * 30) and os.path.exists(os.path.join(OUT, "ifn.json")):
         return
     labs = ",".join(f"'{x}'" for x in IFN_LABELS)
-    flt = urllib.parse.quote(f"categorie_territoire='DPD4' AND label IN ({labs})")
+    # DPD4 : départements ; RAD13 : régions, utilisées quand l'IFN ne publie pas le département (petite couronne…)
+    flt = urllib.parse.quote(f"categorie_territoire IN ('DPD4','RAD13') AND label IN ({labs})")
     try:
         d = json.loads(get(IFN_WFS + flt, timeout=600))
     except Exception as e:  # noqa: BLE001
@@ -496,6 +554,8 @@ def fetch_ifn(meta):
     for f in d["features"]:
         p = f["properties"]
         dep, lab, per = p["code_territoire"], p["label"], p["periode"]
+        if p.get("categorie_territoire") == "RAD13":
+            dep = "R" + dep
         v = val(p.get("tot_stand"))
         if lab in ("ST", "ST_territoire", "tx_bois", "Vvif"):
             out[dep].setdefault(lab, {})[per] = [v, val(p.get("ic_stand")), bool(p.get("signif"))]
@@ -510,7 +570,7 @@ def fetch_ifn(meta):
         out[dep]["nom"] = p.get("territoire")
     jsave("ifn.json", dict(sorted(out.items())))
     mark(meta, "ifn")
-    log(f"  IFN : {len(out)} départements")
+    log(f"  IFN : {sum(1 for k in out if not k.startswith('R'))} départements, {sum(1 for k in out if k.startswith('R'))} régions")
 
 
 def xlsx_rows(raw, sheet_name):
