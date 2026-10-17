@@ -22408,12 +22408,12 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-10-17T21:00:00Z",
+"end":"2026-10-19T21:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-10-15T17:27:38Z",
+"pub":"2026-10-17T09:30:38Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 275 MW\n\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full pow",
 "start":"2026-01-30T23:00:00Z",
@@ -22421,11 +22421,11 @@
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-10-17T21:00:00Z",
+"2026-10-19T21:00:00Z",
 1300
 ]
 ],
-"v":34
+"v":35
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -104140,24 +104140,24 @@
 },
 "EDF-05470_EDF_H_00135087":{
 "eic":"17W100P100P0080L",
-"end":"2026-10-17T20:03:00Z",
+"end":"2026-10-17T15:49:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"UNPLANNED",
 "mw":124,
 "name":"SISTERON 1",
-"pub":"2026-10-17T14:05:35Z",
+"pub":"2026-10-17T15:52:35Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-10-17T14:03:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-17T14:03:00Z",
-"2026-10-17T20:03:00Z",
+"2026-10-17T15:49:00Z",
 124
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
@@ -155128,24 +155128,24 @@
 },
 "EDF-05470_EDF_T_00330770":{
 "eic":"17W100P100P01004",
-"end":"2026-10-17T09:30:00Z",
+"end":"2026-10-17T09:04:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":880,
 "name":"BUGEY 5",
-"pub":"2026-09-30T14:06:36Z",
+"pub":"2026-10-17T09:06:38Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-17T07:30:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-17T07:30:00Z",
-"2026-10-17T09:30:00Z",
+"2026-10-17T09:04:00Z",
 880
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00330795":{
 "eic":"17W100P100P0032W",
@@ -156682,12 +156682,12 @@
 },
 "EDF-05470_EDF_T_00334186":{
 "eic":"17W100P100P0129H",
-"end":"2026-10-18T17:30:00Z",
+"end":"2026-10-19T21:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-10-16T18:43:36Z",
+"pub":"2026-10-17T09:27:38Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-13T23:05:00Z",
@@ -156695,11 +156695,11 @@
 "steps":[
 [
 "2026-10-13T23:05:00Z",
-"2026-10-18T17:30:00Z",
+"2026-10-19T21:00:00Z",
 1310
 ]
 ],
-"v":6
+"v":7
 },
 "EDF-05470_EDF_T_00334278":{
 "eic":"17W100P100P01004",
@@ -156913,24 +156913,24 @@
 },
 "EDF-05470_EDF_T_00334902":{
 "eic":"17W100P100P0129H",
-"end":"2026-10-19T03:30:00Z",
+"end":"2026-10-20T07:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-10-16T18:46:36Z",
+"pub":"2026-10-17T09:27:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier: 260MW\nMontée à 260MW: 30min - Palier à 260MW: 2h - Montée à 947MW: 1h - Palier à 947MW: 6h - Montée à PMD: 30min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
-"start":"2026-10-18T17:30:00Z",
+"remarks":"Remontée par paliers en cours - prochain palier : 310 MW\nMontée à 310 MW : 1h - Palier à 310 MW : 2h  - Montée à 900 MW : 1h - Palier à 900 MW : 6h - Montée à PMD : 30min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
+"start":"2026-10-19T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-18T17:30:00Z",
-"2026-10-19T03:30:00Z",
+"2026-10-19T21:00:00Z",
+"2026-10-20T07:00:00Z",
 1300
 ]
 ],
-"v":2
+"v":4
 },
 "EDF-05470_EDF_T_00334931":{
 "eic":"17W100P100P0040X",
