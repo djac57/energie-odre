@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="climat.js?v=216c13d0cc"></script>
+<script src="climat.js?v=2e8a6800d1"></script>
 <script src="geo.js"></script>
 <style>
 /* Même direction que les autres pages : salle de contrôle, chiffres en mono */
@@ -19,14 +19,14 @@
   --bg: #06090d; --panel: #0b1117; --panel-2: #101921; --line: #1b2833; --grid: #15202a;
   --text: #e3eef5; --text-2: #9db1bf; --muted: #5f7686; --accent: #4de1ff; --accent-2: #ffb627;
   --glow: 0 0 18px rgba(77,225,255,.25); --land: #101b24; --france: #12303c; --sea: #070c11;
-  --hot: #ff5a4e; --cold: #4d9fff; --ok: #5bd67a; --warn: #ffb627; --band: rgba(77,225,255,.12);
+  --hot: #ff5a4e; --cold: #4d9fff; --ok: #5bd67a; --warn: #ffb627; --band: rgba(77,225,255,.12); --neutral: #55636f;
 }
 :root[data-theme="light"] {
   color-scheme: light;
   --bg: #eef2f5; --panel: #ffffff; --panel-2: #f4f7f9; --line: #d3dce3; --grid: #e4eaef;
   --text: #0b1720; --text-2: #3b5162; --muted: #6f8597; --accent: #0077b6; --accent-2: #b97400;
   --glow: none; --land: #e3e9ee; --france: #d9e8ef; --sea: #f3f7fa;
-  --hot: #d63a2f; --cold: #2a6fd6; --ok: #2f9e55; --warn: #b97400; --band: rgba(0,119,182,.12);
+  --hot: #d63a2f; --cold: #2a6fd6; --ok: #2f9e55; --warn: #b97400; --band: rgba(0,119,182,.12); --neutral: #b9c3cc;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -104,13 +104,23 @@ svg text { fill: var(--text); }
 .rank .row.me { color: var(--hot); font-weight: 600; }
 .rank .row.click { cursor: pointer; }
 .rank .row.click:hover, .rank .row.on { background: var(--band); }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0; background: var(--panel); outline: 1px solid var(--line); outline-offset: -1px; border: 1px solid var(--line); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0; background: var(--panel); outline: 1px solid var(--line); outline-offset: -1px; border: 1px solid var(--line); }
 .cards a { background: var(--panel); box-shadow: 1px 0 0 var(--line), 0 1px 0 var(--line); padding: 12px; text-decoration: none; color: var(--text); display: block; }
 .cards a:hover { background: var(--panel-2); }
 .cards .k { font: 600 12px "IBM Plex Mono", monospace; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
 .cards .d { font-size: 13px; color: var(--text-2); margin-top: 4px; }
 .small4 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
 .mrow { display: grid; grid-template-columns: repeat(12, minmax(0,1fr)); gap: 3px; }
+.ph { min-height: 120px; }
+.kpis.bio { padding: 0; grid-template-columns: repeat(3, minmax(0,1fr)); border: 1px solid var(--line); background: var(--panel); }
+.kpis.bio .kpi { padding: 14px; margin-right: 0; }
+.kpis.bio .kpi .s { font-size: 11px; color: var(--muted); margin-top: 6px; }
+@media (max-width: 560px) { .kpis.bio { grid-template-columns: 1fr; } .kpis.bio .kpi { border-right: none; border-bottom: 1px solid var(--line); } }
+.ph.loading::after { content: "chargement…"; font: 12px "IBM Plex Mono", monospace; color: var(--muted); }
+.csqtxt { font-size: 14px; color: var(--text); margin: 10px 0 6px; }
+.csqtxt b { color: var(--hot); font-weight: 600; }
+.more { font: 600 12px "IBM Plex Mono", monospace; text-decoration: none; letter-spacing: .04em; }
+.more:hover { text-decoration: underline; }
 footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; line-height: 1.7; }
 @media (max-width: 1000px) {
   .band-in { grid-template-columns: minmax(0, 1fr); gap: 16px; } .hero { grid-template-columns: 1fr; gap: 24px; } .two, .mapwrap { grid-template-columns: 1fr; }
@@ -126,7 +136,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 <body>
 <div class="bar">
   <div class="brand"><span class="dot"></span>Climat · France</div>
-  <a class="navlink" href="#temperatures">Températures</a><a class="navlink" href="#extremes">Extrêmes</a><a class="navlink" href="#glace">Glaciers &amp; mer</a><a class="navlink" href="#trajectoire">Trajectoire</a>
+  <a class="navlink" href="#temperatures">Températures</a><a class="navlink" href="#monde">Monde</a><a class="navlink" href="#extremes">Extrêmes</a><a class="navlink" href="#glace">Glaciers &amp; mer</a><a class="navlink" href="#consequences">Conséquences</a><a class="navlink" href="#biodiversite">Biodiversité</a><a class="navlink" href="#trajectoire">Trajectoire</a>
   <a class="navlink" href="index.html">← Électricité</a><a class="navlink" href="autres-energies.html">Autres énergies →</a><a class="navlink" href="eau-feux-air.html">Eau, feux &amp; air →</a>
   <button class="icon-btn" id="theme" title="Thème clair / sombre" aria-label="Changer de thème">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -194,6 +204,22 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   </div>
 </div></section>
 
+<!-- ======================= MONDE ======================= -->
+<div class="part" id="monde"><span class="pno">M — LA FRANCE DANS LE MONDE</span><h2>Un réchauffement plus rapide qu'ailleurs</h2>
+  <p>Le CO₂ s'accumule dans l'atmosphère, la planète se réchauffe ; la France, continentale et de moyenne latitude, se réchauffe plus vite que la moyenne mondiale, qui inclut les océans.</p></div>
+
+<section class="band lazy"><div class="band-in">
+  <div class="side"><div class="no">M1 — CO₂ ATMOSPHÉRIQUE</div><h3>La courbe de Keeling</h3>
+    <p>Concentration mensuelle de CO₂ mesurée à Mauna Loa (Hawaï) depuis 1958. Les dents de scie suivent les saisons de la végétation de l'hémisphère Nord ; la tendance, elle, ne fait que monter.</p></div>
+  <div class="panel"><div class="ptitle">CO₂ à Mauna Loa (ppm, moyenne mensuelle)</div><div id="m1Chart" class="ph"></div><div class="legend" id="m1Lg"></div><p class="csqtxt" id="m1Txt"></p></div>
+</div></section>
+
+<section class="band lazy"><div class="band-in">
+  <div class="side"><div class="no">M2 — FRANCE ET MONDE</div><h3>Deux fois la tendance mondiale</h3>
+    <p>Anomalie annuelle de température par rapport à 1991-2020 : France (indicateur de cette page) et moyenne mondiale terre + océans (NOAAGlobalTemp). Courbes lissées sur 11 ans.</p></div>
+  <div class="panel"><div class="ptitle">Anomalie annuelle (°C, écart à 1991-2020)</div><div id="m2Chart" class="ph"></div><div class="legend" id="m2Lg"></div><p class="csqtxt" id="m2Txt"></p></div>
+</div></section>
+
 <!-- ======================= EXTRÊMES ======================= -->
 <div class="part" id="extremes"><span class="pno">E — EXTRÊMES</span><h2>Plus de chaleur, moins de gel</h2>
   <p>Nombre moyen de jours par an et par station (stations de plaine) : c'est là que le réchauffement se ressent au quotidien.</p></div>
@@ -215,6 +241,30 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <div class="panel"><div class="ptitle" id="e2Title"></div><div id="e2Chart"></div><p class="note" id="e2Note"></p></div>
 </div></section>
 
+<section class="band lazy" id="vagues"><div class="band-in">
+  <div class="side"><div class="no">E3 — VAGUES DE CHALEUR</div><h3>Des vagues de chaleur plus fréquentes, plus longues, plus fortes</h3>
+    <p>Chaque bulle est une vague de chaleur nationale : sa date, sa température moyenne la plus haute, sa sévérité (surface de la bulle : somme des dépassements de 23,4 °C).</p>
+    <p class="note">Reconstruction : indicateur national quotidien calculé sur ~34 stations de plaine (pas les 30 stations de l'indicateur thermique officiel), auquel sont appliqués les seuils et la règle de Météo-France (pic ≥ 25,3 °C ; épisode tant que l'indicateur reste ≥ 23,4 °C, fin après 3 jours sous ce seuil ou 1 jour sous 22,4 °C). Les dates des grandes vagues coïncident avec la liste officielle (2003 : 2-17 août ; 2025 : 19 juin-4 juillet), mais le décompte peut différer de quelques épisodes.</p></div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle">Vagues de chaleur depuis 1947</div><div id="e3Chart" class="ph"></div><div class="legend" id="e3Lg"></div><p class="csqtxt" id="e3Txt"></p></div>
+    <div class="two">
+      <div class="panel"><div class="ptitle">Jours de vague de chaleur par décennie</div><div id="e3Dec" class="ph"></div></div>
+      <div class="panel"><div class="ptitle" id="e3SumTitle"></div><div id="e3Sum" class="ph"></div><div class="legend" id="e3SumLg"></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="band lazy" id="dju"><div class="band-in">
+  <div class="side"><div class="no">E4 — ÉNERGIE</div><h3>Moins de chauffage, plus de climatisation</h3>
+    <p>Degrés-jours (base 18 °C) : chaque jour où la température moyenne est sous 18 °C ajoute l'écart aux besoins de chauffage ; au-dessus, aux besoins de rafraîchissement. Moyenne des stations de plaine.</p>
+    <p class="note">Calcul de cette page (non pondéré par la population, contrairement aux DJU du SDES). Année en cours incomplète.</p>
+    <a class="more" href="index.html">Consommation électrique en direct →</a></div>
+  <div class="stack"><div class="two">
+    <div class="panel"><div class="ptitle">Degrés-jours de chauffage par an</div><div id="e4Heat" class="ph"></div></div>
+    <div class="panel"><div class="ptitle">Degrés-jours de climatisation par an</div><div id="e4Cool" class="ph"></div></div>
+  </div><p class="csqtxt" id="e4Txt" style="margin:0"></p></div>
+</div></section>
+
 <!-- ======================= GLACIERS & MER ======================= -->
 <div class="part" id="glace"><span class="pno">G — GLACIERS &amp; MER</span><h2>La glace fond, la mer monte</h2>
   <p>Bilans de masse des glaciers suivis en France (WGMS) et niveau moyen de la mer aux marégraphes de Brest et Marseille (PSMSL).</p></div>
@@ -232,17 +282,121 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <div class="panel"><div class="ptitle">Niveau moyen annuel (mm, écart à 1991-2020)</div><div id="g2Chart"></div><div class="legend" id="g2Lg"></div></div>
 </div></section>
 
+<section class="band lazy" id="mediterranee"><div class="band-in">
+  <div class="side"><div class="no">G3 — MÉDITERRANÉE</div><h3>Une mer qui chauffe</h3>
+    <p>Température de surface de la mer au large de la Provence et de la Côte d'Azur (golfe du Lion et mer Ligure, moyenne de six mailles de 2°, NOAA ERSST v5).</p>
+    <p class="note">Données mensuelles à maille large : elles montrent les étés anormalement chauds, pas les vagues de chaleur marines jour par jour (il faudrait des données quotidiennes, type NOAA OISST, dont les serveurs n'étaient pas accessibles lors de la construction de cette page).</p></div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle">Anomalie mensuelle depuis 1982 (°C, écart à 1991-2020)</div><div id="g3Chart" class="ph"></div><p class="csqtxt" id="g3Txt"></p></div>
+    <div class="panel"><div class="ptitle">Température moyenne de juillet-août (°C) depuis 1900</div><div id="g3Sum" class="ph"></div></div>
+  </div>
+</div></section>
+
+<!-- ======================= CONSÉQUENCES ======================= -->
+<div class="part" id="consequences"><span class="pno">V — CONSÉQUENCES</span><h2>Les conséquences déjà visibles</h2>
+  <p>Version compacte des indicateurs suivis ailleurs sur le site. Chacun situe 2025-2026 dans sa propre série — souvent courte : une année record sur 10 ou 15 ans n'a pas le poids d'un record sur un siècle.</p></div>
+
 <section class="band"><div class="band-in">
-  <div class="side"><div class="no">G3 — AILLEURS SUR LE SITE</div><h3>Les autres signes, déjà suivis</h3>
-    <p>Ces indicateurs ont leur propre section, mise à jour automatiquement.</p></div>
-  <div class="cards">
-    <a href="index.html#lakeBlock"><div class="k">Lacs de barrage &amp; neige</div><div class="d">Stock hydraulique face aux années passées, enneigement modélisé des massifs.</div></a>
-    <a href="index.html#nappeBlock"><div class="k">Nappes phréatiques</div><div class="d">79 piézomètres, niveaux mois par mois depuis 2000.</div></a>
-    <a href="index.html#riverBlock"><div class="k">Rivières &amp; nucléaire</div><div class="d">Débits d'été et arrêts de réacteurs pour causes environnementales.</div></a>
-    <a href="eau-feux-air.html#eau"><div class="k">Restrictions d'eau</div><div class="d">Arrêtés sécheresse aujourd'hui et depuis 2012.</div></a>
-    <a href="eau-feux-air.html#feux"><div class="k">Feux</div><div class="d">Détections satellite en direct et depuis 2001, surfaces brûlées.</div></a>
-    <a href="eau-feux-air.html#forets"><div class="k">Forêts</div><div class="d">Danger d'incendie, dépérissement, perte de couvert.</div></a>
-    <a href="index.html#co2Block"><div class="k">CO₂ de l'électricité</div><div class="d">Intensité carbone en Europe et en France en direct.</div></a>
+  <div class="side"><div class="no">V1 — RESTRICTIONS D'EAU</div><h3>Des arrêtés sécheresse presque partout</h3>
+    <p>Nombre de départements ayant au moins un arrêté de restriction en vigueur (niveau alerte ou plus, la simple vigilance n'est pas comptée), chaque semaine depuis 2012 ; puis ceux qui ont atteint le niveau « crise » dans l'année.</p>
+    <p class="note warn">L'évolution reflète aussi des changements de pratiques administratives et de couverture de la base (arrêtés plus systématiques, saisie plus complète dans VigiEau / Propluvia) : elle ne mesure pas seulement la sécheresse.</p></div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle">Départements sous restriction, chaque semaine</div><div id="v1Week"></div><div class="legend" id="v1Lg"></div></div>
+    <div class="panel"><div class="ptitle">Départements ayant atteint le niveau « crise » dans l'année</div><div id="v1Year"></div><p class="csqtxt" id="v1Txt"></p><a class="more" href="eau-feux-air.html#eau">Voir le détail →</a></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">V2 — RÉSERVES EN EAU</div><h3>Lacs de barrage et nappes</h3>
+    <p>Stock des réservoirs hydroélectriques (RTE, depuis 2015) et part des piézomètres sous la normale de leur mois (Hub'Eau / BRGM, ~80 piézomètres, un par département).</p></div>
+  <div class="two">
+    <div class="panel"><div class="ptitle">Stock hydraulique (TWh), année par année</div><div id="v2Lake"></div><div class="legend" id="v2LakeLg"></div><p class="csqtxt" id="v2LakeTxt"></p><a class="more" href="index.html#lakeBlock">Voir le détail →</a></div>
+    <div class="panel"><div class="ptitle">Piézomètres sous la normale du mois (%)</div><div id="v2Nap"></div><div class="legend" id="v2NapLg"></div><p class="csqtxt" id="v2NapTxt"></p><a class="more" href="index.html#nappeBlock">Voir le détail →</a></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">V3 — FEUX &amp; NEIGE</div><h3>Feux de forêt, manteau neigeux</h3>
+    <p>Surfaces brûlées recensées par la BDIFF (depuis 2006) et feux détectés par satellite (VIIRS, depuis 2012). Hauteur de neige modélisée sur quatre massifs (réanalyse ERA5, depuis l'hiver 2015-2016 seulement).</p></div>
+  <div class="two">
+    <div class="panel"><div class="ptitle">Feux de forêt en France</div><div class="tabs" id="v3Var"></div><div id="v3Fire"></div><p class="csqtxt" id="v3FireTxt"></p><a class="more" href="eau-feux-air.html#feux">Voir le détail →</a></div>
+    <div class="panel"><div class="ptitle">Neige : hauteur moyenne de décembre à avril (cm)</div><div id="v3Snow"></div><div class="legend" id="v3SnowLg"></div><p class="csqtxt" id="v3SnowTxt"></p><a class="more" href="index.html#lakeBlock">Voir le détail →</a></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">V4 — RIVIÈRES &amp; NUCLÉAIRE</div><h3>Des réacteurs bridés par l'environnement</h3>
+    <p>Production nucléaire déclarée indisponible pour « causes externes liées à l'environnement » (RTE) : débit ou température des rivières, mais aussi tempêtes, colmatage des prises d'eau en bord de mer.</p></div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle" id="v4Title"></div><div id="v4Chart"></div><p class="csqtxt" id="v4Txt"></p><a class="more" href="index.html#riverBlock">Voir le détail →</a></div>
+    <div class="cards">
+      <a href="eau-feux-air.html#forets"><div class="k">Forêts</div><div class="d">Danger d'incendie, dépérissement, perte de couvert.</div></a>
+      <a href="eau-feux-air.html#air"><div class="k">Qualité de l'air</div><div class="d">Épisodes d'ozone et de particules.</div></a>
+      <a href="index.html#co2Block"><div class="k">CO₂ de l'électricité</div><div class="d">Intensité carbone en Europe et en France en direct.</div></a>
+    </div>
+  </div>
+</div></section>
+
+<section class="band lazy" id="sante"><div class="band-in">
+  <div class="side"><div class="no">V5 — SANTÉ</div><h3>La chaleur tue, surtout les plus âgés</h3>
+    <p>Décès toutes causes attribuables à la chaleur, estimés a posteriori par Santé publique France pour la période de surveillance estivale (1er juin-15 septembre), dont ceux survenus pendant les canicules.</p>
+    <p class="note">Méthode homogène depuis 2017 (relation exposition-risque) ; 2003 et 2006 : excès de décès, autre méthode, non comparable. Le bilan 2026 sera publié début 2027.</p></div>
+  <div class="panel"><div class="ptitle">Décès attribuables à la chaleur, été par été</div><div id="v5Chart" class="ph"></div><div class="legend" id="v5Lg"></div><p class="csqtxt" id="v5Txt"></p></div>
+</div></section>
+
+<section class="band lazy" id="catnat"><div class="band-in">
+  <div class="side"><div class="no">V6 — CATASTROPHES NATURELLES</div><h3>Les arrêtés CatNat</h3>
+    <p>Reconnaissances de l'état de catastrophe naturelle, en nombre de communes, selon l'année de l'événement (base GASPAR, depuis 1982). La « sécheresse » désigne les dégâts aux maisons dus au retrait-gonflement des argiles.</p>
+    <p class="note warn">Les reconnaissances arrivent souvent un à trois ans après l'événement : les dernières années sont incomplètes. Elles dépendent aussi des demandes des communes et des critères administratifs, révisés en 2019 pour la sécheresse.</p>
+    <div class="tabs" id="v6Var"></div></div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle">Communes reconnues en catastrophe naturelle, par année d'événement</div><div id="v6Chart" class="ph"></div><div class="legend" id="v6Lg"></div><p class="csqtxt" id="v6Txt"></p></div>
+    <div class="panel"><div class="ptitle" id="v6MapTitle"></div><div id="v6Map" class="ph"></div><div class="legend" id="v6MapLg"></div></div>
+  </div>
+</div></section>
+
+<section class="band lazy" id="moustique"><div class="band-in">
+  <div class="side"><div class="no">V7 — MOUSTIQUE TIGRE</div><h3>Aedes albopictus remonte vers le nord</h3>
+    <p>Départements où le moustique tigre est « installé », d'après les cartes annuelles de la Direction générale de la santé. Il transmet la dengue, le chikungunya et le zika ; des cas autochtones surviennent désormais chaque été.</p>
+    <p class="note">Liste par département lue sur les cartes publiées pour 2004-2022 ; ensuite, seuls les totaux sont publiés (78, 81 puis 83 départements). L'extension doit aussi aux transports ; le climat plus doux la favorise.</p></div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle" id="v7Title"></div><div class="tabs" id="v7Ctl"></div><div id="v7Map" class="ph"></div><div class="legend" id="v7Lg"></div></div>
+    <div class="panel"><div class="ptitle">Nombre de départements colonisés</div><div id="v7Count" class="ph"></div><p class="csqtxt" id="v7Txt"></p></div>
+  </div>
+</div></section>
+
+<section class="band lazy" id="vigne"><div class="band-in">
+  <div class="side"><div class="no">V8 — VIGNE</div><h3>Des vendanges deux semaines plus tôt</h3>
+    <p>Les dates de vendange sont l'une des plus longues séries « climatiques » d'Europe.</p></div>
+  <div class="panel"><div class="ptitle">Beaune, 1354-2018</div>
+    <p class="csqtxt">D'après les archives de Beaune (Bourgogne), reconstituées sans interruption de 1354 à 2018, les vendanges commençaient en moyenne le <b>28 septembre</b> de 1354 à 1987 ; de 1988 à 2018, elles ont commencé <b>13 jours plus tôt</b>. Sur 664 ans, les années très précoces étaient des exceptions ; elles sont devenues la norme depuis 1988, et la température d'avril à juillet à Paris a atteint en 2018 son plus haut niveau depuis 1659.</p>
+    <p class="note">Labbé, Pfister, Brönnimann et al., « The longest homogeneous series of grape harvest dates, Beaune 1354–2018 », Climate of the Past 15, 1485-1501, 2019 (CC BY 4.0). La série annuelle elle-même n'est pas diffusée en données ouvertes à jour (base Euro-Climhist) : pas de graphique ici plutôt qu'une série incomplète.</p></div>
+</div></section>
+
+<!-- ======================= BIODIVERSITÉ ======================= -->
+<div class="part" id="biodiversite"><span class="pno">B — BIODIVERSITÉ</span><h2>Le vivant décline, le climat y prend sa part</h2>
+  <p>Le déclin de la biodiversité a des causes multiples : intensification agricole et pesticides, perte, fragmentation et artificialisation des habitats, pollutions, espèces exotiques envahissantes, surexploitation. Le changement climatique est l'une d'elles, et son poids augmente. Les indicateurs ci-dessous ne permettent pas de faire la part de chaque cause, sauf le dernier (B2), le plus directement lié au climat.</p></div>
+
+<section class="band lazy"><div class="band-in">
+  <div class="side"><div class="no">B1 — OISEAUX COMMUNS</div><h3>Les spécialistes reculent</h3>
+    <p>Abondance des oiseaux communs nicheurs (indice 100 en 1989), mesurée chaque printemps par le programme de sciences participatives STOC de Vigie-Nature (MNHN, LPO). Les espèces « spécialistes » d'un milieu sont les plus sensibles à sa dégradation ; les généralistes s'adaptent mieux.</p>
+    <p class="note">Indicateur 15.i6 du suivi des objectifs de développement durable (Insee, d'après MNHN-CESCO et PatriNat). La série est entièrement recalculée chaque année ; seules les valeurs 2010-2024 sont diffusées en données ouvertes, avec la référence 1989 = 100.</p></div>
+  <div class="panel"><div class="ptitle">Abondance des oiseaux communs (indice, 1989 = 100)</div><div id="b1Chart" class="ph"></div><div class="legend" id="b1Lg"></div><p class="csqtxt" id="b1Txt"></p></div>
+</div></section>
+
+<section class="band lazy"><div class="band-in">
+  <div class="side"><div class="no">B2 — SIGNATURE CLIMATIQUE</div><h3>Des communautés qui « remontent » vers le nord, mais trop lentement</h3>
+    <p>L'indice de température des communautés (CTI) mesure la part des espèces affectionnant la chaleur dans les relevés. Quand il augmente, les communautés se recomposent comme si elles se déplaçaient vers le nord. Converti en kilomètres, on le compare au déplacement des isothermes : l'écart est la « dette climatique ».</p>
+    <p class="note">Valeurs publiées (pas de série ouverte à jour) : Devictor et al. 2008 et 2012. La phénologie (dates d'arrivée, de ponte) n'est pas présentée faute de série nationale ouverte.</p></div>
+  <div class="panel"><div class="ptitle">Déplacement vers le nord (km) : communautés et températures</div><div id="b2Chart" class="ph"></div><div class="legend" id="b2Lg"></div><p class="csqtxt" id="b2Txt"></p></div>
+</div></section>
+
+<section class="band lazy"><div class="band-in">
+  <div class="side"><div class="no">B3 — ESPÈCES MENACÉES, HABITATS</div><h3>Liste rouge, chauves-souris, sols artificialisés</h3>
+    <p>La Liste rouge nationale évalue le risque d'extinction espèce par espèce (méthode UICN). Les chauves-souris sont suivies par le programme Vigie-Chiro depuis 2006. La consommation d'espaces naturels, agricoles et forestiers mesure la perte d'habitats au profit des constructions et infrastructures.</p></div>
+  <div class="stack">
+    <div class="kpis bio" id="b3Kpis"></div>
+    <div class="panel"><div class="ptitle">Espaces naturels, agricoles et forestiers consommés par an (hectares)</div><div id="b3Enaf" class="ph"></div><div class="legend" id="b3Lg"></div><p class="csqtxt" id="b3Txt"></p></div>
   </div>
 </div></section>
 
@@ -277,6 +431,7 @@ const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).
 const MONTHS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
 const MONTHS_L = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 const tip = document.getElementById("tip");
+const TODAY_Y = new Date().getFullYear();
 function showTip(ev, build) { tip.replaceChildren(); build(tip); tip.style.opacity = 1; const r = tip.getBoundingClientRect();
   let x = ev.clientX + 14, y = ev.clientY + 14; if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14; if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 14;
   tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px"; }
@@ -293,7 +448,7 @@ const stripeScale = max => d3.scaleSequential(t => d3.interpolateRdBu(1 - t)).do
 /* ---------- en-tête ---------- */
 function renderHead() {
   const lm = C.updated, partial = C.partialMonth;
-  document.getElementById("source").innerHTML = `Sources : Météo-France (données climatologiques mensuelles, Licence Ouverte), WGMS, PSMSL, Our World in Data · dernier mois complet : <span class="mono">${MONTHS_L[+lm.slice(4) - 1]} ${lm.slice(0, 4)}</span>`;
+  document.getElementById("source").innerHTML = `Sources : Météo-France (données climatologiques mensuelles et quotidiennes, Licence Ouverte), NOAA, WGMS, PSMSL, Our World in Data, Santé publique France, Géorisques, Insee/MNHN, Cerema ; conséquences : VigiEau, RTE, Hub'Eau, BDIFF, NASA FIRMS, Open-Meteo · dernier mois complet : <span class="mono">${MONTHS_L[+lm.slice(4) - 1]} ${lm.slice(0, 4)}</span>`;
   const r = document.getElementById("readout"); r.replaceChildren();
   const y = N.ytd;
   r.append(el("div", "k", N.curYear ? `${N.curYear} · janvier → ${MONTHS_L[(y?.months.at(-1) || 1) - 1]}` : `${N.lastFull}`));
@@ -451,7 +606,7 @@ function renderC4() {
   const sc = d3.scaleSequential(d3.interpolateYlOrRd).domain([0.15, 0.55]);
   const pts = st.concat(missing);
   svg.append("g").selectAll("circle").data(pts).join("circle").attr("cx", s => proj([s.lon, s.lat])[0]).attr("cy", s => proj([s.lon, s.lat])[1])
-    .attr("r", s => s.id === c4Sel ? 9 : 7).attr("fill", s => s.trend == null ? "none" : sc(s.trend))
+    .attr("r", s => s.id === c4Sel ? 9 : 7).attr("fill", s => s.trend == null ? css("--neutral") : sc(s.trend))
     .attr("stroke", s => s.id === c4Sel ? css("--accent") : s.trend == null ? css("--muted") : css("--bg")).attr("stroke-width", s => s.id === c4Sel ? 2.5 : 1.2)
     .attr("stroke-dasharray", s => s.trend == null ? "2 2" : null).style("cursor", "pointer")
     .on("click", (e, s) => { c4Sel = s.id; renderC4(); })
@@ -462,7 +617,7 @@ function renderC4() {
   const lg = document.getElementById("c4Lg"); lg.replaceChildren();
   const g = el("div"); g.style.cssText = `height:10px;width:200px;background:linear-gradient(90deg,${[0, .25, .5, .75, 1].map(t => d3.interpolateYlOrRd(t)).join(",")})`;
   const s1 = el("span"); s1.append(document.createTextNode("0,15"), g, document.createTextNode("0,55 °C/déc.")); lg.append(s1);
-  const s2 = el("span"); const k = el("span", "sw"); k.style.cssText = `border:1px dashed ${css("--muted")};border-radius:50%;background:transparent`; s2.append(k, document.createTextNode("tendance non calculable (années incomplètes)")); lg.append(s2);
+  const s2 = el("span"); const k = el("span", "sw"); k.style.cssText = `border:1px dashed ${css("--muted")};border-radius:50%;background:${css("--neutral")}`; s2.append(k, document.createTextNode("station sans tendance calculable (trop d'années incomplètes)")); lg.append(s2);
   const rk = document.getElementById("c4Rank"); rk.replaceChildren();
   st.forEach((s, i) => { const r = el("div", "row click" + (s.id === c4Sel ? " on" : "")); r.append(el("span", null, i + 1), el("span", null, s.name), el("b", null, fmt(s.trend, 2))); r.onclick = () => { c4Sel = s.id; renderC4(); }; rk.append(r); });
   missing.forEach(s => { const r = el("div", "row click"); r.append(el("span", null, "·"), el("span", null, s.name), el("b", null, "—")); r.onclick = () => { c4Sel = s.id; renderC4(); }; rk.append(r); });
@@ -656,18 +811,496 @@ function renderT2() {
   [["--hot", "observé (moyennes décennales, vs 1900-1930)"], ["--accent-2", "TRACC France (vs préindustriel)"]].forEach(([c, l]) => { const s = el("span"); const k = el("span", "sw line"); k.style.background = css(c); s.append(k, document.createTextNode(l)); lg.append(s); });
 }
 
+/* ---------- V : conséquences ---------- */
+const Q = C.csq || {};
+const HL = { 2026: "--hot", 2022: "--accent-2", 2023: "--accent" };
+const nth = r => r === 1 ? "1ᵉʳ" : r + "ᵉ";
+function frame(id, h, M) { const host = document.getElementById(id); host.replaceChildren(); const w = W(id);
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", h); return { svg, w, h, M }; }
+function axes(f, x, y, opt = {}) { const { svg, w, h, M } = f;
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(opt.yt || 4).tickSize(-(w - M.l - M.r)).tickFormat(opt.yf || (v => fmt(v, 0, false))));
+  const ax = d3.axisBottom(x).tickSize(0).tickPadding(6); if (opt.xv) ax.tickValues(opt.xv); else ax.ticks(opt.xt || 6); ax.tickFormat(opt.xf || d3.format("d"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - M.b})`).call(ax); }
+function legend(id, items) { const lg = document.getElementById(id); lg.replaceChildren();
+  items.forEach(([col, l, line]) => { const s = el("span"); const k = el("span", line ? "sw line" : "sw"); k.style.background = col; s.append(k, document.createTextNode(l)); lg.append(s); }); }
+function setTxt(id, html) { document.getElementById(id).innerHTML = html; }
+function missing(id, msg) { const h = document.getElementById(id); h.replaceChildren(el("div", "note", msg)); }
+
+function renderV1() {
+  const v = Q.vigieau; if (!v) { missing("v1Week", "Données VigiEau indisponibles."); return; }
+  const wk = v.weekly.map(r => [new Date(r[0]), r[1], r[2]]);
+  let f = frame("v1Week", 220, { l: 32, r: 10, t: 10, b: 22 });
+  const x = d3.scaleTime().domain(d3.extent(wk, d => d[0])).range([f.M.l, f.w - f.M.r]);
+  const y = d3.scaleLinear().domain([0, 100]).range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xt: f.w < 500 ? 4 : 8, xf: d3.timeFormat("%Y") });
+  f.svg.append("path").datum(wk).attr("fill", css("--accent-2")).attr("opacity", .35).attr("d", d3.area().x(d => x(d[0])).y0(y(0)).y1(d => y(d[1])));
+  f.svg.append("path").datum(wk).attr("fill", css("--hot")).attr("opacity", .85).attr("d", d3.area().x(d => x(d[0])).y0(y(0)).y1(d => y(d[2])));
+  const bis = d3.bisector(d => d[0]).center;
+  f.svg.append("rect").attr("x", f.M.l).attr("width", f.w - f.M.l - f.M.r).attr("y", f.M.t).attr("height", f.h - f.M.t - f.M.b).attr("fill", "transparent")
+    .on("pointermove", e => { const d = wk[bis(wk, x.invert(d3.pointer(e)[0]))]; showTip(e, t => { t.append(el("div", "t", "semaine du " + d[0].toLocaleDateString("fr-FR")));
+      trow(t, "sous restriction", d[1] + " dép."); trow(t, "dont en crise", d[2] + " dép."); }); }).on("pointerleave", hideTip);
+  legend("v1Lg", [[css("--accent-2"), "alerte, alerte renforcée ou crise"], [css("--hot"), "crise"]]);
+  const ys = Object.entries(v.years).map(([y, a]) => [+y, ...a]);
+  f = frame("v1Year", 180, { l: 32, r: 10, t: 16, b: 22 });
+  const xb = d3.scaleBand().domain(ys.map(d => d[0])).range([f.M.l, f.w - f.M.r]).padding(.18);
+  const yb = d3.scaleLinear().domain([0, 100]).range([f.h - f.M.b, f.M.t]);
+  axes(f, xb, yb, { xv: ys.map(d => d[0]).filter(y => f.w > 500 || y % 2 === 0), xf: d => f.w < 500 ? "’" + String(d).slice(2) : d });
+  f.svg.selectAll("rect.b").data(ys).join("rect").attr("class", "b").attr("x", d => xb(d[0])).attr("width", xb.bandwidth()).attr("y", d => yb(d[1])).attr("height", d => yb(0) - yb(d[1]))
+    .attr("fill", d => HL[d[0]] ? css(HL[d[0]]) : css("--muted")).attr("opacity", d => HL[d[0]] ? 1 : .55)
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", d[0] + (d[0] === TODAY_Y ? " (en cours)" : ""))); t.append(el("div", "big", d[1] + " dép. en crise"));
+      trow(t, "dép. sous restriction", d[2]); trow(t, "dép. avec un arrêté", d[3]); trow(t, "pic hebdomadaire", d[4] + " dép."); })).on("pointerleave", hideTip);
+  f.svg.selectAll("text.v").data(ys.filter(d => HL[d[0]])).join("text").attr("class", "v").attr("x", d => xb(d[0]) + xb.bandwidth() / 2).attr("y", d => yb(d[1]) - 4).attr("text-anchor", "middle")
+    .style("font", "600 10.5px IBM Plex Mono").style("fill", d => css(HL[d[0]])).text(d => d[1]);
+  const cur = ys.find(d => d[0] === TODAY_Y), others = ys.filter(d => d[0] !== TODAY_Y), best = d3.max(others, d => d[1]), bestY = others.filter(d => d[1] === best).map(d => d[0]);
+  const peak = d => d3.max(v.weekly.filter(r => +r[0].slice(0, 4) === d), r => r[2]);
+  const pc = peak(TODAY_Y), pPrev = d3.max(others, d => peak(d[0])), pPrevY = others.find(d => peak(d[0]) === pPrev)[0];
+  setTxt("v1Txt", cur ? `En ${TODAY_Y} (année en cours), <b>${cur[1]} départements</b> ont atteint le niveau crise, ${cur[1] > best ? "un record depuis 2012 (précédent : " + best + " en " + bestY.join(", ") + ")" : cur[1] === best ? "autant qu'en " + bestY.join(", ") + ", le maximum de la série depuis 2012" : "contre " + best + " en " + bestY.join(", ")} ; au plus fort, <b>${pc} départements en crise la même semaine</b> (${pc > pPrev ? "jamais vu depuis 2012, " + pPrev + " en " + pPrevY : "maximum antérieur : " + pPrev + " en " + pPrevY}). ${cur[2]} départements ont eu des restrictions cette année.` : "");
+}
+
+function renderV2() {
+  const L = Q.lakes;
+  if (L) {
+    const f = frame("v2Lake", 220, { l: 32, r: 10, t: 10, b: 22 });
+    const ser = Object.entries(L.years).map(([y, p]) => ({ y: +y, p }));
+    const x = d3.scaleLinear().domain([1, 366]).range([f.M.l, f.w - f.M.r]);
+    const y = d3.scaleLinear().domain([0, d3.max(ser.flatMap(s => s.p), d => d[1]) * 1.05]).nice().range([f.h - f.M.b, f.M.t]);
+    const mStart = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
+    axes(f, x, y, { xv: mStart.filter((_, i) => f.w > 420 || i % 2 === 0), xf: d => MONTHS[mStart.indexOf(d)].slice(0, f.w < 500 ? 1 : 4) });
+    ser.sort((a, b) => (HL[a.y] ? 1 : 0) - (HL[b.y] ? 1 : 0)).forEach(s => f.svg.append("path").datum(s.p).attr("fill", "none").attr("stroke", HL[s.y] && s.y !== 2023 ? css(HL[s.y]) : css("--muted"))
+      .attr("stroke-width", s.y === TODAY_Y ? 2.6 : HL[s.y] && s.y !== 2023 ? 1.8 : 1).attr("opacity", HL[s.y] && s.y !== 2023 ? 1 : .45).attr("d", d3.line().x(d => x(d[0])).y(d => y(d[1])))
+      .on("pointermove", e => showTip(e, t => { t.append(el("div", "t", String(s.y))); t.append(el("div", null, "stock hydraulique hebdomadaire")); })).on("pointerleave", hideTip));
+    legend("v2LakeLg", [[css("--hot"), String(TODAY_Y), 1], [css("--accent-2"), "2022", 1], [css("--muted"), "autres années depuis 2015", 1]]);
+    const ld = new Date(L.last);
+    setTxt("v2LakeTxt", `Au ${ld.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })} : <b>${fmt(L.lastTWh, 1, false)} TWh</b>, ${L.rankLow === 1 ? "<b>le niveau le plus bas</b>" : "le " + nth(L.rankLow) + " niveau le plus bas"} pour cette période sur ${L.of} années (série depuis 2015), devant ${L.lowest.filter(z => z[0] !== ld.getFullYear()).slice(0, 2).map(z => z[0] + " (" + fmt(z[1], 1, false) + ")").join(" et ")}.`);
+  } else missing("v2Lake", "Données RTE indisponibles.");
+  const Np = Q.nappes;
+  if (Np) {
+    const data = Np.monthly.filter(d => d[0] >= "2000-01").map(d => [new Date(d[0] + "-15"), d[1] * 100, d[2] * 100, d[3], d[0]]);
+    const f = frame("v2Nap", 220, { l: 42, r: 10, t: 10, b: 22 });
+    const x = d3.scaleTime().domain(d3.extent(data, d => d[0])).range([f.M.l, f.w - f.M.r]);
+    const y = d3.scaleLinear().domain([0, 100]).range([f.h - f.M.b, f.M.t]);
+    axes(f, x, y, { xt: f.w < 500 ? 4 : 7, xf: d3.timeFormat("%Y"), yf: v => v + " %" });
+    f.svg.append("path").datum(data).attr("fill", css("--accent-2")).attr("opacity", .4).attr("d", d3.area().x(d => x(d[0])).y0(y(0)).y1(d => y(d[1])));
+    f.svg.append("path").datum(data).attr("fill", css("--hot")).attr("opacity", .8).attr("d", d3.area().x(d => x(d[0])).y0(y(0)).y1(d => y(d[2])));
+    f.svg.append("line").attr("x1", f.M.l).attr("x2", f.w - f.M.r).attr("y1", y(40)).attr("y2", y(40)).attr("stroke", css("--text-2")).attr("stroke-dasharray", "3 3");
+    const bis = d3.bisector(d => d[0]).center;
+    f.svg.append("rect").attr("x", f.M.l).attr("width", f.w - f.M.l - f.M.r).attr("y", f.M.t).attr("height", f.h - f.M.t - f.M.b).attr("fill", "transparent")
+      .on("pointermove", e => { const d = data[bis(data, x.invert(d3.pointer(e)[0]))]; showTip(e, t => { t.append(el("div", "t", MONTHS_L[+d[4].slice(5) - 1] + " " + d[4].slice(0, 4)));
+        trow(t, "sous la normale", fmt(d[1], 0, false) + " %"); trow(t, "bas ou très bas", fmt(d[2], 0, false) + " %"); trow(t, "piézomètres", d[3]); }); }).on("pointerleave", hideTip);
+    legend("v2NapLg", [[css("--accent-2"), "sous la normale (40 % des années les plus basses)"], [css("--hot"), "bas ou très bas (25 %)"], [css("--text-2"), "part attendue en moyenne : 40 %", 1]]);
+    const curM = new Date().toISOString().slice(0, 7), full = Np.monthly.filter(d => d[0] < curM), last = full.at(-1), same = Np.monthly.filter(d => d[0].slice(5) === last[0].slice(5) && d[0] < last[0]);
+    const higher = same.filter(d => d[1] >= last[1]).map(d => d[0].slice(0, 4)), rk = higher.length + 1;
+    setTxt("v2NapTxt", `En ${MONTHS_L[+last[0].slice(5) - 1]} ${last[0].slice(0, 4)}, <b>${fmt(last[1] * 100, 0, false)} %</b> des piézomètres sont sous la normale du mois (${fmt(last[2] * 100, 0, false)} % bas ou très bas) : ${rk === 1 ? "<b>la proportion la plus forte</b> pour ce mois depuis " + same[0][0].slice(0, 4) : nth(rk) + " proportion la plus forte pour ce mois depuis " + same[0][0].slice(0, 4) + " (plus élevée en " + higher.slice(-3).join(", ") + ")"}. Normale calculée sur la chronique de chaque piézomètre, pas l'indicateur officiel du BRGM ; le mois en cours, incomplet, n'est pas commenté.`);
+  } else missing("v2Nap", "Données Hub'Eau indisponibles.");
+}
+
+function renderFireAnom(F) {
+  const M_ = F.viirsMonths || {}, ys = Object.keys(M_).map(Number).sort((a, b) => a - b);
+  const med = d3.range(12).map(m => d3.median(ys, y => M_[y][m]));
+  const host = document.getElementById("v3Fire"); host.replaceChildren();
+  const w = W("v3Fire"), cw = (w - 40) / 12, chh = Math.max(12, Math.min(18, cw * .7)), h = ys.length * chh + 24;
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", h);
+  const col = d3.scaleDiverging(t => d3.interpolateRdBu(1 - t)).domain([-Math.log(4), 0, Math.log(4)]).clamp(true);
+  ys.forEach((y, i) => { svg.append("text").attr("x", 34).attr("y", i * chh + chh * .75).attr("text-anchor", "end").style("font", "10.5px IBM Plex Mono").style("fill", css("--muted")).text(y);
+    d3.range(12).forEach(m => { const v = M_[y][m], r = med[m] ? v / med[m] : 1;
+      svg.append("rect").attr("x", 40 + m * cw).attr("y", i * chh).attr("width", cw - 1).attr("height", chh - 1).attr("fill", col(Math.log(Math.max(r, .05))))
+        .on("pointermove", e => showTip(e, t => { t.append(el("div", "t", MONTHS_L[m] + " " + y)); t.append(el("div", "big", fmt(v, 0, false) + " détections")); trow(t, "médiane du mois 2012-" + ys.at(-1), fmt(med[m], 0, false)); trow(t, "rapport", "×" + fmt(r, 1, false)); })).on("pointerleave", hideTip);
+      if (r >= 2) svg.append("text").attr("x", 40 + m * cw + cw / 2).attr("y", i * chh + chh * .72).attr("text-anchor", "middle").style("font", "600 9px IBM Plex Mono").style("fill", "#fff").style("pointer-events", "none").text(cw > 26 ? "×" + fmt(r, 0, false) : "•"); }); });
+  d3.range(12).forEach(m => svg.append("text").attr("x", 40 + m * cw + cw / 2).attr("y", h - 6).attr("text-anchor", "middle").style("font", "10px IBM Plex Mono").style("fill", css("--muted")).text(MONTHS[m].slice(0, w < 500 ? 1 : 4)));
+  const anomal = ys.map(y => [y, d3.range(12).filter(m => med[m] && M_[y][m] / med[m] >= 2)]);
+  const top = anomal.filter(a => a[1].length).sort((a, b) => b[1].length - a[1].length).slice(0, 3);
+  const last = anomal.at(-1);
+  setTxt("v3FireTxt", `Détections VIIRS de chaque mois rapportées à la médiane du même mois sur ${ys[0]}-${ys.at(-1)} (rouge : au-dessus ; « ×2 » : au moins le double). ${last[0]} : ${last[1].length ? `<b>${last[1].length} mois anormaux</b> (${last[1].map(m => MONTHS_L[m]).join(", ")})` : "aucun mois au double de la normale"}. Années les plus marquées : ${top.map(a => a[0] + " (" + a[1].length + " mois)").join(", ")}. Écart statistique seulement : les détections comptent aussi les brûlages agricoles, et la série ne fait que ${ys.length} ans.`);
+}
+
+let v3v = "ha";
+function renderV3() {
+  const F = Q.fires;
+  if (F) {
+    tabs("v3Var", [["ha", "Surfaces brûlées (BDIFF)"], ["viirs", "Détections satellite (VIIRS)"], ["anom", "Mois anormaux"]], v3v, v => { v3v = v; renderV3(); });
+    if (v3v === "anom") { renderFireAnom(F); } else {
+    const data = v3v === "ha" ? Object.entries(F.bdiff).map(([y, a]) => [+y, a[1], a[0]]) : Object.entries(F.firms["viirs-snpp"] || {}).map(([y, n]) => [+y, n]);
+    const f = frame("v3Fire", 200, { l: 44, r: 10, t: 16, b: 22 });
+    const x = d3.scaleBand().domain(data.map(d => d[0])).range([f.M.l, f.w - f.M.r]).padding(.18);
+    const y = d3.scaleLinear().domain([0, d3.max(data, d => d[1]) * 1.08]).nice().range([f.h - f.M.b, f.M.t]);
+    axes(f, x, y, { xv: data.map(d => d[0]).filter(y => y % (f.w < 500 ? 4 : 2) === 0), yf: v => v >= 1000 ? fmt(v / 1000, 0, false) + " k" : v });
+    f.svg.selectAll("rect").data(data).join("rect").attr("x", d => x(d[0])).attr("width", x.bandwidth()).attr("y", d => y(d[1])).attr("height", d => y(0) - y(d[1]))
+      .attr("fill", d => d[0] === 2025 ? css("--hot") : d[0] === 2022 ? css("--accent-2") : css("--muted")).attr("opacity", d => d[0] === 2025 || d[0] === 2022 ? 1 : .55)
+      .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", String(d[0]))); t.append(el("div", "big", fmt(d[1], 0, false) + (v3v === "ha" ? " ha" : " détections")));
+        if (d[2] != null) trow(t, "feux recensés", fmt(d[2], 0, false)); })).on("pointerleave", hideTip);
+    const last = data.at(-1), rk = data.filter(d => d[1] > last[1]).length + 1, maxd = data.reduce((a, b) => b[1] > a[1] ? b : a);
+    setTxt("v3FireTxt", v3v === "ha"
+      ? `${last[0]} : <b>${fmt(last[1], 0, false)} ha</b> brûlés, ${nth(rk)} année depuis ${data[0][0]}${rk > 1 ? ", loin derrière " + maxd[0] + " (" + fmt(maxd[1], 0, false) + " ha)" : ""}. Le bilan ${TODAY_Y} n'est pas encore publié : voir les détections en direct. La BDIFF couvre surtout le Sud ; sa couverture s'est élargie avec le temps.`
+      : `${last[0]} : <b>${fmt(last[1], 0, false)} détections</b> de feux actifs en France, ${nth(rk)} année depuis ${data[0][0]} (record : ${maxd[0]}). Les détections comptent aussi les brûlages agricoles ; l'archive ${TODAY_Y} n'est publiée qu'en fin d'année.`);
+    }
+  } else missing("v3Fire", "Données feux indisponibles.");
+  const S = Q.snow;
+  if (S) {
+    const f = frame("v3Snow", 220, { l: 36, r: 24, t: 10, b: 22 });
+    const ser = Object.entries(S).map(([n, s], i) => ({ n, s, col: css(["--accent", "--hot", "--accent-2", "--ok"][i % 4]), p: Object.entries(s.winters).map(([y, a]) => [+y, a[0]]) }));
+    const x = d3.scaleLinear().domain(d3.extent(ser.flatMap(s => s.p), d => d[0])).range([f.M.l, f.w - f.M.r]);
+    const y = d3.scaleLinear().domain([0, d3.max(ser.flatMap(s => s.p), d => d[1]) * 1.05]).nice().range([f.h - f.M.b, f.M.t]);
+    axes(f, x, y, { xv: d3.range(x.domain()[0], x.domain()[1] + 1).filter(d => d % (f.w < 500 ? 4 : 2) === 0), xf: d => (d - 1) + "-" + String(d).slice(2) });
+    ser.forEach(s => { f.svg.append("path").datum(s.p).attr("fill", "none").attr("stroke", s.col).attr("stroke-width", 2).attr("d", d3.line().x(d => x(d[0])).y(d => y(d[1])));
+      f.svg.append("g").selectAll("circle").data(s.p).join("circle").attr("cx", d => x(d[0])).attr("cy", d => y(d[1])).attr("r", 3).attr("fill", s.col)
+        .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", s.n + " · hiver " + (d[0] - 1) + "-" + d[0])); t.append(el("div", "big", fmt(d[1], 0, false) + " cm")); trow(t, "jours ≥ 10 cm", s.s.winters[d[0]][1]); })).on("pointerleave", hideTip); });
+    legend("v3SnowLg", ser.map(s => [s.col, `${s.n} (${fmt(s.s.elev, 0, false)} m)`, 1]));
+    const lastW = d3.max(ser.flatMap(s => s.p), d => d[0]);
+    const parts = ser.map(s => { const v = s.s.winters[lastW]?.[0]; if (v == null) return null; const vals = s.p.map(d => d[1]); const r = vals.filter(z => z < v).length + 1, rh = vals.filter(z => z > v).length + 1;
+      const where = s.n === "Massif central" ? "le Massif central" : "les " + s.n; return r === 1 ? `<b>le plus faible</b> dans ${where}` : rh === 1 ? `le plus fort dans ${where}` : null; }).filter(Boolean);
+    setTxt("v3SnowTxt", `Hiver ${lastW - 1}-${lastW} : ${parts.length ? parts.join(", ") + " sur " + ser[0].p.length + " hivers" : "dans la moyenne des hivers récents"}. Série de ${ser[0].p.length} hivers seulement, modélisée (maille de 10 à 25 km) : elle compare les hivers entre eux, pas assez longue pour dégager une tendance.`);
+  } else missing("v3Snow", "Données neige indisponibles.");
+}
+
+function renderV4() {
+  const Nu = Q.nuclear;
+  document.getElementById("v4Title").textContent = "Production perdue pour causes environnementales, par mois (GWh)";
+  if (!Nu) { missing("v4Chart", "Pas d'agrégat disponible."); return; }
+  const data = Nu.monthly;
+  const f = frame("v4Chart", 200, { l: 44, r: 10, t: 16, b: 22 });
+  const x = d3.scaleBand().domain(data.map(d => d[0])).range([f.M.l, f.w - f.M.r]).padding(.25);
+  const y = d3.scaleLinear().domain([0, d3.max(data, d => d[1]) * 1.1]).nice().range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xf: m => MONTHS[+m.slice(5) - 1] + (f.w > 500 ? " " + m.slice(0, 4) : "") });
+  f.svg.selectAll("rect").data(data).join("rect").attr("x", d => x(d[0])).attr("width", x.bandwidth()).attr("y", d => y(d[1])).attr("height", d => y(0) - y(d[1])).attr("fill", css("--hot"))
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", MONTHS_L[+d[0].slice(5) - 1] + " " + d[0].slice(0, 4))); t.append(el("div", "big", fmt(d[1], 0, false) + " GWh")); })).on("pointerleave", hideTip);
+  f.svg.selectAll("text.v").data(data).join("text").attr("class", "v").attr("x", d => x(d[0]) + x.bandwidth() / 2).attr("y", d => y(d[1]) - 4).attr("text-anchor", "middle").style("font", "600 10.5px IBM Plex Mono").text(d => fmt(d[1], 0, false));
+  const ys = Object.entries(Nu.years).at(-1), first = new Date(Nu.first);
+  const nm = { "CHOOZ": "Chooz", "ST ALBAN": "Saint-Alban", "GOLFECH": "Golfech", "BUGEY": "Bugey", "CATTENOM": "Cattenom" };
+  const top = Nu.top.map(([n, v]) => { const [p, u] = [n.slice(0, n.lastIndexOf(" ")), n.slice(n.lastIndexOf(" ") + 1)]; return `${nm[p] || p} ${u} (${fmt(v / 1000, 1, false)} TWh)`; });
+  setTxt("v4Txt", `${ys[0]}, jusqu'à aujourd'hui : <b>${fmt(ys[1][0] / 1000, 1, false)} TWh</b> indisponibles sur ${ys[1][1]} jours et ${ys[1][2]} réacteurs, surtout ${top.join(", ")}. Les déclarations RTE ne sont récupérées ici que depuis ${first.toLocaleDateString("fr-FR", { month: "long", year: "numeric" })} : pas de comparaison possible avec les étés précédents (2003, 2019, 2022) dans ces données. Puissance déclarée indisponible, pas mesure de production perdue.`);
+}
+
+/* ---------- sections chargées à la demande (climat2.js) ---------- */
+const CL2_SRC = "climat2.js?v=c516e2877a";
+let D2 = null, d2Loading = false;
+function loadD2() {
+  if (D2 || d2Loading) return; d2Loading = true;
+  document.querySelectorAll(".lazy .ph").forEach(e => { if (!e.childElementCount) e.classList.add("loading"); });
+  const sc = document.createElement("script"); sc.src = CL2_SRC;
+  sc.onload = () => { D2 = window.CLIMAT2; document.querySelectorAll(".ph.loading").forEach(e => e.classList.remove("loading")); renderLazy(); };
+  sc.onerror = () => document.querySelectorAll(".ph.loading").forEach(e => { e.classList.remove("loading"); e.replaceChildren(el("div", "note", "Données indisponibles.")); });
+  document.head.append(sc);
+}
+if (window.IntersectionObserver) {
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); loadD2(); } }, { rootMargin: "800px 0px" });
+  document.querySelectorAll(".lazy").forEach(e => io.observe(e));
+} else loadD2();
+function renderLazy() { if (!D2) return; [renderM1, renderM2, renderE3, renderE4, renderG3, renderV5, renderV6, renderV7, renderB1, renderB2, renderB3].forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+const smooth = (pts, w = 11) => pts.map((p, i) => { const win = pts.filter(q => Math.abs(q[0] - p[0]) <= (w - 1) / 2); return win.length >= w - 3 ? [p[0], d3.mean(win, q => q[1])] : null; }).filter(Boolean);
+const olsDec = pts => { const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), mx = d3.mean(xs), my = d3.mean(ys); return 10 * d3.sum(xs.map((x, i) => (x - mx) * (ys[i] - my))) / d3.sum(xs.map(x => (x - mx) ** 2)); };
+const ddmm = s => new Date(s).toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+const ddmmyy = s => new Date(s).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+function renderM1() {
+  const W_ = D2.world; if (!W_?.co2) return missing("m1Chart", "Données NOAA indisponibles.");
+  const data = W_.co2.map(([y, m, v]) => [new Date(y, m - 1, 15), v]);
+  const f = frame("m1Chart", 260, { l: 40, r: 12, t: 10, b: 22 });
+  const x = d3.scaleTime().domain(d3.extent(data, d => d[0])).range([f.M.l, f.w - f.M.r]);
+  const y = d3.scaleLinear().domain([310, d3.max(data, d => d[1]) + 5]).range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xt: f.w < 500 ? 4 : 8, xf: d3.timeFormat("%Y") });
+  const ann = d3.rollups(W_.co2, v => v.length === 12 ? d3.mean(v, d => d[2]) : null, d => d[0]).filter(d => d[1]).map(d => [new Date(d[0], 6, 1), d[1], d[0]]);
+  f.svg.append("path").datum(data).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.2).attr("d", d3.line().x(d => x(d[0])).y(d => y(d[1])));
+  f.svg.append("path").datum(ann).attr("fill", "none").attr("stroke", css("--hot")).attr("stroke-width", 2).attr("d", d3.line().x(d => x(d[0])).y(d => y(d[1])));
+  const bis = d3.bisector(d => d[0]).center;
+  f.svg.append("rect").attr("x", f.M.l).attr("width", f.w - f.M.l - f.M.r).attr("y", f.M.t).attr("height", f.h - f.M.t - f.M.b).attr("fill", "transparent")
+    .on("pointermove", e => { const d = data[bis(data, x.invert(d3.pointer(e)[0]))]; showTip(e, t => { t.append(el("div", "t", d[0].toLocaleDateString("fr-FR", { month: "long", year: "numeric" }))); t.append(el("div", "big", fmt(d[1], 1, false) + " ppm")); }); }).on("pointerleave", hideTip);
+  legend("m1Lg", [[css("--accent"), "moyenne mensuelle", 1], [css("--hot"), "moyenne annuelle", 1]]);
+  const last = W_.co2.at(-1), a = ann.at(-1), a10 = ann.find(d => d[2] === a[2] - 10);
+  setTxt("m1Txt", `${MONTHS_L[last[1] - 1]} ${last[0]} : <b>${fmt(last[2], 1, false)} ppm</b>. Moyenne ${a[2]} : ${fmt(a[1], 1, false)} ppm, contre ${fmt(ann[0][1], 1, false)} en ${ann[0][2]} ; hausse moyenne de ${fmt((a[1] - a10[1]) / 10, 1, false)} ppm par an sur les dix dernières années. Avant l'ère industrielle, la concentration était d'environ 280 ppm (GIEC).`);
+}
+
+function renderM2() {
+  const G_ = D2.world?.global; if (!G_) return missing("m2Chart", "Données mondiales indisponibles.");
+  const fr = entries(N.annual).filter(d => d[0] >= 1900), gl = entries(G_.annual).filter(d => d[0] >= 1900);
+  const f = frame("m2Chart", 280, { l: 40, r: 12, t: 10, b: 22 });
+  const x = d3.scaleLinear().domain([1900, Math.max(fr.at(-1)[0], gl.at(-1)[0])]).range([f.M.l, f.w - f.M.r]);
+  const y = d3.scaleLinear().domain([-2.4, 1.8]).range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xt: f.w < 500 ? 4 : 8, yf: v => fmt(v, 1) });
+  f.svg.append("line").attr("x1", f.M.l).attr("x2", f.w - f.M.r).attr("y1", y(0)).attr("y2", y(0)).attr("stroke", css("--muted"));
+  [[fr, "--hot", "France"], [gl, "--accent", "Monde"]].forEach(([d, c, n]) => {
+    f.svg.append("g").selectAll("circle").data(d).join("circle").attr("cx", p => x(p[0])).attr("cy", p => y(p[1])).attr("r", 2).attr("fill", css(c)).attr("opacity", .45)
+      .on("pointermove", (e, p) => showTip(e, t => { t.append(el("div", "t", n + " · " + p[0])); t.append(el("div", "big", fmt(p[1], 2) + " °C")); })).on("pointerleave", hideTip);
+    f.svg.append("path").datum(smooth(d)).attr("fill", "none").attr("stroke", css(c)).attr("stroke-width", 2.4).attr("d", d3.line().x(p => x(p[0])).y(p => y(p[1])));
+  });
+  legend("m2Lg", [[css("--hot"), "France (stations de plaine)", 1], [css("--accent"), "Monde, terre + océans (NOAA)", 1]]);
+  const r = N.trend1961 / G_.trend1961, dFr = N.recent10 - N.offEarly, dGl = G_.recent10 - G_.early;
+  setTxt("m2Txt", `Depuis 1961, la France se réchauffe de <b>${fmt(N.trend1961, 2)} °C par décennie</b>, la moyenne mondiale de ${fmt(G_.trend1961, 2)} °C : <b>${fmt(r, 1, false)} fois plus vite</b>. Entre 1900-1930 et ${N.lastFull - 9}-${N.lastFull}, l'écart atteint ${fmt(dFr, 1)} °C en France (séries brutes) contre ${fmt(dGl, 1)} °C pour le globe. Les continents se réchauffent plus que les océans, qui couvrent 70 % de la planète.`);
+}
+
+function renderE3() {
+  const H_ = D2.heat; if (!H_) return missing("e3Chart", "Données quotidiennes indisponibles.");
+  const wv = H_.waves.map(w => ({ ...w, d: new Date(w.start), y: +w.start.slice(0, 4) }));
+  const f = frame("e3Chart", 270, { l: 40, r: 28, t: 24, b: 22 });
+  const x = d3.scaleTime().domain([new Date(1946, 0, 1), new Date(TODAY_Y + 1, 0, 1)]).range([f.M.l, f.w - f.M.r]);
+  const y = d3.scaleLinear().domain([25, 30.4]).range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xt: f.w < 500 ? 4 : 8, xf: d3.timeFormat("%Y"), yf: v => fmt(v, 0, false) + " °C" });
+  const r = d3.scaleSqrt().domain([0, d3.max(wv, w => w.sev)]).range([2, f.w < 500 ? 16 : 24]);
+  f.svg.append("g").selectAll("circle").data(wv.sort((a, b) => b.sev - a.sev)).join("circle").attr("cx", w => x(w.d)).attr("cy", w => y(w.max)).attr("r", w => r(w.sev))
+    .attr("fill", w => w.y >= TODAY_Y ? css("--hot") : w.y >= 2000 ? css("--accent-2") : css("--accent")).attr("fill-opacity", .55).attr("stroke", w => w.y >= TODAY_Y ? css("--hot") : css("--bg"))
+    .on("pointermove", (e, w) => showTip(e, t => { t.append(el("div", "t", `${ddmmyy(w.start)} → ${ddmmyy(w.end)}${w.ongoing ? " (en cours)" : ""}`)); t.append(el("div", "big", w.days + " jours"));
+      trow(t, "indicateur maximal", fmt(w.max, 1, false) + " °C (" + ddmm(w.maxDay) + ")"); trow(t, "sévérité", fmt(w.sev, 0, false) + " °C·j"); })).on("pointerleave", hideTip);
+  legend("e3Lg", [[css("--accent"), "1947-1999"], [css("--accent-2"), "2000-" + (TODAY_Y - 1)], [css("--hot"), String(TODAY_Y)]]);
+  const per = (a, b) => wv.filter(w => w.y >= a && w.y <= b), p1 = per(1947, 1999), p2 = per(2000, TODAY_Y - 1), p3 = per(TODAY_Y, TODAY_Y);
+  const sumD = l => d3.sum(l, w => w.days), top = [...wv].sort((a, b) => b.sev - a.sev).slice(0, 3);
+  const longest = [...wv].sort((a, b) => b.days - a.days);
+  setTxt("e3Txt", `${p1.length} vagues de chaleur de 1947 à 1999 (${sumD(p1)} jours en 53 ans), ${p2.length} de 2000 à ${TODAY_Y - 1} (${sumD(p2)} jours en ${TODAY_Y - 2000} ans)${p3.length ? `, et <b>${p3.length} en ${TODAY_Y} (${sumD(p3)} jours)</b>, un record dans cette reconstruction` : ""}. Les plus sévères : ${top.map(w => `${ddmm(w.start)} ${w.y} (${w.days} j)`).join(", ")}. Plus longue : ${longest[0].days} jours (${ddmmyy(longest[0].start)}). Jour le plus chaud : ${ddmmyy(H_.top[0][0])} (${fmt(H_.top[0][1], 1, false)} °C de moyenne nationale).`);
+  // par décennie
+  const decs = d3.range(1950, TODAY_Y + 1, 10).map(d0 => { const l = wv.filter(w => w.y >= d0 && w.y < d0 + 10); return [d0, sumD(l), l.length]; });
+  decs.unshift([1947, sumD(wv.filter(w => w.y < 1950)), wv.filter(w => w.y < 1950).length]);
+  const g = frame("e3Dec", 200, { l: 34, r: 10, t: 16, b: 22 });
+  const xb = d3.scaleBand().domain(decs.map(d => d[0])).range([g.M.l, g.w - g.M.r]).padding(.2);
+  const yb = d3.scaleLinear().domain([0, d3.max(decs, d => d[1]) * 1.15]).range([g.h - g.M.b, g.M.t]);
+  axes(g, xb, yb, { xf: d => d === 1947 ? "47-49" : (g.w < 420 ? "’" + String(d).slice(2) : d + "s") });
+  g.svg.selectAll("rect").data(decs).join("rect").attr("x", d => xb(d[0])).attr("width", xb.bandwidth()).attr("y", d => yb(d[1])).attr("height", d => yb(0) - yb(d[1])).attr("fill", d => d[0] >= 2020 ? css("--hot") : css("--accent-2"))
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", d[0] === 1947 ? "1947-1949" : d[0] + "-" + (d[0] + 9))); t.append(el("div", "big", d[1] + " jours")); trow(t, "vagues", d[2]); if (d[0] >= 2020) t.append(el("div", "note", "décennie en cours")); })).on("pointerleave", hideTip);
+  g.svg.selectAll("text.v").data(decs).join("text").attr("class", "v").attr("x", d => xb(d[0]) + xb.bandwidth() / 2).attr("y", d => yb(d[1]) - 4).attr("text-anchor", "middle").style("font", "600 10.5px IBM Plex Mono").text(d => d[1]);
+  // été en cours jour par jour
+  const sm = H_.summer.map(d => [new Date(d[0]), d[1], d[2], d[3]]);
+  document.getElementById("e3SumTitle").textContent = `Été ${TODAY_Y} jour par jour : indicateur national (°C)`;
+  const h = frame("e3Sum", 200, { l: 34, r: 10, t: 10, b: 22 });
+  const xs = d3.scaleTime().domain(d3.extent(sm, d => d[0])).range([h.M.l, h.w - h.M.r]);
+  const ys = d3.scaleLinear().domain([10, 31]).range([h.h - h.M.b, h.M.t]);
+  axes(h, xs, ys, { xt: 5, xf: d => MONTHS[d.getMonth()] });
+  wv.filter(w => w.y === TODAY_Y).forEach(w => h.svg.append("rect").attr("x", xs(new Date(w.start))).attr("width", Math.max(1, xs(new Date(w.end)) - xs(new Date(w.start)))).attr("y", h.M.t).attr("height", h.h - h.M.t - h.M.b).attr("fill", css("--hot")).attr("opacity", .12));
+  h.svg.append("path").datum(sm.filter(d => d[3] != null)).attr("fill", "none").attr("stroke", css("--muted")).attr("stroke-dasharray", "3 3").attr("d", d3.line().x(d => xs(d[0])).y(d => ys(d[3])));
+  h.svg.append("path").datum(sm.filter(d => d[2] != null)).attr("fill", "none").attr("stroke", css("--text-2")).attr("d", d3.line().x(d => xs(d[0])).y(d => ys(d[2])));
+  h.svg.append("path").datum(sm.filter(d => d[1] != null)).attr("fill", "none").attr("stroke", css("--hot")).attr("stroke-width", 1.8).attr("d", d3.line().x(d => xs(d[0])).y(d => ys(d[1])));
+  h.svg.append("line").attr("x1", h.M.l).attr("x2", h.w - h.M.r).attr("y1", ys(PIC)).attr("y2", ys(PIC)).attr("stroke", css("--hot")).attr("stroke-dasharray", "2 4").attr("opacity", .7);
+  const bis = d3.bisector(d => d[0]).center;
+  h.svg.append("rect").attr("x", h.M.l).attr("width", h.w - h.M.l - h.M.r).attr("y", h.M.t).attr("height", h.h - h.M.t - h.M.b).attr("fill", "transparent")
+    .on("pointermove", e => { const d = sm[bis(sm, xs.invert(d3.pointer(e)[0]))]; showTip(e, t => { t.append(el("div", "t", ddmmyy(d[0]))); t.append(el("div", "big", fmt(d[1], 1, false) + " °C")); trow(t, "normale 1991-2020", fmt(d[2], 1, false) + " °C"); trow(t, "maximum 1991-2020", fmt(d[3], 1, false) + " °C"); }); }).on("pointerleave", hideTip);
+  legend("e3SumLg", [[css("--hot"), String(TODAY_Y), 1], [css("--text-2"), "normale 1991-2020", 1], [css("--muted"), "maximum 1991-2020 du jour", 1], [css("--hot"), "seuil de pic 25,3 °C", 1]]);
+}
+const PIC = 25.3;
+
+function renderE4() {
+  const H_ = D2.heat; if (!H_?.dju) return missing("e4Heat", "Données indisponibles.");
+  const rows = Object.entries(H_.dju).map(([y, a]) => [+y, a[0], a[1], a[2]]), full = rows.filter(r => r[3] >= 365);
+  const one = (id, k, col) => {
+    const f = frame(id, 200, { l: 40, r: 10, t: 10, b: 22 });
+    const x = d3.scaleBand().domain(rows.map(r => r[0])).range([f.M.l, f.w - f.M.r]).padding(.15);
+    const y = d3.scaleLinear().domain([0, d3.max(rows, r => r[k]) * 1.1]).nice().range([f.h - f.M.b, f.M.t]);
+    axes(f, x, y, { xv: rows.map(r => r[0]).filter(v => v % 20 === 0) });
+    f.svg.selectAll("rect").data(rows).join("rect").attr("x", r => x(r[0])).attr("width", x.bandwidth()).attr("y", r => y(r[k])).attr("height", r => y(0) - y(r[k]))
+      .attr("fill", css(col)).attr("opacity", r => r[3] < 365 ? .35 : .85)
+      .on("pointermove", (e, r) => showTip(e, t => { t.append(el("div", "t", r[0] + (r[3] < 365 ? " (jusqu'au " + ddmm(H_.lastDay) + ")" : ""))); t.append(el("div", "big", fmt(r[k], 0, false) + " °C·j")); })).on("pointerleave", hideTip);
+    const sm = smooth(full.map(r => [r[0], r[k]]));
+    f.svg.append("path").datum(sm).attr("fill", "none").attr("stroke", css("--text")).attr("stroke-width", 1.8).attr("d", d3.line().x(d => x(d[0]) + x.bandwidth() / 2).y(d => y(d[1])));
+  };
+  one("e4Heat", 1, "--cold"); one("e4Cool", 2, "--hot");
+  const avg = (a, b, k) => d3.mean(full.filter(r => r[0] >= a && r[0] <= b), r => r[k]);
+  const L = full.at(-1)[0], cur = rows.find(r => r[0] === TODAY_Y), cmax = d3.max(full, r => r[2]);
+  setTxt("e4Txt", `Chauffage : ${fmt(avg(1961, 1990, 1), 0, false)} degrés-jours par an en moyenne en 1961-1990, ${fmt(avg(L - 9, L, 1), 0, false)} sur ${L - 9}-${L} (${fmt((avg(L - 9, L, 1) / avg(1961, 1990, 1) - 1) * 100, 0)} %). Climatisation : de ${fmt(avg(1961, 1990, 2), 0, false)} à ${fmt(avg(L - 9, L, 2), 0, false)} (×${fmt(avg(L - 9, L, 2) / avg(1961, 1990, 2), 1, false)}).${cur ? ` En ${TODAY_Y}, au ${ddmm(H_.lastDay)}, déjà <b>${fmt(cur[2], 0, false)} degrés-jours de climatisation</b>${cur[2] > cmax ? ", plus que toute année complète depuis 1950" : ""}.` : ""} Moins de besoins de chauffage l'hiver, davantage de climatisation l'été : la consommation électrique d'été augmente avec les vagues de chaleur.`);
+}
+
+function renderG3() {
+  const S = D2.sst; if (!S) return missing("g3Chart", "Données ERSST indisponibles.");
+  const m = S.monthly.map(d => [new Date(d[0] + "-15"), d[1], d[2], d[0]]);
+  const f = frame("g3Chart", 220, { l: 36, r: 10, t: 10, b: 22 });
+  const x = d3.scaleTime().domain(d3.extent(m, d => d[0])).range([f.M.l, f.w - f.M.r]);
+  const y = d3.scaleLinear().domain(d3.extent(m, d => d[2])).nice().range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xt: f.w < 500 ? 4 : 8, xf: d3.timeFormat("%Y"), yf: v => fmt(v, 0) });
+  const bw = Math.max(1, (f.w - f.M.l - f.M.r) / m.length), sc = divScale(2.5);
+  f.svg.selectAll("rect").data(m).join("rect").attr("x", d => x(d[0]) - bw / 2).attr("width", bw).attr("y", d => y(Math.max(0, d[2]))).attr("height", d => Math.abs(y(d[2]) - y(0))).attr("fill", d => sc(d[2]))
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", MONTHS_L[+d[3].slice(5) - 1] + " " + d[3].slice(0, 4))); t.append(el("div", "big", fmt(d[2], 2) + " °C")); trow(t, "température", fmt(d[1], 1, false) + " °C"); })).on("pointerleave", hideTip);
+  const su = entries(S.summer);
+  const g = frame("g3Sum", 200, { l: 36, r: 10, t: 10, b: 22 });
+  const xs = d3.scaleLinear().domain(d3.extent(su, d => d[0])).range([g.M.l, g.w - g.M.r]);
+  const ys = d3.scaleLinear().domain(d3.extent(su, d => d[1])).nice().range([g.h - g.M.b, g.M.t]);
+  axes(g, xs, ys, { xt: 6, yf: v => fmt(v, 0, false) });
+  g.svg.append("path").datum(su).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.2).attr("d", d3.line().x(d => xs(d[0])).y(d => ys(d[1])));
+  g.svg.append("path").datum(smooth(su)).attr("fill", "none").attr("stroke", css("--text")).attr("stroke-width", 2).attr("d", d3.line().x(d => xs(d[0])).y(d => ys(d[1])));
+  const rk = [...su].sort((a, b) => b[1] - a[1]);
+  g.svg.selectAll("circle").data(rk.slice(0, 5)).join("circle").attr("cx", d => xs(d[0])).attr("cy", d => ys(d[1])).attr("r", 4).attr("fill", css("--hot"))
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", "juillet-août " + d[0])); t.append(el("div", "big", fmt(d[1], 1, false) + " °C")); })).on("pointerleave", hideTip);
+  const lastY = su.at(-1)[0], rL = rk.findIndex(d => d[0] === lastY) + 1, prev = rk.find(d => d[0] !== lastY);
+  setTxt("g3Txt", `Été (juillet-août) ${lastY} : <b>${fmt(su.at(-1)[1], 1, false)} °C</b> en moyenne, ${rL === 1 ? `<b>le plus chaud depuis 1900</b>, devant ${prev[0]} (${fmt(prev[1], 1, false)} °C)` : nth(rL) + " plus chaud depuis 1900"}. Tendance de la température annuelle : ${fmt(S.trend1982, 2)} °C par décennie depuis 1982 (${fmt(S.trend1900, 2)} depuis 1900). Une mer plus chaude nourrit les épisodes méditerranéens de pluies intenses et stresse herbiers et poissons.`);
+}
+
+function renderV5() {
+  const Hh = D2.health; const rows = Object.entries(Hh.attrib).map(([y, a]) => [+y, a[0], a[1]]);
+  const f = frame("v5Chart", 230, { l: 44, r: 10, t: 16, b: 22 });
+  const x = d3.scaleBand().domain(rows.map(r => r[0])).range([f.M.l, f.w - f.M.r]).padding(.25);
+  const y = d3.scaleLinear().domain([0, d3.max(rows, r => r[1]) * 1.12]).nice().range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { yf: v => fmt(v, 0, false) });
+  f.svg.selectAll("rect.a").data(rows).join("rect").attr("class", "a").attr("x", r => x(r[0])).attr("width", x.bandwidth()).attr("y", r => y(r[1])).attr("height", r => y(0) - y(r[1])).attr("fill", css("--accent-2")).attr("opacity", .55);
+  f.svg.selectAll("rect.c").data(rows).join("rect").attr("class", "c").attr("x", r => x(r[0])).attr("width", x.bandwidth()).attr("y", r => y(r[2])).attr("height", r => y(0) - y(r[2])).attr("fill", css("--hot"));
+  f.svg.selectAll("text.v").data(rows).join("text").attr("class", "v").attr("x", r => x(r[0]) + x.bandwidth() / 2).attr("y", r => y(r[1]) - 4).attr("text-anchor", "middle").style("font", "600 10.5px IBM Plex Mono").text(r => fmt(r[1], 0, false));
+  f.svg.selectAll("rect.h").data(rows).join("rect").attr("class", "h").attr("x", r => x(r[0])).attr("width", x.bandwidth()).attr("y", f.M.t).attr("height", f.h - f.M.t - f.M.b).attr("fill", "transparent")
+    .on("pointermove", (e, r) => showTip(e, t => { t.append(el("div", "t", "été " + r[0])); t.append(el("div", "big", fmt(r[1], 0, false) + " décès")); trow(t, "dont pendant les canicules", fmt(r[2], 0, false)); })).on("pointerleave", hideTip);
+  legend("v5Lg", [[css("--accent-2"), "attribuables à la chaleur, tout l'été"], [css("--hot"), "dont pendant les canicules"]]);
+  const tot = d3.sum(rows, r => r[1]), mx = rows.reduce((a, b) => b[1] > a[1] ? b : a), last = rows.at(-1);
+  setTxt("v5Txt", `Été ${last[0]} : <b>${fmt(last[1], 0, false)} décès</b> attribuables à la chaleur (dont ${fmt(last[2], 0, false)} pendant les canicules), le ${nth([...rows].sort((a, b) => b[1] - a[1]).findIndex(r => r[0] === last[0]) + 1)} bilan depuis 2017, derrière ${mx[0]} (${fmt(mx[1], 0, false)}). Près de ${fmt(Math.round(tot / 1000), 0, false)} 000 décès sur ${rows.length} étés, aux trois quarts des personnes de 75 ans et plus. Autre méthode, non comparable terme à terme : la canicule d'août 2003 avait entraîné près de 15 000 décès en excès (${fmt(Hh.excess[0][1], 0, false)} selon l'Inserm, du 1er au 20 août), celle de juillet 2006 environ ${fmt(Hh.excess[1][1], 0, false)} (InVS).`);
+}
+
+let v6v = "SEC";
+function renderV6() {
+  const Cn = D2.catnat; if (!Cn) return missing("v6Chart", "Données GASPAR indisponibles.");
+  tabs("v6Var", [["SEC", "Sécheresse (argiles)"], ["ICB", "Inondations, coulées de boue"]], v6v, v => { v6v = v; renderV6(); });
+  const cols = ["--accent", "--accent-2", "--muted", "--cold", "--text-2"], names = ["Inondations, coulées de boue", "Sécheresse (retrait-gonflement des argiles)", "Mouvements de terrain", "Tempête", "Autres"];
+  const rows = Object.entries(Cn.years).map(([y, a]) => [+y, ...a]);
+  const f = frame("v6Chart", 240, { l: 44, r: 10, t: 10, b: 22 });
+  const x = d3.scaleBand().domain(rows.map(r => r[0])).range([f.M.l, f.w - f.M.r]).padding(.12);
+  const stack = d3.stack().keys([0, 1, 2, 3, 4]).value((r, k) => r[k + 1])(rows);
+  const y = d3.scaleLinear().domain([0, d3.max(rows, r => d3.sum(r.slice(1))) * 1.05]).nice().range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xv: rows.map(r => r[0]).filter(v => v % (f.w < 500 ? 10 : 5) === 0), yf: v => v >= 1000 ? fmt(v / 1000, 0, false) + " k" : v });
+  stack.forEach((s, i) => f.svg.append("g").selectAll("rect").data(s).join("rect").attr("x", d => x(d.data[0])).attr("width", x.bandwidth()).attr("y", d => y(d[1])).attr("height", d => y(d[0]) - y(d[1]))
+    .attr("fill", css(cols[i])).attr("opacity", d => d.data[0] >= TODAY_Y - 2 ? .45 : .9)
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", String(d.data[0]) + (d.data[0] >= TODAY_Y - 2 ? " (reconnaissances en cours)" : ""))); names.forEach((n, j) => trow(t, n, fmt(d.data[j + 1], 0, false))); })).on("pointerleave", hideTip));
+  legend("v6Lg", names.map((n, i) => [css(cols[i]), n]));
+  const sec = rows.map(r => [r[0], r[2]]).filter(r => r[0] <= TODAY_Y - 3), topS = [...sec].sort((a, b) => b[1] - a[1]).slice(0, 4);
+  const per = (a, b) => d3.sum(sec.filter(r => r[0] >= a && r[0] <= b), r => r[1]);
+  setTxt("v6Txt", `Sécheresse : <b>${fmt(per(2016, 2023), 0, false)} reconnaissances communales pour les événements de 2016 à 2023</b>, contre ${fmt(per(2008, 2015), 0, false)} pour 2008-2015. Années les plus touchées : ${topS.map(r => r[0] + " (" + fmt(r[1], 0, false) + ")").join(", ")}. Le pic de 1999 en inondations et mouvements de terrain correspond aux tempêtes de décembre.`);
+  // carte
+  const P0 = 2014, P1 = 2023, geo = D2.geo;
+  document.getElementById("v6MapTitle").textContent = `${v6v === "SEC" ? "Sécheresse" : "Inondations et coulées de boue"} : reconnaissances communales pour les événements de ${P0} à ${P1}, par département`;
+  const host = document.getElementById("v6Map"); host.replaceChildren();
+  if (!geo) return;
+  const w = W("v6Map"), h = Math.min(520, Math.max(300, w * .9));
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", h);
+  const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[8, 8], [w - 8, h - 8]], geo), path = d3.geoPath(proj);
+  const val = c => { const t = Cn.deps[c]?.[v6v] || {}; return d3.sum(Object.entries(t).filter(([y]) => +y >= P0 && +y <= P1), d => d[1]); };
+  const vmax = d3.max(geo.features, g => val(g.properties.c)) || 1;
+  const interp = v6v === "SEC" ? d3.interpolateOranges : d3.interpolateBlues;
+  const col = d3.scaleSequential(t => interp(.18 + .82 * t)).domain([0, vmax]);  // 0 = première couleur de l'échelle, jamais le fond
+  const inBase = c => !!Cn.deps[c];
+  const pat = svg.append("defs").append("pattern").attr("id", "hatchV6").attr("width", 6).attr("height", 6).attr("patternUnits", "userSpaceOnUse").attr("patternTransform", "rotate(45)");
+  pat.append("rect").attr("width", 6).attr("height", 6).attr("fill", css("--neutral")).attr("opacity", .35); pat.append("line").attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", 6).attr("stroke", css("--neutral")).attr("stroke-width", 2);
+  svg.append("g").selectAll("path").data(geo.features).join("path").attr("d", path).attr("fill", g => inBase(g.properties.c) ? col(val(g.properties.c)) : "url(#hatchV6)").attr("stroke", css("--line")).attr("stroke-width", .6)
+    .on("pointermove", (e, g) => showTip(e, t => { t.append(el("div", "t", g.properties.n + " (" + g.properties.c + ")"));
+      if (!inBase(g.properties.c)) { t.append(el("div", null, "absent de la base GASPAR : pas de donnée")); return; }
+      t.append(el("div", "big", fmt(val(g.properties.c), 0, false))); t.append(el("div", null, val(g.properties.c) ? `reconnaissances communales ${P0}-${P1}` : `aucune reconnaissance ${v6v === "SEC" ? "sécheresse" : "inondation"} sur ${P0}-${P1}`)); })).on("pointerleave", hideTip);
+  const lg = document.getElementById("v6MapLg"); lg.replaceChildren();
+  const gr = el("div"); gr.style.cssText = `height:10px;width:180px;background:linear-gradient(90deg,${[0, .25, .5, .75, 1].map(t => col(t * vmax)).join(",")})`;
+  const s1 = el("span"); s1.append(document.createTextNode("0"), gr, document.createTextNode(fmt(vmax, 0, false))); lg.append(s1);
+  const s2 = el("span"); const k = el("span", "sw"); k.style.background = col(0); s2.append(k, document.createTextNode(`0 : aucune reconnaissance sur ${P0}-${P1}`)); lg.append(s2);
+  if (geo.features.some(g => !inBase(g.properties.c))) { const s3 = el("span"); const k3 = el("span", "sw"); k3.style.background = `repeating-linear-gradient(45deg,${css("--neutral")} 0 2px,transparent 2px 5px)`; s3.append(k3, document.createTextNode("absent de GASPAR (pas de donnée)")); lg.append(s3); }
+}
+
+let v7Year = null, v7Timer = null;
+function renderV7() {
+  const Mq = D2.mosquito, geo = D2.geo; if (!Mq || !geo) return missing("v7Map", "Données indisponibles.");
+  const years = Object.keys(Mq.years).map(Number).concat(Object.keys(Mq.counts).map(Number)).sort((a, b) => a - b);
+  if (v7Year == null) v7Year = years.filter(y => Mq.years[y]).at(-1);
+  const ctl = document.getElementById("v7Ctl"); ctl.replaceChildren();
+  const play = el("button", "tab", v7Timer ? "❚❚ pause" : "▶ animer"); play.setAttribute("aria-pressed", !!v7Timer);
+  play.onclick = () => { if (v7Timer) { clearInterval(v7Timer); v7Timer = null; renderV7(); return; }
+    let i = 0; v7Year = years[0]; v7Timer = setInterval(() => { i++; if (i >= years.length) { clearInterval(v7Timer); v7Timer = null; } else v7Year = years[i]; renderV7(); }, 700); renderV7(); };
+  const rng = document.createElement("input"); rng.type = "range"; rng.min = 0; rng.max = years.length - 1; rng.value = years.indexOf(v7Year); rng.style.cssText = "flex:1;min-width:120px;accent-color:" + css("--accent");
+  rng.oninput = () => { if (v7Timer) { clearInterval(v7Timer); v7Timer = null; } v7Year = years[+rng.value]; renderV7(); };
+  rng.setAttribute("aria-label", "Année");
+  ctl.append(play, rng); ctl.style.alignItems = "center";
+  const listed = !!Mq.years[v7Year], mapYears = years.filter(y => Mq.years[y]);
+  const set = new Set(Mq.years[v7Year] || []), prevY = mapYears[mapYears.indexOf(v7Year) - 1], prev = new Set(prevY ? Mq.years[prevY] : []);
+  document.getElementById("v7Title").textContent = listed ? `Saison ${v7Year} : ${set.size} départements où le moustique tigre est installé` : `Saison ${v7Year} : ${Mq.counts[v7Year][0]} départements (total publié, sans liste)`;
+  const host = document.getElementById("v7Map"); host.replaceChildren();
+  const w = W("v7Map"), h = Math.min(480, Math.max(280, w * .85));
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", h);
+  const proj = d3.geoConicConformal().parallels([44, 49]).rotate([-3, 0]).fitExtent([[8, 8], [w - 8, h - 8]], geo), path = d3.geoPath(proj);
+  const patM = svg.append("defs").append("pattern").attr("id", "hatchV7m").attr("width", 6).attr("height", 6).attr("patternUnits", "userSpaceOnUse").attr("patternTransform", "rotate(45)");
+  patM.append("rect").attr("width", 6).attr("height", 6).attr("fill", css("--neutral")).attr("opacity", .35); patM.append("line").attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", 6).attr("stroke", css("--neutral")).attr("stroke-width", 2);
+  const firstYear = c => mapYears.find(y => Mq.years[y].includes(c));
+  svg.append("g").selectAll("path").data(geo.features).join("path").attr("d", path)
+    .attr("fill", g => !listed ? "url(#hatchV7m)" : set.has(g.properties.c) ? (prev.has(g.properties.c) ? css("--hot") : css("--accent-2")) : css("--neutral")).attr("stroke", css("--line")).attr("stroke-width", .6)
+    .on("pointermove", (e, g) => showTip(e, t => { t.append(el("div", "t", g.properties.n));
+      if (!listed) { const y0 = firstYear(g.properties.c); t.append(el("div", null, `liste ${v7Year} non publiée` + (y0 ? ` ; installé depuis la saison ${y0}` : ` ; non installé en ${mapYears.at(-1)}`))); return; }
+      const y0 = firstYear(g.properties.c); t.append(el("div", null, set.has(g.properties.c) ? "installé depuis la saison " + y0 : "non colonisé en " + v7Year)); })).on("pointerleave", hideTip);
+  if (!listed) svg.append("text").attr("x", w / 2).attr("y", h / 2).attr("text-anchor", "middle").style("font", "600 13px IBM Plex Mono").style("fill", css("--text")).style("paint-order", "stroke").style("stroke", css("--panel")).style("stroke-width", 4)
+    .text(`Liste non publiée · total : ${Mq.counts[v7Year][0]} départements`);
+  const lg = document.getElementById("v7Lg");
+  if (listed) legend("v7Lg", [[css("--hot"), "colonisé les saisons précédentes"], [css("--accent-2"), `nouveau en ${v7Year}` + (prevY && prevY !== v7Year - 1 ? ` (depuis la carte ${prevY})` : "")], [css("--neutral"), `non colonisé (${v7Year})`]]);
+  else { lg.replaceChildren(); const s3 = el("span"); const k3 = el("span", "sw"); k3.style.background = `repeating-linear-gradient(45deg,${css("--neutral")} 0 2px,transparent 2px 5px)`; s3.append(k3, document.createTextNode(`liste départementale ${v7Year} non publiée (${Mq.counts[v7Year][1]})`)); lg.append(s3); }
+  // compteur
+  const cnt = years.filter(y => Mq.years[y]).map(y => [y, Mq.years[y].length, false]).concat(Object.entries(Mq.counts).map(([y, a]) => [+y, a[0], true]));
+  const f = frame("v7Count", 180, { l: 32, r: 10, t: 16, b: 22 });
+  const all = d3.range(2004, d3.max(cnt, c => c[0]) + 1);
+  const x = d3.scaleBand().domain(all).range([f.M.l, f.w - f.M.r]).padding(.18);
+  const y = d3.scaleLinear().domain([0, 96]).range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xv: all.filter(v => v % (f.w < 500 ? 4 : 2) === 0) });
+  const pat = f.svg.append("defs").append("pattern").attr("id", "hatchV7").attr("width", 5).attr("height", 5).attr("patternUnits", "userSpaceOnUse").attr("patternTransform", "rotate(45)");
+  pat.append("rect").attr("width", 5).attr("height", 5).attr("fill", css("--hot")).attr("opacity", .35); pat.append("line").attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", 5).attr("stroke", css("--hot")).attr("stroke-width", 2);
+  f.svg.selectAll("rect.b").data(cnt).join("rect").attr("class", "b").attr("x", c => x(c[0])).attr("width", x.bandwidth()).attr("y", c => y(c[1])).attr("height", c => y(0) - y(c[1]))
+    .attr("fill", c => c[2] ? "url(#hatchV7)" : c[0] === v7Year ? css("--accent-2") : css("--hot")).attr("stroke", c => c[2] && c[0] === v7Year ? css("--accent-2") : null).attr("stroke-width", 2)
+    .on("pointermove", (e, c) => showTip(e, t => { t.append(el("div", "t", "saison " + c[0])); t.append(el("div", "big", c[1] + " départements")); if (c[2]) t.append(el("div", null, "total publié, liste non disponible : " + Mq.counts[c[0]][1])); })).on("pointerleave", hideTip);
+  const missingY = all.filter(y => !cnt.find(c => c[0] === y));
+  f.svg.selectAll("text.m").data(missingY).join("text").attr("class", "m").attr("x", y_ => x(y_) + x.bandwidth() / 2).attr("y", y(0) - 3).attr("text-anchor", "middle").style("font", "9px IBM Plex Mono").style("fill", css("--muted")).text("·");
+  const lastC = cnt.at(-1);
+  setTxt("v7Txt", `Un seul département en 2004 (Alpes-Maritimes) ; ${Mq.years[2014].length} en 2014 ; ${Mq.years[2022].length} en 2022 ; <b>${lastC[1]} sur 96</b> pour la saison ${lastC[0]}. Barres hachurées : totaux publiés sans liste par département. Pas de carte publiée pour 2005, 2008 et 2009 (points).`);
+}
+
+function renderB1() {
+  const Bd = D2.bio?.birds; if (!Bd) return missing("b1Chart", "Données Insee indisponibles.");
+  const keys = [["specialistes", "spécialistes (ensemble)", "--accent"], ["agricoles", "milieux agricoles", "--accent-2"], ["forestiers", "milieux forestiers", "--ok"], ["batis", "milieux bâtis", "--hot"], ["generalistes", "généralistes", "--text-2"]];
+  const ser = keys.filter(k => Bd.series[k[0]]).map(([k, n, c]) => ({ k, n, col: css(c), p: [[1989, 100]].concat(entries(Bd.series[k])) }));
+  const f = frame("b1Chart", 280, { l: 36, r: 12, t: 10, b: 22 });
+  const x = d3.scaleLinear().domain([1989, d3.max(ser.flatMap(s => s.p), d => d[0])]).range([f.M.l, f.w - f.M.r]);
+  const y = d3.scaleLinear().domain([0, 130]).range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xt: f.w < 500 ? 4 : 8 });
+  f.svg.append("line").attr("x1", f.M.l).attr("x2", f.w - f.M.r).attr("y1", y(100)).attr("y2", y(100)).attr("stroke", css("--muted"));
+  f.svg.append("rect").attr("x", x(1989.6)).attr("width", x(2009.6) - x(1989.6)).attr("y", f.M.t).attr("height", f.h - f.M.t - f.M.b).attr("fill", css("--band")).attr("opacity", .6);
+  f.svg.append("text").attr("x", (x(1989.6) + x(2009.6)) / 2).attr("y", f.M.t + 14).attr("text-anchor", "middle").style("font", "10.5px IBM Plex Mono").style("fill", css("--muted")).text("1990-2009 : non diffusé");
+  ser.forEach(s => { f.svg.append("path").datum(s.p.slice(0, 2)).attr("fill", "none").attr("stroke", s.col).attr("stroke-dasharray", "2 4").attr("d", d3.line().x(d => x(d[0])).y(d => y(d[1])));
+    f.svg.append("path").datum(s.p.slice(1)).attr("fill", "none").attr("stroke", s.col).attr("stroke-width", 2).attr("d", d3.line().x(d => x(d[0])).y(d => y(d[1])));
+    f.svg.append("g").selectAll("circle").data(s.p).join("circle").attr("cx", d => x(d[0])).attr("cy", d => y(d[1])).attr("r", 3).attr("fill", s.col)
+      .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", s.n + " · " + d[0])); t.append(el("div", "big", fmt(d[1], 0, false))); t.append(el("div", null, "indice, 1989 = 100")); })).on("pointerleave", hideTip); });
+  legend("b1Lg", ser.map(s => [s.col, s.n, 1]));
+  const last = k => entries(Bd.series[k]).at(-1);
+  const ly = last("specialistes")[0];
+  setTxt("b1Txt", `En ${ly}, par rapport à 1989 : spécialistes des milieux agricoles <b>${fmt(last("agricoles")[1] - 100, 0)} %</b>, des milieux bâtis ${fmt(last("batis")[1] - 100, 0)} %, des milieux forestiers ${fmt(last("forestiers")[1] - 100, 0)} % ; ensemble des spécialistes ${fmt(last("specialistes")[1] - 100, 0)} %, tandis que les généralistes progressent (${fmt(last("generalistes")[1] - 100, 0)} %). Le recul le plus fort, en milieu agricole, est attribué principalement aux pratiques agricoles intensives, à la perte d'habitats et au changement climatique (SDES, « État de la population des oiseaux communs en France en 2024 »).`);
+}
+
+function renderB2() {
+  const C_ = D2.bio?.facts?.cti; if (!C_) return;
+  const f = frame("b2Chart", 64 * C_.length + 30, { l: 10, r: 14, t: 6, b: 22 });
+  const lw = Math.min(190, f.w * .38);
+  const x = d3.scaleLinear().domain([0, 300]).range([lw, f.w - f.M.r]);
+  f.svg.append("g").attr("class", "axis").attr("transform", `translate(0,${f.h - f.M.b})`).call(d3.axisBottom(x).ticks(f.w < 500 ? 3 : 6).tickSize(-(f.h - f.M.b - f.M.t)).tickFormat(v => v + " km"));
+  C_.forEach((c, i) => { const y0 = f.M.t + i * 64;
+    f.svg.append("text").attr("x", 0).attr("y", y0 + 22).style("font", "600 12px IBM Plex Mono").style("fill", css("--text")).text(c.label.split(",")[0]);
+    f.svg.append("text").attr("x", 0).attr("y", y0 + 38).style("font", "11px IBM Plex Mono").style("fill", css("--muted")).text(c.label.split(",")[1].trim());
+    f.svg.append("rect").attr("x", x(0)).attr("y", y0 + 8).attr("width", x(c.temperature) - x(0)).attr("height", 16).attr("fill", css("--hot")).attr("opacity", .85);
+    f.svg.append("rect").attr("x", x(0)).attr("y", y0 + 28).attr("width", x(c.community) - x(0)).attr("height", 16).attr("fill", css("--accent"));
+    f.svg.append("text").attr("x", x(c.temperature) + 4).attr("y", y0 + 20).style("font", "600 11px IBM Plex Mono").style("fill", css("--hot")).text(c.temperature);
+    f.svg.append("text").attr("x", x(c.community) + 4).attr("y", y0 + 40).style("font", "600 11px IBM Plex Mono").style("fill", css("--accent")).text(c.community + "  (dette : " + (c.temperature - c.community) + " km)"); });
+  legend("b2Lg", [[css("--hot"), "déplacement des températures vers le nord"], [css("--accent"), "déplacement de la composition des communautés (CTI)"]]);
+  setTxt("b2Txt", `En France, de 1989 à 2006, la composition des communautés d'oiseaux a glissé l'équivalent de <b>${C_[0].community} km vers le nord</b>, quand les températures « montaient » de ${C_[0].temperature} km : un retard de ${C_[0].temperature - C_[0].community} km. À l'échelle européenne (1990-2008), les papillons suivent mieux (${C_[2].community} km) que les oiseaux (${C_[1].community} km), pour ${C_[1].temperature} km de réchauffement. Sources : ${C_[0].ref} ; ${C_[1].ref}.`);
+}
+
+function renderB3() {
+  const F_ = D2.bio?.facts; if (!F_) return;
+  const k = document.getElementById("b3Kpis"); k.replaceChildren();
+  const R = F_.redlist, Bt = F_.bats;
+  [["Espèces menacées (Liste rouge)", fmt(R.threatened / R.evaluated * 100, 1, false) + " %", `${fmt(R.threatened, 0, false)} sur ${fmt(R.evaluated, 0, false)} espèces évaluées, et ${R.extinct} disparues de France ou éteintes (${R.date}). Début 2024 : ${fmt(R.threatened2024, 0, false)} espèces menacées connues, dont ${R.unprotected2024} % sans statut de protection.`, `${R.ref} ; ${R.ref2024}.`],
+   ["Chauves-souris communes", "−" + Bt.decline + " %", `déclin des populations sur ${Bt.period} (France hexagonale). Causes multiples : perte de gîtes et d'insectes-proies, pesticides, éclairage, éoliennes, maladies.`, Bt.ref + "."],
+   ["Papillons de jour", "—", "Le programme STERF (Vigie-Nature) suit les papillons depuis 2005, mais sa tendance nationale n'est pas diffusée en données ouvertes à jour : pas de chiffre ici.", ""]].forEach(([a, b, c, src]) => {
+    const d = el("div", "kpi"); d.append(el("div", "k", a), el("div", "v", b), el("div", "d", c)); if (src) d.append(el("div", "s", src)); k.append(d); });
+  const E_ = D2.bio?.enaf?.ha; if (!E_) return missing("b3Enaf", "Données Cerema indisponibles.");
+  const rows = Object.keys(E_.total).map(y => [+y, E_.total[y], E_.hab?.[y] || 0, E_.act?.[y] || 0]);
+  const f = frame("b3Enaf", 210, { l: 44, r: 10, t: 16, b: 22 });
+  const x = d3.scaleBand().domain(rows.map(r => r[0])).range([f.M.l, f.w - f.M.r]).padding(.2);
+  const y = d3.scaleLinear().domain([0, d3.max(rows, r => r[1]) * 1.1]).nice().range([f.h - f.M.b, f.M.t]);
+  axes(f, x, y, { xv: rows.map(r => r[0]).filter(v => f.w > 500 || v % 2 === 0), yf: v => fmt(v / 1000, 0, false) + " k" });
+  f.svg.selectAll("rect.t").data(rows).join("rect").attr("class", "t").attr("x", r => x(r[0])).attr("width", x.bandwidth()).attr("y", r => y(r[1])).attr("height", r => y(0) - y(r[1])).attr("fill", css("--muted")).attr("opacity", .5);
+  f.svg.selectAll("rect.h").data(rows).join("rect").attr("class", "h").attr("x", r => x(r[0])).attr("width", x.bandwidth()).attr("y", r => y(r[2])).attr("height", r => y(0) - y(r[2])).attr("fill", css("--accent-2"));
+  f.svg.selectAll("rect.z").data(rows).join("rect").attr("class", "z").attr("x", r => x(r[0])).attr("width", x.bandwidth()).attr("y", f.M.t).attr("height", f.h - f.M.t - f.M.b).attr("fill", "transparent")
+    .on("pointermove", (e, r) => showTip(e, t => { t.append(el("div", "t", String(r[0]))); t.append(el("div", "big", fmt(r[1], 0, false) + " ha")); trow(t, "habitat", fmt(r[2], 0, false) + " ha"); trow(t, "activités", fmt(r[3], 0, false) + " ha"); })).on("pointerleave", hideTip);
+  legend("b3Lg", [[css("--muted"), "total"], [css("--accent-2"), "dont habitat"]]);
+  const tot = d3.sum(rows, r => r[1]), l = rows.at(-1);
+  setTxt("b3Txt", `${fmt(tot, 0, false)} hectares d'espaces naturels, agricoles et forestiers consommés de ${rows[0][0]} à ${l[0]} (environ ${fmt(tot / rows.length / 1000, 0, false)} 000 ha par an), aux deux tiers pour l'habitat. Le rythme baisse : ${fmt(l[1], 0, false)} ha en ${l[0]}, contre ${fmt(rows[0][1], 0, false)} en ${rows[0][0]} (la dernière année peut être révisée). La loi Climat et résilience (2021) vise à diviser ce rythme par deux sur 2021-2031, puis zéro artificialisation nette en 2050. Source : Cerema, fichiers fonciers.`);
+}
+
 /* ---------- pied de page ---------- */
 function renderFooter() {
   const f = document.getElementById("footer");
-  f.innerHTML = `<b>Méthode</b> — Indicateur France : moyenne des anomalies mensuelles (écart à la normale 1991-2020 calculée station par station) des stations Météo-France de plaine (altitude &lt; ${C.method.lowland} m) disponibles, une année étant retenue si chacun de ses mois compte au moins ${C.method.minSt} stations ; séries brutes non homogénéisées, différentes de l'indicateur thermique national officiel de Météo-France. Tendances : régression linéaire sur les années complètes. Le mois en cours, incomplet, est écarté. Jours extrêmes : moyenne, sur les stations de plaine, du nombre annuel de jours par station.<br>
-<b>Sources</b> — Météo-France, données climatologiques de base mensuelles (meteo.data.gouv.fr / data.gouv.fr, Licence Ouverte 2.0) ; ${C.glacierCitation} (accès libre avec citation) ; PSMSL, Permanent Service for Mean Sea Level, données annuelles RLR de Brest et Marseille (Holgate et al., 2013, J. Coastal Res. 29(3)) ; Our World in Data, CO₂ and Greenhouse Gas Emissions (CC BY 4.0, d'après Global Carbon Project et Jones et al.) ; Trajectoire de réchauffement de référence pour l'adaptation au changement climatique (TRACC), ministère de la Transition écologique ; fonds de carte : régions d'après IGN Admin Express (Licence Ouverte). Données mises à jour automatiquement ; dernier mois complet : ${C.updated.slice(4)}/${C.updated.slice(0, 4)}.`;
+  f.innerHTML = `<b>Méthode</b> — Indicateur France : moyenne des anomalies mensuelles (écart à la normale 1991-2020 calculée station par station) des stations Météo-France de plaine (altitude &lt; ${C.method.lowland} m) disponibles, une année étant retenue si chacun de ses mois compte au moins ${C.method.minSt} stations ; séries brutes non homogénéisées, différentes de l'indicateur thermique national officiel de Météo-France. Tendances : régression linéaire sur les années complètes. Le mois en cours, incomplet, est écarté. Jours extrêmes : moyenne, sur les stations de plaine, du nombre annuel de jours par station. Vagues de chaleur : indicateur quotidien reconstruit sur ~34 stations de plaine (température moyenne (TN+TX)/2, absences comblées par la climatologie de la station et l'anomalie du jour), seuils officiels 25,3 / 23,4 / 22,4 °C. Degrés-jours base 18 °C, moyenne des stations, non pondérés par la population.<br>
+<b>Sources</b> — Météo-France, données climatologiques de base mensuelles (meteo.data.gouv.fr / data.gouv.fr, Licence Ouverte 2.0) ; ${C.glacierCitation} (accès libre avec citation) ; PSMSL, Permanent Service for Mean Sea Level, données annuelles RLR de Brest et Marseille (Holgate et al., 2013, J. Coastal Res. 29(3)) ; Our World in Data, CO₂ and Greenhouse Gas Emissions (CC BY 4.0, d'après Global Carbon Project et Jones et al.) ; Trajectoire de réchauffement de référence pour l'adaptation au changement climatique (TRACC), ministère de la Transition écologique ; NOAA GML, CO₂ de Mauna Loa (domaine public) ; NOAA NCEI, NOAAGlobalTemp et ERSST v5 (domaine public) ; Météo-France, données quotidiennes (Licence Ouverte) pour les vagues de chaleur et degrés-jours ; Santé publique France, bilans « Chaleur et santé » ; Géorisques, base GASPAR (Licence Ouverte) ; Direction générale de la santé, cartes de colonisation du moustique tigre ; Insee, indicateurs ODD (Licence Ouverte), d'après MNHN-CESCO et PatriNat (Vigie-Nature, STOC) ; Cerema, consommation d'espaces NAF (Licence Ouverte) ; publications citées dans chaque section (Devictor et al. 2008, 2012 ; Labbé et al. 2019 ; UICN France) ; conséquences : VigiEau / Propluvia (ministère de la Transition écologique, Licence Ouverte), RTE (stocks hydrauliques, indisponibilités de production), Hub'Eau / BRGM (piézométrie, Licence Ouverte), BDIFF (base de données sur les incendies de forêts), NASA FIRMS (VIIRS S-NPP), Open-Meteo / Copernicus ERA5 (CC BY 4.0) ; fonds de carte : régions d'après IGN Admin Express (Licence Ouverte). Données mises à jour automatiquement ; dernier mois complet : ${C.updated.slice(4)}/${C.updated.slice(0, 4)}.`;
 }
 
-function renderAll() { renderHead(); renderStripes(); renderKpis(); renderC1(); renderC2(); renderC3(); renderC4(); renderE1(); renderE2(); renderG1(); renderG2(); renderT1(); renderT2(); renderFooter(); }
+function renderAll() { renderHead(); renderStripes(); renderKpis(); renderC1(); renderC2(); renderC3(); renderC4(); renderE1(); renderE2(); renderG1(); renderG2(); renderV1(); renderV2(); renderV3(); renderV4(); renderT1(); renderT2(); renderFooter(); }
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
-  try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} renderAll(); };
+  try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} renderAll(); renderLazy(); };
 try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(renderAll, 200); });
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { renderAll(); renderLazy(); }, 200); });
 renderAll();
 </script>
 </body>
