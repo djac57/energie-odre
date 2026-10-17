@@ -15,6 +15,8 @@
 <script src="prices.js"></script>
 <script src="hubeau.js"></script>
 <script src="europe.js"></script>
+<script src="geo_europe.js"></script>
+<script src="entsoe.js"></script>
 <style>
 /* Direction : salle de contrôle — sombre par défaut, accents lumineux, chiffres en mono */
 :root, :root[data-theme="dark"] {
@@ -194,6 +196,11 @@ input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
 .eutable th:first-child, .eutable td:first-child { text-align: left; }
 .eutable tr.fr td { color: var(--accent); font-weight: 600; }
 .tscroll { overflow-x: auto; }
+.netlist { display: grid; gap: 1px; font: 12px "IBM Plex Mono", monospace; max-height: 520px; overflow: auto; }
+.netlist > div { display: grid; grid-template-columns: minmax(0, 1fr) 64px 78px; gap: 8px; align-items: center; padding: 3px 0; border-bottom: 1px solid var(--line); }
+.netlist > div.fr { color: var(--accent); font-weight: 600; border-bottom: 1px solid var(--accent); }
+.netlist .nb { height: 8px; justify-self: end; } .netlist .nb.ex { background: var(--exp); justify-self: start; } .netlist .nb.im { background: var(--imp); }
+.netlist .nbw { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
 .navlink { font: 12px "IBM Plex Mono", monospace; color: var(--accent); text-decoration: none; border: 1px solid var(--line); padding: 6px 10px; white-space: nowrap; }
 .navlink:hover { border-color: var(--accent); }
 .note { font: 12px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 8px; }
@@ -403,6 +410,29 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
     <div class="panel" style="margin-top:16px"><div class="maptitle">Prix day-ahead moyens comparés</div><div class="tscroll"><table class="eutable" id="euPriceTable"></table></div><div class="note" id="euPriceNote"></div></div></div>
 </div></section>
 
+<section class="band" id="gridBlock"><div class="band-in">
+  <div class="side"><div class="no">18 — RÉSEAU EUROPÉEN</div><h2>Le réseau européen, heure par heure</h2>
+    <p>Flux physiques mesurés sur les lignes entre pays&nbsp;: chaque flèche va du pays qui envoie vers celui qui reçoit, sa largeur suit la puissance. Couleur des pays&nbsp;: <b style="color:var(--exp)">exportateur net</b> ou <b style="color:var(--imp)">importateur net</b> sur les frontières suivies.</p>
+    <div class="tabs" id="gridMode"><button class="tab" data-v="last" aria-pressed="true">Dernière heure</button><button class="tab" data-v="24" aria-pressed="false">Moyenne 24 h</button><button class="tab" data-v="168" aria-pressed="false">7 jours</button><button class="tab" data-v="hist" aria-pressed="false">Historique</button></div>
+    <div class="player" id="gridPlayer" style="display:none"><button class="play" id="gridPlay" aria-label="Lecture">▶</button><input type="range" id="gridSlider" min="0" max="0" value="0" aria-label="Jour"><span class="mlabel" id="gridLabel"></span></div>
+    <p class="note" id="gridStamp"></p></div>
+  <div><div class="maps"><div class="panel"><div id="gridMap"></div></div>
+      <div class="panel"><div class="maptitle" id="gridListT">Solde net par pays (MW)</div><div class="netlist" id="gridList"></div></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Solde physique de la France par frontière, 10 derniers jours (MW, &gt; 0 = export)</div><div id="gridFr"></div><div class="legend" id="gridFrLg"></div></div>
+    <div class="panel" style="margin-top:16px"><div class="maptitle">Solde physique journalier de la France depuis le début de l'historique (MW moyens, hors Royaume-Uni)</div><div id="gridFrHist"></div><div class="note" id="gridNote"></div></div></div>
+</div></section>
+
+<section class="band" id="imbBlock"><div class="band-in">
+  <div class="side"><div class="no">19 — PRIX DES ÉCARTS</div><h2>Le prix du dernier moment</h2>
+    <p>Chaque quart d'heure, les acteurs dont la production ou la consommation s'écarte de leur programme règlent cet écart à RTE au <b>prix des écarts</b>, calculé sur le coût de l'énergie d'ajustement réellement activée. C'est ce qui se rapproche le plus d'un prix «&nbsp;temps réel&nbsp;» de l'électricité. En France, l'excédent et le déficit ont chacun leur prix.</p>
+    <div class="stat" id="imbStats"></div></div>
+  <div><div class="panel"><div class="maptitle">Horizon des prix · France · €/MWh au quart d'heure</div><div id="imbHorizon"></div><div class="legend" id="imbHzLg"></div>
+      <div class="note">Il n'existe pas de courbe forward publique gratuite (marché à terme EEX payant)&nbsp;; demain est l'horizon le plus lointain des prix publics. Day-ahead&nbsp;: SMARD / Energy-Charts (CC BY 4.0), publié vers 13&nbsp;h pour le lendemain. Échelle bornée aux centiles 1–99&nbsp;% : les pics isolés sont écrêtés.</div></div>
+    <div class="maps" style="margin-top:16px">
+      <div class="panel"><div class="maptitle">Prix des écarts et day-ahead, moyennes journalières (France)</div><div id="imbDaily"></div><div class="legend" id="imbDailyLg"></div></div>
+      <div class="panel"><div class="maptitle">7 derniers jours, zone par zone</div><div class="tscroll"><table class="eutable" id="imbTable"></table></div><div class="note" id="imbNote"></div></div></div></div>
+</div></section>
+
 <footer>
   <b>Données</b> — RTE, éCO2mix, sur <a href="https://odre.opendatasoft.com" target="_blank" rel="noopener">ODRÉ</a> (Open Data Réseaux Énergies), Licence Ouverte&nbsp;: nationales consolidées et définitives (<span class="mono">eco2mix-national-cons-def</span>) + temps réel (<span class="mono">eco2mix-national-tr</span>)&nbsp;; régionales (<span class="mono">eco2mix-regional-cons-def</span>, <span class="mono">eco2mix-regional-tr</span>)&nbsp;;
   météo régionale Weathernews France (<span class="mono">rayonnement-solaire-vitesse-vent-tri-horaires-regionaux</span>, vent à 100&nbsp;m et rayonnement solaire global, tri-horaire, depuis 2016, Licence Ouverte 2.0) — sans direction du vent&nbsp;: les éoliennes de la carte en indiquent la force, pas l'orientation.
@@ -414,7 +444,8 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <b>Prix spot</b> — day-ahead zone France&nbsp;: Bundesnetzagentur | SMARD.de, licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, via l'API <a href="https://api.energy-charts.info" target="_blank" rel="noopener">Energy-Charts</a> (Fraunhofer ISE), mis à jour chaque heure par le dépôt.<br>
   <b>Rivières et nappes</b> — <a href="https://hubeau.eaufrance.fr" target="_blank" rel="noopener">Hub'Eau</a> (OFB / BRGM, Système d'information sur l'eau&nbsp;; Eaufrance&nbsp;: « sauf mention contraire, contenus sous licence Etalab 2.0 »)&nbsp;: hydrométrie (débits moyens journaliers QmnJ), température des cours d'eau, piézométrie (niveaux des nappes)&nbsp;; mis à jour chaque jour par le dépôt. Température de l'air au site&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (réanalyse ERA5 de Copernicus, CC BY 4.0). Production des réacteurs et indisponibilités «&nbsp;causes externes liées à l'environnement&nbsp;»&nbsp;: API RTE.<br>
   <b>Europe</b> — mix, intensité carbone, demande et échanges&nbsp;: <a href="https://ember-energy.org" target="_blank" rel="noopener">Ember</a>, Yearly / Monthly Electricity Data, licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>&nbsp;; prix day-ahead par zone de prix&nbsp;: <a href="https://www.energy-charts.info" target="_blank" rel="noopener">Energy-Charts.info</a> (Fraunhofer ISE, données Bundesnetzagentur | SMARD.de, CC BY 4.0) — Italie&nbsp;: zone Nord&nbsp;; Allemagne&nbsp;: zone DE-LU (DE-AT-LU avant octobre 2018)&nbsp;; pas de prix pour le Royaume-Uni.<br>
-  <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Grégoire David), issu d'Admin Express IGN, Licence Ouverte&nbsp;; pays&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> (Natural Earth, domaine public). Simplifiés et embarqués.
+  <b>ENTSO-E</b> — <a href="https://transparency.entsoe.eu" target="_blank" rel="noopener">ENTSO-E Transparency Platform</a>, données de la «&nbsp;List of data available for free re-use&nbsp;» sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>&nbsp;: flux physiques transfrontaliers (art. 12.1.g du règlement 543/2013) et prix des écarts (art. 17.1.g), agrégés à l'heure ou au jour par le dépôt. Les données des interconnexions IFA et Nemo Link, exclues de cette licence, ne sont pas reprises&nbsp;: la frontière France–Royaume-Uni vient des flux physiques RTE (IFA, IFA2), Belgique–Royaume-Uni n'est pas représentée.<br>
+  <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Grégoire David), issu d'Admin Express IGN, Licence Ouverte&nbsp;; pays (et carte européenne)&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> (Natural Earth, domaine public). Simplifiés et embarqués.
 </footer>
 <div class="tip" id="tip" role="tooltip"></div>
 
@@ -1908,6 +1939,193 @@ document.querySelectorAll("#euMetric .tab").forEach(b => b.onclick = () => { eus
 function tabs(id, onPick, multi) { document.querySelectorAll(`#${id} .tab`).forEach(b => b.onclick = () => {
   if (multi) { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); } else document.querySelectorAll(`#${id} .tab`).forEach(x => x.setAttribute("aria-pressed", x === b));
   onPick(b.dataset.v, b.getAttribute("aria-pressed") === "true"); }); }
+/* ---------- Réseau européen (ENTSO-E, flux physiques) ---------- */
+const EN = window.ENTSOE, GEU = window.GEO_EU;
+const gs = { mode: "last", day: null, play: null, timer: null };
+const EN_CENTER = { FR: [2.4, 46.6], NO: [9.5, 61.2], SE: [15.2, 60.2], FI: [26, 62.3], GB: [-1.6, 52.8], IT: [12.3, 43.2], DK: [9.4, 56.1], GR: [22, 39.6],
+  HR: [16.2, 45.6], NL: [5.7, 52.3], PT: [-8, 39.6], ES: [-3.7, 40.2], DE: [10.3, 51.1], IE: [-7.9, 53.2], AL: [20, 41.1], ME: [19.3, 42.8], BA: [17.8, 44.2],
+  RS: [20.8, 44], MK: [21.7, 41.6], BG: [25.2, 42.7], RO: [24.9, 45.8], HU: [19.4, 47.2], SK: [19.5, 48.7], CZ: [15.3, 49.8], AT: [14.3, 47.6],
+  SI: [14.8, 46.1], CH: [8.2, 46.8], BE: [4.6, 50.6], LU: [6.1, 49.7], PL: [19.2, 52.1], LT: [23.9, 55.3], LV: [25.3, 56.9], EE: [25.6, 58.7] };
+const enHourT = i => new Date(+tUTC(EN.h0) + i * 3600e3);
+// Solde de chaque frontière selon le mode : dernière heure publiée, moyenne 24 h / 7 jours, ou jour de l'historique
+function enBorderValues() {
+  return EN.borders.map(b => {
+    const k = b.a + "-" + b.b, s = EN.net[k]; let v = null, t = null;
+    if (gs.mode === "hist") { const d = EN.netDaily[k]; v = d ? d[gs.day] : null; }
+    else if (gs.mode === "last") { for (let i = s.length - 1; i >= Math.max(0, s.length - 4); i--) if (s[i] != null) { v = s[i]; t = enHourT(i); break; } }
+    else { const w = s.slice(-+gs.mode).filter(x => x != null); v = w.length >= +gs.mode / 2 ? d3.mean(w) : null; }
+    return { ...b, k, v, t };
+  }).filter(x => x.v != null);
+}
+function enPositions(vals) { const pos = {}; vals.forEach(x => { pos[x.a] = (pos[x.a] || 0) + x.v; pos[x.b] = (pos[x.b] || 0) - x.v; }); return pos; }
+const fmtMWs = v => (v > 0 ? "+" : v < 0 ? "−" : "") + fr(Math.abs(v)) + " MW";
+function enDays() { return d3.range(EN.netDaily["FR-DE"]?.length || 0).map(i => d3.timeDay.offset(new Date(EN.d0 + "T00:00:00Z"), i)); }
+function renderGrid() {
+  const blk = document.getElementById("gridBlock"); if (!EN || !GEU) { blk.style.display = "none"; return; }
+  document.querySelectorAll("#gridMode .tab").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === gs.mode));
+  const days = enDays(), pl = document.getElementById("gridPlayer"); pl.style.display = gs.mode === "hist" && days.length ? "flex" : "none";
+  if (gs.day == null) gs.day = days.length - 1;
+  const sl = document.getElementById("gridSlider"); sl.max = days.length - 1; sl.value = gs.day;
+  document.getElementById("gridLabel").textContent = days[gs.day] ? days[gs.day].toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "";
+  renderGridMap(); renderGridFr(); renderGridFrHist();
+}
+function renderGridMap() {
+  const host = document.getElementById("gridMap"); host.replaceChildren(); if (gs.timer) { gs.timer.stop(); gs.timer = null; }
+  const W = host.clientWidth, H = Math.round(W * (W < 560 ? 1.15 : .95));
+  const frame = { type: "MultiPoint", coordinates: [[-10.5, 36], [30, 36], [-10.5, 70.5], [30, 70.5]] };
+  const proj = d3.geoConicConformal().parallels([40, 62]).rotate([-10, 0]).fitExtent([[4, 4], [W - 4, H - 4]], frame), path = d3.geoPath(proj);
+  const vals = enBorderValues(), pos = enPositions(vals), maxPos = d3.max(Object.values(pos), Math.abs) || 1, maxV = d3.max(vals, x => Math.abs(x.v)) || 1;
+  const fill = v => v == null ? "var(--land)" : d3.interpolateRgb(css("--land-hi"), v > 0 ? css("--exp") : css("--imp"))(Math.min(1, Math.sqrt(Math.abs(v) / maxPos)) * .75);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
+  svg.append("rect").attr("width", W).attr("height", H).attr("fill", "var(--sea)");
+  svg.append("g").selectAll("path").data(GEU.features).join("path").attr("d", path)
+    .attr("fill", d => fill(pos[d.properties.code])).attr("stroke", d => d.properties.code === "FR" ? "var(--accent)" : "var(--line)").attr("stroke-width", d => d.properties.code === "FR" ? 1.3 : .6)
+    .on("pointermove", (e, d) => { const c = d.properties.code; if (pos[c] == null) return hideTip(); showTip(e, t => { t.append(el("div", "t", EN.names[c] || d.properties.nom));
+      t.append(el("div", "big", fmtMWs(pos[c]))); t.append(el("div", null, pos[c] >= 0 ? "exportateur net" : "importateur net"));
+      vals.filter(x => x.a === c || x.b === c).map(x => ({ o: x.a === c ? x.b : x.a, v: x.a === c ? x.v : -x.v })).sort((a, b) => b.v - a.v)
+        .forEach(x => row(t, null, "→ " + (EN.names[x.o] || x.o), fmtMWs(x.v))); }); }).on("pointerleave", hideTip);
+  const wS = d3.scaleSqrt().domain([0, maxV]).range([0, Math.max(7, W / 70)]);
+  const lanes = svg.append("g"), parts = svg.append("g").style("pointer-events", "none"), particles = [];
+  vals.forEach(x => { if (Math.abs(x.v) < 20) return;
+    const [from, to] = x.v > 0 ? [x.a, x.b] : [x.b, x.a], A = proj(EN_CENTER[from]), B = proj(EN_CENTER[to]);
+    const dx = B[0] - A[0], dy = B[1] - A[1], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len, sh = Math.min(10, len * .12);
+    const shrink = 7 / len, P = [A[0] + dx * shrink, A[1] + dy * shrink], Q = [B[0] - dx * shrink, B[1] - dy * shrink];
+    const d = `M${P[0]},${P[1]} Q${(P[0] + Q[0]) / 2 + nx * sh},${(P[1] + Q[1]) / 2 + ny * sh} ${Q[0]},${Q[1]}`, w = Math.max(1, wS(Math.abs(x.v)));
+    const tipF = e => showTip(e, t => { t.append(el("div", "t", `${EN.names[from]} → ${EN.names[to]}${x.src === "rte" ? " · source RTE" : ""}`)); t.append(el("div", "big", fr(Math.abs(x.v)) + " MW"));
+      if (x.t) t.append(el("div", null, x.t.toLocaleString("fr-FR", { weekday: "short", hour: "2-digit", minute: "2-digit" }))); });
+    const lane = lanes.append("path").attr("d", d).attr("fill", "none").attr("stroke", from === "FR" ? "var(--exp)" : to === "FR" ? "var(--imp)" : "var(--accent-2)").attr("stroke-width", w).attr("stroke-linecap", "round").attr("opacity", .4)
+      .on("pointermove", tipF).on("pointerleave", hideTip);
+    const node = lane.node(), L = node.getTotalLength(), p1 = node.getPointAtLength(L), p0 = node.getPointAtLength(Math.max(0, L - 5)), ang = Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
+    lanes.append("path").attr("d", "M0,-4 L7,0 L0,4 Z").attr("fill", lane.attr("stroke")).attr("transform", `translate(${p1.x},${p1.y}) rotate(${ang})`).style("pointer-events", "none");
+    const n = Math.max(1, Math.round(1 + 6 * Math.abs(x.v) / maxV));
+    for (let i = 0; i < n; i++) particles.push({ node, L, t: i / n, speed: .08 + .3 * Math.abs(x.v) / maxV, r: 1.2 + 1.6 * Math.sqrt(Math.abs(x.v) / maxV), el: parts.append("circle").attr("fill", lane.attr("stroke")) });
+  });
+  const tot = pos.FR || 0, stamp = gs.mode === "hist" ? enDays()[gs.day]?.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+    : gs.mode === "last" ? "dernière heure publiée" : gs.mode === "24" ? "moyenne des 24 dernières heures" : "moyenne des 7 derniers jours";
+  svg.append("text").attr("x", 10).attr("y", 18).style("font", "11px 'IBM Plex Mono'").style("fill", "var(--muted)").text(stamp.toUpperCase());
+  svg.append("text").attr("x", 10).attr("y", 38).style("font", "600 16px 'IBM Plex Mono'").style("fill", tot >= 0 ? "var(--exp)" : "var(--imp)").text(`France : ${tot >= 0 ? "export" : "import"} net ${fr(Math.abs(tot))} MW`);
+  const draw = () => particles.forEach(p => { const pt = p.node.getPointAtLength(p.t * p.L); p.el.attr("cx", pt.x).attr("cy", pt.y).attr("r", p.r).attr("opacity", Math.sin(p.t * Math.PI)); });
+  // Classement des soldes, France en tête
+  const list = document.getElementById("gridList"); list.replaceChildren();
+  const rows = Object.entries(pos).sort((a, b) => b[1] - a[1]); const mx = d3.max(rows, r => Math.abs(r[1])) || 1;
+  [["FR", pos.FR || 0], ...rows.filter(r => r[0] !== "FR")].forEach(([c, v]) => { const d = el("div", c === "FR" ? "fr" : null), w = el("div", "nbw"), bL = el("div"), bR = el("div");
+    const bar = el("div", "nb " + (v >= 0 ? "ex" : "im")); bar.style.width = (Math.abs(v) / mx * 100) + "%"; (v >= 0 ? bR : bL).append(bar); bL.style.display = bR.style.display = "grid"; w.append(bL, bR);
+    d.append(el("span", null, EN.names[c] || c), w, el("b", "num", fmtMWs(v))); list.append(d); });
+  const lastT = d3.max(vals, x => x.t);
+  document.getElementById("gridStamp").textContent = `${vals.length} frontières · ${gs.mode === "last" && lastT ? "dernière heure publiée : " + lastT.toLocaleString("fr-FR", { weekday: "long", hour: "2-digit", minute: "2-digit" }) : ""} · ENTSO-E (CC BY 4.0), France–Royaume-Uni : RTE.`;
+  if (REDUCED || !particles.length) { draw(); return; }
+  let last = 0; gs.timer = d3.timer(e => { const dt = Math.min(.05, (e - last) / 1000); last = e; particles.forEach(p => { p.t = (p.t + p.speed * dt) % 1; }); draw(); });
+}
+function renderGridFr() {
+  const host = document.getElementById("gridFr"), fb = EN.borders.filter(b => b.a === "FR"), n = EN.net["FR-DE"].length;
+  const colors = { DE: "#8a96a3", BE: "#ffb627", CH: "#ff4d6a", IT: "#5bd67a", ES: "#ff8a3d", GB: "#b48cff" };
+  const series = fb.map(b => EN.net[b.a + "-" + b.b]), total = d3.range(n).map(i => series.some(s => s[i] != null) ? d3.sum(series, s => s[i] || 0) : null);
+  const names = ["Solde total", ...fb.map(b => EN.names[b.b])], cols = [css("--accent"), ...fb.map(b => colors[b.b] || "#999")];
+  const ch = lineChart(host, [total, ...series], { H: 200, h0: EN.h0 + ":00:00Z", colors: cols, yfmt: v => fr(v / 1000, Math.abs(v) < 1e4 && v % 1000 ? 1 : 0) + " GW" });
+  ch.svg.append("line").attr("x1", ch.M.l).attr("x2", ch.W - ch.M.r).attr("y1", ch.y(0)).attr("y2", ch.y(0)).attr("stroke", "var(--text-2)").attr("stroke-width", .8);
+  addHover(ch, [total, ...series], names, cols, fmtMWs);
+  const lg = document.getElementById("gridFrLg"); lg.replaceChildren(); names.forEach((nm, i) => { const b = el("span", "lg"), sw = el("span", "sw line"); sw.style.background = cols[i]; b.append(sw, document.createTextNode(nm)); lg.append(b); });
+}
+function renderGridFrHist() {
+  const host = document.getElementById("gridFrHist"); host.replaceChildren(); const days = enDays(); if (!days.length) return;
+  const fb = EN.borders.filter(b => b.a === "FR" && EN.netDaily[b.a + "-" + b.b]), rows = days.map((t, i) => { const vs = fb.map(b => EN.netDaily[b.a + "-" + b.b][i]); return { t, v: vs.some(v => v != null) ? d3.sum(vs, v => v || 0) : null }; }).filter(r => r.v != null);
+  const W = host.clientWidth, H = 170, M = { l: 50, r: 8, t: 8, b: 20 };
+  const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain(d3.extent([0, ...rows.map(r => r.v)])).nice().range([H - M.b, M.t]);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => fr(v / 1000, v % 1000 ? 1 : 0) + " GW"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 8).tickSize(0).tickPadding(6));
+  svg.append("g").selectAll("rect").data(rows).join("rect").attr("x", r => x(r.t)).attr("width", Math.max(1, (W - M.l - M.r) / rows.length)).attr("y", r => y(Math.max(0, r.v))).attr("height", r => Math.abs(y(r.v) - y(0)))
+    .attr("fill", r => r.v >= 0 ? "var(--exp)" : "var(--imp)").attr("opacity", .8);
+  if (gs.mode === "hist" && days[gs.day]) svg.append("line").attr("x1", x(days[gs.day])).attr("x2", x(days[gs.day])).attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--text)");
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").style("cursor", "pointer").on("pointermove", e => {
+    const r = rows[d3.bisector(r => r.t).center(rows, x.invert(d3.pointer(e)[0]))]; showTip(e, t => { t.append(el("div", "t", r.t.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }))); t.append(el("div", "big", fmtMWs(r.v))); }); })
+    .on("pointerleave", hideTip).on("click", e => { const r = rows[d3.bisector(r => r.t).center(rows, x.invert(d3.pointer(e)[0]))]; gs.mode = "hist"; gs.day = days.findIndex(d => +d === +r.t); stopGridPlay(); renderGrid(); });
+  document.getElementById("gridNote").textContent = `${rows.length} jours depuis le ${rows[0].t.toLocaleDateString("fr-FR", { timeZone: "UTC" })}, historique complété à chaque mise à jour. Frontières belge, allemande, suisse, italienne et espagnole (le Royaume-Uni n'est disponible qu'en données RTE récentes). Cliquez un jour pour l'afficher sur la carte.`;
+}
+function stopGridPlay() { clearInterval(gs.play); gs.play = null; const b = document.getElementById("gridPlay"); if (b) b.textContent = "▶"; }
+tabs("gridMode", v => { gs.mode = v; stopGridPlay(); renderGrid(); });
+document.getElementById("gridSlider").oninput = e => { stopGridPlay(); gs.day = +e.target.value; renderGrid(); };
+document.getElementById("gridPlay").onclick = () => { if (gs.play) return stopGridPlay(); const n = enDays().length; if (gs.day >= n - 1) gs.day = Math.max(0, n - 120);
+  document.getElementById("gridPlay").textContent = "❚❚"; gs.play = setInterval(() => { if (gs.day >= n - 1) return stopGridPlay(); gs.day++; renderGrid(); }, REDUCED ? 700 : 250); };
+
+/* ---------- Prix des écarts (ENTSO-E A85) face au day-ahead ---------- */
+const IMB_NAMES = { FR: "France", BE: "Belgique", NL: "Pays-Bas", CH: "Suisse", AT: "Autriche", ES: "Espagne", PT: "Portugal" };
+function imbSeries(z) { const Z = EN.imb.zones[z], t0 = new Date(EN.imb.t0 + ":00Z"); return Z.ex.map((v, i) => ({ t: new Date(+t0 + i * 900e3), ex: v, de: Z.de ? Z.de[i] : v })).filter(r => r.ex != null); }
+function renderImbalance() {
+  const blk = document.getElementById("imbBlock"); if (!EN || !EN.imb.zones.FR) { blk.style.display = "none"; return; }
+  renderImbHorizon(); renderImbDaily(); renderImbTable();
+}
+function renderImbHorizon() {
+  const host = document.getElementById("imbHorizon"); host.replaceChildren(); const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()), tomorrow = d3.timeDay.offset(today, 1), after = d3.timeDay.offset(today, 2);
+  const imb = imbSeries("FR").filter(r => r.t >= new Date(+now - 48 * 3600e3)), lastImb = imb.length ? +imb.at(-1).t + 900e3 : +now;
+  const da = (PR?.recent || []).map(([t, p]) => ({ t: new Date(t * 1000), p }));
+  const daPast = da.filter(r => r.t >= imb[0]?.t && +r.t < lastImb), daToday = da.filter(r => +r.t >= lastImb && r.t < tomorrow), daTom = da.filter(r => r.t >= tomorrow && r.t < after);
+  const t0 = imb[0]?.t || new Date(+now - 48 * 3600e3), t1 = daTom.length ? after : tomorrow;
+  const all = [...imb.flatMap(r => [r.ex, r.de]), ...da.filter(r => r.t >= t0).map(r => r.p)].sort(d3.ascending);
+  const lo = Math.min(0, d3.quantile(all, .01)), hi = d3.quantile(all, .99);
+  const W = host.clientWidth, H = W < 560 ? 240 : 300, M = { l: 46, r: 8, t: 22, b: 22 };
+  const x = d3.scaleTime().domain([t0, t1]).range([M.l, W - M.r]), y = d3.scaleLinear().domain([lo, hi]).nice().range([H - M.b, M.t]).clamp(true);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " €"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(d3.timeHour.every(W < 560 ? 12 : 6)).tickSize(0).tickPadding(6).tickFormat(d => d.getHours() === 0 ? d3.timeFormat("%a %d")(d) : d3.timeFormat("%H h")(d)));
+  // Bandeaux des trois horizons
+  [[t0, new Date(lastImb), "réalisé", css("--imp")], [new Date(lastImb), tomorrow, "aujourd'hui", css("--accent")], [tomorrow, t1, daTom.length ? "demain" : "", css("--accent-2")]].forEach(([a, b, lab, c]) => {
+    if (+b <= +a) return; svg.append("rect").attr("x", x(a)).attr("width", x(b) - x(a)).attr("y", M.t).attr("height", H - M.t - M.b).attr("fill", c).attr("opacity", .05);
+    svg.append("text").attr("x", (x(a) + x(b)) / 2).attr("y", 14).attr("text-anchor", "middle").style("font", "600 10.5px 'IBM Plex Mono'").style("fill", c).text(lab.toUpperCase()); });
+  const step = (data, acc) => d3.line().defined(r => acc(r) != null).curve(d3.curveStepAfter).x(r => x(r.t)).y(r => y(acc(r)))(data);
+  svg.append("path").attr("d", step(daPast, r => r.p)).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1).attr("stroke-dasharray", "2 3").attr("opacity", .8);
+  const dual = EN.imb.zones.FR.de != null;
+  if (dual) svg.append("path").datum(imb).attr("fill", css("--imp")).attr("opacity", .18).attr("d", d3.area().curve(d3.curveStepAfter).x(r => x(r.t)).y0(r => y(Math.min(r.ex, r.de))).y1(r => y(Math.max(r.ex, r.de))));
+  svg.append("path").attr("d", step(imb, r => r.ex)).attr("fill", "none").attr("stroke", css("--imp")).attr("stroke-width", 1.4);
+  if (dual) svg.append("path").attr("d", step(imb, r => r.de)).attr("fill", "none").attr("stroke", "#c76b8f").attr("stroke-width", 1.2);
+  svg.append("path").attr("d", step(daToday, r => r.p)).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 2);
+  svg.append("path").attr("d", step(daTom, r => r.p)).attr("fill", "none").attr("stroke", css("--accent-2")).attr("stroke-width", 2).attr("stroke-dasharray", "6 3");
+  svg.append("line").attr("x1", M.l).attr("x2", W - M.r).attr("y1", y(0)).attr("y2", y(0)).attr("stroke", "var(--text-2)").attr("stroke-width", .7);
+  svg.append("line").attr("x1", x(now)).attr("x2", x(now)).attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--text)").attr("stroke-width", 1.5);
+  svg.append("text").attr("x", x(now) + 4).attr("y", H - M.b - 6).style("font", "10px 'IBM Plex Mono'").style("fill", "var(--text)").text("maintenant");
+  const cross = svg.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "var(--text)").attr("opacity", 0);
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("y", M.t).attr("height", H - M.t - M.b).attr("fill", "transparent").on("pointermove", e => {
+    const tt = x.invert(d3.pointer(e)[0]), q = new Date(Math.floor(+tt / 900e3) * 900e3); cross.attr("x1", x(q)).attr("x2", x(q)).attr("opacity", .4);
+    const im = imb.find(r => +r.t === +q), d = da.find(r => +r.t === +q);
+    showTip(e, t => { t.append(el("div", "t", q.toLocaleString("fr-FR", { weekday: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })));
+      if (im) { row(t, css("--imp"), dual ? "Écarts · excédent" : "Prix des écarts", fmtEur(im.ex)); if (dual) row(t, "#c76b8f", "Écarts · déficit", fmtEur(im.de)); }
+      row(t, css(+q >= +tomorrow ? "--accent-2" : "--accent"), "Day-ahead", d ? fmtEur(d.p) : "—"); }); }).on("pointerleave", () => { cross.attr("opacity", 0); hideTip(); });
+  const lg = document.getElementById("imbHzLg"); lg.replaceChildren();
+  [[css("--imp"), dual ? "Prix des écarts réalisé · excédent (A04)" : "Prix des écarts réalisé"], ...(dual ? [["#c76b8f", "Prix des écarts · déficit (A05)"]] : []), [css("--accent"), "Day-ahead d'aujourd'hui (pointillé : mêmes heures que le réalisé)"], [css("--accent-2"), daTom.length ? "Day-ahead de demain" : "Day-ahead de demain : publié vers 13 h"]]
+    .forEach(([c, n]) => { const b = el("span", "lg"), sw = el("span", "sw line"); sw.style.background = c; b.append(sw, document.createTextNode(n)); lg.append(b); });
+  // Chiffres
+  const st = document.getElementById("imbStats"); st.replaceChildren(); const add = (k, v) => { const d = el("div"); d.append(document.createTextNode(k + " "), el("b", null, v)); st.append(d); };
+  const last = imb.at(-1); if (last) add("Dernier quart d'heure publié", last.t.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) + " · " + fmtEur(dual ? (last.ex + last.de) / 2 : last.ex));
+  const day = imb.filter(r => +r.t >= +now - 24 * 3600e3), vals = day.flatMap(r => dual ? [r.ex, r.de] : [r.ex]);
+  if (vals.length) { add("24 h : de", fmtEur(d3.min(vals)) + " à " + fmtEur(d3.max(vals))); add("Quarts d'heure à prix négatif (24 h)", fr(day.filter(r => Math.min(r.ex, r.de) < 0).length)); }
+}
+function renderImbDaily() {
+  const host = document.getElementById("imbDaily"); host.replaceChildren(); const Z = EN.imb.zones.FR; if (!Z.daily.length) return;
+  const daMap = new Map((PR?.daily || []).map(r => [r[0], r[1]])), rows = Z.daily.map(([d, v]) => ({ t: new Date(d + "T12:00:00"), d, v, da: daMap.get(d) }));
+  const W = host.clientWidth, H = 210, M = { l: 46, r: 8, t: 8, b: 20 }, all = rows.flatMap(r => [r.v, r.da]).filter(v => v != null).sort(d3.ascending);
+  const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain([Math.min(0, d3.quantile(all, .005)), d3.quantile(all, .995)]).nice().range([H - M.b, M.t]).clamp(true);
+  const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - M.l - M.r)).tickFormat(v => v + " €"));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 6).tickSize(0).tickPadding(6));
+  svg.append("path").datum(rows).attr("fill", "none").attr("stroke", css("--accent")).attr("stroke-width", 1.4).attr("d", d3.line().defined(r => r.da != null).x(r => x(r.t)).y(r => y(r.da)));
+  svg.append("path").datum(rows).attr("fill", "none").attr("stroke", css("--imp")).attr("stroke-width", 1.4).attr("d", d3.line().x(r => x(r.t)).y(r => y(r.v)));
+  svg.append("rect").attr("x", M.l).attr("width", W - M.l - M.r).attr("height", H).attr("fill", "transparent").on("pointermove", e => {
+    const r = rows[d3.bisector(r => r.t).center(rows, x.invert(d3.pointer(e)[0]))]; showTip(e, t => { t.append(el("div", "t", r.t.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long", year: "numeric" })));
+      row(t, css("--imp"), "Prix des écarts (moyenne)", fmtEur(r.v)); row(t, css("--accent"), "Day-ahead", fmtEur(r.da)); if (r.da != null) row(t, null, "Écart", (r.v - r.da >= 0 ? "+" : "−") + fr(Math.abs(r.v - r.da), 1) + " €"); }); }).on("pointerleave", hideTip);
+  const lg = document.getElementById("imbDailyLg"); lg.replaceChildren(); [[css("--imp"), "Prix des écarts (moyenne excédent / déficit)"], [css("--accent"), "Day-ahead"]].forEach(([c, n]) => { const b = el("span", "lg"), sw = el("span", "sw line"); sw.style.background = c; b.append(sw, document.createTextNode(n)); lg.append(b); });
+}
+function renderImbTable() {
+  const t = document.getElementById("imbTable"); t.replaceChildren(); const now = Date.now();
+  const head = el("tr"); ["Zone", "Moyenne", "σ", "Min", "Max", "< 0", "Day-ahead"].forEach(h => head.append(el("th", null, h))); t.append(head);
+  Object.keys(EN.imb.zones).forEach(z => { const s = imbSeries(z).filter(r => +r.t >= now - 7 * 864e5), v = s.map(r => (r.ex + r.de) / 2); if (!v.length) return;
+    const daily = window.EUROPE?.prices?.[z]?.daily?.slice(-7), da = daily?.length ? d3.mean(daily, d => d[1]) : null;
+    const r = el("tr", z === "FR" ? "fr" : null); r.append(el("td", null, IMB_NAMES[z] || z));
+    [d3.mean(v), d3.deviation(v), d3.min(s, x => Math.min(x.ex, x.de)), d3.max(s, x => Math.max(x.ex, x.de))].forEach(x => r.append(el("td", "num", fr(x))));
+    r.append(el("td", "num", fr(s.filter(x => Math.min(x.ex, x.de) < 0).length / s.length * 100) + " %")); r.append(el("td", "num", da == null ? "—" : fr(da))); t.append(r); });
+  document.getElementById("imbNote").textContent = "€/MWh, quarts d'heure des 7 derniers jours publiés ; σ : écart-type ; < 0 : part des quarts d'heure à prix négatif ; day-ahead : moyenne des mêmes 7 jours. Prix des écarts : ENTSO-E (CC BY 4.0). Day-ahead : Energy-Charts (CC BY 4.0). Allemagne absente (prix publié par zone de réglage, non retenu).";
+}
+
 tabs("mixMode", v => { state.mixMode = v; renderMix(); }); tabs("yearMode", v => { state.yearMode = v; renderYears(); }); tabs("hmMetric", v => { state.hm = v; renderHeat(); });
 tabs("regMetric", v => { state.regMetric = v; renderRegionMap(); });
 document.querySelectorAll("#regSource button").forEach(b => b.onclick = () => {
@@ -1919,7 +2137,7 @@ tabs("flowMode", v => { state.flowMode = v; state.flowPicked = true; stopFlowPla
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
   try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} update(); };
 try { const t = localStorage.getItem("odre-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); renderEcowatt(); renderTempo(); renderFlex(); stopNpPlay(); renderRivers(); renderNappes(); renderEurope(); }
+function update() { stopFlowPlay(); stopRegPlay(); renderReadout(); renderKPIs(); renderMix(); syncFlowPlayer(); renderFlows(); renderExportTrend(); renderRegionMap(); renderCorr(); renderYears(); renderHeat(); renderSmalls(); renderRecords(); renderRte(); renderPrices(); renderEcowatt(); renderTempo(); renderFlex(); stopNpPlay(); renderRivers(); renderNappes(); renderEurope(); stopGridPlay(); renderGrid(); renderImbalance(); }
 let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(update, 150); });
 update();
 loadLive(); setInterval(loadLive, 15 * 60 * 1000);
