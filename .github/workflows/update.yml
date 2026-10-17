@@ -89,6 +89,10 @@ jobs:
         continue-on-error: true  # chaque source a sa propre fraîcheur ; une source en panne garde ses données précédentes
         run: python scripts/fetch_eau_feux_air.py data/raw
 
+      - name: Climat (Météo-France, PSMSL, WGMS, OWID)
+        continue-on-error: true  # le script limite lui-même ses téléchargements selon la fraîcheur de chaque source
+        run: python scripts/fetch_climat.py data/raw
+
       - name: Construire data.js
         if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'  # besoin des exports ODRÉ du jour
         run: python scripts/build.py data/raw site/data.js
@@ -116,6 +120,10 @@ jobs:
       - name: Construire eaufeuxair.js
         continue-on-error: true
         run: python scripts/build_eau_feux_air.py data/raw site/eaufeuxair.js
+
+      - name: Construire climat.js
+        continue-on-error: true
+        run: python scripts/build_climat.py data/raw site/climat.js
 
       - name: Committer les nouvelles données
         continue-on-error: true  # un échec d'envoi ne doit jamais empêcher le déploiement du site
