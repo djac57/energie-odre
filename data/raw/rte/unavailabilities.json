@@ -157163,6 +157163,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_T_00335190":{
+"eic":"17W100P100P0145J",
+"end":"2026-10-18T03:45:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1335,
+"name":"ST ALBAN 1",
+"pub":"2026-10-17T13:14:35Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Causes externes liées à l'environnement\nLe placement et la durée de cette baisse pour contraintes environnementales seront modifiés en fonction de l'évolution des prévisions météorologiques\n------------\nEnvironmental issues\nThe planning and the duration of the unavailability for environnemental issu",
+"start":"2026-10-18T01:15:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-18T01:15:00Z",
+"2026-10-18T03:45:00Z",
+385
+]
+],
+"v":1
+},
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
 "end":"2027-09-21T22:00:00Z",
