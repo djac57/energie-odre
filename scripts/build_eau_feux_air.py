@@ -91,7 +91,18 @@ def main():
     eu = load_js("geo_europe.js")
     cty_ix = Index(eu["features"], lambda f: f["properties"]["code"])
     cty_names = {f["properties"]["code"]: f["properties"]["nom"] for f in eu["features"]}
+    # fond Natural Earth de la carte des feux (scripts/build_efa_geo.py) : pays hors du fond européen, oblasts d'Ukraine
+    try:
+        efageo = load_js("efa_geo.js")
+    except (OSError, ValueError):
+        efageo = {"countries": {"features": []}}
+    world_ix = Index(efageo["countries"]["features"], lambda f: f["properties"]["iso"])
+    for f in efageo["countries"]["features"]:
+        cty_names.setdefault(f["properties"]["iso"], f["properties"]["n"])
     data["countryNames"] = cty_names
+    ua_geo = load("ua_oblasts.json", {"features": []})
+    ua_ix = Index(ua_geo["features"], lambda f: f["properties"]["id"])
+    ua_names = {f["properties"]["id"]: f["properties"]["n"] for f in ua_geo["features"]}
 
     # ---------------- FIRMS en direct
     recent = load("firms_recent.json", {"rows": []})["rows"]
@@ -106,7 +117,15 @@ def main():
                     return True
         return False
     rows = []
-    older = defaultdict(lambda: [0, 0.0])  # 3 à 7 jours : agrégé en cellules de 0,1°
+    # toutes les détections de la zone (31 jours) pour la carte en canevas : fichier à part, en colonnes d'entiers
+    t0 = max((r[2] for r in recent), default=NOW.strftime("%Y-%m-%dT%H:%MZ"))
+    t0d = dt.datetime.strptime(t0, "%Y-%m-%dT%H:%MZ").replace(tzinfo=dt.timezone.utc)
+    pts = {k: [] for k in ("lat", "lon", "a", "f", "m", "c", "o", "d")}
+    clist, dlist, olist = [""], [""], [""] + sorted(ua_names)
+    ua_day = defaultdict(lambda: [0, 0.0])
+    ua_obl = defaultdict(lambda: defaultdict(int))
+    ua_grid = defaultdict(int)
+    cut7d = (t0d - dt.timedelta(days=7)).strftime("%Y-%m-%dT%H:%MZ")
     country_day = defaultdict(lambda: defaultdict(lambda: [0, 0.0]))
     dep_day = defaultdict(lambda: defaultdict(lambda: [0, 0.0]))
     cut7 = (NOW - dt.timedelta(days=7)).strftime("%Y-%m-%dT%H:%MZ")
@@ -114,9 +133,28 @@ def main():
         st = is_static(lat, lon)
         cty = cty_ix.find(lon, lat) or "—"
         dep = dep_ix.find(lon, lat) if cty == "FR" else None
+        if not (-26 <= lon <= 50 and 25 <= lat <= 72) or (lat < 37.5 and lon > 35.5):  # hors zone (dont Proche-Orient)
+            continue
+        obl = ua_ix.find(lon, lat) if 21.5 <= lon <= 41 and 44 <= lat <= 53 else None
+        c2 = cty if cty != "—" else (world_ix.find(lon, lat) or "—")
+        if c2 not in clist:
+            clist.append(c2)
+        if dep and dep not in dlist:
+            dlist.append(dep)
+        age = int((t0d - dt.datetime.strptime(t, "%Y-%m-%dT%H:%MZ").replace(tzinfo=dt.timezone.utc)).total_seconds() // 60)
+        for k, v in (("lat", round(lat * 1000)), ("lon", round(lon * 1000)), ("a", age), ("f", round(frp * 10)),
+                     ("m", {"N": 0, "N20": 1, "N21": 2}.get(sat, 0) + 4 * conf + (16 if st else 0)),
+                     ("c", clist.index(c2)), ("o", olist.index(obl) if obl else 0), ("d", dlist.index(dep) if dep else 0)):
+            pts[k].append(v)
+        if obl:
+            ua_day[t[:10]][0] += 1
+            ua_day[t[:10]][1] += frp
+            ua_obl[obl][t[:10]] += 1
+            if t >= cut7d:
+                ua_grid[(round(lat, 1), round(lon, 1))] += 1
         day = t[:10]
         if not st:
-            a = country_day[day][cty]
+            a = country_day[day][c2]
             a[0] += 1
             a[1] += frp
             if dep:
@@ -127,20 +165,25 @@ def main():
             hours = (NOW - dt.datetime.strptime(t, "%Y-%m-%dT%H:%MZ").replace(tzinfo=dt.timezone.utc)).total_seconds() / 3600
             if hours <= 72:
                 rows.append([round(lat, 3), round(lon, 3), round(hours), round(frp), {"N": 0, "N20": 1, "N21": 2}.get(sat, 0),
-                             conf, 1 if st else 0, cty, dep or ""])
-            elif not st:
-                o = older[(round(lat, 1), round(lon, 1))]
-                o[0] += 1
-                o[1] += frp
+                             conf, 1 if st else 0, c2, dep or ""])
     last_t = max((r[2] for r in recent), default=None)
     data["firms"] = {
         "cols": ["lat", "lon", "heures", "frp", "sat", "conf", "fixe", "pays", "dep"],
         "rows": rows, "last": last_t,
-        "older": [[a, b, n, round(f)] for (a, b), (n, f) in older.items()],
+        "t0": t0,
         "countryDay": {d: {c: [v[0], round(v[1])] for c, v in cs.items()} for d, cs in sorted(country_day.items())},
         "depDay": {d: {c: [v[0], round(v[1])] for c, v in cs.items()} for d, cs in sorted(dep_day.items())},
         "static": sorted(static_pts),
     }
+    data["ukraine"] = {"oblasts": {k: ua_names[k] for k in ua_names}, "day": {d: [v[0], round(v[1])] for d, v in sorted(ua_day.items())},
+                       "obl": {k: dict(sorted(v.items())) for k, v in ua_obl.items()},
+                       "grid7": [[a, b, n] for (a, b), n in ua_grid.items()]}
+    ptsjs = "window.EFAPTS=" + json.dumps({"t0": t0, "countries": clist, "deps": dlist, "oblasts": olist, **pts},
+                                          ensure_ascii=False, separators=(",", ":")) + ";"
+    pts_out = os.path.join(os.path.dirname(OUT), "eaufeuxair_pts.js")
+    with open(pts_out, "w", encoding="utf-8") as fh:
+        fh.write(ptsjs)
+    pts_digest = hashlib.sha1(ptsjs.encode()).hexdigest()[:10]
 
     # ---------------- FIRMS archives
     arch = load("firms_archive.json", {})
@@ -285,10 +328,16 @@ def main():
     if os.path.exists(page):
         html = open(page, encoding="utf-8").read()
         new = re.sub(r'src="eaufeuxair\.js(\?v=[\w-]+)?"', f'src="eaufeuxair.js?v={digest}"', html)
+        new = re.sub(r'"eaufeuxair_pts\.js(\?v=[\w-]+)?"', f'"eaufeuxair_pts.js?v={pts_digest}"', new)
+        for name in ("efa_geo.js", "efa_geo10.js"):  # fonds de carte (scripts/build_efa_geo.py)
+            fp = os.path.join(SITE, name)
+            if os.path.exists(fp):
+                gd = hashlib.sha1(open(fp, "rb").read()).hexdigest()[:10]
+                new = re.sub(r'"' + re.escape(name) + r'(\?v=[\w-]+)?"', f'"{name}?v={gd}"', new)
         if new != html:
             open(page, "w", encoding="utf-8").write(new)
     unmatched = [n for n, c in data["gfwCodes"].items() if not c]
-    print(f"{OUT} : {len(js) // 1024} Ko · FIRMS {len(rows)} détections (72 h), {len(static_pts)} sources fixes · "
+    print(f"{OUT} : {len(js) // 1024} Ko · FIRMS {len(rows)} détections (72 h), {len(pts['lat'])} sur la carte ({len(ptsjs) // 1024} Ko), {len(static_pts)} sources fixes · "
           f"archives {len(arch)} · BDIFF {len(data['bdiff'])} ans · Atmo {len(days)} j · VigiEau {len(data['vigieau']['weekly'])} sem."
           + (f" · GFW non reliés : {unmatched}" if unmatched else ""))
 

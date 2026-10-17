@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="eaufeuxair.js?v=dac015f567"></script>
-<script src="geo_world.js"></script>
+<script src="eaufeuxair.js?v=c4069dcd80"></script>
+<script src="efa_geo.js?v=bc0193febe"></script>
 <style>
 /* Même direction que les pages électricité et autres énergies : salle de contrôle, chiffres en mono */
 :root, :root[data-theme="dark"] {
@@ -217,19 +217,36 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <p>Chaque point est une anomalie thermique détectée par les satellites VIIRS (NASA / NOAA), quelques heures après leur passage.</p></div>
 
 <section class="band"><div class="band-in">
-  <div class="side"><div class="no">F1 — EN DIRECT</div><h3>Points chauds des 72 dernières heures</h3>
-    <p>Couleur selon l'ancienneté, taille selon la puissance radiative (MW). Au-delà de 3 jours, les détections sont regroupées par cellules. Zoomez pour descendre jusqu'à la commune.</p>
+  <div class="side"><div class="no">F1 — EN DIRECT</div><h3>Points chauds, détection par détection</h3>
+    <p>Chaque point est une détection : plus elle est récente, plus elle est vive ; plus elle est puissante (puissance radiative, MW), plus elle est grosse. Vue d'ensemble : densité lissée ; zoomez pour retrouver les points, les villes, les fleuves et les régions.</p>
     <div class="tabs" id="fAge"></div>
+    <div class="tabs" id="fView"></div>
     <div class="tabs" id="fFixed"></div>
-    <p class="note">Détections satellite de points chauds, pas uniquement des feux de forêt : brûlages agricoles, torchères, sites industriels… Les sources fixes connues (repérées dans les archives NASA comme « autre source terrestre fixe ») sont masquées par défaut. Ce masque ne couvre que la France, l'Espagne, le Portugal, l'Italie et la Grèce : en Algérie, Libye ou Égypte, beaucoup de points sont des torchères pétrolières.</p>
+    <p class="note">Détections satellite de points chauds, pas uniquement des feux de forêt : brûlages agricoles, torchères, sites industriels, incendies liés aux combats… Les sources fixes connues (repérées dans les archives NASA comme « autre source terrestre fixe ») sont masquées par défaut. Ce masque ne couvre que la France, l'Espagne, le Portugal, l'Italie et la Grèce : en Algérie, Libye ou Égypte, beaucoup de points sont des torchères pétrolières.</p>
   </div>
   <div class="stack">
-    <div class="panel"><div class="ptitle" id="fTitle"></div><div id="fMap"></div><div class="legend" id="fLegend"></div></div>
+    <div class="panel"><div class="ptitle" id="fTitle"></div><div id="fMap"></div>
+      <div class="player"><button class="play" id="fPlay" aria-label="Lecture jour par jour">▶</button><input type="range" id="fSlider" aria-label="Jour"><div class="plabel" id="fLabel"></div></div>
+      <div class="legend" id="fLegend"></div></div>
     <div class="two">
       <div class="panel"><div class="ptitle">Principaux foyers · 24 h</div><div class="rank" id="fFoyers"></div></div>
       <div class="panel"><div class="ptitle">Détections par pays</div><div class="tabs" id="fCtySpan"></div><div class="rank" id="fCty"></div></div>
     </div>
     <div class="panel"><div class="ptitle">Jour après jour · France (hors sources fixes)</div><div id="fDaily"></div></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="band-in">
+  <div class="side"><div class="no">F1 — UKRAINE</div><h3>Les points chauds en Ukraine</h3>
+    <p>Détections VIIRS rattachées aux oblasts (Crimée comprise), depuis la mise en service de la page (31 jours au plus).</p>
+    <p class="note">FIRMS détecte des anomalies thermiques. Dans les zones de combat, beaucoup sont liées aux bombardements et aux incendies de guerre, mais le satellite ne fait pas la différence avec un brûlage agricole ou un feu de forêt : un point n'est pas une frappe. Les nuages masquent aussi des jours entiers.</p>
+  </div>
+  <div class="stack">
+    <div class="panel"><div class="ptitle">Détections par jour · Ukraine</div><div id="uaDaily"></div></div>
+    <div class="mapwrap">
+      <div class="panel"><div class="ptitle">Densité sur 7 jours · cellules de 0,1°</div><div id="uaMap"></div><div class="legend" id="uaLegend"></div></div>
+      <div class="panel"><div class="ptitle" id="uaOblTitle">Par oblast</div><div class="tabs" id="uaSpan"></div><div class="rank" id="uaObl"></div></div>
+    </div>
   </div>
 </div></section>
 
@@ -348,7 +365,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 <footer id="footer"></footer>
 <div class="tip" id="tip"></div>
 <script>
-const D = window.EFA, GW = window.GEOW;
+const D = window.EFA;
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const el = (t, c, txt) => { const e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
 const fmt = (v, d = 0) => v == null || isNaN(v) ? "—" : v.toLocaleString("fr-FR", { maximumFractionDigits: d, minimumFractionDigits: d });
@@ -366,15 +383,9 @@ function tabs(host, items, cur, onPick) { const h = document.getElementById(host
 const W = id => Math.max(280, document.getElementById(id).clientWidth);
 const isMobile = () => innerWidth < 560;
 const DEPN = D.depNames || {};
-// zone affichée : Europe, Maghreb et Méditerranée (le flux « Afrique du Nord » de FIRMS couvre aussi le Proche-Orient)
-const ROWS = D.firms.rows.filter(r => r[1] >= -25 && r[1] <= 40 && r[0] >= 27);
-// pays hors du fond européen (Libye, Égypte, Turquie…) : recherche dans le fond mondial Natural Earth
-const WFR = { Libya: "Libye", Egypt: "Égypte", Turkey: "Turquie", Syria: "Syrie", Lebanon: "Liban", Israel: "Israël", Jordan: "Jordanie", Cyprus: "Chypre", "N. Cyprus": "Chypre du Nord", Palestine: "Palestine", Georgia: "Géorgie", Russia: "Russie", Kazakhstan: "Kazakhstan", Iraq: "Irak", "Saudi Arabia": "Arabie saoudite", Morocco: "Maroc", "W. Sahara": "Sahara occidental" };
-const WB = GW.world.features.map(f => [f, d3.geoBounds(f)]);
-ROWS.forEach(r => { if (r[7] !== "—") return; const p = [r[1], r[0]];
-  const hit = WB.find(([f, b]) => p[0] >= b[0][0] && p[0] <= b[1][0] && p[1] >= b[0][1] && p[1] <= b[1][1] && d3.geoContains(f, p));
-  r[9] = hit ? (WFR[hit[0].properties.nom] || hit[0].properties.nom) : "En mer"; });
-const rowCty = r => r[7] !== "—" ? ctyName(r[7]) : r[9];
+// zone affichée (filtrée au build) : Europe, Maghreb, Méditerranée, Ukraine et Russie d'Europe
+const ROWS = D.firms.rows;
+const rowCty = r => ctyName(r[7]);
 const depName = c => DEPN[c] || c;
 
 /* ---------- palettes ---------- */
@@ -387,7 +398,7 @@ const MDFC = { 1: ["#6fcf8a", "Faible"], 2: ["#ffd166", "Modéré"], 3: ["#ff8a3
 const ATMO = [["#9aa5ad", "Absent"], ["#50F0E6", "Bon"], ["#50CCAA", "Moyen"], ["#F0E641", "Dégradé"], ["#FF5050", "Mauvais"], ["#960032", "Très mauvais"], ["#872181", "Extrêmement mauvais"]];
 const POL = { no2: "NO₂", o3: "Ozone", pm10: "PM10", pm25: "PM2,5", so2: "SO₂" };
 const CTY = D.countryNames || {};
-const ctyName = c => c === "—" ? "Hors Europe ou en mer" : (CTY[c] || c);
+const ctyName = c => c === "—" ? "En mer" : (CTY[c] || c);
 const ISO_FR = { FR: "France", ES: "Espagne", PT: "Portugal", IT: "Italie", GR: "Grèce" };
 const ISO_COL = { FR: "var(--accent)", ES: "#ffb627", PT: "#5bd67a", IT: "#ff7a45", GR: "#b48cff" };
 
@@ -460,54 +471,180 @@ function renderHeader() {
     const c = el("div", "kpi"); c.append(el("div", "k", kk)); const vv = el("div", "v", v); if (id) vv.id = id; c.append(vv, el("div", "d", d)); k2.append(c); });
 }
 
-/* ---------- F1 : carte en direct ---------- */
-let fAge = 72, fShowFixed = false, fCtySpan = 1;
+/* ---------- F1 : carte en direct (canevas) ---------- */
+const PTS_SRC = "eaufeuxair_pts.js?v=f9a1779603", GEO10_SRC = "efa_geo10.js?v=4822ce0982";
+const AGE_RAMP = d3.interpolateRgbBasis(["#fff6c2", "#ffd166", "#ff8a3d", "#e5383b", "#8a1c3b"]);
+const VIEWS = { fr: [[-5.4, 41.2], [9.8, 51.2]], eu: [[-11, 34], [40, 61.5]], ua: [[22, 44], [41, 53]], med: [[-10, 28], [37, 46.5]] };
+let fAge = 72, fShowFixed = false, fCtySpan = 1, fView = "eu", fDay = 0, fTimer = null;
+const FM = { pts: null, geo10: null, loading10: false, t: d3.zoomIdentity };
+function loadScript(src, ok) { const s = document.createElement("script"); s.src = src; s.async = true; s.onload = ok; document.head.append(s); }
+loadScript(PTS_SRC, () => { FM.pts = window.EFAPTS; prepPts(); renderFires(); });
+function prepPts() { const P = FM.pts; P.n = P.lat.length; P.t0ms = Date.parse(P.t0.replace("Z", ":00Z"));
+  P.days = Math.min(31, Math.ceil(d3.max(P.a) / 1440) || 1); }
+function fireAgeMax() { return fAge; } // heures
+function fCursorMin() { // minutes écoulées entre la dernière détection et la fin du jour choisi (0 = maintenant)
+  if (!fDay || !FM.pts) return 0; const end = new Date(FM.pts.t0ms); end.setUTCHours(23, 59, 59, 0); end.setUTCDate(end.getUTCDate() - fDay);
+  return Math.max(0, (FM.pts.t0ms - end) / 6e4); }
 function renderFires() {
   const host = document.getElementById("fMap"); host.replaceChildren();
-  const w = W("fMap"), H = Math.round(Math.min(640, w * (isMobile() ? 1.05 : .62)));
-  const proj = d3.geoMercator().fitExtent([[6, 6], [w - 6, H - 6]], { type: "MultiPoint", coordinates: [[-11, 27.5], [36, 61.5]] });
-  const path = d3.geoPath(proj);
+  const w = W("fMap"), H = Math.round(Math.min(680, w * (isMobile() ? 1.1 : .66)));
+  const dpr = Math.min(2, devicePixelRatio || 1);
+  const proj = d3.geoMercator().fitExtent([[6, 6], [w - 6, H - 6]], { type: "MultiPoint", coordinates: VIEWS.eu });
   const wrap = el("div", "zmap"); host.append(wrap);
-  const svg = d3.select(wrap).append("svg").attr("width", w).attr("height", H).attr("class", "zsvg");
-  svg.append("rect").attr("width", w).attr("height", H).attr("fill", css("--sea"));
-  const g = svg.append("g"), base = g.append("g").attr("class", "zbase"), dots = g.append("g");
-  const euIds = new Set(GW.europe.features.map(f => f.properties.id));
-  base.append("g").selectAll("path").data(GW.world.features.filter(f => !euIds.has(f.properties.id))).join("path").attr("d", path).attr("fill", css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5);
-  base.append("g").selectAll("path").data(GW.europe.features).join("path").attr("d", path).attr("fill", f => f.properties.id === "250" ? css("--france") : css("--land")).attr("stroke", css("--line")).attr("stroke-width", .6);
-  const depLayer = base.append("g").style("display", "none");
-  depLayer.selectAll("path").data(D.deps.features).join("path").attr("d", path).attr("fill", "none").attr("stroke", css("--text-2")).attr("stroke-opacity", .35).attr("stroke-width", .5);
-  // 3 à 7 jours : cellules
-  const older = fAge >= 168 ? D.firms.older : [];
-  const r = f => Math.max(1.2, Math.min(9, Math.sqrt(f) * .9));
-  const cells = dots.append("g").selectAll("rect").data(older).join("rect")
-    .attr("x", d => proj([d[1] - .05, d[0] + .05])[0]).attr("y", d => proj([d[1] - .05, d[0] + .05])[1])
-    .attr("width", d => Math.max(1, proj([d[1] + .05, d[0]])[0] - proj([d[1] - .05, d[0]])[0])).attr("height", d => Math.max(1, proj([d[1], d[0] - .05])[1] - proj([d[1], d[0] + .05])[1]))
-    .attr("fill", "#b36a3c").attr("opacity", .55)
-    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", "3 à 7 jours · cellule 0,1°")); tRow(t, "Détections", fmt(d[2])); tRow(t, "Puissance cumulée", fmt(d[3]) + " MW"); }))
-    .on("pointerleave", hideTip);
-  const rows = ROWS.filter(d => d[2] <= Math.min(fAge, 72) && (fShowFixed || !d[6])).sort((a, b) => b[2] - a[2]);
-  const pts = dots.append("g").selectAll("circle").data(rows).join("circle")
-    .attr("cx", d => proj([d[1], d[0]])[0]).attr("cy", d => proj([d[1], d[0]])[1]).attr("r", d => r(d[3]))
-    .attr("fill", d => d[6] ? "#8a96a3" : ageColor(d[2])).attr("fill-opacity", d => d[6] ? .6 : .85)
-    .attr("stroke", d => d[2] <= 6 && !d[6] ? "#fff3" : "none")
-    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", (d[6] ? "Source fixe probable · " : "") + rowCty(d) + (d[8] ? " · " + depName(d[8]) : "")));
-      t.append(el("div", "big", fmt(d[3]) + " MW")); tRow(t, "Il y a", fmt(d[2]) + " h"); tRow(t, "Satellite", ["S-NPP", "NOAA-20", "NOAA-21"][d[4]]); tRow(t, "Confiance", ["faible", "nominale", "haute"][d[5]]);
-      tRow(t, "Position", d[0].toFixed(3) + ", " + d[1].toFixed(3)); }))
-    .on("pointerleave", hideTip);
-  const zoom = d3.zoom().scaleExtent([1, 80]).on("zoom", e => { g.attr("transform", e.transform);
-    pts.attr("r", d => r(d[3]) / Math.sqrt(e.transform.k)); depLayer.style("display", e.transform.k >= 3 ? null : "none"); });
-  svg.call(zoom);
+  const cv = el("canvas", "zsvg"); cv.width = w * dpr; cv.height = H * dpr; cv.style.width = w + "px"; cv.style.height = H + "px"; cv.style.display = "block"; cv.style.touchAction = "none";
+  wrap.append(cv); const ctx = cv.getContext("2d");
+  const P2 = g => new Path2D(d3.geoPath(proj)(g) || "");
+  const col = { sea: css("--sea"), land: css("--land"), fr: css("--france"), line: css("--line"), text: css("--text"), muted: css("--muted"), bg: css("--bg") };
+  const base = { countries: P2(EFAGEO.countries), fr: P2({ type: "FeatureCollection", features: EFAGEO.countries.features.filter(f => f.properties.iso === "FR") }),
+    deps: P2(D.deps), ua: P2(EFAGEO.ua) };
+  let det = null;
+  const prepDet = () => { const G = FM.geo10; if (!G) return; det = { land: P2(G.land), borders: P2(G.borders), regions: P2(G.regions), lakes: P2(G.lakes),
+    rivers: [3, 5, 7].map(r => P2({ type: "FeatureCollection", features: G.rivers.features.filter(f => f.properties.r <= r && f.properties.r > r - 2) })),
+    cities: G.cities.map(c => { const [x, y] = proj([c[0], c[1]]); return [x, y, c[2], c[3], c[4]]; }) }; };
+  prepDet();
+  // points projetés une fois
+  let px = null, py = null;
+  if (FM.pts) { const P = FM.pts; px = new Float32Array(P.n); py = new Float32Array(P.n);
+    for (let i = 0; i < P.n; i++) { const p = proj([P.lon[i] / 1000, P.lat[i] / 1000]); px[i] = p[0]; py[i] = p[1]; } }
+  let vis = [], qt = null, mode = "points";
+  function draw() {
+    const t = FM.t, k = t.k;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = col.sea; ctx.fillRect(0, 0, w, H);
+    ctx.setTransform(dpr * k, 0, 0, dpr * k, dpr * t.x, dpr * t.y);
+    const useDet = det && k >= 2;
+    ctx.fillStyle = css("--land-2") || col.land; ctx.fill(useDet ? det.land : base.countries);
+    if (!useDet) { ctx.fillStyle = col.fr; ctx.fill(base.fr); }
+    if (useDet) { ctx.fillStyle = col.sea; ctx.fill(det.lakes);
+      ctx.strokeStyle = "#4b8fbf"; ctx.globalAlpha = .55; det.rivers.forEach((p, i) => { if (k >= [2, 3.5, 6][i]) { ctx.lineWidth = (1.1 - i * .25) / k; ctx.stroke(p); } }); ctx.globalAlpha = 1;
+      if (k >= 3) { ctx.strokeStyle = col.muted; ctx.globalAlpha = .35; ctx.lineWidth = .5 / k; ctx.stroke(det.regions); ctx.stroke(base.deps); ctx.globalAlpha = 1; }
+      ctx.strokeStyle = col.muted; ctx.globalAlpha = .9; ctx.lineWidth = 1 / k; ctx.stroke(det.borders); ctx.globalAlpha = 1;
+    } else { ctx.strokeStyle = col.line; ctx.lineWidth = .7 / k; ctx.stroke(base.countries); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // détections
+    vis = []; qt = null;
+    const legendTxt = [];
+    if (FM.pts) {
+      const P = FM.pts, cur = fCursorMin(), span = fAge * 60;
+      for (let i = 0; i < P.n; i++) { const a = P.a[i] - cur; if (a < 0 || a > span) continue; if ((P.m[i] & 16) && !fShowFixed) continue; vis.push(i); }
+      vis.sort((i, j) => P.a[j] - P.a[i]); // anciens d'abord, récents au-dessus
+      const sx = i => px[i] * k + t.x, sy = i => py[i] * k + t.y;
+      mode = k < 1.8 && vis.length > 2500 ? "densite" : "points";
+      if (mode === "densite") {
+        const c = 3, gw = Math.ceil(w / c), gh = Math.ceil(H / c), grid = new Float32Array(gw * gh), age = new Float32Array(gw * gh).fill(1e9);
+        vis.forEach(i => { const x = Math.floor(sx(i) / c), y = Math.floor(sy(i) / c); if (x < 0 || y < 0 || x >= gw || y >= gh) return; const j = y * gw + x;
+          grid[j] += 1; age[j] = Math.min(age[j], (P.a[i] - cur) / span); });
+        const off = document.createElement("canvas"); off.width = gw; off.height = gh; const o = off.getContext("2d"), img = o.createImageData(gw, gh);
+        const mx = Math.log1p(d3.max(grid) || 1);
+        for (let j = 0; j < grid.length; j++) { if (!grid[j]) continue; const v = Math.log1p(grid[j]) / mx, rgb = d3.rgb(AGE_RAMP(Math.min(1, age[j] * .8 + (1 - v) * .2)));
+          img.data[j * 4] = rgb.r; img.data[j * 4 + 1] = rgb.g; img.data[j * 4 + 2] = rgb.b; img.data[j * 4 + 3] = Math.round(120 + 135 * v); }
+        o.putImageData(img, 0, 0);
+        ctx.save(); ctx.imageSmoothingEnabled = true; ctx.filter = "blur(1.5px)"; ctx.globalCompositeOperation = document.documentElement.dataset.theme === "light" ? "multiply" : "screen";
+        ctx.drawImage(off, 0, 0, gw * c, gh * c); ctx.restore();
+      } else {
+        const zr = Math.pow(k, .3), light = document.documentElement.dataset.theme === "light"; ctx.strokeStyle = "#7a2a1a"; ctx.lineWidth = .6;
+        vis.forEach(i => { const u = Math.min(1, (P.a[i] - cur) / span), fixed = P.m[i] & 16;
+          const r = Math.max(1.1, Math.min(9, Math.sqrt(P.f[i] / 10) * .75)) * zr;
+          ctx.globalAlpha = fixed ? .5 : 1 - .6 * u; ctx.fillStyle = fixed ? "#8a96a3" : AGE_RAMP(u);
+          ctx.beginPath(); ctx.arc(sx(i), sy(i), r, 0, 6.2832); ctx.fill(); if (light && !fixed) { ctx.globalAlpha *= .5; ctx.stroke(); } });
+        ctx.globalAlpha = 1;
+        qt = d3.quadtree(vis, i => sx(i), i => sy(i));
+      }
+    }
+    // villes
+    if (det && k >= 1.4) {
+      const maxRank = k < 2.2 ? 3 : k < 3.5 ? 5 : k < 6 ? 6 : k < 12 ? 7 : 8, boxes = [];
+      ctx.font = `500 ${isMobile() ? 10 : 11}px "IBM Plex Mono", monospace`; ctx.textBaseline = "middle";
+      for (const c of det.cities) { if (c[3] > maxRank) continue; const x = c[0] * k + t.x, y = c[1] * k + t.y; if (x < 0 || y < 0 || x > w || y > H || (x < 56 && y < 140)) continue;
+        const tw = ctx.measureText(c[2]).width, b = [x + 5, y - 7, x + 9 + tw, y + 7];
+        if (boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) continue; boxes.push(b);
+        ctx.fillStyle = col.text; ctx.beginPath(); ctx.arc(x, y, c[4] ? 2.6 : 1.8, 0, 6.2832); ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = col.sea; ctx.globalAlpha = .85; ctx.strokeText(c[2], x + 6, y); ctx.globalAlpha = 1; ctx.fillText(c[2], x + 6, y); }
+    }
+    updateTitle();
+    if (k >= 2 && !FM.geo10 && !FM.loading10) { FM.loading10 = true; loadScript(GEO10_SRC, () => { FM.geo10 = window.EFAGEO10; prepDet(); draw(); }); }
+  }
+  function updateTitle() {
+    const P = FM.pts; if (!P) { document.getElementById("fTitle").textContent = "Chargement des détections…"; return; }
+    const shown = vis.filter(i => !(P.m[i] & 16)).length;
+    const when = fDay ? "jusqu'au " + new Date(P.t0ms - fCursorMin() * 6e4).toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) : "dernières détections";
+    document.getElementById("fTitle").textContent = `${fmt(shown)} points chauds · ${fAge < 48 ? fAge + " h" : fAge / 24 + " jours"} · ${when}${mode === "densite" ? " · densité (zoomez pour les points)" : ""}`;
+  }
+  const zoom = d3.zoom().scaleExtent([1, 120]).translateExtent([[-w * .2, -H * .2], [w * 1.2, H * 1.2]]).on("zoom", e => { FM.t = e.transform; hideTip(); draw(); });
+  const sel = d3.select(cv).call(zoom);
+  FM.goto = (v, dur = 700) => { const [[a, b], [c, d]] = VIEWS[v]; const [x0, y0] = proj([a, d]), [x1, y1] = proj([c, b]);
+    const k = Math.max(1, Math.min(w / (x1 - x0), H / (y1 - y0)) * .95);
+    sel.transition().duration(dur).call(zoom.transform, d3.zoomIdentity.translate(w / 2, H / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2)); };
+  sel.call(zoom.transform, FM.t);
+  cv.addEventListener("pointermove", e => { if (!qt || !FM.pts) return hideTip(); const r = cv.getBoundingClientRect(); const i = qt.find(e.clientX - r.left, e.clientY - r.top, 9);
+    if (i == null) return hideTip(); const P = FM.pts, fixed = P.m[i] & 16, ci = P.countries[P.c[i]], obl = P.oblasts[P.o[i]], dep = P.deps[P.d[i]];
+    showTip(e, tt => { tt.append(el("div", "t", (fixed ? "Source fixe probable · " : "") + ctyName(ci || "—") + (obl ? " · " + D.ukraine.oblasts[obl] : dep ? " · " + depName(dep) : "")));
+      tt.append(el("div", "big", fmt(P.f[i] / 10, 1) + " MW"));
+      tRow(tt, "Détection", new Date(P.t0ms - P.a[i] * 6e4).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }));
+      tRow(tt, "Satellite", ["S-NPP", "NOAA-20", "NOAA-21"][P.m[i] & 3]); tRow(tt, "Confiance", ["faible", "nominale", "haute"][(P.m[i] >> 2) & 3]);
+      tRow(tt, "Position", (P.lat[i] / 1000).toFixed(3) + ", " + (P.lon[i] / 1000).toFixed(3)); }); });
+  cv.addEventListener("pointerleave", hideTip);
   const ctl = el("div", "zctl");
-  [["+", "Zoomer", () => svg.transition().duration(300).call(zoom.scaleBy, 2)], ["−", "Dézoomer", () => svg.transition().duration(300).call(zoom.scaleBy, .5)],
-   ["⌂", "Recentrer", () => svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity)],
-   ["FR", "Zoomer sur la France", () => { const [x0, y0] = proj([-5.2, 51.2]), [x1, y1] = proj([9.7, 41.3]); const k = Math.min(w / (x1 - x0), H / (y1 - y0)) * .92;
-     svg.transition().duration(800).call(zoom.transform, d3.zoomIdentity.translate(w / 2, H / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2)); }]].forEach(([t, l, f]) => {
-    const b = el("button", "zbtn", t); b.title = l; b.setAttribute("aria-label", l); b.onclick = f; if (t === "FR") b.style.fontSize = "11px"; ctl.append(b); });
+  [["+", "Zoomer", () => sel.transition().duration(300).call(zoom.scaleBy, 2)], ["−", "Dézoomer", () => sel.transition().duration(300).call(zoom.scaleBy, .5)],
+   ["⌂", "Vue d'ensemble", () => sel.transition().duration(600).call(zoom.transform, d3.zoomIdentity)]].forEach(([tx, l, f]) => {
+    const b = el("button", "zbtn", tx); b.title = l; b.setAttribute("aria-label", l); b.onclick = f; ctl.append(b); });
   wrap.append(ctl);
-  const shown = rows.filter(d => !d[6]).length;
-  document.getElementById("fTitle").textContent = `${fmt(shown)} points chauds · ${fAge >= 168 ? "72 h (+ cellules 3–7 j)" : fAge + " dernières heures"}${fShowFixed ? " · sources fixes affichées en gris" : ""}`;
-  legend("fLegend", [...AGE.map(a => [a[1], a[2], "dot"]), ...(fAge >= 168 ? [["#b36a3c", "3–7 j (cellules)"]] : []), ...(fShowFixed ? [["#8a96a3", "source fixe probable", "dot"]] : [])]);
+  draw();
+  // légende : rampe d'âge
+  const lg = document.getElementById("fLegend"); lg.replaceChildren();
+  const ramp = el("span"); const sw = el("span", "sw"); sw.style.width = "90px"; sw.style.background = `linear-gradient(90deg, ${d3.range(0, 1.01, .25).map(AGE_RAMP).join(",")})`;
+  ramp.append(document.createTextNode("récent "), sw, document.createTextNode(" " + (fAge < 48 ? fAge + " h" : fAge / 24 + " j"))); lg.append(ramp);
+  const sz = el("span", null, "taille : puissance (MW)"); lg.append(sz);
+  if (fShowFixed) { const s = el("span"); const d = el("span", "sw"); d.style.background = "#8a96a3"; d.style.borderRadius = "50%"; s.append(d, document.createTextNode("source fixe probable")); lg.append(s); }
+  // curseur jour par jour
+  const sl = document.getElementById("fSlider"), days = FM.pts ? FM.pts.days : 1;
+  sl.min = 0; sl.max = days; sl.value = days - fDay; sl.disabled = !FM.pts;
+  document.getElementById("fLabel").textContent = fDay ? new Date(FM.pts.t0ms - fCursorMin() * 6e4).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "maintenant";
   renderFoyers(); renderCountries();
+}
+document.getElementById("fSlider").oninput = e => { stopF(); fDay = +e.target.max - +e.target.value; renderFires(); };
+function stopF() { clearInterval(fTimer); fTimer = null; document.getElementById("fPlay").textContent = "▶"; }
+document.getElementById("fPlay").onclick = () => { if (fTimer) return stopF(); if (!FM.pts) return;
+  if (!fDay) fDay = FM.pts.days; document.getElementById("fPlay").textContent = "❚❚";
+  fTimer = setInterval(() => { fDay--; renderFires(); if (fDay <= 0) stopF(); }, 900); };
+
+/* ---------- F1 : Ukraine ---------- */
+let uaSpan = 7;
+function renderUkraine() {
+  const U = D.ukraine; if (!U) return;
+  const days = Object.keys(U.day).sort();
+  const host = document.getElementById("uaDaily"); host.replaceChildren();
+  const w = W("uaDaily"), H = 180, M = { l: 40, r: 10, t: 10, b: 24 };
+  const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
+  const x = d3.scaleBand().domain(days).range([M.l, w - M.r]).padding(.2), y = d3.scaleLinear().domain([0, d3.max(days, d => U.day[d][0]) || 1]).nice().range([H - M.b, M.t]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - M.l - M.r)).tickFormat(v => fmt(v)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.b})`).call(d3.axisBottom(x).tickValues(days.filter((d, i) => i % Math.ceil(days.length / 8) === 0)).tickFormat(d => d.slice(8) + "/" + d.slice(5, 7)).tickSize(0).tickPadding(6));
+  svg.append("g").selectAll("rect").data(days).join("rect").attr("x", d => x(d)).attr("width", x.bandwidth()).attr("y", d => y(U.day[d][0])).attr("height", d => y(0) - y(U.day[d][0])).attr("fill", "#ff8a3d")
+    .on("pointermove", (e, d) => showTip(e, t => { t.append(el("div", "t", new Date(d).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }))); tRow(t, "Détections", fmt(U.day[d][0])); tRow(t, "Puissance cumulée", fmt(U.day[d][1]) + " MW"); }))
+    .on("pointerleave", hideTip);
+  if (days.length < 31) host.append(el("p", "note", `Historique en cours de constitution : ${days.length} jours depuis la mise en service.`));
+  // carte de densité 7 j
+  const mh = document.getElementById("uaMap"); mh.replaceChildren();
+  const mw = W("uaMap"), mH = Math.round(mw * .66);
+  const proj = d3.geoMercator().fitExtent([[4, 4], [mw - 4, mH - 4]], { type: "MultiPoint", coordinates: [[22, 44.2], [40.3, 52.4]] }), path = d3.geoPath(proj);
+  const ms = d3.select(mh).append("svg").attr("width", mw).attr("height", mH);
+  ms.append("rect").attr("width", mw).attr("height", mH).attr("fill", css("--sea"));
+  ms.append("g").selectAll("path").data(EFAGEO.countries.features).join("path").attr("d", path).attr("fill", css("--land")).attr("stroke", css("--line")).attr("stroke-width", .6);
+  ms.append("g").selectAll("path").data(EFAGEO.ua.features).join("path").attr("d", path).attr("fill", css("--france")).attr("stroke", css("--muted")).attr("stroke-opacity", .5).attr("stroke-width", .5)
+    .on("pointermove", (e, f) => showTip(e, t => { t.append(el("div", "t", f.properties.n)); const o = U.obl[f.properties.id] || {};
+      tRow(t, "7 derniers jours", fmt(d3.sum(days.slice(-7), d => o[d] || 0))); tRow(t, "Depuis le " + new Date(days[0]).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }), fmt(d3.sum(Object.values(o)))); }))
+    .on("pointerleave", hideTip);
+  const color = d3.scaleSequentialLog(t => AGE_RAMP(1 - t)).domain([1, Math.max(5, d3.max(U.grid7, c => c[2]) || 5)]);
+  ms.append("g").attr("pointer-events", "none").selectAll("rect").data(U.grid7).join("rect")
+    .attr("x", d => proj([d[1] - .05, d[0] + .05])[0]).attr("y", d => proj([d[1] - .05, d[0] + .05])[1])
+    .attr("width", d => proj([d[1] + .05, d[0]])[0] - proj([d[1] - .05, d[0]])[0]).attr("height", d => proj([d[1], d[0] - .05])[1] - proj([d[1], d[0] + .05])[1])
+    .attr("fill", d => color(d[2])).attr("opacity", .9);
+  legend("uaLegend", [[color(1), "1 détection / cellule"], [color(Math.max(5, d3.max(U.grid7, c => c[2]) || 5)), fmt(d3.max(U.grid7, c => c[2]) || 0) + " et +"]]);
+  // par oblast
+  tabs("uaSpan", [[1, "24 h"], [7, "7 jours"], [31, "31 jours"]], uaSpan, v => { uaSpan = v; renderUkraine(); });
+  const sel = days.slice(-uaSpan);
+  const items = Object.entries(U.obl).map(([id, o]) => [U.oblasts[id], d3.sum(sel, d => o[d] || 0)]).filter(d => d[1]).sort((a, b) => b[1] - a[1]);
+  document.getElementById("uaOblTitle").textContent = `Par oblast · ${fmt(d3.sum(items, d => d[1]))} détections`;
+  rankList("uaObl", items.slice(0, 15).map(([n, v]) => [n, v, fmt(v)]), items[0]?.[1] || 1, "#ff8a3d");
 }
 function renderFoyers() {
   // regroupe les détections des dernières 24 h, hors sources fixes, par voisinage (~2 km)
@@ -582,7 +719,7 @@ function renderHistMap() {
   const path = d3.geoPath(proj);
   const svg = d3.select(host).append("svg").attr("width", w).attr("height", H);
   svg.append("rect").attr("width", w).attr("height", H).attr("fill", css("--sea"));
-  svg.append("g").selectAll("path").data(GW.europe.features).join("path").attr("d", path).attr("fill", f => f.properties.id === "250" ? css("--france") : css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5);
+  svg.append("g").selectAll("path").data(EFAGEO.countries.features).join("path").attr("d", path).attr("fill", f => f.properties.iso === "FR" ? css("--france") : css("--land")).attr("stroke", css("--line")).attr("stroke-width", .5);
   const g = D.archive.grid[hYear], cells = [];
   Object.entries(g).forEach(([iso, flat]) => { for (let i = 0; i < flat.length; i += 4) cells.push([flat[i] / 10, flat[i + 1] / 10, flat[i + 2], flat[i + 3], iso]); });
   const color = d3.scaleSequentialLog(d3.interpolateYlOrRd).domain([1, 200]);
@@ -861,8 +998,9 @@ function renderFooter() {
   <b>Fonds de carte</b> — départements : france-geojson (G. David, d'après IGN Admin Express), Licence Ouverte ; pays : Natural Earth, domaine public.`;
 }
 
-function renderAll() { renderHeader(); renderFires(); renderFireDaily(); renderHistYears(); renderHistMap(); renderMonths(); renderBdiff(); renderMdf(); renderHealth(); renderVigNow(); renderVigHistory(); renderAir(); renderFooter();
-  tabs("fAge", [[6, "6 h"], [24, "24 h"], [72, "72 h"], [168, "7 jours"]], fAge, v => { fAge = v; renderFires(); });
+function renderAll() { renderHeader(); renderFires(); renderUkraine(); renderFireDaily(); renderHistYears(); renderHistMap(); renderMonths(); renderBdiff(); renderMdf(); renderHealth(); renderVigNow(); renderVigHistory(); renderAir(); renderFooter();
+  tabs("fAge", [[24, "24 h"], [72, "72 h"], [168, "7 jours"], [744, "31 jours"]], fAge, v => { fAge = v; renderFires(); });
+  tabs("fView", [["fr", "France"], ["eu", "Europe"], ["ua", "Ukraine"], ["med", "Méditerranée"]], fView, v => { fView = v; FM.goto(v); });
   tabs("fFixed", [[false, "Sources fixes masquées"], [true, "Afficher les sources fixes"]], fShowFixed, v => { fShowFixed = v; renderFires(); }); }
 document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "light" ? "dark" : "light";
   try { localStorage.setItem("odre-theme", r.dataset.theme); } catch (e) {} renderAll(); };
