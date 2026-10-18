@@ -157228,12 +157228,12 @@
 },
 "EDF-05470_EDF_T_00335201":{
 "eic":"17W100P100P0103Z",
-"end":"2026-10-19T21:00:00Z",
+"end":"2026-10-20T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 2",
-"pub":"2026-10-17T14:07:37Z",
+"pub":"2026-10-18T05:20:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-17T15:30:00Z",
@@ -157241,11 +157241,11 @@
 "steps":[
 [
 "2026-10-17T15:30:00Z",
-"2026-10-19T21:00:00Z",
+"2026-10-20T22:00:00Z",
 650
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00335209":{
 "eic":"17W100P100P01768",
@@ -157267,6 +157267,48 @@
 ]
 ],
 "v":2
+},
+"EDF-05470_EDF_T_00335255":{
+"eic":"17W100P100P00974",
+"end":"2026-10-20T15:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":910,
+"name":"BUGEY 3",
+"pub":"2026-10-18T05:30:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-10-20T05:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-20T05:00:00Z",
+"2026-10-20T15:00:00Z",
+116
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00335310":{
+"eic":"17W100P100P0145J",
+"end":"2026-10-19T00:30:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1335,
+"name":"ST ALBAN 1",
+"pub":"2026-10-18T06:28:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Causes externes liées à l'environnement\n------------\nEnvironmental issues.",
+"start":"2026-10-18T22:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-18T22:00:00Z",
+"2026-10-19T00:30:00Z",
+122
+]
+],
+"v":1
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
