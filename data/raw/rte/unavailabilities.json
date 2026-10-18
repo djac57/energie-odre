@@ -156787,12 +156787,12 @@
 },
 "EDF-05470_EDF_T_00334479":{
 "eic":"17W100P100P00966",
-"end":"2026-10-18T17:00:00Z",
+"end":"2026-10-18T21:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":910,
 "name":"BUGEY 2",
-"pub":"2026-10-18T15:54:37Z",
+"pub":"2026-10-18T17:00:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-15T02:21:00Z",
@@ -156800,11 +156800,11 @@
 "steps":[
 [
 "2026-10-15T02:21:00Z",
-"2026-10-18T17:00:00Z",
+"2026-10-18T21:00:00Z",
 830
 ]
 ],
-"v":13
+"v":14
 },
 "EDF-05470_EDF_T_00334551":{
 "eic":"17W100P100P0139E",
@@ -156913,24 +156913,24 @@
 },
 "EDF-05470_EDF_T_00334902":{
 "eic":"17W100P100P0129H",
-"end":"2026-10-20T07:00:00Z",
+"end":"2026-10-21T07:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-10-17T09:27:37Z",
+"pub":"2026-10-18T13:33:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours - prochain palier : 310 MW\nMontée à 310 MW : 1h - Palier à 310 MW : 2h  - Montée à 900 MW : 1h - Palier à 900 MW : 6h - Montée à PMD : 30min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
-"start":"2026-10-19T21:00:00Z",
+"start":"2026-10-20T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-19T21:00:00Z",
-"2026-10-20T07:00:00Z",
+"2026-10-20T21:00:00Z",
+"2026-10-21T07:00:00Z",
 1300
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00334931":{
 "eic":"17W100P100P0040X",
@@ -157296,19 +157296,19 @@
 "kind":"PLANNED",
 "mw":910,
 "name":"BUGEY 2",
-"pub":"2026-10-18T15:54:36Z",
+"pub":"2026-10-18T17:01:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
-"start":"2026-10-18T17:00:00Z",
+"start":"2026-10-18T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-18T17:00:00Z",
+"2026-10-18T21:00:00Z",
 "2026-10-19T21:00:00Z",
 730
 ]
 ],
-"v":2
+"v":3
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
