@@ -156792,7 +156792,7 @@
 "kind":"UNPLANNED",
 "mw":910,
 "name":"BUGEY 2",
-"pub":"2026-10-18T03:43:36Z",
+"pub":"2026-10-18T06:46:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-15T02:21:00Z",
@@ -156801,10 +156801,10 @@
 [
 "2026-10-15T02:21:00Z",
 "2026-10-19T21:00:00Z",
-570
+685
 ]
 ],
-"v":7
+"v":9
 },
 "EDF-05470_EDF_T_00334551":{
 "eic":"17W100P100P0139E",
@@ -156960,9 +156960,9 @@
 "kind":"PLANNED",
 "mw":465,
 "name":"MARTIGUES PONTEAU 6",
-"pub":"2026-10-16T16:42:36Z",
+"pub":"2026-10-18T06:23:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \nLa tranche sera par ailleurs imposée à 399 MW (MAXP2S0) de 11h à 14h30 et de 18h30 à 0h.\n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.\nFurthermore, the unit ",
 "start":"2026-10-19T04:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -156972,7 +156972,7 @@
 28
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00334955":{
 "eic":"17W100P100P0175A",
