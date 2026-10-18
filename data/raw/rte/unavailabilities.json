@@ -22408,12 +22408,12 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-10-19T21:00:00Z",
+"end":"2026-10-20T21:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-10-17T09:30:38Z",
+"pub":"2026-10-18T13:17:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 275 MW\n\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full pow",
 "start":"2026-01-30T23:00:00Z",
@@ -22421,11 +22421,11 @@
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-10-19T21:00:00Z",
+"2026-10-20T21:00:00Z",
 1300
 ]
 ],
-"v":35
+"v":36
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -156682,12 +156682,12 @@
 },
 "EDF-05470_EDF_T_00334186":{
 "eic":"17W100P100P0129H",
-"end":"2026-10-19T21:00:00Z",
+"end":"2026-10-20T21:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-10-17T09:27:38Z",
+"pub":"2026-10-18T13:32:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-13T23:05:00Z",
@@ -156695,11 +156695,11 @@
 "steps":[
 [
 "2026-10-13T23:05:00Z",
-"2026-10-19T21:00:00Z",
+"2026-10-20T21:00:00Z",
 1310
 ]
 ],
-"v":7
+"v":8
 },
 "EDF-05470_EDF_T_00334278":{
 "eic":"17W100P100P01004",
@@ -157285,27 +157285,6 @@
 "2026-10-20T05:00:00Z",
 "2026-10-20T15:00:00Z",
 116
-]
-],
-"v":1
-},
-"EDF-05470_EDF_T_00335310":{
-"eic":"17W100P100P0145J",
-"end":"2026-10-19T00:30:00Z",
-"fuel":"NUCLEAR",
-"kind":"PLANNED",
-"mw":1335,
-"name":"ST ALBAN 1",
-"pub":"2026-10-18T06:28:36Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Causes externes liées à l'environnement\n------------\nEnvironmental issues.",
-"start":"2026-10-18T22:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-10-18T22:00:00Z",
-"2026-10-19T00:30:00Z",
-122
 ]
 ],
 "v":1
