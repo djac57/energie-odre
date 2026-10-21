@@ -24177,9 +24177,9 @@
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 3",
-"pub":"2026-09-23T09:24:37Z",
+"pub":"2026-10-21T09:36:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
+"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\nOutage likely to be extended\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine ",
 "start":"2026-09-25T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -24189,7 +24189,7 @@
 1300
 ]
 ],
-"v":6
+"v":7
 },
 "EC-EDF-05470-EDF-T-00104270":{
 "eic":"17W100P100P0114U",
@@ -104432,6 +104432,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00135156":{
+"eic":"17W100P100P0075E",
+"end":"2026-10-21T15:55:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"UNPLANNED",
+"mw":286,
+"name":"POUGET 4",
+"pub":"2026-10-21T10:03:36Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-10-21T09:32:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-21T09:32:00Z",
+"2026-10-21T15:55:00Z",
+286
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -160292,12 +160313,12 @@
 },
 "HCH-17X000002265525U_outage_21102026":{
 "eic":"17W000002315528O",
-"end":"2026-10-21T13:00:00Z",
+"end":"2026-10-21T17:00:00Z",
 "fuel":"OTHER",
 "kind":"PLANNED",
 "mw":96,
 "name":"DOPPLER CHEVIRE G1",
-"pub":"2026-10-13T08:48:36Z",
+"pub":"2026-10-21T09:47:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"activités de maintenance\n\t-------------------------------------\n\tmaintenance activities",
 "start":"2026-10-21T06:00:00Z",
@@ -160305,32 +160326,11 @@
 "steps":[
 [
 "2026-10-21T06:00:00Z",
-"2026-10-21T13:00:00Z",
+"2026-10-21T17:00:00Z",
 96
 ]
 ],
-"v":1
-},
-"HCH-17X000002265525U_outage_21102026_01":{
-"eic":"17W000002315528O",
-"end":"2026-10-21T16:00:00Z",
-"fuel":"OTHER",
-"kind":"PLANNED",
-"mw":96,
-"name":"DOPPLER CHEVIRE G1",
-"pub":"2026-10-13T08:47:36Z",
-"reason":"FORESEEN_MAINTENANCE",
-"remarks":"activités de maintenance\n\t-------------------------------------\n\tmaintenance activities",
-"start":"2026-10-21T13:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-10-21T13:00:00Z",
-"2026-10-21T16:00:00Z",
-15
-]
-],
-"v":1
+"v":2
 },
 "HCH-17X000002265525U_outage_22102026":{
 "eic":"17W000002315528O",
