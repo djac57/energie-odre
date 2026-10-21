@@ -157751,6 +157751,27 @@
 ],
 "v":4
 },
+"EDF-05470_EDF_T_00336006":{
+"eic":"17W100P100P0143N",
+"end":"2026-10-22T02:04:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1330,
+"name":"PENLY 1",
+"pub":"2026-10-21T02:06:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.\nUne nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.\n--------\nThe duration of the unavailability is a pre-",
+"start":"2026-10-21T02:04:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-21T02:04:00Z",
+"2026-10-22T02:04:00Z",
+1020
+]
+],
+"v":1
+},
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
 "end":"2027-09-21T22:00:00Z",
