@@ -22555,12 +22555,12 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-10-22T21:00:00Z",
+"end":"2026-10-23T21:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-10-20T12:32:36Z",
+"pub":"2026-10-21T14:34:41Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 275 MW\n\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full pow",
 "start":"2026-01-30T23:00:00Z",
@@ -22568,11 +22568,11 @@
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-10-22T21:00:00Z",
+"2026-10-23T21:00:00Z",
 1300
 ]
 ],
-"v":38
+"v":39
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -37003,24 +37003,24 @@
 },
 "EDF-05470_EDF_H_00116800":{
 "eic":"17W100P100P02918",
-"end":"2026-10-21T16:00:00Z",
+"end":"2026-10-21T15:00:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"PLANNED",
 "mw":189,
 "name":"PRAGNERES",
-"pub":"2026-10-16T10:14:38Z",
+"pub":"2026-10-21T15:02:38Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-21T05:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-21T05:00:00Z",
-"2026-10-21T16:00:00Z",
+"2026-10-21T15:00:00Z",
 189
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_H_00116806":{
 "eic":"17W100P100P03590",
@@ -84216,7 +84216,7 @@
 "kind":"PLANNED",
 "mw":189,
 "name":"PRAGNERES",
-"pub":"2026-10-16T10:14:36Z",
+"pub":"2026-10-21T15:02:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-22T05:00:00Z",
@@ -84228,7 +84228,7 @@
 189
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_H_00130332":{
 "eic":"17W100P100P02918",
@@ -84237,7 +84237,7 @@
 "kind":"PLANNED",
 "mw":189,
 "name":"PRAGNERES",
-"pub":"2026-10-16T10:14:38Z",
+"pub":"2026-10-21T15:02:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-23T05:00:00Z",
@@ -84249,7 +84249,7 @@
 189
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_H_00130335":{
 "eic":"17W100P100P02861",
@@ -99016,24 +99016,24 @@
 },
 "EDF-05470_EDF_H_00133613":{
 "eic":"17W100P100P02772",
-"end":"2026-10-21T16:00:00Z",
+"end":"2026-10-21T15:30:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":910,
 "name":"MONTEZIC",
-"pub":"2026-09-16T07:08:36Z",
+"pub":"2026-10-21T15:30:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-21T06:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-21T06:00:00Z",
-"2026-10-21T16:00:00Z",
+"2026-10-21T15:30:00Z",
 910
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00133688":{
 "eic":"17W100P100P02829",
@@ -103599,7 +103599,7 @@
 "kind":"PLANNED",
 "mw":286,
 "name":"POUGET 4",
-"pub":"2026-10-14T12:04:38Z",
+"pub":"2026-10-21T13:29:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-27T07:00:00Z",
@@ -103611,28 +103611,7 @@
 286
 ]
 ],
-"v":1
-},
-"EDF-05470_EDF_H_00134958":{
-"eic":"17W100P100P0075E",
-"end":"2026-10-28T17:00:00Z",
-"fuel":"HYDRO_WATER_RESERVOIR",
-"kind":"PLANNED",
-"mw":286,
-"name":"POUGET 4",
-"pub":"2026-10-14T12:04:36Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2026-10-28T07:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-10-28T07:00:00Z",
-"2026-10-28T17:00:00Z",
-286
-]
-],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00134959":{
 "eic":"17W100P100P0075E",
@@ -103930,12 +103909,12 @@
 },
 "EDF-05470_EDF_H_00135052":{
 "eic":"17W100P100P0056I",
-"end":"2026-10-21T15:00:00Z",
+"end":"2026-10-21T13:30:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":259,
 "name":"CHEYLAS 1",
-"pub":"2026-10-16T11:26:38Z",
+"pub":"2026-10-21T13:27:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-21T05:30:00Z",
@@ -103943,11 +103922,11 @@
 "steps":[
 [
 "2026-10-21T05:30:00Z",
-"2026-10-21T15:00:00Z",
+"2026-10-21T13:30:00Z",
 259
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00135053":{
 "eic":"17W100P100P0315K",
@@ -104449,6 +104428,48 @@
 "2026-10-21T09:32:00Z",
 "2026-10-21T10:40:00Z",
 286
+]
+],
+"v":2
+},
+"EDF-05470_EDF_H_00135161":{
+"eic":"17W100P100P0075E",
+"end":"2026-10-28T17:00:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"PLANNED",
+"mw":286,
+"name":"POUGET 4",
+"pub":"2026-10-21T13:29:37Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-10-28T07:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-28T07:00:00Z",
+"2026-10-28T17:00:00Z",
+286
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135171":{
+"eic":"17W100P100P0058E",
+"end":"2026-10-21T15:08:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":170,
+"name":"GRAND MAISON 10",
+"pub":"2026-10-21T15:09:35Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-10-19T05:00:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-10-19T05:00:00Z",
+"2026-10-21T15:08:00Z",
+170
 ]
 ],
 "v":2
@@ -140449,12 +140470,12 @@
 },
 "EDF-05470_EDF_T_00312123":{
 "eic":"17W100P100P0112Y",
-"end":"2026-10-29T23:00:00Z",
+"end":"2026-11-01T00:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 2",
-"pub":"2026-10-15T13:30:37Z",
+"pub":"2026-10-21T14:08:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Causes externes liées à l'environnement\nLe placement et la durée de cet arrêt pour contraintes environnementales seront modifiés en fonction de l'évolution des prévisions météorologiques\n------------\nEnvironmental issues\nThe planning and the duration of the shutdown for environnemental issues could ",
 "start":"2026-07-10T21:45:00Z",
@@ -140462,11 +140483,11 @@
 "steps":[
 [
 "2026-07-10T21:45:00Z",
-"2026-10-29T23:00:00Z",
+"2026-11-01T00:00:00Z",
 1500
 ]
 ],
-"v":44
+"v":45
 },
 "EDF-05470_EDF_T_00312128":{
 "eic":"17W100P100P0126N",
@@ -145279,12 +145300,12 @@
 },
 "EDF-05470_EDF_T_00317729":{
 "eic":"17W100P100P01101",
-"end":"2026-10-29T23:00:00Z",
+"end":"2026-10-29T00:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 1",
-"pub":"2026-10-15T13:30:37Z",
+"pub":"2026-10-21T14:07:39Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Causes externes liées à l'environnement\nLe placement et la durée de cet arrêt pour contraintes environnementales seront modifiés en fonction de l'évolution des prévisions météorologiques\n------------\nEnvironmental issues\nThe planning and the duration of the shutdown for environnemental issues could ",
 "start":"2026-08-01T19:30:00Z",
@@ -145292,11 +145313,11 @@
 "steps":[
 [
 "2026-08-01T19:30:00Z",
-"2026-10-29T23:00:00Z",
+"2026-10-29T00:00:00Z",
 1500
 ]
 ],
-"v":31
+"v":32
 },
 "EDF-05470_EDF_T_00317730":{
 "eic":"17W100P100P01012",
@@ -157816,24 +157837,24 @@
 },
 "EDF-05470_EDF_T_00336006":{
 "eic":"17W100P100P0143N",
-"end":"2026-10-21T12:30:00Z",
+"end":"2026-10-21T13:49:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1330,
 "name":"PENLY 1",
-"pub":"2026-10-21T11:13:35Z",
+"pub":"2026-10-21T13:51:38Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-21T02:04:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-21T02:04:00Z",
-"2026-10-21T12:30:00Z",
+"2026-10-21T13:49:00Z",
 1020
 ]
 ],
-"v":4
+"v":7
 },
 "EDF-05470_EDF_T_00336057":{
 "eic":"17W100P100P0094A",
