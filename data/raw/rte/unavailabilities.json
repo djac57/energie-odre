@@ -22765,24 +22765,24 @@
 },
 "EC-EDF-05470-EDF-T-00079480":{
 "eic":"17W100P100P02594",
-"end":"2026-10-22T06:45:00Z",
+"end":"2026-10-26T13:00:00Z",
 "fuel":"FOSSIL_OIL",
 "kind":"PLANNED",
 "mw":85,
 "name":"BRENNILIS 2",
-"pub":"2026-09-15T08:09:35Z",
+"pub":"2026-10-21T17:04:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"After its restart, the plant will proceed to qualification tests at various load thresholds during 2 day.\n-------------------------------------\nAprès son recouplage, la tranche effectuera des essais de requalification à des paliers de charge variable pendant 2 jour.",
+"remarks":"After its restart, the plant will proceed to qualification tests at various load thresholds during 1 day.\n-------------------------------------\nAprès son recouplage, la tranche effectuera des essais de requalification à des paliers de charge variable pendant 1 jour.",
 "start":"2026-08-08T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-08-08T22:00:00Z",
-"2026-10-22T06:45:00Z",
+"2026-10-26T13:00:00Z",
 85
 ]
 ],
-"v":8
+"v":9
 },
 "EC-EDF-05470-EDF-T-00079486":{
 "eic":"17W100P100P0046L",
@@ -153322,24 +153322,24 @@
 },
 "EDF-05470_EDF_T_00327507":{
 "eic":"17W100P100P02594",
-"end":"2026-10-23T12:30:00Z",
+"end":"2026-10-26T15:45:00Z",
 "fuel":"FOSSIL_OIL",
 "kind":"PLANNED",
 "mw":85,
 "name":"BRENNILIS 2",
-"pub":"2026-10-20T07:44:36Z",
+"pub":"2026-10-21T17:08:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essais de requalification, avec variations de puissance\n--------\nCheck tests, with load variations.",
-"start":"2026-10-22T06:45:00Z",
+"start":"2026-10-26T13:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-22T06:45:00Z",
-"2026-10-23T12:30:00Z",
-5
+"2026-10-26T13:00:00Z",
+"2026-10-26T15:45:00Z",
+0
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00327551":{
 "eic":"17W100P100P0146H",
@@ -157228,12 +157228,12 @@
 },
 "EDF-05470_EDF_T_00334902":{
 "eic":"17W100P100P0129H",
-"end":"2026-10-22T20:00:00Z",
+"end":"2026-10-22T20:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-10-21T07:10:35Z",
+"pub":"2026-10-21T18:17:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours - prochain palier : 310 MW\nMontée à 310 MW : 1h - Palier à 310 MW : 2h  - Montée à 900 MW : 1h - Palier à 900 MW : 6h - Montée à PMD : 30min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
 "start":"2026-10-22T10:00:00Z",
@@ -157241,11 +157241,11 @@
 "steps":[
 [
 "2026-10-22T10:00:00Z",
-"2026-10-22T20:00:00Z",
+"2026-10-22T20:30:00Z",
 1300
 ]
 ],
-"v":9
+"v":10
 },
 "EDF-05470_EDF_T_00334931":{
 "eic":"17W100P100P0040X",
@@ -157543,12 +157543,12 @@
 },
 "EDF-05470_EDF_T_00335201":{
 "eic":"17W100P100P0103Z",
-"end":"2026-10-21T21:00:00Z",
+"end":"2026-10-22T21:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 2",
-"pub":"2026-10-20T16:54:36Z",
+"pub":"2026-10-21T15:43:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-17T15:30:00Z",
@@ -157556,11 +157556,11 @@
 "steps":[
 [
 "2026-10-17T15:30:00Z",
-"2026-10-21T21:00:00Z",
+"2026-10-22T21:00:00Z",
 650
 ]
 ],
-"v":5
+"v":6
 },
 "EDF-05470_EDF_T_00335209":{
 "eic":"17W100P100P01768",
@@ -157669,24 +157669,24 @@
 },
 "EDF-05470_EDF_T_00335633":{
 "eic":"17W100P100P0103Z",
-"end":"2026-10-24T19:30:00Z",
+"end":"2026-10-25T20:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 2",
-"pub":"2026-10-21T08:42:35Z",
+"pub":"2026-10-21T15:44:35Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"L'arrêt est susceptible d'être requestionné en fonction du recouplage de Cattenom 4.\n \nThe shutdown may be reconsidered depending on the reconnection of Cattenom 4.",
-"start":"2026-10-21T21:00:00Z",
+"start":"2026-10-22T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-21T21:00:00Z",
-"2026-10-24T19:30:00Z",
+"2026-10-22T21:00:00Z",
+"2026-10-25T20:30:00Z",
 1300
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00335651":{
 "eic":"17W100P100P0048H",
@@ -157795,12 +157795,12 @@
 },
 "EDF-05470_EDF_T_00335963":{
 "eic":"17W100P100P00966",
-"end":"2026-10-21T21:00:00Z",
+"end":"2026-10-22T10:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":910,
 "name":"BUGEY 2",
-"pub":"2026-10-20T15:44:38Z",
+"pub":"2026-10-21T17:02:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-20T15:00:00Z",
@@ -157808,11 +157808,11 @@
 "steps":[
 [
 "2026-10-20T15:00:00Z",
-"2026-10-21T21:00:00Z",
+"2026-10-22T10:00:00Z",
 495
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00335982":{
 "eic":"17W100P100P0141R",
