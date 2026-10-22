@@ -157312,24 +157312,24 @@
 },
 "EDF-05470_EDF_T_00334902":{
 "eic":"17W100P100P0129H",
-"end":"2026-10-22T23:15:00Z",
+"end":"2026-10-23T03:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-10-22T18:05:35Z",
+"pub":"2026-10-22T21:54:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : PMDMW\n Palier à 900 MW : 6h - Montée à PMD : 30min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
+"remarks":"Remontée par paliers en cours - prochain palier : PMDMW\nTemps restant au palier à 900 MW : 5h - Montée à PMD : 30min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
 "start":"2026-10-22T09:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-22T09:00:00Z",
-"2026-10-22T23:15:00Z",
+"2026-10-23T03:30:00Z",
 410
 ]
 ],
-"v":16
+"v":17
 },
 "EDF-05470_EDF_T_00334931":{
 "eic":"17W100P100P0040X",
