@@ -1,11 +1,11 @@
 {
-"calls":184,
+"calls":146,
 "flows_back":{
 "done":[],
 "end":"2024-01-01"
 },
 "flows_history_from":"2024-01-01",
 "imb_history_from":"2024-01-01",
-"last_run":"2026-10-21T22:00:00+00:00",
+"last_run":"2026-10-22T02:00:00+00:00",
 "license":"ENTSO-E Transparency Platform — List of data available for free re-use (18/10/2023), CC BY 4.0"
 }
