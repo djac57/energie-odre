@@ -20266,24 +20266,24 @@
 },
 "EC-EDF-05470-EDF-H-00098584":{
 "eic":"17W100P100P00885",
-"end":"2027-10-08T15:00:00Z",
+"end":"2028-10-13T15:00:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"PLANNED",
 "mw":182,
 "name":"VILLARODIN 2",
-"pub":"2026-06-30T14:29:33Z",
+"pub":"2026-10-23T15:44:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2027-08-02T05:00:00Z",
+"start":"2028-08-07T05:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2027-08-02T05:00:00Z",
-"2027-10-08T15:00:00Z",
+"2028-08-07T05:00:00Z",
+"2028-10-13T15:00:00Z",
 182
 ]
 ],
-"v":5
+"v":6
 },
 "EC-EDF-05470-EDF-H-00098585":{
 "eic":"17W100P100P0300X",
@@ -20308,24 +20308,24 @@
 },
 "EC-EDF-05470-EDF-H-00098586":{
 "eic":"17W100P100P00885",
-"end":"2027-08-02T05:00:00Z",
+"end":"2028-08-07T05:00:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"PLANNED",
 "mw":182,
 "name":"VILLARODIN 2",
-"pub":"2026-06-30T14:29:34Z",
+"pub":"2026-10-23T15:54:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
-"start":"2027-03-15T06:00:00Z",
+"start":"2028-03-20T06:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2027-03-15T06:00:00Z",
-"2027-08-02T05:00:00Z",
+"2028-03-20T06:00:00Z",
+"2028-08-07T05:00:00Z",
 182
 ]
 ],
-"v":5
+"v":6
 },
 "EC-EDF-05470-EDF-H-00098587":{
 "eic":"17W100P100P02837",
@@ -20749,24 +20749,24 @@
 },
 "EC-EDF-05470-EDF-H-00099508":{
 "eic":"17W100P100P02748",
-"end":"2026-11-27T16:00:00Z",
+"end":"2026-12-04T16:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":384,
 "name":"COCHE",
-"pub":"2025-09-24T07:56:19Z",
+"pub":"2026-10-23T15:45:38Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2026-11-13T16:00:00Z",
+"start":"2026-11-20T16:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-13T16:00:00Z",
-"2026-11-27T16:00:00Z",
+"2026-11-20T16:00:00Z",
+"2026-12-04T16:00:00Z",
 384
 ]
 ],
-"v":3
+"v":4
 },
 "EC-EDF-05470-EDF-H-00099509":{
 "eic":"17W100P100P02748",
@@ -23017,12 +23017,12 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-10-24T21:00:00Z",
+"end":"2026-10-25T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-10-22T14:07:37Z",
+"pub":"2026-10-23T17:10:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 275 MW\n\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full pow",
 "start":"2026-01-30T23:00:00Z",
@@ -23030,11 +23030,11 @@
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-10-24T21:00:00Z",
+"2026-10-25T22:00:00Z",
 1300
 ]
 ],
-"v":40
+"v":41
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -23988,7 +23988,7 @@
 "kind":"PLANNED",
 "mw":910,
 "name":"GRAVELINES 1",
-"pub":"2026-07-20T11:52:32Z",
+"pub":"2026-10-23T14:10:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
 "start":"2026-10-23T22:30:00Z",
@@ -24000,16 +24000,16 @@
 910
 ]
 ],
-"v":7
+"v":8
 },
 "EC-EDF-05470-EDF-T-00099866":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-23T20:00:00Z",
+"end":"2026-10-23T23:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-21T07:06:36Z",
+"pub":"2026-10-23T14:04:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 367 MW.\n--------\nAfter its restart, the plant will gradually return by various load threshold to full power.\nThe ramp-up period will ta",
 "start":"2026-07-31T20:00:00Z",
@@ -24017,11 +24017,11 @@
 "steps":[
 [
 "2026-07-31T20:00:00Z",
-"2026-10-23T20:00:00Z",
+"2026-10-23T23:00:00Z",
 915
 ]
 ],
-"v":12
+"v":13
 },
 "EC-EDF-05470-EDF-T-00099867":{
 "eic":"17W100P100P0150Q",
@@ -24088,12 +24088,12 @@
 },
 "EC-EDF-05470-EDF-T-00103281":{
 "eic":"17W100P100P0041V",
-"end":"2026-12-03T08:00:00Z",
+"end":"2026-11-18T07:00:00Z",
 "fuel":"FOSSIL_OIL",
 "kind":"PLANNED",
 "mw":175,
 "name":"MONTEREAU 6",
-"pub":"2026-10-07T09:40:35Z",
+"pub":"2026-10-23T15:18:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will proceed to qualification tests at various load thresholds during 1 day(s).\n-------------------------------------\nAprès son recouplage, la tranche effectuera des essais de requalification à des paliers de charge variable pendant 1 jour(s).",
 "start":"2026-09-25T22:00:00Z",
@@ -24101,11 +24101,11 @@
 "steps":[
 [
 "2026-09-25T22:00:00Z",
-"2026-12-03T08:00:00Z",
+"2026-11-18T07:00:00Z",
 175
 ]
 ],
-"v":5
+"v":6
 },
 "EC-EDF-05470-EDF-T-00103283":{
 "eic":"17W100P100P0032W",
@@ -51094,12 +51094,12 @@
 },
 "EDF-05470_EDF_H_00123780":{
 "eic":"17W100P100P0300X",
-"end":"2027-06-25T15:00:00Z",
+"end":"2027-07-02T15:00:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"PLANNED",
 "mw":364,
 "name":"VILLARODIN",
-"pub":"2026-01-30T09:45:18Z",
+"pub":"2026-10-23T15:40:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2027-06-14T05:00:00Z",
@@ -51107,11 +51107,11 @@
 "steps":[
 [
 "2027-06-14T05:00:00Z",
-"2027-06-25T15:00:00Z",
+"2027-07-02T15:00:00Z",
 364
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00123785":{
 "eic":"17W100P100P0062N",
@@ -82928,27 +82928,6 @@
 ],
 "v":1
 },
-"EDF-05470_EDF_H_00129893":{
-"eic":"17W100P100P00877",
-"end":"2027-07-02T15:00:00Z",
-"fuel":"HYDRO_WATER_RESERVOIR",
-"kind":"PLANNED",
-"mw":182,
-"name":"VILLARODIN 1",
-"pub":"2026-06-16T14:46:33Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2027-06-25T15:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2027-06-25T15:00:00Z",
-"2027-07-02T15:00:00Z",
-182
-]
-],
-"v":1
-},
 "EDF-05470_EDF_H_00129897":{
 "eic":"17W100P100P0072K",
 "end":"2026-06-16T18:10:00Z",
@@ -97546,24 +97525,24 @@
 },
 "EDF-05470_EDF_H_00133213":{
 "eic":"17W100P100P0289W",
-"end":"2026-10-23T16:00:00Z",
+"end":"2026-10-23T15:00:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"PLANNED",
 "mw":109,
 "name":"PIED DE BORNE",
-"pub":"2026-08-31T07:12:32Z",
+"pub":"2026-10-23T15:18:37Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-23T06:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-23T06:00:00Z",
-"2026-10-23T16:00:00Z",
+"2026-10-23T15:00:00Z",
 109
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00133214":{
 "eic":"17W100P100P02934",
@@ -104953,6 +104932,48 @@
 "2026-10-23T11:30:00Z",
 "2026-10-23T17:30:00Z",
 109
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135249":{
+"eic":"17W100P100P02918",
+"end":"2026-12-02T11:00:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"PLANNED",
+"mw":189,
+"name":"PRAGNERES",
+"pub":"2026-10-23T15:52:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-12-02T08:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-12-02T08:00:00Z",
+"2026-12-02T11:00:00Z",
+189
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135251":{
+"eic":"17W100P100P0081J",
+"end":"2027-08-12T06:00:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"PLANNED",
+"mw":126,
+"name":"SISTERON 2",
+"pub":"2026-10-23T15:56:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2027-07-12T05:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2027-07-12T05:00:00Z",
+"2027-08-12T06:00:00Z",
+126
 ]
 ],
 "v":1
@@ -158425,12 +158446,12 @@
 },
 "EDF-05470_EDF_T_00336459":{
 "eic":"17W100P100P00982",
-"end":"2026-10-25T04:00:00Z",
+"end":"2026-10-25T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":880,
 "name":"BUGEY 4",
-"pub":"2026-10-23T11:30:36Z",
+"pub":"2026-10-23T14:23:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Le placement et la durée de cet arrêt pour modulation seront réinterrogés et la tranche sera redémarrée si les conditions économiques le justifient\nLa durée minimale d'arrêt est de 36h.\n--------\nThe planning and duration of this unavailability for modulation supply will be reassessed and the plant w",
 "start":"2026-10-23T16:00:00Z",
@@ -158438,11 +158459,11 @@
 "steps":[
 [
 "2026-10-23T16:00:00Z",
-"2026-10-25T04:00:00Z",
+"2026-10-25T22:00:00Z",
 880
 ]
 ],
-"v":6
+"v":7
 },
 "EDF-05470_EDF_T_00336496":{
 "eic":"17W100P100P0139E",
@@ -158611,6 +158632,48 @@
 ]
 ],
 "v":2
+},
+"EDF-05470_EDF_T_00336734":{
+"eic":"17W100P100P0106T",
+"end":"2026-10-25T23:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":905,
+"name":"CHINON 1",
+"pub":"2026-10-23T14:25:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Le placement et la durée de cet arrêt pour modulation seront réinterrogés et la tranche sera redémarrée si les conditions économiques le justifient\nLa durée minimale d'arrêt est de 24h.\n--------\nThe planning and duration of this unavailability for modulation supply will be reassessed and the plant w",
+"start":"2026-10-24T20:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-24T20:30:00Z",
+"2026-10-25T23:00:00Z",
+905
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00336737":{
+"eic":"17W100P100P0094A",
+"end":"2026-10-25T15:45:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":910,
+"name":"BLAYAIS 3",
+"pub":"2026-10-23T14:27:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Le placement et la durée de cet arrêt pour modulation seront réinterrogés et la tranche sera redémarrée si les conditions économiques le justifient\nLa durée minimale d'arrêt est de 24h.\n--------\nThe planning and duration of this unavailability for modulation supply will be reassessed and the plant w",
+"start":"2026-10-24T11:15:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-24T11:15:00Z",
+"2026-10-25T15:45:00Z",
+910
+]
+],
+"v":1
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
@@ -165878,12 +165941,12 @@
 },
 "TDE-20251020_600082610":{
 "eic":"17W100P100P0344D",
-"end":"2026-10-23T14:00:00Z",
+"end":"2026-10-24T21:59:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":435,
 "name":"SAINT AVOLD 7",
-"pub":"2026-10-23T12:59:36Z",
+"pub":"2026-10-23T16:21:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-07-14T22:00:00Z",
@@ -165891,11 +165954,11 @@
 "steps":[
 [
 "2026-07-14T22:00:00Z",
-"2026-10-23T14:00:00Z",
+"2026-10-24T21:59:00Z",
 435
 ]
 ],
-"v":9
+"v":11
 },
 "TDE-20251020_600082620":{
 "eic":"17W100P100P0344D",
@@ -167762,6 +167825,27 @@
 "2027-04-09T22:00:00Z",
 "2027-04-28T21:59:00Z",
 411
+]
+],
+"v":1
+},
+"TDE-20261023_300052330":{
+"eic":"17W100P100P0341J",
+"end":"2030-06-30T21:59:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":439,
+"name":"PONT SUR SAMBRE",
+"pub":"2026-10-23T13:49:35Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2030-04-26T22:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2030-04-26T22:00:00Z",
+"2030-06-30T21:59:00Z",
+439
 ]
 ],
 "v":1
