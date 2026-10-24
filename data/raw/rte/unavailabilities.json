@@ -24004,24 +24004,24 @@
 },
 "EC-EDF-05470-EDF-T-00099866":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-24T16:00:00Z",
+"end":"2026-10-24T15:45:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-24T10:13:36Z",
+"pub":"2026-10-24T15:46:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 180 MW.\n--------\nAfter its restart, the plant will gradually return by various load threshold to full power.\nThe ramp-up period will ta",
 "start":"2026-07-31T20:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-07-31T20:00:00Z",
-"2026-10-24T16:00:00Z",
+"2026-10-24T15:45:00Z",
 915
 ]
 ],
-"v":18
+"v":19
 },
 "EC-EDF-05470-EDF-T-00099867":{
 "eic":"17W100P100P0150Q",
@@ -158633,6 +158633,27 @@
 ],
 "v":2
 },
+"EDF-05470_EDF_T_00336739":{
+"eic":"17W100P100P0148D",
+"end":"2026-10-27T21:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":915,
+"name":"ST LAURENT 2",
+"pub":"2026-10-24T17:37:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Remontée par paliers en cours\nProchain palier : 367 MW\n--------\nUnit is currently ramping up by steps\nNext step : 367 MW.",
+"start":"2026-10-24T15:45:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-24T15:45:00Z",
+"2026-10-27T21:00:00Z",
+780
+]
+],
+"v":2
+},
 "EDF-05470_EDF_T_00336826":{
 "eic":"17W100P100P0139E",
 "end":"2026-10-25T22:30:00Z",
@@ -165941,12 +165962,12 @@
 },
 "TDE-20251020_600082610":{
 "eic":"17W100P100P0344D",
-"end":"2026-10-24T21:59:00Z",
+"end":"2026-10-25T16:59:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":435,
 "name":"SAINT AVOLD 7",
-"pub":"2026-10-23T16:21:35Z",
+"pub":"2026-10-24T16:17:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-07-14T22:00:00Z",
@@ -165954,11 +165975,11 @@
 "steps":[
 [
 "2026-07-14T22:00:00Z",
-"2026-10-24T21:59:00Z",
+"2026-10-25T16:59:00Z",
 435
 ]
 ],
-"v":11
+"v":12
 },
 "TDE-20251020_600082620":{
 "eic":"17W100P100P0344D",
