@@ -24004,12 +24004,12 @@
 },
 "EC-EDF-05470-EDF-T-00099866":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-24T11:00:00Z",
+"end":"2026-10-24T16:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-24T05:33:35Z",
+"pub":"2026-10-24T10:13:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 180 MW.\n--------\nAfter its restart, the plant will gradually return by various load threshold to full power.\nThe ramp-up period will ta",
 "start":"2026-07-31T20:00:00Z",
@@ -24017,11 +24017,11 @@
 "steps":[
 [
 "2026-07-31T20:00:00Z",
-"2026-10-24T11:00:00Z",
+"2026-10-24T16:00:00Z",
 915
 ]
 ],
-"v":17
+"v":18
 },
 "EC-EDF-05470-EDF-T-00099867":{
 "eic":"17W100P100P0150Q",
@@ -158656,45 +158656,24 @@
 },
 "EDF-05470_EDF_T_00336831":{
 "eic":"17W100P100P0093C",
-"end":"2026-10-25T07:08:00Z",
+"end":"2026-10-27T11:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":910,
 "name":"BLAYAIS 2",
-"pub":"2026-10-24T06:10:36Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.\nUne nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.\n--------\nThe duration of the unavailability is a pre-",
+"pub":"2026-10-24T10:05:36Z",
+"reason":"FAILURE",
+"remarks":"",
 "start":"2026-10-24T06:08:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-24T06:08:00Z",
-"2026-10-25T07:08:00Z",
+"2026-10-27T11:00:00Z",
 910
 ]
 ],
-"v":1
-},
-"EDF-05470_EDF_T_00336884":{
-"eic":"17W100P100P0106T",
-"end":"2026-10-26T04:00:00Z",
-"fuel":"NUCLEAR",
-"kind":"PLANNED",
-"mw":905,
-"name":"CHINON 1",
-"pub":"2026-10-24T08:54:36Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Le placement et la durée de cet arrêt pour modulation seront réinterrogés et la tranche sera redémarrée si les conditions économiques le justifient\nLa durée minimale d'arrêt est de 24h.\n--------\nThe planning and duration of this unavailability for modulation supply will be reassessed and the plant w",
-"start":"2026-10-24T20:30:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-10-24T20:30:00Z",
-"2026-10-26T04:00:00Z",
-905
-]
-],
-"v":1
+"v":2
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
