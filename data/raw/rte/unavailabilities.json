@@ -158467,12 +158467,12 @@
 },
 "EDF-05470_EDF_T_00336459":{
 "eic":"17W100P100P00982",
-"end":"2026-10-25T22:00:00Z",
+"end":"2026-10-26T03:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":880,
 "name":"BUGEY 4",
-"pub":"2026-10-23T14:23:37Z",
+"pub":"2026-10-24T14:07:59Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Le placement et la durée de cet arrêt pour modulation seront réinterrogés et la tranche sera redémarrée si les conditions économiques le justifient\nLa durée minimale d'arrêt est de 36h.\n--------\nThe planning and duration of this unavailability for modulation supply will be reassessed and the plant w",
 "start":"2026-10-23T16:00:00Z",
@@ -158480,11 +158480,11 @@
 "steps":[
 [
 "2026-10-23T16:00:00Z",
-"2026-10-25T22:00:00Z",
+"2026-10-26T03:30:00Z",
 880
 ]
 ],
-"v":7
+"v":8
 },
 "EDF-05470_EDF_T_00336496":{
 "eic":"17W100P100P0139E",
@@ -158514,7 +158514,7 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-10-24T05:58:38Z",
+"pub":"2026-10-24T14:06:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-25T02:30:00Z",
@@ -158523,10 +158523,10 @@
 [
 "2026-10-25T02:30:00Z",
 "2026-10-25T04:30:00Z",
-115
+735
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00336541":{
 "eic":"17W100P100P02578",
