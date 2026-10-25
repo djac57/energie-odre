@@ -157898,27 +157898,6 @@
 ],
 "v":2
 },
-"EDF-05470_EDF_T_00334961":{
-"eic":"17W100P100P0175A",
-"end":"2026-10-26T23:00:00Z",
-"fuel":"FOSSIL_GAS",
-"kind":"PLANNED",
-"mw":465,
-"name":"MARTIGUES PONTEAU 6",
-"pub":"2026-10-25T06:51:36Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \nLa tranche sera par ailleurs imposée à 399 MW (MAXP2S0) de 18h30 à 24h00.\n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.\nFurthermore, the unit will be constra",
-"start":"2026-10-25T23:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-10-25T23:00:00Z",
-"2026-10-26T23:00:00Z",
-28
-]
-],
-"v":2
-},
 "EDF-05470_EDF_T_00334962":{
 "eic":"17W100P100P0175A",
 "end":"2026-10-27T23:00:00Z",
@@ -158236,12 +158215,12 @@
 },
 "EDF-05470_EDF_T_00335935":{
 "eic":"17W100P100P0175A",
-"end":"2026-10-25T23:00:00Z",
+"end":"2026-10-26T23:00:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"UNPLANNED",
 "mw":465,
 "name":"MARTIGUES PONTEAU 6",
-"pub":"2026-10-21T11:54:36Z",
+"pub":"2026-10-25T22:14:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-20T13:56:00Z",
@@ -158249,11 +158228,11 @@
 "steps":[
 [
 "2026-10-20T13:56:00Z",
-"2026-10-25T23:00:00Z",
+"2026-10-26T23:00:00Z",
 465
 ]
 ],
-"v":5
+"v":6
 },
 "EDF-05470_EDF_T_00335963":{
 "eic":"17W100P100P00966",
@@ -158656,12 +158635,12 @@
 },
 "EDF-05470_EDF_T_00336739":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-28T03:00:00Z",
+"end":"2026-10-28T06:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-25T19:22:37Z",
+"pub":"2026-10-25T21:18:38Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 759 MW\n--------\nUnit is currently ramping up by steps\nNext step : 759 MW.",
 "start":"2026-10-24T15:45:00Z",
@@ -158669,11 +158648,11 @@
 "steps":[
 [
 "2026-10-24T15:45:00Z",
-"2026-10-28T03:00:00Z",
+"2026-10-28T06:00:00Z",
 555
 ]
 ],
-"v":10
+"v":11
 },
 "EDF-05470_EDF_T_00336826":{
 "eic":"17W100P100P0139E",
