@@ -158131,24 +158131,24 @@
 },
 "EDF-05470_EDF_T_00335633":{
 "eic":"17W100P100P0103Z",
-"end":"2026-10-26T22:00:00Z",
+"end":"2026-10-26T07:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 2",
-"pub":"2026-10-22T08:52:36Z",
+"pub":"2026-10-25T09:39:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"L'arrêt est susceptible d'être requestionné en fonction du recouplage de Cattenom 4.\n \nThe shutdown may be reconsidered depending on the reconnection of Cattenom 4.",
+"remarks":"L'arrêt est susceptible d'être requestionné en fonction du recouplage de Cattenom 4.\n---------------------\nThe shutdown may be reconsidered depending on the reconnection of Cattenom 4.",
 "start":"2026-10-23T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-23T21:00:00Z",
-"2026-10-26T22:00:00Z",
+"2026-10-26T07:00:00Z",
 1300
 ]
 ],
-"v":7
+"v":8
 },
 "EDF-05470_EDF_T_00335651":{
 "eic":"17W100P100P0048H",
@@ -166004,12 +166004,12 @@
 },
 "TDE-20251020_600082610":{
 "eic":"17W100P100P0344D",
-"end":"2026-10-25T16:59:00Z",
+"end":"2026-10-25T10:30:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":435,
 "name":"SAINT AVOLD 7",
-"pub":"2026-10-24T16:17:35Z",
+"pub":"2026-10-25T09:27:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-07-14T22:00:00Z",
@@ -166017,11 +166017,11 @@
 "steps":[
 [
 "2026-07-14T22:00:00Z",
-"2026-10-25T16:59:00Z",
+"2026-10-25T10:30:00Z",
 435
 ]
 ],
-"v":12
+"v":13
 },
 "TDE-20251020_600082620":{
 "eic":"17W100P100P0344D",
