@@ -23017,24 +23017,24 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-10-25T22:00:00Z",
+"end":"2026-10-27T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-10-23T17:10:36Z",
+"pub":"2026-10-25T11:24:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 275 MW\n\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full pow",
+"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 273 MW\n\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full pow",
 "start":"2026-01-30T23:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-10-25T22:00:00Z",
+"2026-10-27T22:00:00Z",
 1300
 ]
 ],
-"v":41
+"v":42
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -145825,12 +145825,12 @@
 },
 "EDF-05470_EDF_T_00317729":{
 "eic":"17W100P100P01101",
-"end":"2026-10-27T00:00:00Z",
+"end":"2026-10-26T00:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 1",
-"pub":"2026-10-23T13:31:36Z",
+"pub":"2026-10-25T14:32:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Causes externes liées à l'environnement\nLe placement et la durée de cet arrêt pour contraintes environnementales seront modifiés en fonction de l'évolution des prévisions météorologiques\n------------\nEnvironmental issues\nThe planning and the duration of the shutdown for environnemental issues could ",
 "start":"2026-08-01T19:30:00Z",
@@ -145838,11 +145838,11 @@
 "steps":[
 [
 "2026-08-01T19:30:00Z",
-"2026-10-27T00:00:00Z",
+"2026-10-26T00:00:00Z",
 1500
 ]
 ],
-"v":33
+"v":34
 },
 "EDF-05470_EDF_T_00317730":{
 "eic":"17W100P100P01012",
@@ -158635,12 +158635,12 @@
 },
 "EDF-05470_EDF_T_00336739":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-29T01:00:00Z",
+"end":"2026-10-28T00:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-25T02:13:37Z",
+"pub":"2026-10-25T10:40:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 759 MW\n--------\nUnit is currently ramping up by steps\nNext step : 759 MW.",
 "start":"2026-10-24T15:45:00Z",
@@ -158648,11 +158648,11 @@
 "steps":[
 [
 "2026-10-24T15:45:00Z",
-"2026-10-29T01:00:00Z",
+"2026-10-28T00:00:00Z",
 555
 ]
 ],
-"v":7
+"v":8
 },
 "EDF-05470_EDF_T_00336826":{
 "eic":"17W100P100P0139E",
@@ -158677,12 +158677,12 @@
 },
 "EDF-05470_EDF_T_00336831":{
 "eic":"17W100P100P0093C",
-"end":"2026-10-27T11:00:00Z",
+"end":"2026-10-27T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":910,
 "name":"BLAYAIS 2",
-"pub":"2026-10-24T10:05:36Z",
+"pub":"2026-10-25T13:32:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-24T06:08:00Z",
@@ -158690,11 +158690,11 @@
 "steps":[
 [
 "2026-10-24T06:08:00Z",
-"2026-10-27T11:00:00Z",
+"2026-10-27T22:00:00Z",
 910
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00336999":{
 "eic":"17W100P100P0141R",
@@ -158734,6 +158734,48 @@
 "2026-10-25T09:00:00Z",
 "2026-10-25T10:30:00Z",
 742
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00337208":{
+"eic":"17W100P100P0175A",
+"end":"2026-10-25T16:45:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-25T14:18:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essais de requalification, avec variations de puissance\n--------\nCheck tests, with load variations.",
+"start":"2026-10-25T14:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-25T14:00:00Z",
+"2026-10-25T16:45:00Z",
+415
+]
+],
+"v":3
+},
+"EDF-05470_EDF_T_00337209":{
+"eic":"17W100P100P0114U",
+"end":"2026-10-26T12:31:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1495,
+"name":"CIVAUX 2",
+"pub":"2026-10-25T12:32:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.\nUne nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.\n--------\nThe duration of the unavailability is a pre-",
+"start":"2026-10-25T12:31:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-25T12:31:00Z",
+"2026-10-26T12:31:00Z",
+1105
 ]
 ],
 "v":1
