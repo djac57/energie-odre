@@ -158635,24 +158635,24 @@
 },
 "EDF-05470_EDF_T_00336739":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-28T03:00:00Z",
+"end":"2026-10-29T01:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-24T22:11:36Z",
+"pub":"2026-10-25T02:13:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 367 MW\n--------\nUnit is currently ramping up by steps\nNext step : 367 MW.",
+"remarks":"Remontée par paliers en cours\nProchain palier : 759 MW\n--------\nUnit is currently ramping up by steps\nNext step : 759 MW.",
 "start":"2026-10-24T15:45:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-24T15:45:00Z",
-"2026-10-28T03:00:00Z",
-745
+"2026-10-29T01:00:00Z",
+555
 ]
 ],
-"v":5
+"v":7
 },
 "EDF-05470_EDF_T_00336826":{
 "eic":"17W100P100P0139E",
@@ -158695,6 +158695,27 @@
 ]
 ],
 "v":2
+},
+"EDF-05470_EDF_T_00336999":{
+"eic":"17W100P100P0141R",
+"end":"2026-10-25T08:30:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1330,
+"name":"PALUEL 3",
+"pub":"2026-10-25T03:36:36Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-10-25T03:34:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-25T03:34:00Z",
+"2026-10-25T08:30:00Z",
+680
+]
+],
+"v":1
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
