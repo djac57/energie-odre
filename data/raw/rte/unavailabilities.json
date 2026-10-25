@@ -105001,24 +105001,24 @@
 },
 "EDF-05470_EDF_H_00135253":{
 "eic":"17W100P100P0067D",
-"end":"2026-10-25T23:11:00Z",
+"end":"2026-10-25T18:18:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"UNPLANNED",
 "mw":152,
 "name":"GRAND MAISON 7",
-"pub":"2026-10-25T17:14:35Z",
+"pub":"2026-10-25T18:20:36Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-10-25T17:11:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-25T17:11:00Z",
-"2026-10-25T23:11:00Z",
+"2026-10-25T18:18:00Z",
 152
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
@@ -158152,24 +158152,24 @@
 },
 "EDF-05470_EDF_T_00335633":{
 "eic":"17W100P100P0103Z",
-"end":"2026-10-26T07:00:00Z",
+"end":"2026-10-25T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 2",
-"pub":"2026-10-25T09:39:36Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"L'arrêt est susceptible d'être requestionné en fonction du recouplage de Cattenom 4.\n---------------------\nThe shutdown may be reconsidered depending on the reconnection of Cattenom 4.",
+"pub":"2026-10-25T18:57:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
 "start":"2026-10-23T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-23T21:00:00Z",
-"2026-10-26T07:00:00Z",
+"2026-10-25T22:00:00Z",
 1300
 ]
 ],
-"v":8
+"v":9
 },
 "EDF-05470_EDF_T_00335651":{
 "eic":"17W100P100P0048H",
@@ -158656,12 +158656,12 @@
 },
 "EDF-05470_EDF_T_00336739":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-28T01:00:00Z",
+"end":"2026-10-28T03:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-25T15:59:36Z",
+"pub":"2026-10-25T19:22:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 759 MW\n--------\nUnit is currently ramping up by steps\nNext step : 759 MW.",
 "start":"2026-10-24T15:45:00Z",
@@ -158669,11 +158669,11 @@
 "steps":[
 [
 "2026-10-24T15:45:00Z",
-"2026-10-28T01:00:00Z",
+"2026-10-28T03:00:00Z",
 555
 ]
 ],
-"v":9
+"v":10
 },
 "EDF-05470_EDF_T_00336826":{
 "eic":"17W100P100P0139E",
@@ -158761,12 +158761,12 @@
 },
 "EDF-05470_EDF_T_00337208":{
 "eic":"17W100P100P0175A",
-"end":"2026-10-25T18:00:00Z",
+"end":"2026-10-25T20:00:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":465,
 "name":"MARTIGUES PONTEAU 6",
-"pub":"2026-10-25T16:53:39Z",
+"pub":"2026-10-25T18:55:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essais de requalification, avec variations de puissance\n--------\nCheck tests, with load variations.",
 "start":"2026-10-25T14:00:00Z",
@@ -158774,32 +158774,32 @@
 "steps":[
 [
 "2026-10-25T14:00:00Z",
-"2026-10-25T18:00:00Z",
+"2026-10-25T20:00:00Z",
 415
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00337209":{
 "eic":"17W100P100P0114U",
-"end":"2026-10-25T20:00:00Z",
+"end":"2026-10-26T09:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1495,
 "name":"CIVAUX 2",
-"pub":"2026-10-25T16:58:36Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.\nUne nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.\n--------\nThe duration of the unavailability is a pre-",
+"pub":"2026-10-25T19:41:36Z",
+"reason":"FAILURE",
+"remarks":"",
 "start":"2026-10-25T12:31:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-25T12:31:00Z",
-"2026-10-25T20:00:00Z",
+"2026-10-26T09:00:00Z",
 1105
 ]
 ],
-"v":2
+"v":4
 },
 "EDF-05470_EDF_T_00337219":{
 "eic":"17W100P100P0120Z",
@@ -158845,21 +158845,42 @@
 },
 "EDF-05470_EDF_T_00337234":{
 "eic":"17W100P100P00982",
-"end":"2026-10-26T09:15:00Z",
+"end":"2026-10-26T10:15:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":880,
 "name":"BUGEY 4",
-"pub":"2026-10-25T15:51:36Z",
+"pub":"2026-10-25T18:48:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée à puissance maximale sans palier.\n--------\nRamp-up to maximal power without load threshold.",
+"remarks":"Remontée par paliers en cours\n--------\nUnit is currently ramping up by steps",
 "start":"2026-10-25T23:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-25T23:30:00Z",
-"2026-10-26T09:15:00Z",
-5
+"2026-10-26T10:15:00Z",
+870
+]
+],
+"v":3
+},
+"EDF-05470_EDF_T_00337250":{
+"eic":"17W100P100P01101",
+"end":"2026-10-26T06:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1500,
+"name":"CHOOZ 1",
+"pub":"2026-10-25T18:29:35Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-10-26T00:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-26T00:00:00Z",
+"2026-10-26T06:00:00Z",
+1500
 ]
 ],
 "v":1
