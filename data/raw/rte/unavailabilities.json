@@ -11234,48 +11234,6 @@
 ],
 "v":1
 },
-"CNR-GE262009-03001U01-1-1":{
-"eic":"17W100P100P1594M",
-"end":"2026-10-28T16:45:00Z",
-"fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
-"kind":"PLANNED",
-"mw":65,
-"name":"GENISSIAT G1",
-"pub":"2026-10-23T12:58:36Z",
-"reason":"FORESEEN_MAINTENANCE",
-"remarks":"",
-"start":"2026-10-28T09:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-10-28T09:00:00Z",
-"2026-10-28T16:45:00Z",
-65
-]
-],
-"v":1
-},
-"CNR-GE262009-03001U02-1-1":{
-"eic":"17W100P100P1595K",
-"end":"2026-10-28T16:45:00Z",
-"fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
-"kind":"PLANNED",
-"mw":65,
-"name":"GENISSIAT G2",
-"pub":"2026-10-23T12:58:37Z",
-"reason":"FORESEEN_MAINTENANCE",
-"remarks":"",
-"start":"2026-10-28T09:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-10-28T09:00:00Z",
-"2026-10-28T16:45:00Z",
-65
-]
-],
-"v":1
-},
 "CNR-LN251762-17001U01-1-1":{
 "eic":"17W100P100P1734W",
 "end":"2025-10-24T12:00:00Z",
@@ -105020,6 +104978,27 @@
 ],
 "v":2
 },
+"EDF-05470_EDF_H_00135257":{
+"eic":"17W100P100P0067D",
+"end":"2026-10-30T16:30:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"UNPLANNED",
+"mw":152,
+"name":"GRAND MAISON 7",
+"pub":"2026-10-26T06:57:37Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-10-26T05:48:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-26T05:48:00Z",
+"2026-10-30T16:30:00Z",
+152
+]
+],
+"v":2
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -157669,12 +157648,12 @@
 },
 "EDF-05470_EDF_T_00334551":{
 "eic":"17W100P100P0139E",
-"end":"2026-10-27T23:00:00Z",
+"end":"2026-10-28T23:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1330,
 "name":"PALUEL 1",
-"pub":"2026-10-25T07:23:36Z",
+"pub":"2026-10-26T06:57:38Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-15T06:54:00Z",
@@ -157682,11 +157661,11 @@
 "steps":[
 [
 "2026-10-15T06:54:00Z",
-"2026-10-27T23:00:00Z",
+"2026-10-28T23:00:00Z",
 130
 ]
 ],
-"v":5
+"v":6
 },
 "EDF-05470_EDF_T_00334683":{
 "eic":"17W100P100P0113W",
@@ -157905,9 +157884,9 @@
 "kind":"PLANNED",
 "mw":465,
 "name":"MARTIGUES PONTEAU 6",
-"pub":"2026-10-16T16:47:36Z",
+"pub":"2026-10-26T07:14:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima.\nLa tranche sera par ailleurs imposée à 399 MW (MAXP2S0) de 18h30 à 24h.\n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.\nFurthermore, the unit will be constraine",
 "start":"2026-10-26T23:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -157917,7 +157896,7 @@
 28
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00334963":{
 "eic":"17W100P100P0175A",
@@ -158635,24 +158614,24 @@
 },
 "EDF-05470_EDF_T_00336739":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-28T06:00:00Z",
+"end":"2026-10-26T02:50:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-25T21:18:38Z",
+"pub":"2026-10-26T02:51:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 759 MW\n--------\nUnit is currently ramping up by steps\nNext step : 759 MW.",
 "start":"2026-10-24T15:45:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-24T15:45:00Z",
-"2026-10-28T06:00:00Z",
+"2026-10-26T02:50:00Z",
 555
 ]
 ],
-"v":11
+"v":12
 },
 "EDF-05470_EDF_T_00336826":{
 "eic":"17W100P100P0139E",
@@ -158761,24 +158740,24 @@
 },
 "EDF-05470_EDF_T_00337209":{
 "eic":"17W100P100P0114U",
-"end":"2026-10-26T09:00:00Z",
+"end":"2026-10-26T07:36:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1495,
 "name":"CIVAUX 2",
-"pub":"2026-10-25T19:41:36Z",
+"pub":"2026-10-26T07:38:35Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-25T12:31:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-25T12:31:00Z",
-"2026-10-26T09:00:00Z",
+"2026-10-26T07:36:00Z",
 1105
 ]
 ],
-"v":4
+"v":6
 },
 "EDF-05470_EDF_T_00337219":{
 "eic":"17W100P100P0120Z",
@@ -158829,7 +158808,7 @@
 "kind":"PLANNED",
 "mw":880,
 "name":"BUGEY 4",
-"pub":"2026-10-25T18:48:37Z",
+"pub":"2026-10-26T02:31:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\n--------\nUnit is currently ramping up by steps",
 "start":"2026-10-25T23:30:00Z",
@@ -158838,10 +158817,10 @@
 [
 "2026-10-25T23:30:00Z",
 "2026-10-26T10:15:00Z",
-870
+550
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00337250":{
 "eic":"17W100P100P01101",
@@ -158881,6 +158860,69 @@
 "2026-10-26T01:30:00Z",
 "2026-10-26T13:30:00Z",
 915
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00337330":{
+"eic":"17W100P100P0148D",
+"end":"2026-10-28T21:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":915,
+"name":"ST LAURENT 2",
+"pub":"2026-10-26T03:04:35Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Remontée par paliers en cours - prochain palier : 356 MW\nMontée à 356 MW : 1h30  - Palier à 356 MW : 1h  - Montée à 759 MW : 17h  - Palier à 759 MW : 17h -Montée à 860 MW : 7h  - Palier à 860 MW : 7h  -Montée à 880 MW : 5h  - \nLes durées indiquées peuvent varier en fonction de l'évolution de paramèt",
+"start":"2026-10-26T13:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-26T13:30:00Z",
+"2026-10-28T21:00:00Z",
+905
+]
+],
+"v":2
+},
+"EDF-05470_EDF_T_00337352":{
+"eic":"17W100P100P0141R",
+"end":"2026-10-28T15:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1330,
+"name":"PALUEL 3",
+"pub":"2026-10-26T06:50:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-10-28T14:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-28T14:30:00Z",
+"2026-10-28T15:00:00Z",
+695
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00337353":{
+"eic":"17W100P100P0144L",
+"end":"2026-10-28T04:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1330,
+"name":"PENLY 2",
+"pub":"2026-10-26T06:52:35Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-10-28T03:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-28T03:30:00Z",
+"2026-10-28T04:00:00Z",
+673
 ]
 ],
 "v":1
