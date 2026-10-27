@@ -22975,24 +22975,24 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-10-28T22:00:00Z",
+"end":"2026-11-02T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-10-27T13:51:36Z",
+"pub":"2026-10-27T19:57:35Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 273 MW\n\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full pow",
+"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 273 MW\nArrêt susceptible d'être prolongé.\n-------------------------------------\nAfter its restart, the plant will gradually return by v",
 "start":"2026-01-30T23:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-10-28T22:00:00Z",
+"2026-11-02T22:00:00Z",
 1300
 ]
 ],
-"v":43
+"v":44
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -157459,12 +157459,12 @@
 },
 "EDF-05470_EDF_T_00334683":{
 "eic":"17W100P100P0113W",
-"end":"2026-10-27T23:00:00Z",
+"end":"2026-10-28T00:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1495,
 "name":"CIVAUX 1",
-"pub":"2026-10-16T09:35:36Z",
+"pub":"2026-10-27T22:35:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Le placement et la durée de cet arrêt pour modulation seront réinterrogés et la tranche sera redémarrée si les conditions économiques le justifient\n--------\nThe planning and duration of this unavailability for modulation supply will be reassessed and the plant will be restarted depending on economic",
 "start":"2026-10-23T22:00:00Z",
@@ -157472,11 +157472,11 @@
 "steps":[
 [
 "2026-10-23T22:00:00Z",
-"2026-10-27T23:00:00Z",
+"2026-10-28T00:00:00Z",
 1495
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00334686":{
 "eic":"17W100P100P0046L",
@@ -158661,19 +158661,19 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-27T04:02:36Z",
+"pub":"2026-10-27T19:14:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : 759 MW\nMontée à 759 MW : 19h  - Palier à 759 MW : 17h -Montée à 860 MW : 7h  - Palier à 860 MW : 7h  -Montée à 880 MW : 5h  - \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n--------\nUnit is currently ramping ",
+"remarks":"Remontée par paliers en cours - prochain palier : 759 MW\nPalier à 759 MW : 17h - Montée à 860 MW : 7h  - Palier à 860 MW : 7h  - Montée à 880 MW : 5h \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n-\nUnit is currently ramping up by steps - next step : 759 MW\n",
 "start":"2026-10-26T09:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-26T09:30:00Z",
 "2026-10-29T07:00:00Z",
-475
+156
 ]
 ],
-"v":7
+"v":8
 },
 "EDF-05470_EDF_T_00337352":{
 "eic":"17W100P100P0141R",
@@ -158971,45 +158971,45 @@
 },
 "EDF-05470_EDF_T_00337586":{
 "eic":"17W100P100P0103Z",
-"end":"2026-10-27T23:00:00Z",
+"end":"2026-10-27T22:15:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1300,
 "name":"CATTENOM 2",
-"pub":"2026-10-27T18:05:35Z",
+"pub":"2026-10-27T22:23:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-26T23:47:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-26T23:47:00Z",
-"2026-10-27T23:00:00Z",
+"2026-10-27T22:15:00Z",
 1300
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00337630":{
 "eic":"17W100P100P0113W",
-"end":"2026-10-28T09:30:00Z",
+"end":"2026-10-28T10:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1495,
 "name":"CIVAUX 1",
-"pub":"2026-10-27T03:51:36Z",
+"pub":"2026-10-27T22:37:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée à puissance maximale sans palier.\n--------\nRamp-up to maximal power without load threshold.",
-"start":"2026-10-27T23:00:00Z",
+"start":"2026-10-28T00:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-27T23:00:00Z",
-"2026-10-28T09:30:00Z",
+"2026-10-28T00:00:00Z",
+"2026-10-28T10:30:00Z",
 10
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00337674":{
 "eic":"17W100P100P0175A",
@@ -159091,6 +159091,27 @@
 "2026-10-27T21:00:00Z",
 "2026-10-28T11:00:00Z",
 50
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00337854":{
+"eic":"17W100P100P0103Z",
+"end":"2026-10-28T00:15:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1300,
+"name":"CATTENOM 2",
+"pub":"2026-10-27T22:25:36Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-10-27T22:15:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-27T22:15:00Z",
+"2026-10-28T00:15:00Z",
+1200
 ]
 ],
 "v":1
@@ -162287,24 +162308,24 @@
 },
 "REN-05470_EDF_T_00337835":{
 "eic":"17W000001445568W",
-"end":"2026-10-28T17:00:00Z",
+"end":"2026-10-27T19:01:00Z",
 "fuel":"WIND_OFFSHORE",
 "kind":"UNPLANNED",
 "mw":497,
 "name":"FECAMP",
-"pub":"2026-10-27T17:34:35Z",
+"pub":"2026-10-27T19:03:35Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Fortuit/Défaut réseau amont.\n--------\nFailure on the grid upstream the plant.",
 "start":"2026-10-27T17:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-27T17:00:00Z",
-"2026-10-28T17:00:00Z",
+"2026-10-27T19:01:00Z",
 245
 ]
 ],
-"v":1
+"v":2
 },
 "SHE-IndispoMARG1-2026-02-15":{
 "eic":"17W100P100P0165D",
