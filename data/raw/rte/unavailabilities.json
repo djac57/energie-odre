@@ -158446,12 +158446,12 @@
 },
 "EDF-05470_EDF_T_00336831":{
 "eic":"17W100P100P0093C",
-"end":"2026-10-28T01:00:00Z",
+"end":"2026-10-28T03:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":910,
 "name":"BLAYAIS 2",
-"pub":"2026-10-27T17:21:36Z",
+"pub":"2026-10-27T23:59:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-24T06:08:00Z",
@@ -158459,11 +158459,11 @@
 "steps":[
 [
 "2026-10-24T06:08:00Z",
-"2026-10-28T01:00:00Z",
+"2026-10-28T03:00:00Z",
 910
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00336999":{
 "eic":"17W100P100P0141R",
@@ -158656,24 +158656,24 @@
 },
 "EDF-05470_EDF_T_00337330":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-29T07:00:00Z",
+"end":"2026-10-29T11:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-27T19:14:36Z",
+"pub":"2026-10-28T01:33:38Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : 759 MW\nPalier à 759 MW : 17h - Montée à 860 MW : 7h  - Palier à 860 MW : 7h  - Montée à 880 MW : 5h \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n-\nUnit is currently ramping up by steps - next step : 759 MW\n",
+"remarks":"Remontée par paliers en cours - prochain palier : 759 MW\nPalier à 759 MW : 21h30 - Montée à 860 MW : 7h  - Palier à 860 MW : 7h  - Montée à 880 MW : 5h \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n-\nUnit is currently ramping up by steps - next step : 759 M",
 "start":"2026-10-26T09:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-26T09:30:00Z",
-"2026-10-29T07:00:00Z",
+"2026-10-29T11:30:00Z",
 156
 ]
 ],
-"v":8
+"v":9
 },
 "EDF-05470_EDF_T_00337352":{
 "eic":"17W100P100P0141R",
@@ -159076,12 +159076,12 @@
 },
 "EDF-05470_EDF_T_00337823":{
 "eic":"17W100P100P01101",
-"end":"2026-10-28T11:00:00Z",
+"end":"2026-10-28T13:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 1",
-"pub":"2026-10-27T16:52:35Z",
+"pub":"2026-10-28T01:38:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée à puissance maximale sans palier.\n--------\nRamp-up to maximal power without load threshold.",
 "start":"2026-10-27T21:00:00Z",
@@ -159089,32 +159089,32 @@
 "steps":[
 [
 "2026-10-27T21:00:00Z",
-"2026-10-28T11:00:00Z",
+"2026-10-28T13:00:00Z",
 50
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00337854":{
 "eic":"17W100P100P0103Z",
-"end":"2026-10-28T00:15:00Z",
+"end":"2026-10-28T01:10:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1300,
 "name":"CATTENOM 2",
-"pub":"2026-10-27T22:25:36Z",
+"pub":"2026-10-28T01:11:35Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-27T22:15:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-27T22:15:00Z",
-"2026-10-28T00:15:00Z",
+"2026-10-28T01:10:00Z",
 1200
 ]
 ],
-"v":1
+"v":3
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
