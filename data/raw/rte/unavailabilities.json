@@ -24088,12 +24088,12 @@
 },
 "EC-EDF-05470-EDF-T-00103286":{
 "eic":"17W100P100P0033U",
-"end":"2026-10-30T07:45:00Z",
+"end":"2026-11-03T08:00:00Z",
 "fuel":"FOSSIL_OIL",
 "kind":"PLANNED",
 "mw":134,
 "name":"BRENNILIS 3",
-"pub":"2026-10-16T06:56:36Z",
+"pub":"2026-10-28T18:21:35Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will proceed to qualification tests at various load thresholds during 1 day(s).\n-------------------------------------\nAprès son recouplage, la tranche effectuera des essais de requalification à des paliers de charge variable pendant 1 jour(s).",
 "start":"2026-10-17T22:00:00Z",
@@ -24101,11 +24101,11 @@
 "steps":[
 [
 "2026-10-17T22:00:00Z",
-"2026-10-30T07:45:00Z",
+"2026-11-03T08:00:00Z",
 134
 ]
 ],
-"v":4
+"v":5
 },
 "EC-EDF-05470-EDF-T-00103287":{
 "eic":"17W100P100P0262F",
@@ -158551,24 +158551,24 @@
 },
 "EDF-05470_EDF_T_00337330":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-29T15:30:00Z",
+"end":"2026-10-29T17:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-28T15:51:38Z",
+"pub":"2026-10-28T20:20:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier: 860MW\nDurée restante au palier à 759MW: 4h - Montée à 860MW: 7h  - Palier à 860MW: 7h  - Montée à 880MW: 5h \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n-\nUnit is currently ramping up by steps - next step: 8",
+"remarks":"Remontée par paliers en cours - prochain palier: 860MW\nDurée restante au palier à 759MW: 5h30 - Montée à 860MW: 7h  - Palier à 860MW: 7h  - Montée à 880MW: 5h \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n-\nUnit is currently ramping up by steps - next step:",
 "start":"2026-10-26T09:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-26T09:30:00Z",
-"2026-10-29T15:30:00Z",
+"2026-10-29T17:00:00Z",
 156
 ]
 ],
-"v":10
+"v":11
 },
 "EDF-05470_EDF_T_00337352":{
 "eic":"17W100P100P0141R",
@@ -159013,12 +159013,12 @@
 },
 "EDF-05470_EDF_T_00337823":{
 "eic":"17W100P100P01101",
-"end":"2026-10-28T21:00:00Z",
+"end":"2026-10-28T16:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 1",
-"pub":"2026-10-28T09:05:36Z",
+"pub":"2026-10-28T16:26:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée à puissance maximale sans palier.\n--------\nRamp-up to maximal power without load threshold.",
 "start":"2026-10-27T21:00:00Z",
@@ -159026,11 +159026,11 @@
 "steps":[
 [
 "2026-10-27T21:00:00Z",
-"2026-10-28T21:00:00Z",
+"2026-10-28T16:30:00Z",
 50
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00337854":{
 "eic":"17W100P100P0103Z",
@@ -159055,33 +159055,33 @@
 },
 "EDF-05470_EDF_T_00337955":{
 "eic":"17W100P100P0033U",
-"end":"2026-10-30T10:30:00Z",
+"end":"2026-11-03T10:45:00Z",
 "fuel":"FOSSIL_OIL",
 "kind":"PLANNED",
 "mw":134,
 "name":"BRENNILIS 3",
-"pub":"2026-10-28T06:56:35Z",
+"pub":"2026-10-28T18:22:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essais de requalification, avec variations de puissance\n--------\nCheck tests, with load variations.",
-"start":"2026-10-30T07:45:00Z",
+"start":"2026-11-03T08:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-30T07:45:00Z",
-"2026-10-30T10:30:00Z",
+"2026-11-03T08:00:00Z",
+"2026-11-03T10:45:00Z",
 10
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00338039":{
 "eic":"17W100P100P01101",
-"end":"2026-10-28T17:00:00Z",
+"end":"2026-10-28T16:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1500,
 "name":"CHOOZ 1",
-"pub":"2026-10-28T09:07:36Z",
+"pub":"2026-10-28T16:25:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-28T09:00:00Z",
@@ -159089,11 +159089,11 @@
 "steps":[
 [
 "2026-10-28T09:00:00Z",
-"2026-10-28T17:00:00Z",
+"2026-10-28T16:30:00Z",
 230
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00338041":{
 "eic":"17W100P100P00966",
@@ -159136,6 +159136,27 @@
 ]
 ],
 "v":3
+},
+"EDF-05470_EDF_T_00338075":{
+"eic":"17W100P100P01101",
+"end":"2026-10-28T20:30:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1500,
+"name":"CHOOZ 1",
+"pub":"2026-10-28T16:29:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Remontée à puissance maximale sans palier.\n--------\nRamp-up to maximal power without load threshold.",
+"start":"2026-10-28T16:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-28T16:30:00Z",
+"2026-10-28T20:30:00Z",
+50
+]
+],
+"v":1
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
