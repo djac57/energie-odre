@@ -104684,6 +104684,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00135436":{
+"eic":"17W100P100P0072K",
+"end":"2026-10-29T00:36:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"UNPLANNED",
+"mw":227,
+"name":"MONTEZIC 2",
+"pub":"2026-10-29T00:38:36Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-10-28T23:07:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-10-28T23:07:00Z",
+"2026-10-29T00:36:00Z",
+227
+]
+],
+"v":2
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -157333,12 +157354,12 @@
 },
 "EDF-05470_EDF_T_00334551":{
 "eic":"17W100P100P0139E",
-"end":"2026-10-30T23:00:00Z",
+"end":"2026-10-31T23:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1330,
 "name":"PALUEL 1",
-"pub":"2026-10-28T06:07:36Z",
+"pub":"2026-10-29T00:14:35Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-15T06:54:00Z",
@@ -157346,11 +157367,11 @@
 "steps":[
 [
 "2026-10-15T06:54:00Z",
-"2026-10-30T23:00:00Z",
+"2026-10-31T23:00:00Z",
 130
 ]
 ],
-"v":8
+"v":9
 },
 "EDF-05470_EDF_T_00334683":{
 "eic":"17W100P100P0113W",
@@ -158551,24 +158572,24 @@
 },
 "EDF-05470_EDF_T_00337330":{
 "eic":"17W100P100P0148D",
-"end":"2026-10-29T17:00:00Z",
+"end":"2026-10-29T03:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-10-28T20:20:36Z",
+"pub":"2026-10-28T21:48:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier: 860MW\nDurée restante au palier à 759MW: 5h30 - Montée à 860MW: 7h  - Palier à 860MW: 7h  - Montée à 880MW: 5h \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n-\nUnit is currently ramping up by steps - next step:",
+"remarks":"Remontée par paliers en cours - prochain palier: 880MW\nDurée restante au palier à 759MW: 30mn  - Montée à 880MW: 5h \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n-\nUnit is currently ramping up by steps - next step: 880MW\nRemaning duration at threshold at 75",
 "start":"2026-10-26T09:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-26T09:30:00Z",
-"2026-10-29T17:00:00Z",
+"2026-10-29T03:00:00Z",
 156
 ]
 ],
-"v":11
+"v":12
 },
 "EDF-05470_EDF_T_00337352":{
 "eic":"17W100P100P0141R",
@@ -159118,12 +159139,12 @@
 },
 "EDF-05470_EDF_T_00338048":{
 "eic":"17W100P100P0153K",
-"end":"2026-10-29T04:00:00Z",
+"end":"2026-10-29T02:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"TRICASTIN 4",
-"pub":"2026-10-28T15:59:35Z",
+"pub":"2026-10-29T00:05:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Indisponibilité fortuite\n--------\nForced unavailability.",
 "start":"2026-10-28T16:00:00Z",
@@ -159131,11 +159152,11 @@
 "steps":[
 [
 "2026-10-28T16:00:00Z",
-"2026-10-29T04:00:00Z",
+"2026-10-29T02:30:00Z",
 765
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00338075":{
 "eic":"17W100P100P01101",
