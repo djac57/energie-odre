@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="eaufeuxair.js?v=3239187215"></script>
+<script src="eaufeuxair.js?v=a90df27d40"></script>
 <script src="geo_world.js"></script>
 <style>
 /* Même direction que les pages électricité et autres énergies : salle de contrôle, chiffres en mono */
@@ -474,7 +474,7 @@ function renderHeader() {
 }
 
 /* ---------- F1 : carte en direct (canevas) ---------- */
-const PTS_SRC = "eaufeuxair_pts.js?v=119a4696d1", GEO10_SRC = "efa_geo10.js?v=4822ce0982";
+const PTS_SRC = "eaufeuxair_pts.js?v=955d271132", GEO10_SRC = "efa_geo10.js?v=4822ce0982";
 const AGE_RAMP = d3.interpolateRgbBasis(["#fff6c2", "#ffd166", "#ff8a3d", "#e5383b", "#8a1c3b"]);
 const VIEWS = { fr: [[-5.4, 41.2], [9.8, 51.2]], eu: [[-11, 34], [40, 61.5]], ua: [[22, 44], [41, 53]], med: [[-10, 28], [37, 46.5]] };
 let fAge = 72, fShowFixed = false, fCtySpan = 1, fView = "eu", fDay = 0, fTimer = null;
