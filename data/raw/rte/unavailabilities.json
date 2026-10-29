@@ -22702,24 +22702,24 @@
 },
 "EC-EDF-05470-EDF-H-00110256":{
 "eic":"17W100P100P0059C",
-"end":"2026-10-29T16:00:00Z",
+"end":"2026-10-29T14:10:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":152,
 "name":"GRAND MAISON 1",
-"pub":"2026-10-29T08:36:36Z",
+"pub":"2026-10-29T14:14:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-16T15:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-10-16T15:00:00Z",
-"2026-10-29T16:00:00Z",
+"2026-10-29T14:10:00Z",
 152
 ]
 ],
-"v":6
+"v":7
 },
 "EC-EDF-05470-EDF-H-00110603":{
 "eic":"17W100P100P0299T",
@@ -24634,12 +24634,12 @@
 },
 "EC-EDF-05470-EDF-T-00104261":{
 "eic":"17W100P100P0104X",
-"end":"2026-12-04T22:30:00Z",
+"end":"2026-12-04T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 3",
-"pub":"2026-10-29T10:13:36Z",
+"pub":"2026-10-29T12:41:35Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\nOutage likely to be extended\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine ",
 "start":"2026-09-25T21:00:00Z",
@@ -24647,11 +24647,11 @@
 "steps":[
 [
 "2026-09-25T21:00:00Z",
-"2026-12-04T22:30:00Z",
+"2026-12-04T22:00:00Z",
 1300
 ]
 ],
-"v":8
+"v":9
 },
 "EC-EDF-05470-EDF-T-00104270":{
 "eic":"17W100P100P0114U",
@@ -80597,27 +80597,6 @@
 ],
 "v":1
 },
-"EDF-05470_EDF_H_00129270":{
-"eic":"17W100P100P0055K",
-"end":"2026-11-06T16:00:00Z",
-"fuel":"HYDRO_WATER_RESERVOIR",
-"kind":"PLANNED",
-"mw":240,
-"name":"BROMMAT 7",
-"pub":"2026-05-28T09:19:18Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2026-10-30T16:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-10-30T16:00:00Z",
-"2026-11-06T16:00:00Z",
-240
-]
-],
-"v":1
-},
 "EDF-05470_EDF_H_00129291":{
 "eic":"17W100P100P0067D",
 "end":"2026-07-30T18:00:00Z",
@@ -104455,12 +104434,12 @@
 },
 "EDF-05470_EDF_H_00135361":{
 "eic":"17W100P100P02829",
-"end":"2026-10-29T12:00:00Z",
+"end":"2026-10-29T11:30:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"PLANNED",
 "mw":406,
 "name":"BROMMAT",
-"pub":"2026-10-28T14:54:36Z",
+"pub":"2026-10-29T11:25:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-29T07:00:00Z",
@@ -104468,11 +104447,11 @@
 "steps":[
 [
 "2026-10-29T07:00:00Z",
-"2026-10-29T12:00:00Z",
+"2026-10-29T11:30:00Z",
 166
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_H_00135362":{
 "eic":"17W100P100P02748",
@@ -156960,9 +156939,9 @@
 "kind":"PLANNED",
 "mw":1330,
 "name":"FLAMANVILLE 2",
-"pub":"2026-10-27T10:02:35Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Sous réserve accord RTE.\n-------------------------------------\nSubject to TSO agreement.",
+"pub":"2026-10-29T14:39:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
 "start":"2026-11-06T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -156972,7 +156951,7 @@
 1330
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00333181":{
 "eic":"17W100P100P0115S",
@@ -158892,9 +158871,9 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-10-26T16:32:36Z",
+"pub":"2026-10-29T14:38:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"After its restart, the plant will gradually return to full power. The ramp-up period take 5 hours. \n\nSubject to TSO agreement.\n-----------------------------------------------------------------------\nAprès son recouplage, la tranche remontera progressivement à sa pleine puissance. La remontée prendre",
+"remarks":"After its restart, the plant will gradually return to full power. The ramp-up period take 5 hours. \n-----------------------------------------------------------------------\nAprès son recouplage, la tranche remontera progressivement à sa pleine puissance. La remontée prendre 5 heures.",
 "start":"2026-11-07T00:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -158904,7 +158883,7 @@
 915
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00337552":{
 "eic":"17W100P100P0175A",
@@ -166375,6 +166354,27 @@
 [
 "2026-10-27T12:00:00Z",
 "2026-10-27T16:00:00Z",
+38
+]
+],
+"v":1
+},
+"SHE-indispo12792-2026-10-29_1":{
+"eic":"17W000000460368O",
+"end":"2026-10-29T16:00:00Z",
+"fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
+"kind":"PLANNED",
+"mw":38,
+"name":"FR_MAREGES_G4",
+"pub":"2026-10-29T12:18:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-10-29T12:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-29T12:00:00Z",
+"2026-10-29T16:00:00Z",
 38
 ]
 ],
