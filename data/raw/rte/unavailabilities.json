@@ -15625,12 +15625,12 @@
 },
 "CNR-SV260587-14001U01-1-2":{
 "eic":"17W100P100P16153",
-"end":"2026-11-02T15:30:00Z",
+"end":"2026-11-06T15:30:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"UNPLANNED",
 "mw":30,
 "name":"GERVANS G1",
-"pub":"2026-10-16T07:32:36Z",
+"pub":"2026-10-30T13:10:35Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-05-04T05:30:00Z",
@@ -15638,11 +15638,11 @@
 "steps":[
 [
 "2026-05-04T05:30:00Z",
-"2026-11-02T15:30:00Z",
+"2026-11-06T15:30:00Z",
 30
 ]
 ],
-"v":6
+"v":7
 },
 "CNR-SV260625-14001U04-1-1":{
 "eic":"17W100P100P16218",
@@ -17641,24 +17641,24 @@
 },
 "CNR-VA252271-22001U03-1-1":{
 "eic":"17W100P100P1332F",
-"end":"2026-12-04T16:00:00Z",
+"end":"2026-12-03T16:00:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"PLANNED",
 "mw":35,
 "name":"BEAUCAIRE G3",
-"pub":"2026-10-02T07:18:37Z",
+"pub":"2026-10-30T11:18:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
-"start":"2026-11-30T06:00:00Z",
+"start":"2026-11-27T16:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-30T06:00:00Z",
-"2026-12-04T16:00:00Z",
+"2026-11-27T16:00:00Z",
+"2026-12-03T16:00:00Z",
 35
 ]
 ],
-"v":2
+"v":3
 },
 "CNR-VA252272-22001U04-1-1":{
 "eic":"17W100P100P1333D",
@@ -18418,12 +18418,12 @@
 },
 "CNR-VS251968-12001U04-1-1":{
 "eic":"17W100P100P20398",
-"end":"2026-11-03T16:00:00Z",
+"end":"2026-11-06T16:00:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"PLANNED",
 "mw":18,
 "name":"VAUGRIS G4",
-"pub":"2026-10-02T14:15:36Z",
+"pub":"2026-10-30T13:03:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-05T04:00:00Z",
@@ -18431,11 +18431,11 @@
 "steps":[
 [
 "2026-10-05T04:00:00Z",
-"2026-11-03T16:00:00Z",
+"2026-11-06T16:00:00Z",
 18
 ]
 ],
-"v":4
+"v":5
 },
 "CNR-VS251969-12001U04-1-1":{
 "eic":"17W100P100P20398",
@@ -104873,6 +104873,27 @@
 ],
 "v":2
 },
+"EDF-05470_EDF_H_00135474":{
+"eic":"17W100P100P00869",
+"end":"2026-11-05T16:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":162,
+"name":"SUPER BISSORTE 5",
+"pub":"2026-10-30T13:33:35Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-05T09:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-05T09:00:00Z",
+"2026-11-05T16:00:00Z",
+162
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -140869,12 +140890,12 @@
 },
 "EDF-05470_EDF_T_00312123":{
 "eic":"17W100P100P0112Y",
-"end":"2026-10-31T00:00:00Z",
+"end":"2026-10-31T11:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 2",
-"pub":"2026-10-23T13:31:37Z",
+"pub":"2026-10-30T13:29:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Causes externes liées à l'environnement\nLe placement et la durée de cet arrêt pour contraintes environnementales seront modifiés en fonction de l'évolution des prévisions météorologiques\n------------\nEnvironmental issues\nThe planning and the duration of the shutdown for environnemental issues could ",
 "start":"2026-07-10T21:45:00Z",
@@ -140882,11 +140903,11 @@
 "steps":[
 [
 "2026-07-10T21:45:00Z",
-"2026-10-31T00:00:00Z",
+"2026-10-31T11:00:00Z",
 1500
 ]
 ],
-"v":46
+"v":47
 },
 "EDF-05470_EDF_T_00312128":{
 "eic":"17W100P100P0126N",
@@ -159475,12 +159496,12 @@
 },
 "EDF-05470_EDF_T_00338303":{
 "eic":"17W100P100P0018Q",
-"end":"2026-11-06T23:00:00Z",
+"end":"2026-11-06T16:00:00Z",
 "fuel":"FOSSIL_HARD_COAL",
 "kind":"PLANNED",
 "mw":580,
 "name":"CORDEMAIS 5",
-"pub":"2026-10-29T17:05:36Z",
+"pub":"2026-10-30T11:04:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essais de requalification, avec variations de puissance\n--------\nCheck tests, with load variations.",
 "start":"2026-11-03T16:00:00Z",
@@ -159488,11 +159509,11 @@
 "steps":[
 [
 "2026-11-03T16:00:00Z",
-"2026-11-06T23:00:00Z",
+"2026-11-06T16:00:00Z",
 0
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00338307":{
 "eic":"17W100P100P0048H",
@@ -159640,6 +159661,48 @@
 ]
 ],
 "v":2
+},
+"EDF-05470_EDF_T_00338504":{
+"eic":"17W100P100P0018Q",
+"end":"2026-11-16T17:00:00Z",
+"fuel":"FOSSIL_HARD_COAL",
+"kind":"PLANNED",
+"mw":580,
+"name":"CORDEMAIS 5",
+"pub":"2026-10-30T11:09:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"https://iip.cloud-rte-france.com/en/other-market-information/7554-EDF-0000000000000000",
+"start":"2026-11-06T16:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-06T16:00:00Z",
+"2026-11-16T17:00:00Z",
+580
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00338506":{
+"eic":"17W100P100P0175A",
+"end":"2026-11-04T17:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-10-30T12:40:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-11-01T17:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-01T17:00:00Z",
+"2026-11-04T17:00:00Z",
+-3
+]
+],
+"v":1
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
