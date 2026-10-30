@@ -104810,6 +104810,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00135464":{
+"eic":"17W100P100P00869",
+"end":"2026-10-30T03:38:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"UNPLANNED",
+"mw":162,
+"name":"SUPER BISSORTE 5",
+"pub":"2026-10-30T00:11:36Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-10-29T23:38:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-29T23:38:00Z",
+"2026-10-30T03:38:00Z",
+162
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -159396,7 +159417,7 @@
 "kind":"PLANNED",
 "mw":910,
 "name":"BLAYAIS 2",
-"pub":"2026-10-29T06:37:36Z",
+"pub":"2026-10-29T20:50:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essai programmé.\n--------\nPlanned test.",
 "start":"2026-10-31T02:30:00Z",
@@ -159408,7 +159429,7 @@
 524
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00338303":{
 "eic":"17W100P100P0018Q",
