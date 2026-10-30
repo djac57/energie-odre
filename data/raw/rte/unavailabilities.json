@@ -23857,12 +23857,12 @@
 },
 "EC-EDF-05470-EDF-T-00095779":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-24T23:00:00Z",
+"end":"2026-11-20T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2025-03-28T14:27:19Z",
+"pub":"2026-10-30T13:39:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
 "start":"2026-06-12T22:00:00Z",
@@ -23870,11 +23870,11 @@
 "steps":[
 [
 "2026-06-12T22:00:00Z",
-"2026-11-24T23:00:00Z",
+"2026-11-20T22:00:00Z",
 915
 ]
 ],
-"v":4
+"v":5
 },
 "EC-EDF-05470-EDF-T-00095792":{
 "eic":"17W100P100P0135M",
@@ -24760,24 +24760,24 @@
 },
 "EC-EDF-05470-EDF-T-00104303":{
 "eic":"17W100P100P0142P",
-"end":"2026-11-04T22:00:00Z",
+"end":"2026-11-02T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1330,
 "name":"PALUEL 4",
-"pub":"2026-10-29T14:42:36Z",
+"pub":"2026-10-30T14:51:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\n--------\nAfter its restart, the plant will gradually return by various load threshold to full power.\nThe ramp-up period will take at least 48 hours.",
+"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.\n--------\nAfter its restart, the plant will gradually return by vari",
 "start":"2026-09-18T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-09-18T21:00:00Z",
-"2026-11-04T22:00:00Z",
+"2026-11-02T22:00:00Z",
 1330
 ]
 ],
-"v":13
+"v":14
 },
 "EC-EDF-05470-EDF-T-00105339":{
 "eic":"17W100P100P00974",
@@ -104894,6 +104894,69 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00135475":{
+"eic":"17W100P100P0072K",
+"end":"2026-11-03T17:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":227,
+"name":"MONTEZIC 2",
+"pub":"2026-10-30T14:15:37Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-03T07:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-03T07:00:00Z",
+"2026-11-03T17:00:00Z",
+227
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135477":{
+"eic":"17W100P100P00796",
+"end":"2026-10-30T18:23:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"UNPLANNED",
+"mw":202,
+"name":"REVIN 4",
+"pub":"2026-10-30T18:26:35Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-10-30T16:37:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-10-30T16:37:00Z",
+"2026-10-30T18:23:00Z",
+202
+]
+],
+"v":2
+},
+"EDF-05470_EDF_H_00135481":{
+"eic":"17W100P100P0055K",
+"end":"2026-10-30T18:15:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"UNPLANNED",
+"mw":240,
+"name":"BROMMAT 7",
+"pub":"2026-10-30T18:24:36Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-10-30T16:53:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-10-30T16:53:00Z",
+"2026-10-30T18:15:00Z",
+240
+]
+],
+"v":2
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -159538,12 +159601,12 @@
 },
 "EDF-05470_EDF_T_00338308":{
 "eic":"17W100P100P02594",
-"end":"2026-10-30T16:00:00Z",
+"end":"2026-11-04T16:00:00Z",
 "fuel":"FOSSIL_OIL",
 "kind":"UNPLANNED",
 "mw":85,
 "name":"BRENNILIS 2",
-"pub":"2026-10-29T18:53:38Z",
+"pub":"2026-10-30T15:41:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-29T17:58:00Z",
@@ -159551,11 +159614,11 @@
 "steps":[
 [
 "2026-10-29T17:58:00Z",
-"2026-10-30T16:00:00Z",
+"2026-11-04T16:00:00Z",
 85
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00338470":{
 "eic":"17W100P100P0141R",
@@ -161987,6 +162050,69 @@
 "2026-04-02T07:00:00Z",
 "2026-04-02T14:00:00Z",
 96
+]
+],
+"v":1
+},
+"HCH-17X000002265525U_outage_03112026":{
+"eic":"17W000002315528O",
+"end":"2026-11-03T16:00:00Z",
+"fuel":"OTHER",
+"kind":"PLANNED",
+"mw":96,
+"name":"DOPPLER CHEVIRE G1",
+"pub":"2026-10-30T15:56:37Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"activités de maintenance\n\t-------------------------------------\n\tmaintenance activities",
+"start":"2026-11-03T09:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-03T09:00:00Z",
+"2026-11-03T16:00:00Z",
+6
+]
+],
+"v":1
+},
+"HCH-17X000002265525U_outage_04112026":{
+"eic":"17W000002315528O",
+"end":"2026-11-04T16:00:00Z",
+"fuel":"OTHER",
+"kind":"PLANNED",
+"mw":96,
+"name":"DOPPLER CHEVIRE G1",
+"pub":"2026-10-30T15:56:35Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"activités de maintenance\n\t-------------------------------------\n\tmaintenance activities",
+"start":"2026-11-04T09:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-04T09:00:00Z",
+"2026-11-04T16:00:00Z",
+6
+]
+],
+"v":1
+},
+"HCH-17X000002265525U_outage_05112026":{
+"eic":"17W000002315528O",
+"end":"2026-11-05T16:00:00Z",
+"fuel":"OTHER",
+"kind":"PLANNED",
+"mw":96,
+"name":"DOPPLER CHEVIRE G1",
+"pub":"2026-10-30T15:56:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"activités de maintenance\n\t-------------------------------------\n\tmaintenance activities",
+"start":"2026-11-05T09:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-05T09:00:00Z",
+"2026-11-05T16:00:00Z",
+6
 ]
 ],
 "v":1
@@ -169982,12 +170108,12 @@
 },
 "TRF-ID20261019093556":{
 "eic":"17W000001468590C",
-"end":"2026-10-30T22:59:00Z",
+"end":"2026-10-31T22:59:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":120,
 "name":"COGENERATION NORMANDIE (AMFARD) TRAIN 15",
-"pub":"2026-10-30T09:30:35Z",
+"pub":"2026-10-30T18:02:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-19T15:00:00Z",
@@ -169995,11 +170121,11 @@
 "steps":[
 [
 "2026-10-19T15:00:00Z",
-"2026-10-30T22:59:00Z",
-120
+"2026-10-31T22:59:00Z",
+52
 ]
 ],
-"v":2
+"v":3
 },
 "TRF-Train14_20250722121000":{
 "eic":"17W000001468589Y",
