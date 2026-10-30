@@ -23862,9 +23862,9 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-10-30T13:39:36Z",
+"pub":"2026-10-30T19:35:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
+"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.\n--------\nAfter its restart, the plant will gradually return by vari",
 "start":"2026-06-12T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -23874,7 +23874,7 @@
 915
 ]
 ],
-"v":5
+"v":6
 },
 "EC-EDF-05470-EDF-T-00095792":{
 "eic":"17W100P100P0135M",
@@ -159643,24 +159643,24 @@
 },
 "EDF-05470_EDF_T_00338474":{
 "eic":"17W100P100P0109N",
-"end":"2026-10-31T18:30:00Z",
+"end":"2026-10-31T01:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":905,
 "name":"CHINON 4",
-"pub":"2026-10-30T07:22:36Z",
+"pub":"2026-10-30T22:06:35Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
-"start":"2026-10-31T17:00:00Z",
+"start":"2026-10-31T00:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-10-31T17:00:00Z",
-"2026-10-31T18:30:00Z",
-107
+"2026-10-31T00:00:00Z",
+"2026-10-31T01:30:00Z",
+125
 ]
 ],
-"v":1
+"v":3
 },
 "EDF-05470_EDF_T_00338477":{
 "eic":"17W100P100P0147F",
