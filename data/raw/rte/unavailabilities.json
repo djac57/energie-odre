@@ -141121,24 +141121,24 @@
 },
 "EDF-05470_EDF_T_00312123":{
 "eic":"17W100P100P0112Y",
-"end":"2026-11-01T11:00:00Z",
+"end":"2026-10-31T17:59:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 2",
-"pub":"2026-10-31T08:58:35Z",
+"pub":"2026-10-31T18:01:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Causes externes liées à l'environnement\nLe placement et la durée de cet arrêt pour contraintes environnementales seront modifiés en fonction de l'évolution des prévisions météorologiques\n------------\nEnvironmental issues\nThe planning and the duration of the shutdown for environnemental issues could ",
 "start":"2026-07-10T21:45:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-07-10T21:45:00Z",
-"2026-11-01T11:00:00Z",
+"2026-10-31T17:59:00Z",
 1500
 ]
 ],
-"v":48
+"v":49
 },
 "EDF-05470_EDF_T_00312128":{
 "eic":"17W100P100P0126N",
@@ -159956,6 +159956,27 @@
 ],
 "v":2
 },
+"EDF-05470_EDF_T_00338765":{
+"eic":"17W100P100P0112Y",
+"end":"2026-11-03T11:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1500,
+"name":"CHOOZ 2",
+"pub":"2026-10-31T18:02:36Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-10-31T18:01:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-10-31T18:01:00Z",
+"2026-11-03T11:00:00Z",
+1500
+]
+],
+"v":1
+},
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
 "end":"2027-09-21T22:00:00Z",
@@ -170328,12 +170349,12 @@
 },
 "TRF-ID20261019093556":{
 "eic":"17W000001468590C",
-"end":"2026-10-31T22:59:00Z",
+"end":"2026-10-31T16:00:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":120,
 "name":"COGENERATION NORMANDIE (AMFARD) TRAIN 15",
-"pub":"2026-10-30T18:02:36Z",
+"pub":"2026-10-31T15:52:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-19T15:00:00Z",
@@ -170341,11 +170362,11 @@
 "steps":[
 [
 "2026-10-19T15:00:00Z",
-"2026-10-31T22:59:00Z",
+"2026-10-31T16:00:00Z",
 52
 ]
 ],
-"v":3
+"v":4
 },
 "TRF-Train14_20250722121000":{
 "eic":"17W000001468589Y",
