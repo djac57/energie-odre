@@ -23080,12 +23080,12 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-11-02T22:00:00Z",
+"end":"2026-11-12T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-10-27T19:57:35Z",
+"pub":"2026-11-01T09:45:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 273 MW\nArrêt susceptible d'être prolongé.\n-------------------------------------\nAfter its restart, the plant will gradually return by v",
 "start":"2026-01-30T23:00:00Z",
@@ -23093,11 +23093,11 @@
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-11-02T22:00:00Z",
+"2026-11-12T22:00:00Z",
 1300
 ]
 ],
-"v":44
+"v":45
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -159181,24 +159181,24 @@
 },
 "EDF-05470_EDF_T_00337540":{
 "eic":"17W100P100P0143N",
-"end":"2026-11-01T13:00:00Z",
+"end":"2026-11-01T09:26:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1330,
 "name":"PENLY 1",
-"pub":"2026-10-30T06:32:37Z",
+"pub":"2026-11-01T09:27:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-01T03:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-01T03:00:00Z",
-"2026-11-01T13:00:00Z",
+"2026-11-01T09:26:00Z",
 562
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00337549":{
 "eic":"17W100P100P02594",
@@ -159732,7 +159732,7 @@
 "kind":"PLANNED",
 "mw":910,
 "name":"BUGEY 2",
-"pub":"2026-10-30T06:09:35Z",
+"pub":"2026-11-01T11:18:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-01T11:00:00Z",
@@ -159741,10 +159741,10 @@
 [
 "2026-11-01T11:00:00Z",
 "2026-11-01T14:00:00Z",
-655
+750
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00338303":{
 "eic":"17W100P100P0018Q",
@@ -159937,24 +159937,24 @@
 },
 "EDF-05470_EDF_T_00338723":{
 "eic":"17W100P100P0175A",
-"end":"2026-11-04T17:00:00Z",
+"end":"2026-11-02T23:00:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":465,
 "name":"MARTIGUES PONTEAU 6",
-"pub":"2026-10-31T08:27:35Z",
+"pub":"2026-11-01T07:39:35Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \nLa tranche sera par ailleurs imposée à 374 MW (MAX.P2.S0) de 11h00 à 14h30 et de 18h30 au 03/11 0h.\n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.\nThe unit wi",
 "start":"2026-11-01T23:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-01T23:00:00Z",
-"2026-11-04T17:00:00Z",
+"2026-11-02T23:00:00Z",
 -3
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00338761":{
 "eic":"17W100P100P0174C",
@@ -160019,6 +160019,27 @@
 ],
 "v":4
 },
+"EDF-05470_EDF_T_00338817":{
+"eic":"17W100P100P0148D",
+"end":"2026-11-03T18:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":915,
+"name":"ST LAURENT 2",
+"pub":"2026-11-01T07:16:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-03T16:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-03T16:00:00Z",
+"2026-11-03T18:00:00Z",
+115
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00338825":{
 "eic":"17W100P100P0109N",
 "end":"2026-11-01T05:52:00Z",
@@ -160042,12 +160063,12 @@
 },
 "EDF-05470_EDF_T_00338845":{
 "eic":"17W100P100P0109N",
-"end":"2026-11-01T10:00:00Z",
+"end":"2026-11-01T07:45:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":905,
 "name":"CHINON 4",
-"pub":"2026-11-01T06:36:36Z",
+"pub":"2026-11-01T06:59:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"La remontée peut prendre plusieurs heures en fonction de l'évolution de paramètres techniques\n--------\nThe ramp-up period may take several hours according to technical issues monitoring.",
 "start":"2026-11-01T06:35:00Z",
@@ -160055,8 +160076,29 @@
 "steps":[
 [
 "2026-11-01T06:35:00Z",
-"2026-11-01T10:00:00Z",
+"2026-11-01T07:45:00Z",
 675
+]
+],
+"v":2
+},
+"EDF-05470_EDF_T_00338956":{
+"eic":"17W100P100P0175A",
+"end":"2026-11-04T17:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-11-01T07:41:35Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Tranche maintenue couplée par le gestionnaire de réseau, à puissance minimale technique a minima. \n--------------\nPlant maintained in operation by TSO, at minimum technical power at least.",
+"start":"2026-11-02T23:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-02T23:00:00Z",
+"2026-11-04T17:00:00Z",
+-3
 ]
 ],
 "v":1
@@ -162093,12 +162135,12 @@
 },
 "GAZ-GEN-74673":{
 "eic":"17W100P100P03655",
-"end":"2026-11-02T23:00:00Z",
+"end":"2026-11-03T21:30:00Z",
 "fuel":"BIOMASS",
 "kind":"PLANNED",
 "mw":150,
 "name":"PROVENCE 4 BIOMASSE",
-"pub":"2026-10-31T12:13:36Z",
+"pub":"2026-11-01T08:10:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Restrictions due to energy supply contracts (e.g. heat, steam or electricity)",
 "start":"2026-11-01T22:00:00Z",
@@ -162106,18 +162148,54 @@
 "steps":[
 [
 "2026-11-01T22:00:00Z",
-"2026-11-02T04:00:00Z",
+"2026-11-02T16:30:00Z",
+150
+],
+[
+"2026-11-02T16:30:00Z",
+"2026-11-02T17:30:00Z",
+140
+],
+[
+"2026-11-02T17:30:00Z",
+"2026-11-02T20:30:00Z",
+120
+],
+[
+"2026-11-02T20:30:00Z",
+"2026-11-03T02:30:00Z",
 100
 ],
 [
-"2026-11-02T04:00:00Z",
-"2026-11-02T09:00:00Z",
+"2026-11-03T02:30:00Z",
+"2026-11-03T07:30:00Z",
 70
 ],
 [
-"2026-11-02T09:00:00Z",
-"2026-11-02T23:00:00Z",
+"2026-11-03T07:30:00Z",
+"2026-11-03T21:30:00Z",
 50
+]
+],
+"v":2
+},
+"GAZ-GEN-74697":{
+"eic":"17W100P100P03655",
+"end":"2026-11-03T23:00:00Z",
+"fuel":"BIOMASS",
+"kind":"PLANNED",
+"mw":150,
+"name":"PROVENCE 4 BIOMASSE",
+"pub":"2026-11-01T08:11:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Restrictions due to energy supply contracts (e.g. heat, steam or electricity)",
+"start":"2026-11-03T21:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-03T21:30:00Z",
+"2026-11-03T23:00:00Z",
+30
 ]
 ],
 "v":1
@@ -169605,12 +169683,12 @@
 },
 "TDE-20261029_600107810":{
 "eic":"17W100P100P0344D",
-"end":"2026-11-01T12:59:00Z",
+"end":"2026-11-01T11:30:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":435,
 "name":"SAINT AVOLD 7",
-"pub":"2026-10-29T16:21:36Z",
+"pub":"2026-11-01T08:33:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-31T07:00:00Z",
@@ -169618,11 +169696,11 @@
 "steps":[
 [
 "2026-10-31T07:00:00Z",
-"2026-11-01T12:59:00Z",
+"2026-11-01T11:30:00Z",
 435
 ]
 ],
-"v":1
+"v":2
 },
 "TDE-20261030_600107840":{
 "eic":"17W100P100P0345B",
