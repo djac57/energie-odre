@@ -29,6 +29,7 @@ jobs:
 
       - name: Télécharger éCO2mix et la météo régionale (ODRÉ)
         if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'
+        continue-on-error: true   # ODRÉ en panne : on garde les derniers exports, le site se déploie quand même
         run: python scripts/fetch.py data/raw
 
       - name: Données de pilotage RTE (data.rte-france.com)
@@ -95,6 +96,7 @@ jobs:
 
       - name: Construire data.js
         if: github.event_name != 'schedule' || github.event.schedule == '23 4 * * *'  # besoin des exports ODRÉ du jour
+        continue-on-error: true
         run: python scripts/build.py data/raw site/data.js
 
       - name: Construire rte.js et prices.js
