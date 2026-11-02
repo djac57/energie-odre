@@ -6,10 +6,7 @@
 <title>Eau, feux &amp; air</title>
 <meta name="description" content="Feux en direct (NASA FIRMS) et depuis 2001, feux de forêt, danger d'incendie, santé des forêts, restrictions d'eau et qualité de l'air en France.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="vendor/d3.min.js"></script>
 <script src="eaufeuxair.js?v=fce4cd8e5e"></script>
 <script src="geo_world.js"></script>
 <style>
@@ -191,6 +188,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 @media (max-width: 1000px) { .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } }
 </style>
 <script data-goatcounter="https://ukraine-map.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+  <link rel="stylesheet" href="fonts.css">
 </head>
 <body>
 <div class="bar">
@@ -364,7 +362,8 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   </div>
 </div></section>
 
-<footer id="footer"></footer>
+<footer id="footer"><p class="rgpd-note" style="font:400 12px/1.5 system-ui,-apple-system,sans-serif;opacity:.55;text-align:center;max-width:72ch;margin:1.25rem auto 0;padding:0 1rem">Analytics anonymes sans cookies (GoatCounter, Plausible). Polices et bibliothèque d3 auto-hébergées. Hébergé sur GitHub Pages — aucune donnée personnelle collectée, aucun cookie.</p>
+</footer>
 <div class="tip" id="tip"></div>
 <script>
 const D = window.EFA;
