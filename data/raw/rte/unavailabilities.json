@@ -105253,24 +105253,24 @@
 },
 "EDF-05470_EDF_H_00135510":{
 "eic":"17W100P100P0075E",
-"end":"2026-11-03T01:11:00Z",
+"end":"2026-11-02T19:30:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"UNPLANNED",
 "mw":286,
 "name":"POUGET 4",
-"pub":"2026-11-02T19:13:36Z",
+"pub":"2026-11-02T19:32:35Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-11-02T19:11:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-02T19:11:00Z",
-"2026-11-03T01:11:00Z",
+"2026-11-02T19:30:00Z",
 286
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
@@ -160341,19 +160341,19 @@
 "kind":"PLANNED",
 "mw":1335,
 "name":"ST ALBAN 1",
-"pub":"2026-11-02T18:32:36Z",
+"pub":"2026-11-02T20:43:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Causes externes liées à l'environnement\n------------\nEnvironmental issues.",
-"start":"2026-11-02T20:00:00Z",
+"start":"2026-11-02T21:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-02T20:00:00Z",
+"2026-11-02T21:00:00Z",
 "2026-11-02T23:30:00Z",
-1075
+775
 ]
 ],
-"v":2
+"v":4
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
@@ -169994,12 +169994,12 @@
 },
 "TDE-20261101_600108090":{
 "eic":"17W100P100P0344D",
-"end":"2026-11-03T00:00:00Z",
+"end":"2026-11-02T22:59:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"UNPLANNED",
 "mw":435,
 "name":"SAINT AVOLD 7",
-"pub":"2026-11-01T17:30:37Z",
+"pub":"2026-11-02T19:50:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-01T17:29:00Z",
@@ -170007,11 +170007,11 @@
 "steps":[
 [
 "2026-11-01T17:29:00Z",
-"2026-11-03T00:00:00Z",
+"2026-11-02T22:59:00Z",
 435
 ]
 ],
-"v":1
+"v":2
 },
 "TGE-17X0000023720661_outage_01072026":{
 "eic":"17W000002385265P",
