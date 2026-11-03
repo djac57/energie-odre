@@ -431,7 +431,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <b>Carburants</b> — <a href="https://data.economie.gouv.fr/explore/dataset/prix-des-carburants-en-france-flux-instantane-v2/" target="_blank" rel="noopener">Prix des carburants en France, flux instantané v2</a> (ministère de l'Économie, Licence Ouverte), interrogé par votre navigateur&nbsp;; <a href="https://energy.ec.europa.eu/data-and-analysis/weekly-oil-bulletin_en" target="_blank" rel="noopener">Weekly Oil Bulletin</a>, © Union européenne, réutilisation autorisée&nbsp;; Brent&nbsp;: U.S. EIA, série <span class="mono">DCOILBRENTEU</span> via FRED (domaine public).<br>
   <b>Charbon et uranium</b> — production des centrales&nbsp;: RTE éCO2mix (ODRÉ) et API Actual Generation (data.rte-france.com)&nbsp;; prix&nbsp;: FMI (séries PCOALAUUSDM et PURANUSDM) via FRED, © FMI. Les origines détaillées de l'approvisionnement de l'UE publiées par l'Agence d'approvisionnement d'Euratom ne sont pas reprises ici.<br>
   <b>Fonds de carte</b> — régions&nbsp;: <a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a> (Admin Express IGN, Licence Ouverte)&nbsp;; monde et Europe&nbsp;: <a href="https://github.com/topojson/world-atlas" target="_blank" rel="noopener">world-atlas</a> 2.0.2 (Natural Earth 110, 50 et 10 m — ce dernier pour les grands zooms sur l'Europe de l'Ouest —, domaine public). Tracés des gazoducs et routes maritimes&nbsp;: schématiques.
-<p class="rgpd-note" style="font:400 12px/1.5 system-ui,-apple-system,sans-serif;opacity:.55;text-align:center;max-width:72ch;margin:1.25rem auto 0;padding:0 1rem">Analytics anonymes sans cookies (GoatCounter, Plausible). Polices et bibliothèque d3 auto-hébergées. Hébergé sur GitHub Pages — aucune donnée personnelle collectée, aucun cookie.</p>
+<p class="rgpd-note" style="font:400 12px/1.5 system-ui,-apple-system,sans-serif;opacity:.55;text-align:center;max-width:72ch;margin:1.25rem auto 0;padding:0 1rem" data-fr="Analytics anonymes sans cookies (GoatCounter, Plausible). Polices et bibliothèque d3 auto-hébergées. Hébergé sur GitHub Pages — aucune donnée personnelle collectée, aucun cookie." data-en="Anonymous analytics, no cookies (GoatCounter, Plausible). Self-hosted fonts and d3 library. Hosted on GitHub Pages — no personal data collected, no cookies.">Analytics anonymes sans cookies (GoatCounter, Plausible). Polices et bibliothèque d3 auto-hébergées. Hébergé sur GitHub Pages — aucune donnée personnelle collectée, aucun cookie.</p>
 </footer>
 <div class="tip" id="tip"></div>
 
@@ -1362,5 +1362,6 @@ let rz, lastW = innerWidth; addEventListener("resize", () => { if (innerWidth ==
 renderAll();
 loadLive(); setInterval(loadLive, 15 * 60e3);
 </script>
+<script id="rgpd-lang">document.querySelectorAll(".rgpd-note").forEach(function(n){try{var en=(navigator.language||navigator.userLanguage||"").slice(0,2).toLowerCase()==="en";var v=n.getAttribute(en?"data-en":"data-fr");if(v)n.textContent=v;}catch(e){}});</script>
 </body>
 </html>
