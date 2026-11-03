@@ -1035,7 +1035,15 @@
 "region": "Auvergne-Rhône-Alpes",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 2.98,
+"vent": 2.954798387096774,
+"rayonnement": 114.58435483870967,
+"n": 248
+},
+{
+"region": "Auvergne-Rhône-Alpes",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 2.95,
 "rayonnement": 0.0,
 "n": 1
 },
@@ -1068,7 +1076,7 @@
 "date_format(date,'yyyy-MM')": "2016-04",
 "mois": null,
 "vent": 4.8161249999999995,
-"rayonnement": 177.67191666666665,
+"rayonnement": 177.67191666666668,
 "n": 240
 },
 {
@@ -1139,7 +1147,7 @@
 "region": "Bourgogne-Franche-Comté",
 "date_format(date,'yyyy-MM')": "2017-01",
 "mois": null,
-"vent": 5.236330645161291,
+"vent": 5.23633064516129,
 "rayonnement": 54.49342741935484,
 "n": 248
 },
@@ -1188,7 +1196,7 @@
 "date_format(date,'yyyy-MM')": "2017-07",
 "mois": null,
 "vent": 4.2488306451612905,
-"rayonnement": 227.6653629032258,
+"rayonnement": 227.66536290322583,
 "n": 248
 },
 {
@@ -1204,7 +1212,7 @@
 "date_format(date,'yyyy-MM')": "2017-09",
 "mois": null,
 "vent": 4.11125,
-"rayonnement": 143.99429166666667,
+"rayonnement": 143.9942916666667,
 "n": 240
 },
 {
@@ -1524,7 +1532,7 @@
 "date_format(date,'yyyy-MM')": "2021-01",
 "mois": null,
 "vent": 5.780645161290322,
-"rayonnement": 40.03278225806452,
+"rayonnement": 40.032782258064515,
 "n": 248
 },
 {
@@ -1636,7 +1644,7 @@
 "date_format(date,'yyyy-MM')": "2022-03",
 "mois": null,
 "vent": 4.767137096774194,
-"rayonnement": 167.3288306451613,
+"rayonnement": 167.32883064516128,
 "n": 248
 },
 {
@@ -1651,7 +1659,7 @@
 "region": "Bourgogne-Franche-Comté",
 "date_format(date,'yyyy-MM')": "2022-05",
 "mois": null,
-"vent": 4.364274193548388,
+"vent": 4.364274193548387,
 "rayonnement": 268.90375,
 "n": 248
 },
@@ -1691,7 +1699,7 @@
 "region": "Bourgogne-Franche-Comté",
 "date_format(date,'yyyy-MM')": "2022-10",
 "mois": null,
-"vent": 4.885524193548387,
+"vent": 4.885524193548386,
 "rayonnement": 111.76834677419355,
 "n": 248
 },
@@ -1699,7 +1707,7 @@
 "region": "Bourgogne-Franche-Comté",
 "date_format(date,'yyyy-MM')": "2022-11",
 "mois": null,
-"vent": 5.3568333333333324,
+"vent": 5.356833333333333,
 "rayonnement": 57.58166666666666,
 "n": 240
 },
@@ -1876,7 +1884,7 @@
 "date_format(date,'yyyy-MM')": "2024-09",
 "mois": null,
 "vent": 4.971125,
-"rayonnement": 154.29679166666665,
+"rayonnement": 154.29679166666668,
 "n": 240
 },
 {
@@ -1916,7 +1924,7 @@
 "date_format(date,'yyyy-MM')": "2025-02",
 "mois": null,
 "vent": 4.441116071428572,
-"rayonnement": 92.6111607142857,
+"rayonnement": 92.61116071428572,
 "n": 224
 },
 {
@@ -2011,7 +2019,7 @@
 "region": "Bourgogne-Franche-Comté",
 "date_format(date,'yyyy-MM')": "2026-02",
 "mois": null,
-"vent": 6.384642857142857,
+"vent": 6.3846428571428575,
 "rayonnement": 73.73660714285714,
 "n": 224
 },
@@ -2075,7 +2083,15 @@
 "region": "Bourgogne-Franche-Comté",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 4.06,
+"vent": 4.6853225806451615,
+"rayonnement": 105.18173387096775,
+"n": 248
+},
+{
+"region": "Bourgogne-Franche-Comté",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 5.95,
 "rayonnement": 0.0,
 "n": 1
 },
@@ -2091,7 +2107,7 @@
 "region": "Bretagne",
 "date_format(date,'yyyy-MM')": "2016-02",
 "mois": null,
-"vent": 9.94633620689655,
+"vent": 9.946336206896552,
 "rayonnement": 74.72331896551725,
 "n": 232
 },
@@ -2123,7 +2139,7 @@
 "region": "Bretagne",
 "date_format(date,'yyyy-MM')": "2016-06",
 "mois": null,
-"vent": 5.882583333333333,
+"vent": 5.882583333333334,
 "rayonnement": 222.37591666666668,
 "n": 240
 },
@@ -2252,7 +2268,7 @@
 "date_format(date,'yyyy-MM')": "2017-10",
 "mois": null,
 "vent": 6.649314516129032,
-"rayonnement": 93.21322580645162,
+"rayonnement": 93.2132258064516,
 "n": 248
 },
 {
@@ -2284,7 +2300,7 @@
 "date_format(date,'yyyy-MM')": "2018-02",
 "mois": null,
 "vent": 8.452321428571429,
-"rayonnement": 90.10941964285715,
+"rayonnement": 90.10941964285713,
 "n": 224
 },
 {
@@ -2315,7 +2331,7 @@
 "region": "Bretagne",
 "date_format(date,'yyyy-MM')": "2018-06",
 "mois": null,
-"vent": 5.70675,
+"vent": 5.7067499999999995,
 "rayonnement": 265.78175,
 "n": 240
 },
@@ -2340,7 +2356,7 @@
 "date_format(date,'yyyy-MM')": "2018-09",
 "mois": null,
 "vent": 6.323791666666667,
-"rayonnement": 171.90154166666667,
+"rayonnement": 171.90154166666665,
 "n": 240
 },
 {
@@ -2596,7 +2612,7 @@
 "date_format(date,'yyyy-MM')": "2021-05",
 "mois": null,
 "vent": 8.472016129032259,
-"rayonnement": 234.29943548387095,
+"rayonnement": 234.29943548387098,
 "n": 248
 },
 {
@@ -2651,8 +2667,8 @@
 "region": "Bretagne",
 "date_format(date,'yyyy-MM')": "2021-12",
 "mois": null,
-"vent": 9.431491935483871,
-"rayonnement": 38.14564516129032,
+"vent": 9.43149193548387,
+"rayonnement": 38.145645161290325,
 "n": 248
 },
 {
@@ -2764,7 +2780,7 @@
 "date_format(date,'yyyy-MM')": "2023-02",
 "mois": null,
 "vent": 6.095848214285715,
-"rayonnement": 92.40535714285714,
+"rayonnement": 92.40535714285716,
 "n": 224
 },
 {
@@ -2835,7 +2851,7 @@
 "region": "Bretagne",
 "date_format(date,'yyyy-MM')": "2023-11",
 "mois": null,
-"vent": 10.145,
+"vent": 10.145000000000001,
 "rayonnement": 54.022375,
 "n": 240
 },
@@ -2907,7 +2923,7 @@
 "region": "Bretagne",
 "date_format(date,'yyyy-MM')": "2024-08",
 "mois": null,
-"vent": 5.878427419354838,
+"vent": 5.878427419354839,
 "rayonnement": 216.33064516129033,
 "n": 248
 },
@@ -2916,7 +2932,7 @@
 "date_format(date,'yyyy-MM')": "2024-09",
 "mois": null,
 "vent": 6.65625,
-"rayonnement": 158.66333333333336,
+"rayonnement": 158.66333333333333,
 "n": 240
 },
 {
@@ -3115,7 +3131,15 @@
 "region": "Bretagne",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 5.6,
+"vent": 7.6557258064516125,
+"rayonnement": 103.29834677419356,
+"n": 248
+},
+{
+"region": "Bretagne",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 8.27,
 "rayonnement": 0.0,
 "n": 1
 },
@@ -3204,7 +3228,7 @@
 "date_format(date,'yyyy-MM')": "2016-11",
 "mois": null,
 "vent": 6.567083333333333,
-"rayonnement": 50.99216666666667,
+"rayonnement": 50.99216666666666,
 "n": 240
 },
 {
@@ -3212,7 +3236,7 @@
 "date_format(date,'yyyy-MM')": "2016-12",
 "mois": null,
 "vent": 4.657862903225807,
-"rayonnement": 44.423185483870974,
+"rayonnement": 44.42318548387097,
 "n": 248
 },
 {
@@ -3611,7 +3635,7 @@
 "region": "Centre-Val de Loire",
 "date_format(date,'yyyy-MM')": "2021-02",
 "mois": null,
-"vent": 6.5861607142857155,
+"vent": 6.586160714285714,
 "rayonnement": 88.66986607142857,
 "n": 224
 },
@@ -3619,8 +3643,8 @@
 "region": "Centre-Val de Loire",
 "date_format(date,'yyyy-MM')": "2021-03",
 "mois": null,
-"vent": 6.456532258064517,
-"rayonnement": 144.1459677419355,
+"vent": 6.456532258064516,
+"rayonnement": 144.14596774193546,
 "n": 248
 },
 {
@@ -3708,7 +3732,7 @@
 "date_format(date,'yyyy-MM')": "2022-02",
 "mois": null,
 "vent": 7.172544642857143,
-"rayonnement": 82.19535714285715,
+"rayonnement": 82.19535714285713,
 "n": 224
 },
 {
@@ -3836,7 +3860,7 @@
 "date_format(date,'yyyy-MM')": "2023-06",
 "mois": null,
 "vent": 4.703,
-"rayonnement": 291.1575833333333,
+"rayonnement": 291.1575833333334,
 "n": 240
 },
 {
@@ -3892,7 +3916,7 @@
 "date_format(date,'yyyy-MM')": "2024-01",
 "mois": null,
 "vent": 7.144516129032259,
-"rayonnement": 51.59354838709677,
+"rayonnement": 51.593548387096774,
 "n": 248
 },
 {
@@ -3971,7 +3995,7 @@
 "region": "Centre-Val de Loire",
 "date_format(date,'yyyy-MM')": "2024-11",
 "mois": null,
-"vent": 5.828416666666667,
+"vent": 5.8284166666666675,
 "rayonnement": 58.03358333333333,
 "n": 240
 },
@@ -4124,7 +4148,7 @@
 "date_format(date,'yyyy-MM')": "2026-06",
 "mois": null,
 "vent": 4.939708333333333,
-"rayonnement": 293.76154166666663,
+"rayonnement": 293.7615416666667,
 "n": 240
 },
 {
@@ -4155,8 +4179,16 @@
 "region": "Centre-Val de Loire",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 4.5,
-"rayonnement": 0.01,
+"vent": 5.894556451612903,
+"rayonnement": 107.09524193548387,
+"n": 248
+},
+{
+"region": "Centre-Val de Loire",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 7.02,
+"rayonnement": 0.0,
 "n": 1
 },
 {
@@ -4187,7 +4219,7 @@
 "region": "Corse",
 "date_format(date,'yyyy-MM')": "2016-04",
 "mois": null,
-"vent": 5.225458333333333,
+"vent": 5.225458333333334,
 "rayonnement": 235.77270833333333,
 "n": 240
 },
@@ -4332,14 +4364,14 @@
 "date_format(date,'yyyy-MM')": "2017-10",
 "mois": null,
 "vent": 3.8821774193548384,
-"rayonnement": 151.72532258064516,
+"rayonnement": 151.72532258064518,
 "n": 248
 },
 {
 "region": "Corse",
 "date_format(date,'yyyy-MM')": "2017-11",
 "mois": null,
-"vent": 5.154708333333334,
+"vent": 5.154708333333333,
 "rayonnement": 89.71116666666667,
 "n": 240
 },
@@ -4372,7 +4404,7 @@
 "date_format(date,'yyyy-MM')": "2018-03",
 "mois": null,
 "vent": 6.10516129032258,
-"rayonnement": 156.40762096774193,
+"rayonnement": 156.40762096774196,
 "n": 248
 },
 {
@@ -4604,7 +4636,7 @@
 "date_format(date,'yyyy-MM')": "2020-08",
 "mois": null,
 "vent": 3.9638709677419355,
-"rayonnement": 271.82846774193547,
+"rayonnement": 271.8284677419355,
 "n": 248
 },
 {
@@ -4620,7 +4652,7 @@
 "date_format(date,'yyyy-MM')": "2020-10",
 "mois": null,
 "vent": 5.270362903225807,
-"rayonnement": 134.91181451612903,
+"rayonnement": 134.91181451612906,
 "n": 248
 },
 {
@@ -4716,7 +4748,7 @@
 "date_format(date,'yyyy-MM')": "2021-10",
 "mois": null,
 "vent": 5.05080971659919,
-"rayonnement": 146.50542510121457,
+"rayonnement": 146.5054251012146,
 "n": 247
 },
 {
@@ -4788,7 +4820,7 @@
 "date_format(date,'yyyy-MM')": "2022-07",
 "mois": null,
 "vent": 3.3629838709677418,
-"rayonnement": 318.07463709677415,
+"rayonnement": 318.0746370967742,
 "n": 248
 },
 {
@@ -4828,7 +4860,7 @@
 "date_format(date,'yyyy-MM')": "2022-12",
 "mois": null,
 "vent": 4.435564516129032,
-"rayonnement": 69.86999999999999,
+"rayonnement": 69.87,
 "n": 248
 },
 {
@@ -4884,7 +4916,7 @@
 "date_format(date,'yyyy-MM')": "2023-07",
 "mois": null,
 "vent": 4.2982258064516135,
-"rayonnement": 317.6924596774194,
+"rayonnement": 317.6924596774193,
 "n": 248
 },
 {
@@ -4947,7 +4979,7 @@
 "region": "Corse",
 "date_format(date,'yyyy-MM')": "2024-03",
 "mois": null,
-"vent": 5.213508064516129,
+"vent": 5.2135080645161285,
 "rayonnement": 173.57818548387095,
 "n": 248
 },
@@ -4964,7 +4996,7 @@
 "date_format(date,'yyyy-MM')": "2024-05",
 "mois": null,
 "vent": 4.405524193548387,
-"rayonnement": 281.71463709677425,
+"rayonnement": 281.7146370967742,
 "n": 248
 },
 {
@@ -5044,7 +5076,7 @@
 "date_format(date,'yyyy-MM')": "2025-03",
 "mois": null,
 "vent": 5.455000000000001,
-"rayonnement": 169.90395161290323,
+"rayonnement": 169.9039516129032,
 "n": 248
 },
 {
@@ -5076,7 +5108,7 @@
 "date_format(date,'yyyy-MM')": "2025-07",
 "mois": null,
 "vent": 3.961209677419355,
-"rayonnement": 307.63314516129026,
+"rayonnement": 307.6331451612903,
 "n": 248
 },
 {
@@ -5139,7 +5171,7 @@
 "region": "Corse",
 "date_format(date,'yyyy-MM')": "2026-03",
 "mois": null,
-"vent": 5.279879032258065,
+"vent": 5.279879032258064,
 "rayonnement": 174.97967741935483,
 "n": 248
 },
@@ -5156,7 +5188,7 @@
 "date_format(date,'yyyy-MM')": "2026-05",
 "mois": null,
 "vent": 4.744637096774194,
-"rayonnement": 287.5839516129032,
+"rayonnement": 287.58395161290326,
 "n": 248
 },
 {
@@ -5195,7 +5227,15 @@
 "region": "Corse",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 3.31,
+"vent": 4.249959677419355,
+"rayonnement": 145.09100806451613,
+"n": 248
+},
+{
+"region": "Corse",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 4.67,
 "rayonnement": 0.0,
 "n": 1
 },
@@ -5412,7 +5452,7 @@
 "date_format(date,'yyyy-MM')": "2018-03",
 "mois": null,
 "vent": 6.12883064516129,
-"rayonnement": 105.64778225806452,
+"rayonnement": 105.64778225806451,
 "n": 248
 },
 {
@@ -5795,7 +5835,7 @@
 "region": "Grand Est",
 "date_format(date,'yyyy-MM')": "2022-03",
 "mois": null,
-"vent": 5.004395161290323,
+"vent": 5.004395161290322,
 "rayonnement": 163.5136693548387,
 "n": 248
 },
@@ -5860,7 +5900,7 @@
 "date_format(date,'yyyy-MM')": "2022-11",
 "mois": null,
 "vent": 5.9928333333333335,
-"rayonnement": 52.51716666666666,
+"rayonnement": 52.51716666666667,
 "n": 240
 },
 {
@@ -6052,7 +6092,7 @@
 "date_format(date,'yyyy-MM')": "2024-11",
 "mois": null,
 "vent": 5.175166666666667,
-"rayonnement": 54.02845833333333,
+"rayonnement": 54.02845833333334,
 "n": 240
 },
 {
@@ -6203,7 +6243,7 @@
 "region": "Grand Est",
 "date_format(date,'yyyy-MM')": "2026-06",
 "mois": null,
-"vent": 4.345416666666667,
+"vent": 4.345416666666666,
 "rayonnement": 288.17816666666664,
 "n": 240
 },
@@ -6220,7 +6260,7 @@
 "date_format(date,'yyyy-MM')": "2026-08",
 "mois": null,
 "vent": 4.093104838709677,
-"rayonnement": 240.13846774193547,
+"rayonnement": 240.1384677419355,
 "n": 248
 },
 {
@@ -6235,7 +6275,15 @@
 "region": "Grand Est",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 3.77,
+"vent": 4.923104838709678,
+"rayonnement": 100.6816935483871,
+"n": 248
+},
+{
+"region": "Grand Est",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 6.12,
 "rayonnement": 0.0,
 "n": 1
 },
@@ -6412,7 +6460,7 @@
 "date_format(date,'yyyy-MM')": "2017-10",
 "mois": null,
 "vent": 6.323548387096774,
-"rayonnement": 83.93342741935483,
+"rayonnement": 83.93342741935484,
 "n": 248
 },
 {
@@ -6444,7 +6492,7 @@
 "date_format(date,'yyyy-MM')": "2018-02",
 "mois": null,
 "vent": 7.323214285714286,
-"rayonnement": 87.83517857142859,
+"rayonnement": 87.83517857142856,
 "n": 224
 },
 {
@@ -6651,7 +6699,7 @@
 "region": "Hauts-de-France",
 "date_format(date,'yyyy-MM')": "2020-04",
 "mois": null,
-"vent": 5.622333333333333,
+"vent": 5.622333333333334,
 "rayonnement": 210.02495833333333,
 "n": 240
 },
@@ -6780,7 +6828,7 @@
 "date_format(date,'yyyy-MM')": "2021-08",
 "mois": null,
 "vent": 5.655524193548387,
-"rayonnement": 197.9799193548387,
+"rayonnement": 197.97991935483873,
 "n": 248
 },
 {
@@ -6924,7 +6972,7 @@
 "date_format(date,'yyyy-MM')": "2023-02",
 "mois": null,
 "vent": 6.195803571428572,
-"rayonnement": 80.6507142857143,
+"rayonnement": 80.65071428571427,
 "n": 224
 },
 {
@@ -6996,7 +7044,7 @@
 "date_format(date,'yyyy-MM')": "2023-11",
 "mois": null,
 "vent": 9.045166666666667,
-"rayonnement": 44.35816666666667,
+"rayonnement": 44.35816666666666,
 "n": 240
 },
 {
@@ -7035,7 +7083,7 @@
 "region": "Hauts-de-France",
 "date_format(date,'yyyy-MM')": "2024-04",
 "mois": null,
-"vent": 7.712791666666666,
+"vent": 7.712791666666667,
 "rayonnement": 173.52983333333336,
 "n": 240
 },
@@ -7108,7 +7156,7 @@
 "date_format(date,'yyyy-MM')": "2025-01",
 "mois": null,
 "vent": 6.27850806451613,
-"rayonnement": 40.91850806451613,
+"rayonnement": 40.918508064516125,
 "n": 248
 },
 {
@@ -7163,7 +7211,7 @@
 "region": "Hauts-de-France",
 "date_format(date,'yyyy-MM')": "2025-08",
 "mois": null,
-"vent": 5.286088709677419,
+"vent": 5.2860887096774185,
 "rayonnement": 224.02379032258065,
 "n": 248
 },
@@ -7204,7 +7252,7 @@
 "date_format(date,'yyyy-MM')": "2026-01",
 "mois": null,
 "vent": 7.317903225806451,
-"rayonnement": 39.89403225806451,
+"rayonnement": 39.89403225806452,
 "n": 248
 },
 {
@@ -7243,8 +7291,8 @@
 "region": "Hauts-de-France",
 "date_format(date,'yyyy-MM')": "2026-06",
 "mois": null,
-"vent": 5.685625000000001,
-"rayonnement": 278.2957916666667,
+"vent": 5.685625,
+"rayonnement": 278.2957916666666,
 "n": 240
 },
 {
@@ -7275,7 +7323,15 @@
 "region": "Hauts-de-France",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 4.45,
+"vent": 6.411491935483871,
+"rayonnement": 96.89637096774193,
+"n": 248
+},
+{
+"region": "Hauts-de-France",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 7.08,
 "rayonnement": 0.0,
 "n": 1
 },
@@ -8315,7 +8371,15 @@
 "region": "Normandie",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 5.05,
+"vent": 7.446451612903226,
+"rayonnement": 98.38068548387096,
+"n": 248
+},
+{
+"region": "Normandie",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 8.11,
 "rayonnement": 0.01,
 "n": 1
 },
@@ -8467,7 +8531,7 @@
 "region": "Nouvelle-Aquitaine",
 "date_format(date,'yyyy-MM')": "2017-07",
 "mois": null,
-"vent": 4.276854838709678,
+"vent": 4.276854838709677,
 "rayonnement": 234.29560483870966,
 "n": 248
 },
@@ -8476,7 +8540,7 @@
 "date_format(date,'yyyy-MM')": "2017-08",
 "mois": null,
 "vent": 3.965201612903226,
-"rayonnement": 223.52741935483868,
+"rayonnement": 223.5274193548387,
 "n": 248
 },
 {
@@ -8539,7 +8603,7 @@
 "region": "Nouvelle-Aquitaine",
 "date_format(date,'yyyy-MM')": "2018-04",
 "mois": null,
-"vent": 5.204791666666667,
+"vent": 5.204791666666666,
 "rayonnement": 194.63524999999998,
 "n": 240
 },
@@ -8588,7 +8652,7 @@
 "date_format(date,'yyyy-MM')": "2018-10",
 "mois": null,
 "vent": 5.1640963855421695,
-"rayonnement": 120.60144578313252,
+"rayonnement": 120.60144578313253,
 "n": 249
 },
 {
@@ -8651,7 +8715,7 @@
 "region": "Nouvelle-Aquitaine",
 "date_format(date,'yyyy-MM')": "2019-06",
 "mois": null,
-"vent": 4.968208333333333,
+"vent": 4.968208333333334,
 "rayonnement": 268.65291666666667,
 "n": 240
 },
@@ -8964,7 +9028,7 @@
 "date_format(date,'yyyy-MM')": "2022-09",
 "mois": null,
 "vent": 4.766333333333334,
-"rayonnement": 179.76154166666666,
+"rayonnement": 179.7615416666667,
 "n": 240
 },
 {
@@ -9211,7 +9275,7 @@
 "region": "Nouvelle-Aquitaine",
 "date_format(date,'yyyy-MM')": "2025-04",
 "mois": null,
-"vent": 5.342416666666666,
+"vent": 5.342416666666667,
 "rayonnement": 206.9177916666667,
 "n": 240
 },
@@ -9355,15 +9419,23 @@
 "region": "Nouvelle-Aquitaine",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 4.12,
-"rayonnement": 0.01,
+"vent": 4.690725806451613,
+"rayonnement": 119.42233870967742,
+"n": 248
+},
+{
+"region": "Nouvelle-Aquitaine",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 4.79,
+"rayonnement": 0.0,
 "n": 1
 },
 {
 "region": "Occitanie",
 "date_format(date,'yyyy-MM')": "2016-01",
 "mois": null,
-"vent": 5.403724696356274,
+"vent": 5.403724696356275,
 "rayonnement": 61.39161943319838,
 "n": 247
 },
@@ -9444,7 +9516,7 @@
 "date_format(date,'yyyy-MM')": "2016-11",
 "mois": null,
 "vent": 6.6314166666666665,
-"rayonnement": 73.30645833333334,
+"rayonnement": 73.30645833333332,
 "n": 240
 },
 {
@@ -9635,7 +9707,7 @@
 "region": "Occitanie",
 "date_format(date,'yyyy-MM')": "2018-11",
 "mois": null,
-"vent": 5.798208333333333,
+"vent": 5.798208333333334,
 "rayonnement": 73.38916666666667,
 "n": 240
 },
@@ -9811,7 +9883,7 @@
 "region": "Occitanie",
 "date_format(date,'yyyy-MM')": "2020-09",
 "mois": null,
-"vent": 5.366291666666667,
+"vent": 5.366291666666666,
 "rayonnement": 187.92883333333333,
 "n": 240
 },
@@ -9852,7 +9924,7 @@
 "date_format(date,'yyyy-MM')": "2021-02",
 "mois": null,
 "vent": 6.550133928571428,
-"rayonnement": 103.37080357142858,
+"rayonnement": 103.37080357142857,
 "n": 224
 },
 {
@@ -9971,7 +10043,7 @@
 "region": "Occitanie",
 "date_format(date,'yyyy-MM')": "2022-05",
 "mois": null,
-"vent": 5.634717741935483,
+"vent": 5.634717741935484,
 "rayonnement": 276.57024193548386,
 "n": 248
 },
@@ -9987,7 +10059,7 @@
 "region": "Occitanie",
 "date_format(date,'yyyy-MM')": "2022-07",
 "mois": null,
-"vent": 5.208225806451613,
+"vent": 5.208225806451614,
 "rayonnement": 310.8298790322581,
 "n": 248
 },
@@ -10052,7 +10124,7 @@
 "date_format(date,'yyyy-MM')": "2023-03",
 "mois": null,
 "vent": 6.390443548387096,
-"rayonnement": 157.08016129032256,
+"rayonnement": 157.0801612903226,
 "n": 248
 },
 {
@@ -10211,7 +10283,7 @@
 "region": "Occitanie",
 "date_format(date,'yyyy-MM')": "2024-11",
 "mois": null,
-"vent": 5.822583333333333,
+"vent": 5.822583333333332,
 "rayonnement": 83.55216666666666,
 "n": 240
 },
@@ -10259,7 +10331,7 @@
 "region": "Occitanie",
 "date_format(date,'yyyy-MM')": "2025-05",
 "mois": null,
-"vent": 5.837137096774193,
+"vent": 5.837137096774194,
 "rayonnement": 257.62383064516126,
 "n": 248
 },
@@ -10308,7 +10380,7 @@
 "date_format(date,'yyyy-MM')": "2025-11",
 "mois": null,
 "vent": 6.961250000000001,
-"rayonnement": 78.67370833333332,
+"rayonnement": 78.67370833333334,
 "n": 240
 },
 {
@@ -10395,8 +10467,16 @@
 "region": "Occitanie",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 5.25,
-"rayonnement": 0.01,
+"vent": 5.353185483870968,
+"rayonnement": 123.71850806451614,
+"n": 248
+},
+{
+"region": "Occitanie",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 5.01,
+"rayonnement": 0.0,
 "n": 1
 },
 {
@@ -10428,7 +10508,7 @@
 "date_format(date,'yyyy-MM')": "2016-04",
 "mois": null,
 "vent": 6.427416666666667,
-"rayonnement": 197.85929166666665,
+"rayonnement": 197.85929166666668,
 "n": 240
 },
 {
@@ -10452,7 +10532,7 @@
 "date_format(date,'yyyy-MM')": "2016-07",
 "mois": null,
 "vent": 5.378427419354838,
-"rayonnement": 258.65443548387094,
+"rayonnement": 258.654435483871,
 "n": 248
 },
 {
@@ -10468,7 +10548,7 @@
 "date_format(date,'yyyy-MM')": "2016-09",
 "mois": null,
 "vent": 4.9815,
-"rayonnement": 159.62104166666668,
+"rayonnement": 159.62104166666666,
 "n": 240
 },
 {
@@ -10900,7 +10980,7 @@
 "date_format(date,'yyyy-MM')": "2021-03",
 "mois": null,
 "vent": 7.180080645161291,
-"rayonnement": 148.6638306451613,
+"rayonnement": 148.66383064516128,
 "n": 248
 },
 {
@@ -10939,7 +11019,7 @@
 "region": "Pays de la Loire",
 "date_format(date,'yyyy-MM')": "2021-08",
 "mois": null,
-"vent": 5.851088709677419,
+"vent": 5.85108870967742,
 "rayonnement": 218.41463709677421,
 "n": 248
 },
@@ -11140,7 +11220,7 @@
 "date_format(date,'yyyy-MM')": "2023-09",
 "mois": null,
 "vent": 5.386291666666667,
-"rayonnement": 175.66258333333332,
+"rayonnement": 175.66258333333334,
 "n": 240
 },
 {
@@ -11164,7 +11244,7 @@
 "date_format(date,'yyyy-MM')": "2023-12",
 "mois": null,
 "vent": 8.263870967741935,
-"rayonnement": 41.90774193548387,
+"rayonnement": 41.90774193548388,
 "n": 248
 },
 {
@@ -11196,14 +11276,14 @@
 "date_format(date,'yyyy-MM')": "2024-04",
 "mois": null,
 "vent": 7.137958333333333,
-"rayonnement": 187.48429166666665,
+"rayonnement": 187.48429166666668,
 "n": 240
 },
 {
 "region": "Pays de la Loire",
 "date_format(date,'yyyy-MM')": "2024-05",
 "mois": null,
-"vent": 5.8903225806451625,
+"vent": 5.890322580645161,
 "rayonnement": 225.8625806451613,
 "n": 248
 },
@@ -11236,7 +11316,7 @@
 "date_format(date,'yyyy-MM')": "2024-09",
 "mois": null,
 "vent": 6.248,
-"rayonnement": 156.4764166666667,
+"rayonnement": 156.47641666666667,
 "n": 240
 },
 {
@@ -11284,7 +11364,7 @@
 "date_format(date,'yyyy-MM')": "2025-03",
 "mois": null,
 "vent": 6.691129032258065,
-"rayonnement": 150.27467741935484,
+"rayonnement": 150.27467741935482,
 "n": 248
 },
 {
@@ -11307,7 +11387,7 @@
 "region": "Pays de la Loire",
 "date_format(date,'yyyy-MM')": "2025-06",
 "mois": null,
-"vent": 5.71,
+"vent": 5.709999999999999,
 "rayonnement": 287.63308333333333,
 "n": 240
 },
@@ -11435,8 +11515,16 @@
 "region": "Pays de la Loire",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 4.97,
-"rayonnement": 0.01,
+"vent": 6.5640322580645165,
+"rayonnement": 110.51431451612903,
+"n": 248
+},
+{
+"region": "Pays de la Loire",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 7.91,
+"rayonnement": 0.0,
 "n": 1
 },
 {
@@ -11491,7 +11579,7 @@
 "region": "Provence-Alpes-Côte d'Azur",
 "date_format(date,'yyyy-MM')": "2016-07",
 "mois": null,
-"vent": 4.397741935483872,
+"vent": 4.397741935483871,
 "rayonnement": 304.25770161290325,
 "n": 248
 },
@@ -11612,7 +11700,7 @@
 "date_format(date,'yyyy-MM')": "2017-10",
 "mois": null,
 "vent": 4.545483870967741,
-"rayonnement": 150.38403225806454,
+"rayonnement": 150.3840322580645,
 "n": 248
 },
 {
@@ -11692,7 +11780,7 @@
 "date_format(date,'yyyy-MM')": "2018-08",
 "mois": null,
 "vent": 4.285034722222223,
-"rayonnement": 259.19093749999996,
+"rayonnement": 259.1909375,
 "n": 288
 },
 {
@@ -11764,7 +11852,7 @@
 "date_format(date,'yyyy-MM')": "2019-05",
 "mois": null,
 "vent": 6.28258064516129,
-"rayonnement": 265.61068548387095,
+"rayonnement": 265.610685483871,
 "n": 248
 },
 {
@@ -11779,7 +11867,7 @@
 "region": "Provence-Alpes-Côte d'Azur",
 "date_format(date,'yyyy-MM')": "2019-07",
 "mois": null,
-"vent": 4.582217741935484,
+"vent": 4.582217741935485,
 "rayonnement": 306.38625,
 "n": 248
 },
@@ -11868,7 +11956,7 @@
 "date_format(date,'yyyy-MM')": "2020-06",
 "mois": null,
 "vent": 6.355208333333334,
-"rayonnement": 297.0311666666667,
+"rayonnement": 297.03116666666665,
 "n": 240
 },
 {
@@ -11980,7 +12068,7 @@
 "date_format(date,'yyyy-MM')": "2021-08",
 "mois": null,
 "vent": 5.4215322580645156,
-"rayonnement": 269.449314516129,
+"rayonnement": 269.44931451612905,
 "n": 248
 },
 {
@@ -11995,7 +12083,7 @@
 "region": "Provence-Alpes-Côte d'Azur",
 "date_format(date,'yyyy-MM')": "2021-10",
 "mois": null,
-"vent": 5.479797570850201,
+"vent": 5.479797570850202,
 "rayonnement": 138.15740890688258,
 "n": 247
 },
@@ -12060,7 +12148,7 @@
 "date_format(date,'yyyy-MM')": "2022-06",
 "mois": null,
 "vent": 5.4159999999999995,
-"rayonnement": 308.2915833333334,
+"rayonnement": 308.29158333333334,
 "n": 240
 },
 {
@@ -12147,7 +12235,7 @@
 "region": "Provence-Alpes-Côte d'Azur",
 "date_format(date,'yyyy-MM')": "2023-05",
 "mois": null,
-"vent": 4.421653225806451,
+"vent": 4.421653225806453,
 "rayonnement": 262.97967741935486,
 "n": 248
 },
@@ -12180,7 +12268,7 @@
 "date_format(date,'yyyy-MM')": "2023-09",
 "mois": null,
 "vent": 4.572916666666667,
-"rayonnement": 210.56258333333335,
+"rayonnement": 210.56258333333332,
 "n": 240
 },
 {
@@ -12371,7 +12459,7 @@
 "region": "Provence-Alpes-Côte d'Azur",
 "date_format(date,'yyyy-MM')": "2025-09",
 "mois": null,
-"vent": 5.108666666666667,
+"vent": 5.108666666666666,
 "rayonnement": 203.58120833333334,
 "n": 240
 },
@@ -12380,7 +12468,7 @@
 "date_format(date,'yyyy-MM')": "2025-10",
 "mois": null,
 "vent": 4.960403225806452,
-"rayonnement": 137.22919354838712,
+"rayonnement": 137.2291935483871,
 "n": 248
 },
 {
@@ -12452,7 +12540,7 @@
 "date_format(date,'yyyy-MM')": "2026-07",
 "mois": null,
 "vent": 4.356895161290322,
-"rayonnement": 321.7961693548387,
+"rayonnement": 321.79616935483875,
 "n": 248
 },
 {
@@ -12475,7 +12563,15 @@
 "region": "Provence-Alpes-Côte d'Azur",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 4.28,
+"vent": 5.3160483870967745,
+"rayonnement": 133.77532258064517,
+"n": 248
+},
+{
+"region": "Provence-Alpes-Côte d'Azur",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 4.55,
 "rayonnement": 0.0,
 "n": 1
 },
@@ -12507,7 +12603,7 @@
 "region": "Île-de-France",
 "date_format(date,'yyyy-MM')": "2016-04",
 "mois": null,
-"vent": 5.597291666666667,
+"vent": 5.597291666666666,
 "rayonnement": 187.56325,
 "n": 240
 },
@@ -12572,7 +12668,7 @@
 "date_format(date,'yyyy-MM')": "2016-12",
 "mois": null,
 "vent": 4.863145161290323,
-"rayonnement": 40.32649193548387,
+"rayonnement": 40.326491935483865,
 "n": 248
 },
 {
@@ -12580,7 +12676,7 @@
 "date_format(date,'yyyy-MM')": "2017-01",
 "mois": null,
 "vent": 6.122943548387097,
-"rayonnement": 45.093225806451606,
+"rayonnement": 45.09322580645161,
 "n": 248
 },
 {
@@ -12668,7 +12764,7 @@
 "date_format(date,'yyyy-MM')": "2017-12",
 "mois": null,
 "vent": 7.8341935483870975,
-"rayonnement": 29.108427419354836,
+"rayonnement": 29.10842741935484,
 "n": 248
 },
 {
@@ -12931,7 +13027,7 @@
 "region": "Île-de-France",
 "date_format(date,'yyyy-MM')": "2020-09",
 "mois": null,
-"vent": 5.115916666666667,
+"vent": 5.115916666666666,
 "rayonnement": 158.45020833333334,
 "n": 240
 },
@@ -12956,7 +13052,7 @@
 "date_format(date,'yyyy-MM')": "2020-12",
 "mois": null,
 "vent": 7.521733870967743,
-"rayonnement": 31.308991935483874,
+"rayonnement": 31.30899193548387,
 "n": 248
 },
 {
@@ -12980,7 +13076,7 @@
 "date_format(date,'yyyy-MM')": "2021-03",
 "mois": null,
 "vent": 6.707661290322581,
-"rayonnement": 140.03278225806454,
+"rayonnement": 140.03278225806451,
 "n": 248
 },
 {
@@ -12996,7 +13092,7 @@
 "date_format(date,'yyyy-MM')": "2021-05",
 "mois": null,
 "vent": 7.01008064516129,
-"rayonnement": 215.98673387096773,
+"rayonnement": 215.98673387096775,
 "n": 248
 },
 {
@@ -13091,7 +13187,7 @@
 "region": "Île-de-France",
 "date_format(date,'yyyy-MM')": "2022-05",
 "mois": null,
-"vent": 4.949233870967742,
+"vent": 4.949233870967741,
 "rayonnement": 253.4286693548387,
 "n": 248
 },
@@ -13124,7 +13220,7 @@
 "date_format(date,'yyyy-MM')": "2022-09",
 "mois": null,
 "vent": 4.995666666666667,
-"rayonnement": 151.107375,
+"rayonnement": 151.10737500000002,
 "n": 240
 },
 {
@@ -13515,8 +13611,16 @@
 "region": "Île-de-France",
 "date_format(date,'yyyy-MM')": "2026-10",
 "mois": null,
-"vent": 3.98,
-"rayonnement": 0.01,
+"vent": 5.680685483870968,
+"rayonnement": 102.75266129032258,
+"n": 248
+},
+{
+"region": "Île-de-France",
+"date_format(date,'yyyy-MM')": "2026-11",
+"mois": null,
+"vent": 6.36,
+"rayonnement": 0.0,
 "n": 1
 }
 ]
