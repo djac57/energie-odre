@@ -161195,6 +161195,48 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_T_00339425":{
+"eic":"17W100P100P0037M",
+"end":"2026-11-27T14:30:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":203,
+"name":"GENNEVILLIERS 1",
+"pub":"2026-11-03T11:24:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Après son recouplage, la tranche effectuera des essais de requalification à PMD pendant 1 heure.\n--------------------------------------------------------------- \nAfter its restart, the plant will proceed to qualification tests to full power during 1 hour.",
+"start":"2026-11-22T23:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-22T23:00:00Z",
+"2026-11-27T14:30:00Z",
+203
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00339426":{
+"eic":"17W100P100P0037M",
+"end":"2026-11-27T15:30:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":203,
+"name":"GENNEVILLIERS 1",
+"pub":"2026-11-03T11:26:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essais de requalification, à PMD. \n----------------------------------------------------------------------- \nCheck tests, to full power.",
+"start":"2026-11-27T14:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-27T14:30:00Z",
+"2026-11-27T15:30:00Z",
+0
+]
+],
+"v":1
+},
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
 "end":"2027-09-21T22:00:00Z",
