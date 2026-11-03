@@ -587,6 +587,27 @@
 ],
 "v":2
 },
+"CGV-IndispoCogeVTY0311":{
+"eic":"17W000000989066M",
+"end":"2026-11-04T09:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"UNPLANNED",
+"mw":125,
+"name":"FR_CPCUCOGEVI_GP",
+"pub":"2026-11-03T19:18:36Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-03T19:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-03T19:00:00Z",
+"2026-11-04T09:00:00Z",
+125
+]
+],
+"v":1
+},
 "CGV-IndispoCogeVTY0510":{
 "eic":"17W000000989066M",
 "end":"2026-10-11T23:59:00Z",
@@ -161113,12 +161134,12 @@
 },
 "EDF-05470_EDF_T_00339172":{
 "eic":"17W100P100P0148D",
-"end":"2026-11-03T21:00:00Z",
+"end":"2026-11-04T10:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-11-03T17:37:36Z",
+"pub":"2026-11-03T20:26:37Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-02T13:30:00Z",
@@ -161126,11 +161147,11 @@
 "steps":[
 [
 "2026-11-02T13:30:00Z",
-"2026-11-03T21:00:00Z",
+"2026-11-04T10:00:00Z",
 545
 ]
 ],
-"v":6
+"v":7
 },
 "EDF-05470_EDF_T_00339188":{
 "eic":"17W100P100P0145J",
@@ -163295,7 +163316,7 @@
 "kind":"PLANNED",
 "mw":150,
 "name":"PROVENCE 4 BIOMASSE",
-"pub":"2026-11-03T18:20:36Z",
+"pub":"2026-11-03T19:34:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Restrictions due to energy supply contracts (e.g. heat, steam or electricity)",
 "start":"2026-11-03T17:00:00Z",
@@ -163303,11 +163324,16 @@
 "steps":[
 [
 "2026-11-03T17:00:00Z",
+"2026-11-03T18:00:00Z",
+40
+],
+[
+"2026-11-03T18:00:00Z",
 "2026-11-09T23:00:00Z",
 150
 ]
 ],
-"v":3
+"v":4
 },
 "GAZ-GEN-74736":{
 "eic":"17W100P100P03655",
