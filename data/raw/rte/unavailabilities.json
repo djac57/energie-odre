@@ -24235,12 +24235,12 @@
 },
 "EC-EDF-05470-EDF-T-00103286":{
 "eic":"17W100P100P0033U",
-"end":"2026-11-05T13:00:00Z",
+"end":"2026-11-04T13:00:00Z",
 "fuel":"FOSSIL_OIL",
 "kind":"PLANNED",
 "mw":134,
 "name":"BRENNILIS 3",
-"pub":"2026-11-03T12:44:36Z",
+"pub":"2026-11-04T12:51:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will proceed to qualification tests at various load thresholds during 1 day(s).\n-------------------------------------\nAprès son recouplage, la tranche effectuera des essais de requalification à des paliers de charge variable pendant 1 jour(s).",
 "start":"2026-10-17T22:00:00Z",
@@ -24248,11 +24248,11 @@
 "steps":[
 [
 "2026-10-17T22:00:00Z",
-"2026-11-05T13:00:00Z",
+"2026-11-04T13:00:00Z",
 134
 ]
 ],
-"v":7
+"v":8
 },
 "EC-EDF-05470-EDF-T-00103287":{
 "eic":"17W100P100P0262F",
@@ -160504,24 +160504,24 @@
 },
 "EDF-05470_EDF_T_00337955":{
 "eic":"17W100P100P0033U",
-"end":"2026-11-05T15:45:00Z",
+"end":"2026-11-04T15:45:00Z",
 "fuel":"FOSSIL_OIL",
 "kind":"PLANNED",
 "mw":134,
 "name":"BRENNILIS 3",
-"pub":"2026-11-03T12:45:36Z",
+"pub":"2026-11-04T12:53:36Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essais de requalification, avec variations de puissance\n--------\nCheck tests, with load variations.",
-"start":"2026-11-05T13:00:00Z",
+"start":"2026-11-04T13:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-05T13:00:00Z",
-"2026-11-05T15:45:00Z",
-10
+"2026-11-04T13:00:00Z",
+"2026-11-04T15:45:00Z",
+9
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00338039":{
 "eic":"17W100P100P01101",
