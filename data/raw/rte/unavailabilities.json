@@ -161197,24 +161197,24 @@
 },
 "EDF-05470_EDF_T_00339295":{
 "eic":"17W100P100P0148D",
-"end":"2026-11-05T10:00:00Z",
+"end":"2026-11-06T12:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-11-03T07:20:38Z",
+"pub":"2026-11-04T06:38:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Essai programmé.\n--------\nPlanned test.",
-"start":"2026-11-05T09:30:00Z",
+"remarks":"Essai programmé. La remontée à puissance maximale prendra 1 heure\n--------\nPlanned test. The unit will return to full load in 1 hour\n.",
+"start":"2026-11-06T11:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-05T09:30:00Z",
-"2026-11-05T10:00:00Z",
+"2026-11-06T11:30:00Z",
+"2026-11-06T12:00:00Z",
 475
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00339425":{
 "eic":"17W100P100P0037M",
@@ -161254,6 +161254,27 @@
 "2026-11-27T14:30:00Z",
 "2026-11-27T15:30:00Z",
 0
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00339465":{
+"eic":"17W100P100P0018Q",
+"end":"2026-11-04T11:00:00Z",
+"fuel":"FOSSIL_HARD_COAL",
+"kind":"UNPLANNED",
+"mw":580,
+"name":"CORDEMAIS 5",
+"pub":"2026-11-04T00:41:36Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-04T00:40:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-04T00:40:00Z",
+"2026-11-04T11:00:00Z",
+200
 ]
 ],
 "v":1
