@@ -7855,12 +7855,12 @@
 },
 "CNR-CE252188-05001U02-1-1":{
 "eic":"17W100P100P15270",
-"end":"2026-11-04T16:00:00Z",
+"end":"2026-11-09T11:00:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"PLANNED",
 "mw":45,
 "name":"CHAUTAGNE G2",
-"pub":"2026-10-01T13:04:36Z",
+"pub":"2026-11-04T10:23:36Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-09-07T05:00:00Z",
@@ -7868,11 +7868,11 @@
 "steps":[
 [
 "2026-09-07T05:00:00Z",
-"2026-11-04T16:00:00Z",
+"2026-11-09T11:00:00Z",
 45
 ]
 ],
-"v":7
+"v":8
 },
 "CNR-CE252391-05001U01-1-1":{
 "eic":"17W100P100P15262",
@@ -25180,24 +25180,24 @@
 },
 "EC-EDF-05470-EDF-T-00122752":{
 "eic":"17W100P100P01101",
-"end":"2027-06-19T22:00:00Z",
+"end":"2027-08-14T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 1",
-"pub":"2026-08-14T12:57:31Z",
+"pub":"2026-11-04T10:15:40Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\nOutage may be rescheduled.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine pu",
-"start":"2027-03-19T23:00:00Z",
+"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
+"start":"2027-05-14T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2027-03-19T23:00:00Z",
-"2027-06-19T22:00:00Z",
+"2027-05-14T22:00:00Z",
+"2027-08-14T22:00:00Z",
 1500
 ]
 ],
-"v":8
+"v":9
 },
 "EC-EDF-05470-EDF-T-00122756":{
 "eic":"17W100P100P0118M",
@@ -25516,24 +25516,24 @@
 },
 "EC-EDF-05470-EDF-T-00135648":{
 "eic":"17W100P100P0112Y",
-"end":"2027-11-18T23:00:00Z",
+"end":"2028-01-06T23:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1500,
 "name":"CHOOZ 2",
-"pub":"2026-09-02T07:42:36Z",
+"pub":"2026-11-04T10:15:38Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\nOutage may be rescheduled.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine pu",
-"start":"2027-08-20T22:00:00Z",
+"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
+"start":"2027-10-08T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2027-08-20T22:00:00Z",
-"2027-11-18T23:00:00Z",
+"2027-10-08T22:00:00Z",
+"2028-01-06T23:00:00Z",
 1500
 ]
 ],
-"v":6
+"v":7
 },
 "EC-EDF-05470-EDF-T-00135649":{
 "eic":"17W100P100P0120Z",
@@ -37567,48 +37567,6 @@
 ]
 ],
 "v":4
-},
-"EDF-05470_EDF_H_00116944":{
-"eic":"17W100P100P0279Z",
-"end":"2026-11-10T16:00:00Z",
-"fuel":"HYDRO_WATER_RESERVOIR",
-"kind":"PLANNED",
-"mw":360,
-"name":"AIGLE",
-"pub":"2025-06-13T15:14:20Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2026-11-10T07:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-10T07:00:00Z",
-"2026-11-10T16:00:00Z",
-214
-]
-],
-"v":1
-},
-"EDF-05470_EDF_H_00116945":{
-"eic":"17W100P100P0051S",
-"end":"2026-11-12T16:00:00Z",
-"fuel":"HYDRO_WATER_RESERVOIR",
-"kind":"PLANNED",
-"mw":146,
-"name":"AIGLE 6",
-"pub":"2025-06-13T15:14:20Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2026-11-12T07:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-12T07:00:00Z",
-"2026-11-12T16:00:00Z",
-146
-]
-],
-"v":1
 },
 "EDF-05470_EDF_H_00116947":{
 "eic":"17W100P100P0051S",
@@ -106091,6 +106049,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00135544":{
+"eic":"17W100P100P0296Z",
+"end":"2026-11-04T10:10:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"UNPLANNED",
+"mw":159,
+"name":"SAINT CHAMAS",
+"pub":"2026-11-04T10:11:35Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-04T09:25:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-04T09:25:00Z",
+"2026-11-04T10:10:00Z",
+159
+]
+],
+"v":2
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -161092,24 +161071,24 @@
 },
 "EDF-05470_EDF_T_00339070":{
 "eic":"17W100P100P0146H",
-"end":"2026-11-04T17:00:00Z",
+"end":"2026-11-04T23:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1335,
 "name":"ST ALBAN 2",
-"pub":"2026-11-02T06:56:36Z",
+"pub":"2026-11-04T09:40:37Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essai programmé.\n--------\nPlanned test.",
-"start":"2026-11-04T16:30:00Z",
+"start":"2026-11-04T22:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-04T16:30:00Z",
-"2026-11-04T17:00:00Z",
+"2026-11-04T22:30:00Z",
+"2026-11-04T23:00:00Z",
 785
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00339165":{
 "eic":"17W100P100P0041V",
@@ -161134,12 +161113,12 @@
 },
 "EDF-05470_EDF_T_00339172":{
 "eic":"17W100P100P0148D",
-"end":"2026-11-04T10:00:00Z",
+"end":"2026-11-04T17:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-11-03T20:26:37Z",
+"pub":"2026-11-04T09:10:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-02T13:30:00Z",
@@ -161147,11 +161126,11 @@
 "steps":[
 [
 "2026-11-02T13:30:00Z",
-"2026-11-04T10:00:00Z",
+"2026-11-04T17:00:00Z",
 545
 ]
 ],
-"v":7
+"v":8
 },
 "EDF-05470_EDF_T_00339188":{
 "eic":"17W100P100P0145J",
@@ -161260,12 +161239,12 @@
 },
 "EDF-05470_EDF_T_00339465":{
 "eic":"17W100P100P0018Q",
-"end":"2026-11-04T11:00:00Z",
+"end":"2026-11-04T16:00:00Z",
 "fuel":"FOSSIL_HARD_COAL",
 "kind":"UNPLANNED",
 "mw":580,
 "name":"CORDEMAIS 5",
-"pub":"2026-11-04T00:41:36Z",
+"pub":"2026-11-04T11:04:36Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-04T00:40:00Z",
@@ -161273,8 +161252,71 @@
 "steps":[
 [
 "2026-11-04T00:40:00Z",
-"2026-11-04T11:00:00Z",
+"2026-11-04T16:00:00Z",
 200
+]
+],
+"v":3
+},
+"EDF-05470_EDF_T_00339550":{
+"eic":"17W100P100P0147F",
+"end":"2026-11-06T22:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":915,
+"name":"ST LAURENT 1",
+"pub":"2026-11-04T07:24:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé. La remontée à puissance maximale prendra 1 heure.\n--------\nPlanned test. The unit will return to full load in 1 hour.",
+"start":"2026-11-06T21:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-06T21:30:00Z",
+"2026-11-06T22:00:00Z",
+475
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00339551":{
+"eic":"17W100P100P00958",
+"end":"2026-11-06T02:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":910,
+"name":"BLAYAIS 4",
+"pub":"2026-11-04T07:27:35Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-06T01:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-06T01:30:00Z",
+"2026-11-06T02:00:00Z",
+531
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00339552":{
+"eic":"17W100P100P0133Q",
+"end":"2026-11-06T03:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":910,
+"name":"GRAVELINES 4",
+"pub":"2026-11-04T07:31:36Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé. La remontée à puissance maximale prendra 1 heure.\n--------\nPlanned test. The unit will return to full load in 1 hour.",
+"start":"2026-11-06T02:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-06T02:30:00Z",
+"2026-11-06T03:00:00Z",
+502
 ]
 ],
 "v":1
@@ -171735,12 +171777,12 @@
 },
 "TRF-ID20260624153413":{
 "eic":"17W000001468589Y",
-"end":"2027-11-01T14:00:00Z",
+"end":"2028-12-31T14:00:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"UNPLANNED",
 "mw":120,
 "name":"COGENERATION NORMANDIE (AMFARD) TRAIN 14",
-"pub":"2026-06-24T13:35:33Z",
+"pub":"2026-11-04T11:27:35Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-06-24T13:00:00Z",
@@ -171748,11 +171790,11 @@
 "steps":[
 [
 "2026-06-24T13:00:00Z",
-"2027-11-01T14:00:00Z",
+"2028-12-31T14:00:00Z",
 120
 ]
 ],
-"v":1
+"v":2
 },
 "TRF-ID20260706094821":{
 "eic":"17W000001468590C",
