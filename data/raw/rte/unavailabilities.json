@@ -24823,12 +24823,12 @@
 },
 "EC-EDF-05470-EDF-T-00104303":{
 "eic":"17W100P100P0142P",
-"end":"2026-11-05T01:00:00Z",
+"end":"2026-11-05T08:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1330,
 "name":"PALUEL 4",
-"pub":"2026-11-04T16:59:54Z",
+"pub":"2026-11-04T22:31:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance\nLa remontée durera au moins 48h\nPremier palier à atteindre : 540 MW\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport\n-\nAfter its restart, the plant wil",
 "start":"2026-09-18T21:00:00Z",
@@ -24836,11 +24836,11 @@
 "steps":[
 [
 "2026-09-18T21:00:00Z",
-"2026-11-05T01:00:00Z",
+"2026-11-05T08:00:00Z",
 1330
 ]
 ],
-"v":18
+"v":19
 },
 "EC-EDF-05470-EDF-T-00105339":{
 "eic":"17W100P100P00974",
@@ -161008,12 +161008,12 @@
 },
 "EDF-05470_EDF_T_00338986":{
 "eic":"17W100P100P0093C",
-"end":"2026-11-04T22:30:00Z",
+"end":"2026-11-05T02:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":910,
 "name":"BLAYAIS 2",
-"pub":"2026-11-04T21:59:49Z",
+"pub":"2026-11-05T01:07:48Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-01T19:30:00Z",
@@ -161021,11 +161021,11 @@
 "steps":[
 [
 "2026-11-01T19:30:00Z",
-"2026-11-04T22:30:00Z",
+"2026-11-05T02:00:00Z",
 910
 ]
 ],
-"v":2
+"v":4
 },
 "EDF-05470_EDF_T_00339030":{
 "eic":"17W100P100P0103Z",
@@ -161239,12 +161239,12 @@
 },
 "EDF-05470_EDF_T_00339465":{
 "eic":"17W100P100P0018Q",
-"end":"2026-11-05T00:00:00Z",
+"end":"2026-11-05T02:00:00Z",
 "fuel":"FOSSIL_HARD_COAL",
 "kind":"UNPLANNED",
 "mw":580,
 "name":"CORDEMAIS 5",
-"pub":"2026-11-04T20:57:49Z",
+"pub":"2026-11-05T00:00:48Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-04T00:40:00Z",
@@ -161252,11 +161252,11 @@
 "steps":[
 [
 "2026-11-04T00:40:00Z",
-"2026-11-05T00:00:00Z",
+"2026-11-05T02:00:00Z",
 200
 ]
 ],
-"v":5
+"v":6
 },
 "EDF-05470_EDF_T_00339550":{
 "eic":"17W100P100P0147F",
@@ -161341,6 +161341,69 @@
 ]
 ],
 "v":1
+},
+"EDF-05470_EDF_T_00339711":{
+"eic":"17W100P100P0122V",
+"end":"2026-11-05T07:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":890,
+"name":"DAMPIERRE 3",
+"pub":"2026-11-04T23:03:50Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Grève\nLa baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.\n--------\nStrike\nThe production restriction is likely to continue until the end of the national strike.",
+"start":"2026-11-04T23:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-04T23:30:00Z",
+"2026-11-05T07:00:00Z",
+710
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00339713":{
+"eic":"17W100P100P0103Z",
+"end":"2026-11-05T01:45:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1300,
+"name":"CATTENOM 2",
+"pub":"2026-11-05T01:04:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-05T01:15:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-05T01:15:00Z",
+"2026-11-05T01:45:00Z",
+300
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00339719":{
+"eic":"17W100P100P0040X",
+"end":"2026-11-05T02:30:00Z",
+"fuel":"FOSSIL_OIL",
+"kind":"UNPLANNED",
+"mw":175,
+"name":"MONTEREAU 5",
+"pub":"2026-11-05T02:31:55Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-05T01:52:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-05T01:52:00Z",
+"2026-11-05T02:30:00Z",
+175
+]
+],
+"v":2
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
