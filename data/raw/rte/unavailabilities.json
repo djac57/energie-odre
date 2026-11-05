@@ -79654,12 +79654,12 @@
 },
 "EDF-05470_EDF_H_00128718":{
 "eic":"17W100P100P02918",
-"end":"2026-11-05T15:00:00Z",
+"end":"2026-11-05T12:00:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"PLANNED",
 "mw":189,
 "name":"PRAGNERES",
-"pub":"2026-05-07T08:04:20Z",
+"pub":"2026-11-05T11:37:13Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-11-05T06:00:00Z",
@@ -79667,11 +79667,11 @@
 "steps":[
 [
 "2026-11-05T06:00:00Z",
-"2026-11-05T15:00:00Z",
+"2026-11-05T12:00:00Z",
 189
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00128726":{
 "eic":"17W100P100P0068B",
