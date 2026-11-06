@@ -16780,12 +16780,12 @@
 },
 "CNR-SY260631-04001U01-1-1":{
 "eic":"17W100P100P1932S",
-"end":"2026-12-01T15:30:00Z",
+"end":"2026-12-11T15:30:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"UNPLANNED",
 "mw":14,
 "name":"SEYSSEL G1",
-"pub":"2026-10-15T10:02:36Z",
+"pub":"2026-11-06T06:37:05Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-04-23T07:00:00Z",
@@ -16793,11 +16793,11 @@
 "steps":[
 [
 "2026-04-23T07:00:00Z",
-"2026-12-01T15:30:00Z",
+"2026-12-11T15:30:00Z",
 14
 ]
 ],
-"v":11
+"v":12
 },
 "CNR-SY260636-04001U03-1-1":{
 "eic":"17W100P100P1934O",
@@ -161279,27 +161279,6 @@
 ],
 "v":6
 },
-"EDF-05470_EDF_T_00339552":{
-"eic":"17W100P100P0133Q",
-"end":"2026-11-06T03:00:00Z",
-"fuel":"NUCLEAR",
-"kind":"PLANNED",
-"mw":910,
-"name":"GRAVELINES 4",
-"pub":"2026-11-04T07:31:36Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Essai programmé. La remontée à puissance maximale prendra 1 heure.\n--------\nPlanned test. The unit will return to full load in 1 hour.",
-"start":"2026-11-06T02:30:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-06T02:30:00Z",
-"2026-11-06T03:00:00Z",
-502
-]
-],
-"v":1
-},
 "EDF-05470_EDF_T_00339696":{
 "eic":"17W100P100P0143N",
 "end":"2026-11-05T07:00:00Z",
@@ -161638,12 +161617,12 @@
 },
 "EDF-05470_EDF_T_00339970":{
 "eic":"17W100P100P0142P",
-"end":"2026-11-08T06:30:00Z",
+"end":"2026-11-08T07:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1330,
 "name":"PALUEL 4",
-"pub":"2026-11-06T00:31:50Z",
+"pub":"2026-11-06T07:07:07Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours - prochain palier : 980 MW\n Palier à 500 MW : 14h30 - Montée à 980 MW : 13h - Palier à 980 MW : 19h - Montée à 1303 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
 "start":"2026-11-05T22:00:00Z",
@@ -161651,11 +161630,74 @@
 "steps":[
 [
 "2026-11-05T22:00:00Z",
-"2026-11-08T06:30:00Z",
+"2026-11-08T07:30:00Z",
 830
 ]
 ],
-"v":3
+"v":4
+},
+"EDF-05470_EDF_T_00339995":{
+"eic":"17W100P100P0133Q",
+"end":"2026-11-06T04:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":910,
+"name":"GRAVELINES 4",
+"pub":"2026-11-06T02:24:51Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-06T03:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-06T03:30:00Z",
+"2026-11-06T04:00:00Z",
+470
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00340024":{
+"eic":"17W100P100P01012",
+"end":"2026-11-07T05:23:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1300,
+"name":"CATTENOM 1",
+"pub":"2026-11-06T05:25:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.\nUne nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.\n--------\nThe duration of the unavailability is a pre-",
+"start":"2026-11-06T05:23:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-06T05:23:00Z",
+"2026-11-07T05:23:00Z",
+1300
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00340053":{
+"eic":"17W100P100P0109N",
+"end":"2026-11-07T18:30:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":905,
+"name":"CHINON 4",
+"pub":"2026-11-06T06:46:49Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-07T17:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-07T17:00:00Z",
+"2026-11-07T18:30:00Z",
+107
+]
+],
+"v":1
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
