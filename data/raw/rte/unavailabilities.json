@@ -161323,24 +161323,24 @@
 },
 "EDF-05470_EDF_T_00339711":{
 "eic":"17W100P100P0122V",
-"end":"2026-11-05T21:00:00Z",
+"end":"2026-11-05T20:41:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":890,
 "name":"DAMPIERRE 3",
-"pub":"2026-11-05T13:24:48Z",
+"pub":"2026-11-05T20:42:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Grève\nLa baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.\n--------\nStrike\nThe production restriction is likely to continue until the end of the national strike.",
 "start":"2026-11-04T23:30:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-04T23:30:00Z",
-"2026-11-05T21:00:00Z",
+"2026-11-05T20:41:00Z",
 710
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00339713":{
 "eic":"17W100P100P0103Z",
@@ -161407,24 +161407,24 @@
 },
 "EDF-05470_EDF_T_00339751":{
 "eic":"17W100P100P0143N",
-"end":"2026-11-05T21:00:00Z",
+"end":"2026-11-05T20:34:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1330,
 "name":"PENLY 1",
-"pub":"2026-11-05T13:29:49Z",
+"pub":"2026-11-05T20:35:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Grève\nLa baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.\n--------\nStrike\nThe production restriction is likely to continue until the end of the national strike.",
 "start":"2026-11-05T10:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-05T10:00:00Z",
-"2026-11-05T21:00:00Z",
+"2026-11-05T20:34:00Z",
 965
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00339769":{
 "eic":"17W100P100P0106T",
@@ -161643,19 +161643,19 @@
 "kind":"PLANNED",
 "mw":1330,
 "name":"PALUEL 4",
-"pub":"2026-11-05T17:39:50Z",
+"pub":"2026-11-06T00:31:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : 276 MW\nMontée à 276 MW : 30 min - Palier à 276 MW : 30 min - Montée à 540 MW : 30 min - Palier à 540 MW : 15h30 - Montée à 980 MW : 13h - Palier à 980 MW : 19h - Montée à 1303 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de ",
+"remarks":"Remontée par paliers en cours - prochain palier : 980 MW\n Palier à 500 MW : 14h30 - Montée à 980 MW : 13h - Palier à 980 MW : 19h - Montée à 1303 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
 "start":"2026-11-05T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-05T22:00:00Z",
 "2026-11-08T06:30:00Z",
-1320
+830
 ]
 ],
-"v":1
+"v":3
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",

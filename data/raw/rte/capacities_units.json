@@ -1,5 +1,5 @@
 {
-"_fetched":"2026-11-05T02:00:00+00:00",
+"_fetched":"2026-11-06T00:00:00+00:00",
 "types":{
 "BIOMASS":1441.13,
 "FOSSIL_GAS":12586.17,
@@ -11,19 +11,51 @@
 "HYDRO_WATER_RESERVOIR":8525.4,
 "MARINE":243.04,
 "NUCLEAR":62990.0,
-"OTHER":1388.76,
+"OTHER":1364.36,
 "SOLAR":28260.07,
 "WASTE":1001.39,
 "WIND_OFFSHORE":1528.2,
 "WIND_ONSHORE":23361.73
 },
 "units":{
+"17W000000012058D":{
+"kv":225,
+"mw":95,
+"name":"MONTAHUT",
+"owner":"EDF",
+"since":"2000-01-01",
+"type":"HYDRO_WATER_RESERVOIR"
+},
+"17W0000000120981":{
+"kv":63,
+"mw":76,
+"name":"BISSORTE",
+"owner":"EDF",
+"since":"2026-06-29",
+"type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
+},
+"17W0000000128028":{
+"kv":150,
+"mw":89,
+"name":"ORLU",
+"owner":"EDF",
+"since":"2000-01-01",
+"type":"HYDRO_WATER_RESERVOIR"
+},
+"17W000000012829P":{
+"kv":225,
+"mw":93,
+"name":"HOSPITALET",
+"owner":"EDF",
+"since":"2000-01-01",
+"type":"HYDRO_WATER_RESERVOIR"
+},
 "17W000000989065O":{
 "kv":225,
 "mw":126,
 "name":"FR_CPCUSO_GP",
 "owner":"CPCU ST OUEN",
-"since":"2022-10-11",
+"since":"2021-02-04",
 "type":"FOSSIL_GAS"
 },
 "17W000000989066M":{
@@ -31,7 +63,7 @@
 "mw":125,
 "name":"FR_CPCUCOGEVI_GP",
 "owner":"CogeVitry",
-"since":"2022-10-11",
+"since":"2021-02-04",
 "type":"FOSSIL_GAS"
 },
 "17W000001017788H":{
@@ -39,7 +71,7 @@
 "mw":41,
 "name":"SEYSSEL",
 "owner":"CNR",
-"since":"1981-01-01",
+"since":"1983-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W000001017789F":{
@@ -47,15 +79,15 @@
 "mw":90,
 "name":"CHAUTAGNE",
 "owner":"CNR",
-"since":"1980-01-01",
+"since":"1981-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W000001017790U":{
-"kv":225,
+"kv":255,
 "mw":90,
 "name":"BRENS",
 "owner":"CNR",
-"since":"1981-01-01",
+"since":"1982-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W000001017791S":{
@@ -87,7 +119,7 @@
 "mw":72,
 "name":"VAUGRIS",
 "owner":"CNR",
-"since":"1980-01-01",
+"since":"2016-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W000001017795K":{
@@ -111,7 +143,7 @@
 "mw":60,
 "name":"GERVANS 1",
 "owner":"CNR",
-"since":"1984-01-01",
+"since":"1985-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W000001017798E":{
@@ -119,7 +151,7 @@
 "mw":60,
 "name":"GERVANS 2",
 "owner":"CNR",
-"since":"1997-01-01",
+"since":"1998-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W000001017799C":{
@@ -135,7 +167,7 @@
 "mw":66,
 "name":"SAUVETERRE",
 "owner":"CNR",
-"since":"1983-01-01",
+"since":"2018-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W000001023704Q":{
@@ -143,7 +175,7 @@
 "mw":446,
 "name":"COMPAGNIE ELECTRIQUE DE BRETAGNE",
 "owner":"TotalEnergies Electricité et Gaz France",
-"since":"2021-08-28",
+"since":"2026-02-16",
 "type":"FOSSIL_GAS"
 },
 "17W000001345677Y":{
@@ -151,7 +183,7 @@
 "mw":480,
 "name":"BANC DE GUERANDE",
 "owner":"EDF RENOUVELABLES",
-"since":"2023-09-21",
+"since":"2022-05-01",
 "type":"WIND_OFFSHORE"
 },
 "17W000001445568W":{
@@ -159,7 +191,7 @@
 "mw":497,
 "name":"FECAMP",
 "owner":"EDF RENOUVELABLES",
-"since":"2023-09-21",
+"since":"2022-12-01",
 "type":"WIND_OFFSHORE"
 },
 "17W0000014685871":{
@@ -167,7 +199,7 @@
 "mw":240,
 "name":"COGENERATION NORMANDIE (AMFARD)",
 "owner":"TotalEnergies Raffinage France",
-"since":"2002-05-22",
+"since":"2023-02-16",
 "type":"FOSSIL_GAS"
 },
 "17W000001521205J":{
@@ -183,7 +215,7 @@
 "mw":230,
 "name":"CENTRALE SOLAIRE PHOTOVOLTAIQUE DE CONSTANTIN",
 "owner":"CENTRALE SOLAIRE CONSTANTIN 1",
-"since":"2024-11-12",
+"since":"2024-10-29",
 "type":"SOLAR"
 },
 "17W000001637625S":{
@@ -191,15 +223,15 @@
 "mw":105,
 "name":"BESS_AFD7_BARBAN_SAUCATS",
 "owner":"AFD7",
-"since":"2024-03-15",
-"type":"OTHER"
+"since":"2026-01-06",
+"type":"ENERGY_STORAGE"
 },
 "17W000002144988S":{
 "kv":225,
 "mw":500,
 "name":"FERME EOLIENNE DE VENT-DES-ILES",
 "owner":"EOLIENNES EN MER ILES D'YEU-NOIRMOUTIER",
-"since":"2025-05-23",
+"since":"2025-06-25",
 "type":"WIND_OFFSHORE"
 },
 "17W0000022653653":{
@@ -210,12 +242,28 @@
 "since":"2026-08-18",
 "type":"WIND_OFFSHORE"
 },
+"17W000002372025T":{
+"kv":63,
+"mw":96,
+"name":"DOPPLER CHEVIRE",
+"owner":"Harmony CHE",
+"since":"2026-01-07",
+"type":"OTHER"
+},
 "17W0000023852161":{
 "kv":225,
 "mw":240,
 "name":"CERNAY",
 "owner":"TagEnergy",
 "since":"2026-02-12",
+"type":"OTHER"
+},
+"17W000002431606V":{
+"kv":225,
+"mw":120,
+"name":"SALEUX",
+"owner":"Kallista Energy",
+"since":"2026-05-20",
 "type":"OTHER"
 },
 "17W100B100P0189S":{
@@ -703,7 +751,7 @@
 "mw":585,
 "name":"BOUCHAIN 7",
 "owner":"EDF",
-"since":"2017-11-01",
+"since":"2016-08-01",
 "type":"FOSSIL_GAS"
 },
 "17W100P100P0245F":{
@@ -820,7 +868,7 @@
 },
 "17W100P100P0271E":{
 "kv":225,
-"mw":185,
+"mw":175,
 "name":"MONTEREAU 6",
 "owner":"EDF",
 "since":"2025-01-01",
@@ -847,7 +895,7 @@
 "mw":384,
 "name":"COCHE",
 "owner":"EDF",
-"since":"2019-10-30",
+"since":"2000-01-01",
 "type":"HYDRO_PUMPED_STORAGE"
 },
 "17W100P100P02756":{
@@ -855,7 +903,7 @@
 "mw":1714,
 "name":"GRAND MAISON",
 "owner":"EDF",
-"since":"2023-01-01",
+"since":"2000-01-01",
 "type":"HYDRO_PUMPED_STORAGE"
 },
 "17W100P100P02764":{
@@ -863,7 +911,7 @@
 "mw":742,
 "name":"SUPER BISSORTE",
 "owner":"EDF",
-"since":"2024-07-29",
+"since":"2000-01-01",
 "type":"HYDRO_PUMPED_STORAGE"
 },
 "17W100P100P02772":{
@@ -879,7 +927,7 @@
 "mw":800,
 "name":"REVIN",
 "owner":"EDF",
-"since":"2023-01-01",
+"since":"2000-01-01",
 "type":"HYDRO_PUMPED_STORAGE"
 },
 "17W100P100P0279Z":{
@@ -892,7 +940,7 @@
 },
 "17W100P100P0280D":{
 "kv":225,
-"mw":602,
+"mw":600,
 "name":"BATHIE",
 "owner":"EDF",
 "since":"2024-07-29",
@@ -951,7 +999,7 @@
 "mw":188,
 "name":"ORAISON",
 "owner":"EDF",
-"since":"2020-01-30",
+"since":"2000-01-01",
 "type":"HYDRO_WATER_RESERVOIR"
 },
 "17W100P100P0289W":{
@@ -999,7 +1047,7 @@
 "mw":240,
 "name":"SISTERON",
 "owner":"EDF",
-"since":"2017-09-15",
+"since":"2024-07-29",
 "type":"HYDRO_WATER_RESERVOIR"
 },
 "17W100P100P02950":{
@@ -1007,7 +1055,7 @@
 "mw":103,
 "name":"ST ETIENNE CANTALES",
 "owner":"EDF",
-"since":"2016-12-08",
+"since":"2000-01-01",
 "type":"HYDRO_WATER_RESERVOIR"
 },
 "17W100P100P0296Z":{
@@ -1031,7 +1079,7 @@
 "mw":146,
 "name":"SAINT ESTEVE",
 "owner":"EDF",
-"since":"2020-01-30",
+"since":"2000-01-01",
 "type":"HYDRO_WATER_RESERVOIR"
 },
 "17W100P100P0299T":{
@@ -1047,7 +1095,7 @@
 "mw":364,
 "name":"VILLARODIN",
 "owner":"EDF",
-"since":"2020-01-30",
+"since":"2000-01-01",
 "type":"HYDRO_WATER_RESERVOIR"
 },
 "17W100P100P0301V":{
@@ -1079,7 +1127,7 @@
 "mw":152,
 "name":"RHINAU",
 "owner":"EDF",
-"since":"2016-12-08",
+"since":"2000-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0305N":{
@@ -1103,15 +1151,15 @@
 "mw":162,
 "name":"KEMBS",
 "owner":"EDF",
-"since":"2016-12-08",
+"since":"2000-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0308H":{
 "kv":225,
-"mw":147.8,
+"mw":148,
 "name":"STRASBOURG",
 "owner":"EDF",
-"since":"2016-12-08",
+"since":"2000-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0309F":{
@@ -1119,7 +1167,7 @@
 "mw":150,
 "name":"SAUSSAZ",
 "owner":"EDF",
-"since":"2020-01-30",
+"since":"2000-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0310U":{
@@ -1143,7 +1191,7 @@
 "mw":124,
 "name":"RANDENS",
 "owner":"EDF",
-"since":"2020-01-30",
+"since":"2000-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0313O":{
@@ -1159,7 +1207,7 @@
 "mw":129,
 "name":"HERMILLON",
 "owner":"EDF",
-"since":"2023-01-01",
+"since":"2000-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0315K":{
@@ -1190,8 +1238,8 @@
 "kv":225,
 "mw":411,
 "name":"BAYET MORANDES (LES)",
-"owner":"TotalEnecrgies Electricité et Gaz France",
-"since":"2022-05-16",
+"owner":"TotalEnergies Electricité et Gaz France",
+"since":"2026-02-16",
 "type":"FOSSIL_GAS"
 },
 "17W100P100P0319C":{
@@ -1199,7 +1247,7 @@
 "mw":398,
 "name":"GENISSIAT",
 "owner":"CNR",
-"since":"1948-01-01",
+"since":"1986-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0320R":{
@@ -1215,7 +1263,7 @@
 "mw":192,
 "name":"BEAUCHASTEL",
 "owner":"CNR",
-"since":"1963-01-01",
+"since":"1964-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0322N":{
@@ -1223,7 +1271,7 @@
 "mw":128,
 "name":"LOGIS-NEUF 1",
 "owner":"CNR",
-"since":"1960-01-01",
+"since":"1961-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0323L":{
@@ -1231,7 +1279,7 @@
 "mw":275,
 "name":"CHATEAUNEUF-DU-RHONE",
 "owner":"CNR",
-"since":"1957-01-01",
+"since":"1996-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0324J":{
@@ -1239,7 +1287,7 @@
 "mw":349,
 "name":"BOLLENE",
 "owner":"CNR",
-"since":"1959-01-01",
+"since":"2010-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0325H":{
@@ -1247,7 +1295,7 @@
 "mw":187,
 "name":"CADEROUSSE",
 "owner":"CNR",
-"since":"1975-01-01",
+"since":"2015-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0326F":{
@@ -1255,7 +1303,7 @@
 "mw":120,
 "name":"AVIGNON",
 "owner":"CNR",
-"since":"1973-01-01",
+"since":"2016-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0327D":{
@@ -1263,22 +1311,22 @@
 "mw":210,
 "name":"BEAUCAIRE",
 "owner":"CNR",
-"since":"1983-01-01",
+"since":"1995-01-01",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P0328B":{
 "kv":225,
 "mw":146,
 "name":"FR_MAREGES",
-"owner":"CNR",
+"owner":"SHEM",
 "since":"2021-02-04",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
 "17W100P100P03299":{
 "kv":225,
 "mw":122,
-"name":"SAINT-PIERRE",
-"owner":"CNR",
+"name":"FR_SAINT-PIERRE",
+"owner":"SHEM",
 "since":"2021-02-04",
 "type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 },
@@ -1295,7 +1343,7 @@
 "mw":45,
 "name":"SPEM pointe",
 "owner":"ENGIE",
-"since":"2021-02-05",
+"since":"2012-11-01",
 "type":"FOSSIL_GAS"
 },
 "17W100P100P0337A":{
@@ -1311,15 +1359,15 @@
 "mw":434,
 "name":"CROIX DE METZ",
 "owner":"TotalEnergies Electricité et Gaz France",
-"since":"2022-05-16",
+"since":"2026-02-16",
 "type":"FOSSIL_GAS"
 },
 "17W100P100P0341J":{
 "kv":225,
 "mw":439,
 "name":"PONT SUR SAMBRE",
-"owner":"TotalEnecrgies Electricité et Gaz France",
-"since":"2022-05-16",
+"owner":"TotalEnergies Electricité et Gaz France",
+"since":"2026-02-16",
 "type":"FOSSIL_GAS"
 },
 "17W100P100P0343F":{
@@ -1327,23 +1375,23 @@
 "mw":595,
 "name":"EMILE HUCHET 6",
 "owner":"GAZEL ENERGIE",
-"since":"1981-07-01",
+"since":"1981-01-07",
 "type":"FOSSIL_HARD_COAL"
 },
 "17W100P100P0344D":{
 "kv":400,
-"mw":413,
+"mw":435,
 "name":"SAINT AVOLD 7",
-"owner":"TotalEnecrgies Electricité et Gaz France",
-"since":"2022-05-16",
+"owner":"TotalEnergies Electricité et Gaz France",
+"since":"2026-02-16",
 "type":"FOSSIL_GAS"
 },
 "17W100P100P0345B":{
 "kv":400,
-"mw":413,
+"mw":435,
 "name":"SAINT AVOLD 8",
-"owner":"TotalEnecrgies Electricité et Gaz France",
-"since":"2022-05-16",
+"owner":"TotalEnergies Electricité et Gaz France",
+"since":"2026-02-16",
 "type":"FOSSIL_GAS"
 },
 "17W100P100P03469":{
@@ -1351,16 +1399,8 @@
 "mw":595,
 "name":"PROVENCE 5",
 "owner":"GAZEL ENERGIE",
-"since":"1984-07-01",
+"since":"1984-01-07",
 "type":"FOSSIL_HARD_COAL"
-},
-"17W100P100P03493":{
-"kv":225,
-"mw":130,
-"name":"AMFARD14",
-"owner":"TotalEnergies Gas & Power Ltd",
-"since":"2004-09-01",
-"type":"FOSSIL_GAS"
 },
 "17W100P100P0350I":{
 "kv":225,
@@ -1399,16 +1439,8 @@
 "mw":150,
 "name":"PROVENCE 4 BIOMASSE",
 "owner":"GAZEL ENERGIE",
-"since":"2018-04-16",
+"since":"2016-07-05",
 "type":"BIOMASS"
-},
-"17W100P100P1826R":{
-"kv":63,
-"mw":80,
-"name":"PIERRE-BENITE",
-"owner":"CNR",
-"since":"1966-01-01",
-"type":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE"
 }
 }
 }
