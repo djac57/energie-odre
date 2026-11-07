@@ -159832,12 +159832,12 @@
 },
 "EDF-05470_EDF_T_00336641":{
 "eic":"17W100P100P0129H",
-"end":"2026-11-08T19:30:00Z",
+"end":"2026-11-09T17:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-11-05T16:57:49Z",
+"pub":"2026-11-07T21:19:48Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-07T00:00:00Z",
@@ -159845,11 +159845,11 @@
 "steps":[
 [
 "2026-11-07T00:00:00Z",
-"2026-11-08T19:30:00Z",
+"2026-11-09T17:00:00Z",
 1310
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00336642":{
 "eic":"17W100P100P00982",
@@ -161743,24 +161743,24 @@
 },
 "EDF-05470_EDF_T_00339967":{
 "eic":"17W100P100P0129H",
-"end":"2026-11-09T06:00:00Z",
+"end":"2026-11-10T03:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-11-05T17:08:49Z",
+"pub":"2026-11-07T21:22:19Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours - prochain palier : 280 MW\nMontée à 280MW : 1h – Palier à 280MW : 2h – Montée à 900MW : 1h – Palier à 900MW : 6h – Montée à 1280MW : 30min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n----------------\nUnit is currently ramping ",
-"start":"2026-11-08T19:30:00Z",
+"start":"2026-11-09T17:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-08T19:30:00Z",
-"2026-11-09T06:00:00Z",
+"2026-11-09T17:00:00Z",
+"2026-11-10T03:30:00Z",
 1300
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00339970":{
 "eic":"17W100P100P0142P",
@@ -171824,6 +171824,27 @@
 [
 "2026-11-05T14:28:00Z",
 "2026-11-05T17:30:00Z",
+435
+]
+],
+"v":2
+},
+"TDE-20261107_600108610":{
+"eic":"17W100P100P0344D",
+"end":"2026-11-09T22:59:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"UNPLANNED",
+"mw":435,
+"name":"SAINT AVOLD 7",
+"pub":"2026-11-07T22:23:49Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-07T21:32:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-07T21:32:00Z",
+"2026-11-09T22:59:00Z",
 435
 ]
 ],
