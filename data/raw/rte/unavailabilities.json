@@ -160236,19 +160236,19 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-05T07:28:50Z",
+"pub":"2026-11-06T21:13:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will gradually return to full power. The ramp-up period take 5 hours. \n-----------------------------------------------------------------------\nAprès son recouplage, la tranche remontera progressivement à sa pleine puissance. La remontée prendre 5 heures.",
-"start":"2026-11-07T00:00:00Z",
+"start":"2026-11-07T00:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-07T00:00:00Z",
+"2026-11-07T00:30:00Z",
 "2026-11-08T13:00:00Z",
 915
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00337552":{
 "eic":"17W100P100P0175A",
@@ -161470,12 +161470,12 @@
 },
 "EDF-05470_EDF_T_00339817":{
 "eic":"17W100P100P0147F",
-"end":"2026-11-08T17:30:00Z",
+"end":"2026-11-08T18:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-05T07:37:07Z",
+"pub":"2026-11-06T21:14:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée à puissance maximale sans palier.\n--------\nRamp-up to maximal power without load threshold.",
 "start":"2026-11-08T13:00:00Z",
@@ -161483,11 +161483,11 @@
 "steps":[
 [
 "2026-11-08T13:00:00Z",
-"2026-11-08T17:30:00Z",
+"2026-11-08T18:00:00Z",
 35
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00339818":{
 "eic":"17W100P100P0139E",
@@ -161659,24 +161659,24 @@
 },
 "EDF-05470_EDF_T_00339970":{
 "eic":"17W100P100P0142P",
-"end":"2026-11-08T09:00:00Z",
+"end":"2026-11-08T20:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1330,
 "name":"PALUEL 4",
-"pub":"2026-11-06T15:37:14Z",
+"pub":"2026-11-07T01:05:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : 980 MW\n Palier à 530 MW : h30 - Montée à 980 MW : 13h - Palier à 980 MW : 19h \nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques",
+"remarks":"Remontée par paliers en cours - prochain palier : 980 MW\nPalier à 530 MW : 29h - Montée à 980 MW : 13h - Palier à 980 MW : 19h - Montée à 1303 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n--\nUnit is currently ramping up by steps - next step : 980 MW",
 "start":"2026-11-05T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-05T22:00:00Z",
-"2026-11-08T09:00:00Z",
+"2026-11-08T20:00:00Z",
 800
 ]
 ],
-"v":5
+"v":7
 },
 "EDF-05470_EDF_T_00339995":{
 "eic":"17W100P100P0133Q",
@@ -161785,24 +161785,24 @@
 },
 "EDF-05470_EDF_T_00340190":{
 "eic":"17W100P100P0131U",
-"end":"2026-11-07T03:00:00Z",
+"end":"2026-11-07T05:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":910,
 "name":"GRAVELINES 2",
-"pub":"2026-11-06T17:27:50Z",
+"pub":"2026-11-07T00:08:48Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
-"start":"2026-11-06T22:00:00Z",
+"start":"2026-11-07T01:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-06T22:00:00Z",
-"2026-11-07T03:00:00Z",
+"2026-11-07T01:00:00Z",
+"2026-11-07T05:00:00Z",
 101
 ]
 ],
-"v":1
+"v":4
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
