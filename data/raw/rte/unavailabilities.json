@@ -86458,12 +86458,12 @@
 },
 "EDF-05470_EDF_H_00130709":{
 "eic":"17W100P100P02772",
-"end":"2026-11-07T15:00:00Z",
+"end":"2026-11-07T17:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":910,
 "name":"MONTEZIC",
-"pub":"2026-11-07T10:48:50Z",
+"pub":"2026-11-07T14:02:47Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-11-07T08:00:00Z",
@@ -86471,11 +86471,11 @@
 "steps":[
 [
 "2026-11-07T08:00:00Z",
-"2026-11-07T15:00:00Z",
+"2026-11-07T17:00:00Z",
 910
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_H_00130711":{
 "eic":"17W100P100P02772",
@@ -106192,6 +106192,48 @@
 "2029-07-30T05:00:00Z",
 "2029-12-14T16:00:00Z",
 384
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135631":{
+"eic":"17W100P100P0071M",
+"end":"2026-11-07T16:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":227,
+"name":"MONTEZIC 1",
+"pub":"2026-11-07T11:49:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
+"start":"2026-11-07T15:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-07T15:00:00Z",
+"2026-11-07T16:00:00Z",
+227
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135634":{
+"eic":"17W100P100P03590",
+"end":"2026-11-07T20:53:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"UNPLANNED",
+"mw":100,
+"name":"BATHIE 4",
+"pub":"2026-11-07T14:57:49Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-11-07T14:29:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-07T14:29:00Z",
+"2026-11-07T20:53:00Z",
+100
 ]
 ],
 "v":1
@@ -165066,6 +165108,27 @@
 ]
 ],
 "v":1
+},
+"NOY-NOY_2611071403":{
+"eic":"17W000002144988S",
+"end":"2026-11-07T17:30:00Z",
+"fuel":"WIND_OFFSHORE",
+"kind":"PLANNED",
+"mw":500,
+"name":"FERME EOLIENNE DE VENT-DES-ILES",
+"pub":"2026-11-07T13:15:50Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-06T05:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-06T05:30:00Z",
+"2026-11-07T17:30:00Z",
+150
+]
+],
+"v":2
 },
 "REN-05470_EDF_T_00272528":{
 "eic":"17W000001345677Y",
