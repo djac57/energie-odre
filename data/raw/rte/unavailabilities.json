@@ -106261,24 +106261,24 @@
 },
 "EDF-05470_EDF_H_00135644":{
 "eic":"17W100P100P0055K",
-"end":"2026-11-08T14:16:00Z",
+"end":"2026-11-08T11:10:00Z",
 "fuel":"HYDRO_WATER_RESERVOIR",
 "kind":"UNPLANNED",
 "mw":240,
 "name":"BROMMAT 7",
-"pub":"2026-11-08T08:19:49Z",
+"pub":"2026-11-08T11:11:49Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-11-08T08:16:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-08T08:16:00Z",
-"2026-11-08T14:16:00Z",
+"2026-11-08T11:10:00Z",
 240
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
