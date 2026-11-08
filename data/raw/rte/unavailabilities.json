@@ -106259,6 +106259,27 @@
 ],
 "v":2
 },
+"EDF-05470_EDF_H_00135644":{
+"eic":"17W100P100P0055K",
+"end":"2026-11-08T14:16:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"UNPLANNED",
+"mw":240,
+"name":"BROMMAT 7",
+"pub":"2026-11-08T08:19:49Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-11-08T08:16:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-08T08:16:00Z",
+"2026-11-08T14:16:00Z",
+240
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -160336,12 +160357,12 @@
 },
 "EDF-05470_EDF_T_00337551":{
 "eic":"17W100P100P0147F",
-"end":"2026-11-08T20:00:00Z",
+"end":"2026-11-08T11:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-07T18:55:49Z",
+"pub":"2026-11-08T09:50:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement à sa pleine puissance. La remontée prendre 5 heures.\n-----------------------------------------------------------------------\nAfter its restart, the plant will gradually return to full power. The ramp-up period take 5 hours.",
 "start":"2026-11-07T00:30:00Z",
@@ -160349,11 +160370,11 @@
 "steps":[
 [
 "2026-11-07T00:30:00Z",
-"2026-11-08T20:00:00Z",
+"2026-11-08T11:30:00Z",
 915
 ]
 ],
-"v":7
+"v":8
 },
 "EDF-05470_EDF_T_00337552":{
 "eic":"17W100P100P0175A",
@@ -161092,12 +161113,12 @@
 },
 "EDF-05470_EDF_T_00338765":{
 "eic":"17W100P100P0112Y",
-"end":"2026-11-08T19:00:00Z",
+"end":"2026-11-09T06:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1500,
 "name":"CHOOZ 2",
-"pub":"2026-11-06T09:24:49Z",
+"pub":"2026-11-08T09:19:50Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-31T18:01:00Z",
@@ -161105,11 +161126,11 @@
 "steps":[
 [
 "2026-10-31T18:01:00Z",
-"2026-11-08T19:00:00Z",
+"2026-11-09T06:00:00Z",
 1500
 ]
 ],
-"v":6
+"v":7
 },
 "EDF-05470_EDF_T_00338776":{
 "eic":"17W100P100P0109N",
@@ -161575,24 +161596,24 @@
 },
 "EDF-05470_EDF_T_00339817":{
 "eic":"17W100P100P0147F",
-"end":"2026-11-09T01:00:00Z",
+"end":"2026-11-08T16:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-07T18:53:49Z",
+"pub":"2026-11-08T09:52:03Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée à puissance maximale sans palier.\n--------\nRamp-up to maximal power without load threshold.",
-"start":"2026-11-08T20:00:00Z",
+"start":"2026-11-08T11:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-08T20:00:00Z",
-"2026-11-09T01:00:00Z",
+"2026-11-08T11:30:00Z",
+"2026-11-08T16:30:00Z",
 35
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00339818":{
 "eic":"17W100P100P0139E",
@@ -161769,19 +161790,19 @@
 "kind":"PLANNED",
 "mw":1330,
 "name":"PALUEL 4",
-"pub":"2026-11-07T16:41:50Z",
+"pub":"2026-11-08T06:30:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : 980 MW\nPalier à 530 MW : 29h - Montée à 980 MW : 14h - Palier à 980 MW : 19h - Montée à 1303 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n--\nUnit is currently ramping up by steps - next step : 980 MW",
+"remarks":"Remontée par paliers en cours - prochain palier : 1300 MW\nPalier à 980 MW : 19h - Montée à 1303 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n--\nUnit is currently ramping up by steps - next step : 1300 MW\nThreshold to 980 MW : 19h - Ramp-up to 1303 M",
 "start":"2026-11-05T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-05T22:00:00Z",
 "2026-11-08T21:00:00Z",
-800
+350
 ]
 ],
-"v":8
+"v":9
 },
 "EDF-05470_EDF_T_00339995":{
 "eic":"17W100P100P0133Q",
@@ -161932,24 +161953,24 @@
 },
 "EDF-05470_EDF_T_00340307":{
 "eic":"17W100P100P0148D",
-"end":"2026-11-08T09:00:00Z",
+"end":"2026-11-08T07:27:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 2",
-"pub":"2026-11-07T07:07:11Z",
+"pub":"2026-11-08T07:28:48Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-08T07:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-08T07:00:00Z",
-"2026-11-08T09:00:00Z",
+"2026-11-08T07:27:00Z",
 115
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00340419":{
 "eic":"17W100P100P0175A",
@@ -161968,6 +161989,27 @@
 "2026-11-08T09:00:00Z",
 "2026-11-08T15:00:00Z",
 465
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00340489":{
+"eic":"17W100P100P0147F",
+"end":"2026-11-10T18:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":915,
+"name":"ST LAURENT 1",
+"pub":"2026-11-08T06:32:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-10T17:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-10T17:30:00Z",
+"2026-11-10T18:00:00Z",
+470
 ]
 ],
 "v":1
