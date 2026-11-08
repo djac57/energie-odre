@@ -161596,12 +161596,12 @@
 },
 "EDF-05470_EDF_T_00339817":{
 "eic":"17W100P100P0147F",
-"end":"2026-11-08T16:30:00Z",
+"end":"2026-11-08T15:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-08T09:52:03Z",
+"pub":"2026-11-08T15:07:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée à puissance maximale sans palier.\n--------\nRamp-up to maximal power without load threshold.",
 "start":"2026-11-08T11:30:00Z",
@@ -161609,11 +161609,11 @@
 "steps":[
 [
 "2026-11-08T11:30:00Z",
-"2026-11-08T16:30:00Z",
+"2026-11-08T15:30:00Z",
 35
 ]
 ],
-"v":5
+"v":7
 },
 "EDF-05470_EDF_T_00339818":{
 "eic":"17W100P100P0139E",
@@ -161785,24 +161785,24 @@
 },
 "EDF-05470_EDF_T_00339970":{
 "eic":"17W100P100P0142P",
-"end":"2026-11-08T21:00:00Z",
+"end":"2026-11-09T05:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1330,
 "name":"PALUEL 4",
-"pub":"2026-11-08T06:30:49Z",
+"pub":"2026-11-08T12:01:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : 1300 MW\nPalier à 980 MW : 19h - Montée à 1303 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n--\nUnit is currently ramping up by steps - next step : 1300 MW\nThreshold to 980 MW : 19h - Ramp-up to 1303 M",
+"remarks":"Remontée par paliers en cours - prochain palier : 1300 MW\nPalier à 980 MW : 27h - Montée à 1303 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n--\nUnit is currently ramping up by steps - next step : 1300 MW\nThreshold to 980 MW : 27h - Ramp-up to 1303 M",
 "start":"2026-11-05T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-05T22:00:00Z",
-"2026-11-08T21:00:00Z",
+"2026-11-09T05:00:00Z",
 350
 ]
 ],
-"v":9
+"v":11
 },
 "EDF-05470_EDF_T_00339995":{
 "eic":"17W100P100P0133Q",
@@ -162013,6 +162013,27 @@
 ]
 ],
 "v":1
+},
+"EDF-05470_EDF_T_00340612":{
+"eic":"17W100P100P0147F",
+"end":"2026-11-08T13:20:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":915,
+"name":"ST LAURENT 1",
+"pub":"2026-11-08T13:22:07Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-08T13:14:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-08T13:14:00Z",
+"2026-11-08T13:20:00Z",
+870
+]
+],
+"v":2
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
