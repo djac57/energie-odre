@@ -293,27 +293,6 @@
 ],
 "v":1
 },
-"AFD-05470_EDF_T_00340628":{
-"eic":"17W000001637625S",
-"end":"2026-11-09T16:00:00Z",
-"fuel":"ENERGY_STORAGE",
-"kind":"PLANNED",
-"mw":105,
-"name":"BESS_AFD7_BARBAN_SAUCATS",
-"pub":"2026-11-09T01:05:50Z",
-"reason":"FORESEEN_MAINTENANCE",
-"remarks":"",
-"start":"2026-11-09T07:30:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-09T07:30:00Z",
-"2026-11-09T16:00:00Z",
-105
-]
-],
-"v":1
-},
 "AFD-AFD7-20251022-162901":{
 "eic":"17W000001637625S",
 "end":"2025-10-22T18:00:00Z",
@@ -106301,6 +106280,69 @@
 ],
 "v":2
 },
+"EDF-05470_EDF_H_00135646":{
+"eic":"17W100P100P00699",
+"end":"2026-11-09T07:48:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"UNPLANNED",
+"mw":157,
+"name":"GRAND MAISON 9",
+"pub":"2026-11-09T07:49:49Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-11-09T06:29:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-09T06:29:00Z",
+"2026-11-09T07:48:00Z",
+157
+]
+],
+"v":2
+},
+"EDF-05470_EDF_H_00135648":{
+"eic":"17W100P100P0064J",
+"end":"2026-11-19T16:30:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":152,
+"name":"GRAND MAISON 4",
+"pub":"2026-11-09T07:37:24Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
+"start":"2026-11-19T12:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-19T12:30:00Z",
+"2026-11-19T16:30:00Z",
+152
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135650":{
+"eic":"17W100B100P0287S",
+"end":"2026-11-10T16:00:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"PLANNED",
+"mw":132,
+"name":"MONTPEZAT",
+"pub":"2026-11-09T08:29:50Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-10T07:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-10T07:00:00Z",
+"2026-11-10T16:00:00Z",
+132
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -161034,7 +161076,7 @@
 "kind":"PLANNED",
 "mw":1310,
 "name":"NOGENT 2",
-"pub":"2026-10-30T08:57:36Z",
+"pub":"2026-11-09T06:11:50Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-11T11:00:00Z",
@@ -161043,10 +161085,10 @@
 [
 "2026-11-11T11:00:00Z",
 "2026-11-11T16:00:00Z",
-930
+1010
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00338504":{
 "eic":"17W100P100P0018Q",
@@ -161134,12 +161176,12 @@
 },
 "EDF-05470_EDF_T_00338765":{
 "eic":"17W100P100P0112Y",
-"end":"2026-11-09T06:00:00Z",
+"end":"2026-11-09T10:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1500,
 "name":"CHOOZ 2",
-"pub":"2026-11-08T09:19:50Z",
+"pub":"2026-11-09T08:05:50Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-31T18:01:00Z",
@@ -161147,11 +161189,11 @@
 "steps":[
 [
 "2026-10-31T18:01:00Z",
-"2026-11-09T06:00:00Z",
+"2026-11-09T10:00:00Z",
 1500
 ]
 ],
-"v":7
+"v":9
 },
 "EDF-05470_EDF_T_00338776":{
 "eic":"17W100P100P0109N",
@@ -161806,24 +161848,24 @@
 },
 "EDF-05470_EDF_T_00339970":{
 "eic":"17W100P100P0142P",
-"end":"2026-11-09T07:30:00Z",
+"end":"2026-11-09T08:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1330,
 "name":"PALUEL 4",
-"pub":"2026-11-08T23:33:49Z",
+"pub":"2026-11-09T07:50:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : 1287 MW\nMontée à 1287 MW : 8h\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n--\nUnit is currently ramping up by steps - next step : 1287 MW\nRamp-up to 1287 MW : 8h \nThe indicated duration could be reassessed a",
+"remarks":"Remontée par paliers en cours - prochain palier : 1287 MW\nTemps de montée restant à 1287 MW : 45 min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n--\nUnit is currently ramping up by steps - next step : 1287 MW\nRemaining time for ramp-up to 1287 MW : 45 min \n",
 "start":"2026-11-05T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-05T22:00:00Z",
-"2026-11-09T07:30:00Z",
+"2026-11-09T08:30:00Z",
 285
 ]
 ],
-"v":12
+"v":13
 },
 "EDF-05470_EDF_T_00339995":{
 "eic":"17W100P100P0133Q",
@@ -162016,24 +162058,24 @@
 },
 "EDF-05470_EDF_T_00340489":{
 "eic":"17W100P100P0147F",
-"end":"2026-11-10T18:00:00Z",
+"end":"2026-11-10T17:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-08T06:32:49Z",
+"pub":"2026-11-09T06:13:51Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Essai programmé.\n--------\nPlanned test.",
-"start":"2026-11-10T17:30:00Z",
+"remarks":"Essai programmé. La remontée à puissance maximale prendra 1 heure.\n--------\nPlanned test. The unit will return to full load in 1 hour.",
+"start":"2026-11-10T17:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
+"2026-11-10T17:00:00Z",
 "2026-11-10T17:30:00Z",
-"2026-11-10T18:00:00Z",
 470
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00340612":{
 "eic":"17W100P100P0147F",
@@ -162055,6 +162097,48 @@
 ]
 ],
 "v":2
+},
+"EDF-05470_EDF_T_00340657":{
+"eic":"17W100P100P0093C",
+"end":"2026-11-11T03:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":910,
+"name":"BLAYAIS 2",
+"pub":"2026-11-09T06:09:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-11T02:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-11T02:30:00Z",
+"2026-11-11T03:00:00Z",
+532
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00340693":{
+"eic":"17W100P100P0175A",
+"end":"2026-11-10T16:00:00Z",
+"fuel":"FOSSIL_GAS",
+"kind":"PLANNED",
+"mw":465,
+"name":"MARTIGUES PONTEAU 6",
+"pub":"2026-11-09T07:05:50Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essais prévus avec variations de puissance. Si une limitation de puissance se produit pendant l’essai, elle fera l’objet d’une publication spécifique.\n-------------------------------------------------------------------\nTest runs. In this phase the dispatch schedule and the availability can be affect",
+"start":"2026-11-10T07:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-10T07:00:00Z",
+"2026-11-10T16:00:00Z",
+0
+]
+],
+"v":1
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
@@ -171915,12 +171999,12 @@
 },
 "TDE-20261107_600108610":{
 "eic":"17W100P100P0344D",
-"end":"2026-11-09T22:59:00Z",
+"end":"2026-11-10T22:59:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"UNPLANNED",
 "mw":435,
 "name":"SAINT AVOLD 7",
-"pub":"2026-11-07T22:23:49Z",
+"pub":"2026-11-09T07:42:48Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-07T21:32:00Z",
@@ -171928,11 +172012,11 @@
 "steps":[
 [
 "2026-11-07T21:32:00Z",
-"2026-11-09T22:59:00Z",
+"2026-11-10T22:59:00Z",
 435
 ]
 ],
-"v":2
+"v":3
 },
 "TGE-17X0000023720661_outage_01072026":{
 "eic":"17W000002385265P",
