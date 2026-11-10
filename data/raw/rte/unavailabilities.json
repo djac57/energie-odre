@@ -106763,6 +106763,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00135694":{
+"eic":"17W100P100P0057G",
+"end":"2026-11-10T21:50:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"UNPLANNED",
+"mw":259,
+"name":"CHEYLAS 2",
+"pub":"2026-11-10T21:52:19Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-11-10T20:49:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-10T20:49:00Z",
+"2026-11-10T21:50:00Z",
+259
+]
+],
+"v":2
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -150324,9 +150345,9 @@
 "kind":"UNPLANNED",
 "mw":427,
 "name":"BLENOD 5",
-"pub":"2026-11-04T16:59:58Z",
+"pub":"2026-11-10T19:00:49Z",
 "reason":"FAILURE",
-"remarks":"",
+"remarks":"Après son recouplage, la tranche effectuera des essais de requalification à des paliers de charge variable pendant 5 jours.\n--------\nAfter its restart, the plant will proceed to qualification tests at various load thresholds during 5 days.",
 "start":"2026-08-16T04:01:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -150336,7 +150357,7 @@
 427
 ]
 ],
-"v":6
+"v":7
 },
 "EDF-05470_EDF_T_00320882":{
 "eic":"17W100P100P0108P",
@@ -159412,12 +159433,12 @@
 },
 "EDF-05470_EDF_T_00334551":{
 "eic":"17W100P100P0139E",
-"end":"2026-11-30T23:00:00Z",
+"end":"2026-11-12T18:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1330,
 "name":"PALUEL 1",
-"pub":"2026-11-03T07:12:36Z",
+"pub":"2026-11-10T19:58:50Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-10-15T06:54:00Z",
@@ -159425,11 +159446,11 @@
 "steps":[
 [
 "2026-10-15T06:54:00Z",
-"2026-11-30T23:00:00Z",
+"2026-11-12T18:30:00Z",
 130
 ]
 ],
-"v":15
+"v":16
 },
 "EDF-05470_EDF_T_00334683":{
 "eic":"17W100P100P0113W",
@@ -162483,9 +162504,9 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-09T22:13:49Z",
+"pub":"2026-11-10T18:38:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Essai programmé. La remontée à puissance maximale prendra 5 heures.\n--------\nPlanned test. The unit will return to full load in 5 hours.",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
 "start":"2026-11-10T18:30:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -162495,7 +162516,7 @@
 470
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00340612":{
 "eic":"17W100P100P0147F",
@@ -162724,6 +162745,27 @@
 "2026-11-11T00:00:00Z",
 "2026-11-11T03:00:00Z",
 120
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00341039":{
+"eic":"17W100P100P0129H",
+"end":"2026-11-11T20:45:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1310,
+"name":"GOLFECH 2",
+"pub":"2026-11-10T18:17:48Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Remontée par paliers en cours - prochain palier : 126 MW\nMontée à 126 MW : 45 min - Palier à 126 MW : 2h - Montée à 270 MW : 15 min - Palier à 270 MW : 2h - Montée à 559 MW : 30 min - Palier à 559 MW : 8h - Montée à 775 MW : 15 min - Palier à 775 MW : 2h - Montée à 992 MW : 15 min - Palier à 992 MW ",
+"start":"2026-11-11T02:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-11T02:30:00Z",
+"2026-11-11T20:45:00Z",
+1300
 ]
 ],
 "v":1
