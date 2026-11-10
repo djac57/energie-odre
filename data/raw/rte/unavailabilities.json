@@ -160021,12 +160021,12 @@
 },
 "EDF-05470_EDF_T_00336641":{
 "eic":"17W100P100P0129H",
-"end":"2026-11-09T21:00:00Z",
+"end":"2026-11-10T01:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-11-09T10:05:48Z",
+"pub":"2026-11-10T00:24:49Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-07T00:00:00Z",
@@ -160034,11 +160034,11 @@
 "steps":[
 [
 "2026-11-07T00:00:00Z",
-"2026-11-09T21:00:00Z",
+"2026-11-10T01:00:00Z",
 1310
 ]
 ],
-"v":6
+"v":10
 },
 "EDF-05470_EDF_T_00336642":{
 "eic":"17W100P100P00982",
@@ -161932,24 +161932,24 @@
 },
 "EDF-05470_EDF_T_00339967":{
 "eic":"17W100P100P0129H",
-"end":"2026-11-10T07:30:00Z",
+"end":"2026-11-10T11:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-11-09T10:07:37Z",
+"pub":"2026-11-10T00:25:51Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours - prochain palier : 280 MW\nMontée à 280MW : 1h – Palier à 280MW : 2h – Montée à 900MW : 1h – Palier à 900MW : 6h – Montée à 1280MW : 30min\nLes durées indiquées peuvent varier en fonction de l'évolution de paramètres techniques\n----------------\nUnit is currently ramping ",
-"start":"2026-11-09T21:00:00Z",
+"start":"2026-11-10T01:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-09T21:00:00Z",
-"2026-11-10T07:30:00Z",
+"2026-11-10T01:00:00Z",
+"2026-11-10T11:30:00Z",
 1300
 ]
 ],
-"v":3
+"v":7
 },
 "EDF-05470_EDF_T_00339970":{
 "eic":"17W100P100P0142P",
@@ -162163,24 +162163,24 @@
 },
 "EDF-05470_EDF_T_00340489":{
 "eic":"17W100P100P0147F",
-"end":"2026-11-10T17:30:00Z",
+"end":"2026-11-10T19:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-09T06:13:51Z",
+"pub":"2026-11-09T22:13:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Essai programmé. La remontée à puissance maximale prendra 1 heure.\n--------\nPlanned test. The unit will return to full load in 1 hour.",
-"start":"2026-11-10T17:00:00Z",
+"remarks":"Essai programmé. La remontée à puissance maximale prendra 5 heures.\n--------\nPlanned test. The unit will return to full load in 5 hours.",
+"start":"2026-11-10T18:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-10T17:00:00Z",
-"2026-11-10T17:30:00Z",
+"2026-11-10T18:30:00Z",
+"2026-11-10T19:00:00Z",
 470
 ]
 ],
-"v":2
+"v":4
 },
 "EDF-05470_EDF_T_00340612":{
 "eic":"17W100P100P0147F",
@@ -162265,6 +162265,48 @@
 ]
 ],
 "v":1
+},
+"EDF-05470_EDF_T_00340812":{
+"eic":"17W100P100P0113W",
+"end":"2026-11-10T00:30:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1495,
+"name":"CIVAUX 1",
+"pub":"2026-11-09T22:52:05Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Causes externes liées à l'environnement\nPalier de puissance atteint\n------------\nEnvironmental issues\nPower step reached.",
+"start":"2026-11-09T20:35:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-09T20:35:00Z",
+"2026-11-10T00:30:00Z",
+145
+]
+],
+"v":4
+},
+"EDF-05470_EDF_T_00340817":{
+"eic":"17W100P100P0047J",
+"end":"2026-11-09T22:35:00Z",
+"fuel":"FOSSIL_OIL",
+"kind":"UNPLANNED",
+"mw":179,
+"name":"VAIRES 2",
+"pub":"2026-11-09T22:37:04Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-09T21:00:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-09T21:00:00Z",
+"2026-11-09T22:35:00Z",
+179
+]
+],
+"v":3
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
