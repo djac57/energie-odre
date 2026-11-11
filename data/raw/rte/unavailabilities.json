@@ -162667,12 +162667,12 @@
 },
 "EDF-05470_EDF_T_00340899":{
 "eic":"17W100P100P0129H",
-"end":"2026-11-11T02:30:00Z",
+"end":"2026-11-11T01:40:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-11-10T18:09:49Z",
+"pub":"2026-11-11T01:23:48Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-10T06:58:00Z",
@@ -162680,11 +162680,11 @@
 "steps":[
 [
 "2026-11-10T06:58:00Z",
-"2026-11-11T02:30:00Z",
+"2026-11-11T01:40:00Z",
 1310
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00341014":{
 "eic":"17W100P100P0116Q",
@@ -162751,24 +162751,24 @@
 },
 "EDF-05470_EDF_T_00341039":{
 "eic":"17W100P100P0129H",
-"end":"2026-11-11T20:45:00Z",
+"end":"2026-11-11T19:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"GOLFECH 2",
-"pub":"2026-11-10T18:17:48Z",
+"pub":"2026-11-11T04:14:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours - prochain palier : 126 MW\nMontée à 126 MW : 45 min - Palier à 126 MW : 2h - Montée à 270 MW : 15 min - Palier à 270 MW : 2h - Montée à 559 MW : 30 min - Palier à 559 MW : 8h - Montée à 775 MW : 15 min - Palier à 775 MW : 2h - Montée à 992 MW : 15 min - Palier à 992 MW ",
-"start":"2026-11-11T02:30:00Z",
+"remarks":"Remontée par paliers en cours - prochain palier : 559 MW\nPalier à 270 MW : 2h - Montée à 559 MW : 30 min - Palier à 559 MW : 8h - Montée à 775 MW : 15 min - Palier à 775 MW : 2h - Montée à 992 MW : 15 min - Palier à 992 MW : 2h - Montée à 1280 MW : 15 min\nLes durées indiquées peuvent varier en fonct",
+"start":"2026-11-11T01:40:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-11T02:30:00Z",
-"2026-11-11T20:45:00Z",
-1300
+"2026-11-11T01:40:00Z",
+"2026-11-11T19:30:00Z",
+1040
 ]
 ],
-"v":1
+"v":5
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
