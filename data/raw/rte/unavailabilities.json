@@ -23416,12 +23416,12 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-11-14T22:00:00Z",
+"end":"2026-11-15T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-11-13T16:46:49Z",
+"pub":"2026-11-14T09:46:48Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 273 MW\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full powe",
 "start":"2026-01-30T23:00:00Z",
@@ -23429,11 +23429,11 @@
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-11-14T22:00:00Z",
+"2026-11-15T22:00:00Z",
 1300
 ]
 ],
-"v":47
+"v":48
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -24324,9 +24324,9 @@
 "kind":"PLANNED",
 "mw":1310,
 "name":"BELLEVILLE 1",
-"pub":"2026-11-13T16:04:49Z",
+"pub":"2026-11-14T08:20:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\n--------\nAfter its restart, the plant will gradually return by various load threshold to full power.\nThe ramp-up period will take at least 48 hours.",
+"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 541 MW.\n--------\nAfter its restart, the plant will gradually return by various load threshold to full power.\nThe ramp-up period will ta",
 "start":"2026-08-07T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -24336,7 +24336,7 @@
 1310
 ]
 ],
-"v":10
+"v":11
 },
 "EC-EDF-05470-EDF-T-00099848":{
 "eic":"17W100P100P0107R",
@@ -162898,12 +162898,12 @@
 },
 "EDF-05470_EDF_T_00341411":{
 "eic":"17W100P100P0146H",
-"end":"2026-11-15T23:00:00Z",
+"end":"2026-11-15T23:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1335,
 "name":"ST ALBAN 2",
-"pub":"2026-11-13T07:24:49Z",
+"pub":"2026-11-14T06:30:49Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-15T03:00:00Z",
@@ -162911,11 +162911,11 @@
 "steps":[
 [
 "2026-11-15T03:00:00Z",
-"2026-11-15T23:00:00Z",
+"2026-11-15T23:30:00Z",
 555
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00341427":{
 "eic":"17W100P100P01768",
@@ -163252,6 +163252,69 @@
 ]
 ],
 "v":3
+},
+"EDF-05470_EDF_T_00341786":{
+"eic":"17W100P100P0139E",
+"end":"2026-11-16T15:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1330,
+"name":"PALUEL 1",
+"pub":"2026-11-14T06:47:50Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-16T14:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-16T14:30:00Z",
+"2026-11-16T15:00:00Z",
+730
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00341799":{
+"eic":"17W100P100P0141R",
+"end":"2026-11-15T01:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1330,
+"name":"PALUEL 3",
+"pub":"2026-11-14T07:07:58Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-14T23:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-14T23:30:00Z",
+"2026-11-15T01:00:00Z",
+101
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00341808":{
+"eic":"17W100P100P0139E",
+"end":"2026-11-14T09:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1330,
+"name":"PALUEL 1",
+"pub":"2026-11-14T08:37:00Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-14T07:45:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-14T07:45:00Z",
+"2026-11-14T09:00:00Z",
+1250
+]
+],
+"v":2
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
