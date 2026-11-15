@@ -24214,12 +24214,12 @@
 },
 "EC-EDF-05470-EDF-T-00095779":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-16T22:00:00Z",
+"end":"2026-11-16T09:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-13T11:23:09Z",
+"pub":"2026-11-15T13:48:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.\n--------\nAfter its restart, the plant will gradually return by vari",
 "start":"2026-06-12T22:00:00Z",
@@ -24227,11 +24227,11 @@
 "steps":[
 [
 "2026-06-12T22:00:00Z",
-"2026-11-16T22:00:00Z",
+"2026-11-16T09:00:00Z",
 915
 ]
 ],
-"v":7
+"v":8
 },
 "EC-EDF-05470-EDF-T-00095792":{
 "eic":"17W100P100P0135M",
@@ -163087,24 +163087,24 @@
 },
 "EDF-05470_EDF_T_00341615":{
 "eic":"17W100P100P0147F",
-"end":"2026-11-15T16:00:00Z",
+"end":"2026-11-15T15:11:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"ST LAURENT 1",
-"pub":"2026-11-13T07:26:49Z",
+"pub":"2026-11-15T15:12:50Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-15T14:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-15T14:00:00Z",
-"2026-11-15T16:00:00Z",
+"2026-11-15T15:11:00Z",
 115
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00341616":{
 "eic":"17W100P100P0148D",
