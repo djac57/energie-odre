@@ -23416,12 +23416,12 @@
 },
 "EC-EDF-05470-EDF-T-00077027":{
 "eic":"17W100P100P0105V",
-"end":"2026-11-15T22:00:00Z",
+"end":"2026-11-16T03:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-11-14T09:46:48Z",
+"pub":"2026-11-15T19:05:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 273 MW\n-------------------------------------\nAfter its restart, the plant will gradually return by various load thresholds to full powe",
 "start":"2026-01-30T23:00:00Z",
@@ -23429,11 +23429,11 @@
 "steps":[
 [
 "2026-01-30T23:00:00Z",
-"2026-11-15T22:00:00Z",
+"2026-11-16T03:30:00Z",
 1300
 ]
 ],
-"v":48
+"v":49
 },
 "EC-EDF-05470-EDF-T-00077028":{
 "eic":"17W100P100P01101",
@@ -24319,12 +24319,12 @@
 },
 "EC-EDF-05470-EDF-T-00099844":{
 "eic":"17W100P100P0090I",
-"end":"2026-11-16T22:00:00Z",
+"end":"2026-11-15T20:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"BELLEVILLE 1",
-"pub":"2026-11-14T08:20:50Z",
+"pub":"2026-11-15T19:57:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 541 MW.\n--------\nAfter its restart, the plant will gradually return by various load threshold to full power.\nThe ramp-up period will ta",
 "start":"2026-08-07T22:00:00Z",
@@ -24332,11 +24332,11 @@
 "steps":[
 [
 "2026-08-07T22:00:00Z",
-"2026-11-16T22:00:00Z",
+"2026-11-15T20:00:00Z",
 1310
 ]
 ],
-"v":11
+"v":13
 },
 "EC-EDF-05470-EDF-T-00099848":{
 "eic":"17W100P100P0107R",
@@ -163354,6 +163354,27 @@
 "2026-11-15T11:00:00Z",
 "2026-11-15T12:00:00Z",
 115
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00342170":{
+"eic":"17W100P100P0090I",
+"end":"2026-11-18T18:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1310,
+"name":"BELLEVILLE 1",
+"pub":"2026-11-15T20:09:48Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Remontée par paliers en cours\nProchain palier : 541 MW\n--------\nUnit is currently ramping up by steps\nNext step : 541 MW.",
+"start":"2026-11-15T20:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-15T20:00:00Z",
+"2026-11-18T18:00:00Z",
+1300
 ]
 ],
 "v":1
