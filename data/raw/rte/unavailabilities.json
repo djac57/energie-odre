@@ -106828,12 +106828,12 @@
 },
 "EDF-05470_EDF_H_00135894":{
 "eic":"17W100P100P00788",
-"end":"2026-11-16T11:00:00Z",
+"end":"2026-11-16T13:30:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"UNPLANNED",
 "mw":202,
 "name":"REVIN 3",
-"pub":"2026-11-16T04:22:00Z",
+"pub":"2026-11-16T11:03:51Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-11-16T01:29:00Z",
@@ -106841,11 +106841,11 @@
 "steps":[
 [
 "2026-11-16T01:29:00Z",
-"2026-11-16T11:00:00Z",
+"2026-11-16T13:30:00Z",
 202
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_H_00135897":{
 "eic":"17W100P100P0085B",
@@ -107389,6 +107389,27 @@
 "2027-09-10T06:30:00Z",
 "2027-09-10T15:00:00Z",
 152
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135949":{
+"eic":"17W100P100P0299T",
+"end":"2026-11-18T15:30:00Z",
+"fuel":"HYDRO_WATER_RESERVOIR",
+"kind":"PLANNED",
+"mw":116,
+"name":"SAINT GUILLERME",
+"pub":"2026-11-16T10:58:48Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-18T12:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-18T12:30:00Z",
+"2026-11-18T15:30:00Z",
+116
 ]
 ],
 "v":1
@@ -163276,33 +163297,12 @@
 },
 "EDF-05470_EDF_T_00341014":{
 "eic":"17W100P100P0116Q",
-"end":"2026-11-25T01:30:00Z",
-"fuel":"NUCLEAR",
-"kind":"PLANNED",
-"mw":915,
-"name":"CRUAS 2",
-"pub":"2026-11-12T12:14:48Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"En fonction d'analyses techniques, cette intervention pourra être annulée ou reportée.\n------------------------------\nDepending on technical assessments, this intervention may be cancelled or rescheduled.",
-"start":"2026-11-18T19:30:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-18T19:30:00Z",
-"2026-11-25T01:30:00Z",
-915
-]
-],
-"v":2
-},
-"EDF-05470_EDF_T_00341015":{
-"eic":"17W100P100P0118M",
 "end":"2026-12-02T01:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
-"name":"CRUAS 3",
-"pub":"2026-11-12T12:15:49Z",
+"name":"CRUAS 2",
+"pub":"2026-11-16T09:05:51Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"En fonction d'analyses techniques, cette intervention pourra être annulée ou reportée.\n------------------------------\nDepending on technical assessments, this intervention may be cancelled or rescheduled.",
 "start":"2026-11-25T19:30:00Z",
@@ -163314,7 +163314,28 @@
 915
 ]
 ],
-"v":2
+"v":3
+},
+"EDF-05470_EDF_T_00341015":{
+"eic":"17W100P100P0118M",
+"end":"2026-11-25T01:30:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":915,
+"name":"CRUAS 3",
+"pub":"2026-11-16T09:07:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"En fonction d'analyses techniques, cette intervention pourra être annulée ou reportée.\n------------------------------\nDepending on technical assessments, this intervention may be cancelled or rescheduled.",
+"start":"2026-11-18T19:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-18T19:30:00Z",
+"2026-11-25T01:30:00Z",
+915
+]
+],
+"v":3
 },
 "EDF-05470_EDF_T_00341036":{
 "eic":"17W100P100P0112Y",
@@ -163717,24 +163738,24 @@
 },
 "EDF-05470_EDF_T_00341682":{
 "eic":"17W100P100P0131U",
-"end":"2026-11-18T19:00:00Z",
+"end":"2026-11-18T18:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":910,
 "name":"GRAVELINES 2",
-"pub":"2026-11-13T14:31:50Z",
+"pub":"2026-11-16T08:54:49Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
-"start":"2026-11-18T01:00:00Z",
+"start":"2026-11-18T01:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-18T01:00:00Z",
-"2026-11-18T19:00:00Z",
+"2026-11-18T01:30:00Z",
+"2026-11-18T18:30:00Z",
 325
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00341684":{
 "eic":"17W100P100P00958",
@@ -163927,12 +163948,12 @@
 },
 "EDF-05470_EDF_T_00342170":{
 "eic":"17W100P100P0090I",
-"end":"2026-11-18T20:00:00Z",
+"end":"2026-11-19T14:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"BELLEVILLE 1",
-"pub":"2026-11-15T23:16:48Z",
+"pub":"2026-11-16T11:34:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 985 MW\n--------\nUnit is currently ramping up by steps\nNext step : 985 MW.",
 "start":"2026-11-15T20:00:00Z",
@@ -163940,32 +163961,53 @@
 "steps":[
 [
 "2026-11-15T20:00:00Z",
-"2026-11-18T20:00:00Z",
+"2026-11-19T14:00:00Z",
 769
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00342224":{
 "eic":"17W100P100P0105V",
-"end":"2026-11-19T23:00:00Z",
+"end":"2026-11-20T00:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-11-16T08:09:49Z",
+"pub":"2026-11-16T12:11:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 273 MW\n--------\nUnit is currently ramping up by steps\nNext step : 273 MW.",
+"remarks":"Remontée par paliers en cours\nProchain palier : 440 MW\n--------\nUnit is currently ramping up by steps\nNext step : 440 MW.",
 "start":"2026-11-16T08:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-16T08:00:00Z",
-"2026-11-19T23:00:00Z",
-1290
+"2026-11-20T00:00:00Z",
+1015
 ]
 ],
-"v":1
+"v":3
+},
+"EDF-05470_EDF_T_00342225":{
+"eic":"17W100P100P0119K",
+"end":"2026-11-19T15:30:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":915,
+"name":"CRUAS 4",
+"pub":"2026-11-16T12:04:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Remontée par paliers en cours\nProchain palier : 181MW\n--------\nUnit is currently ramping up by steps\nNext step : 181MW.",
+"start":"2026-11-16T09:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-16T09:00:00Z",
+"2026-11-19T15:30:00Z",
+815
+]
+],
+"v":3
 },
 "EDF-05470_EDF_T_00342245":{
 "eic":"17W100P100P0142P",
@@ -163984,6 +164026,27 @@
 "2026-11-18T18:30:00Z",
 "2026-11-18T19:00:00Z",
 701
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00342381":{
+"eic":"17W100P100P0105V",
+"end":"2026-11-16T10:45:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1300,
+"name":"CATTENOM 4",
+"pub":"2026-11-16T09:45:49Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-16T09:45:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-16T09:45:00Z",
+"2026-11-16T10:45:00Z",
+1187
 ]
 ],
 "v":1
