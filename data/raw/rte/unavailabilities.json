@@ -163360,24 +163360,24 @@
 },
 "EDF-05470_EDF_T_00342170":{
 "eic":"17W100P100P0090I",
-"end":"2026-11-18T18:00:00Z",
+"end":"2026-11-18T20:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"BELLEVILLE 1",
-"pub":"2026-11-15T20:09:48Z",
+"pub":"2026-11-15T23:16:48Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 541 MW\n--------\nUnit is currently ramping up by steps\nNext step : 541 MW.",
+"remarks":"Remontée par paliers en cours\nProchain palier : 985 MW\n--------\nUnit is currently ramping up by steps\nNext step : 985 MW.",
 "start":"2026-11-15T20:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-15T20:00:00Z",
-"2026-11-18T18:00:00Z",
-1300
+"2026-11-18T20:00:00Z",
+769
 ]
 ],
-"v":1
+"v":3
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
