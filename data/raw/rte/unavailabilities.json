@@ -8086,12 +8086,12 @@
 },
 "CNR-CE252188-05001U02-1-1":{
 "eic":"17W100P100P15270",
-"end":"2026-11-16T15:30:00Z",
+"end":"2026-11-16T17:00:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"PLANNED",
 "mw":45,
 "name":"CHAUTAGNE G2",
-"pub":"2026-11-13T10:07:09Z",
+"pub":"2026-11-16T16:54:49Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-09-07T05:00:00Z",
@@ -8099,11 +8099,11 @@
 "steps":[
 [
 "2026-09-07T05:00:00Z",
-"2026-11-16T15:30:00Z",
+"2026-11-16T17:00:00Z",
 45
 ]
 ],
-"v":9
+"v":12
 },
 "CNR-CE252391-05001U01-1-1":{
 "eic":"17W100P100P15262",
@@ -15604,12 +15604,12 @@
 },
 "CNR-SV252051-14001U03-1-1":{
 "eic":"17W100P100P1619W",
-"end":"2026-11-16T16:00:00Z",
+"end":"2026-11-17T16:00:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"PLANNED",
 "mw":30,
 "name":"GERVANS G3",
-"pub":"2026-07-03T07:47:34Z",
+"pub":"2026-11-16T13:16:50Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-10-12T05:00:00Z",
@@ -15617,11 +15617,11 @@
 "steps":[
 [
 "2026-10-12T05:00:00Z",
-"2026-11-16T16:00:00Z",
+"2026-11-17T16:00:00Z",
 30
 ]
 ],
-"v":4
+"v":5
 },
 "CNR-SV252052-14001U03-1-1":{
 "eic":"17W100P100P1619W",
@@ -22639,12 +22639,12 @@
 },
 "EC-EDF-05470-EDF-H-00108071":{
 "eic":"17W100P100P0084D",
-"end":"2026-11-17T05:00:00Z",
+"end":"2026-11-19T05:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":152,
 "name":"SUPER BISSORTE 3",
-"pub":"2026-11-13T15:19:50Z",
+"pub":"2026-11-16T16:34:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
 "start":"2026-10-19T05:00:00Z",
@@ -22652,11 +22652,11 @@
 "steps":[
 [
 "2026-10-19T05:00:00Z",
-"2026-11-17T05:00:00Z",
+"2026-11-19T05:00:00Z",
 152
 ]
 ],
-"v":8
+"v":9
 },
 "EC-EDF-05470-EDF-H-00108073":{
 "eic":"17W100P100P0084D",
@@ -24277,12 +24277,12 @@
 },
 "EC-EDF-05470-EDF-T-00095811":{
 "eic":"17W100P100P0092E",
-"end":"2026-11-26T23:00:00Z",
+"end":"2026-12-01T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":910,
 "name":"BLAYAIS 1",
-"pub":"2025-07-16T09:42:17Z",
+"pub":"2026-11-16T12:54:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
 "start":"2026-08-28T22:00:00Z",
@@ -24290,11 +24290,11 @@
 "steps":[
 [
 "2026-08-28T22:00:00Z",
-"2026-11-26T23:00:00Z",
+"2026-12-01T22:00:00Z",
 910
 ]
 ],
-"v":7
+"v":8
 },
 "EC-EDF-05470-EDF-T-00099842":{
 "eic":"17W100P100P00958",
@@ -51325,24 +51325,24 @@
 },
 "EDF-05470_EDF_H_00123843":{
 "eic":"17W100P100P00869",
-"end":"2026-12-02T11:00:00Z",
+"end":"2026-12-01T11:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"PLANNED",
 "mw":162,
 "name":"SUPER BISSORTE 5",
-"pub":"2026-02-02T10:31:18Z",
+"pub":"2026-11-16T15:04:50Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
-"start":"2026-12-02T07:00:00Z",
+"start":"2026-12-01T07:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-12-02T07:00:00Z",
-"2026-12-02T11:00:00Z",
+"2026-12-01T07:00:00Z",
+"2026-12-01T11:00:00Z",
 162
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00123844":{
 "eic":"17W100P100P02926",
@@ -105295,45 +105295,45 @@
 },
 "EDF-05470_EDF_H_00135501":{
 "eic":"17W100P100P0314M",
-"end":"2026-12-29T16:00:00Z",
+"end":"2026-12-08T16:00:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"PLANNED",
 "mw":129,
 "name":"HERMILLON",
-"pub":"2026-11-02T09:35:37Z",
+"pub":"2026-11-16T15:45:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2026-12-29T07:00:00Z",
+"start":"2026-12-08T08:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-12-29T07:00:00Z",
-"2026-12-29T16:00:00Z",
+"2026-12-08T08:00:00Z",
+"2026-12-08T16:00:00Z",
 129
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00135502":{
 "eic":"17W100P100P0314M",
-"end":"2026-12-30T16:00:00Z",
+"end":"2026-12-09T16:00:00Z",
 "fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
 "kind":"PLANNED",
 "mw":129,
 "name":"HERMILLON",
-"pub":"2026-11-02T09:35:36Z",
+"pub":"2026-11-16T15:45:51Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2026-12-30T07:00:00Z",
+"start":"2026-12-09T08:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-12-30T07:00:00Z",
-"2026-12-30T16:00:00Z",
+"2026-12-09T08:00:00Z",
+"2026-12-09T16:00:00Z",
 129
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_H_00135503":{
 "eic":"17W100P100P0280D",
@@ -106828,24 +106828,24 @@
 },
 "EDF-05470_EDF_H_00135894":{
 "eic":"17W100P100P00788",
-"end":"2026-11-16T13:30:00Z",
+"end":"2026-11-16T14:05:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"UNPLANNED",
 "mw":202,
 "name":"REVIN 3",
-"pub":"2026-11-16T11:03:51Z",
+"pub":"2026-11-16T14:16:50Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-11-16T01:29:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-16T01:29:00Z",
-"2026-11-16T13:30:00Z",
+"2026-11-16T14:05:00Z",
 202
 ]
 ],
-"v":3
+"v":5
 },
 "EDF-05470_EDF_H_00135897":{
 "eic":"17W100P100P0085B",
@@ -107410,6 +107410,27 @@
 "2026-11-18T12:30:00Z",
 "2026-11-18T15:30:00Z",
 116
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00135958":{
+"eic":"17W100P100P0314M",
+"end":"2026-12-14T16:00:00Z",
+"fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
+"kind":"PLANNED",
+"mw":129,
+"name":"HERMILLON",
+"pub":"2026-11-16T16:14:48Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-12-14T08:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-12-14T08:00:00Z",
+"2026-12-14T16:00:00Z",
+129
 ]
 ],
 "v":1
@@ -159788,27 +159809,6 @@
 ],
 "v":4
 },
-"EDF-05470_EDF_T_00333888":{
-"eic":"17W100P100P0018Q",
-"end":"2026-11-18T16:15:00Z",
-"fuel":"FOSSIL_HARD_COAL",
-"kind":"PLANNED",
-"mw":580,
-"name":"CORDEMAIS 5",
-"pub":"2026-11-09T17:05:51Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Test runs. In this phase the dispatch schedule and the availability can be affected on short notice by the pending technical test schedules. In case of any limitation, a specific message will be published. Plant maintained in operation between the 17/11/26 2h and the 18/11/26 8h without imposed powe",
-"start":"2026-11-16T17:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-16T17:00:00Z",
-"2026-11-18T16:15:00Z",
-40
-]
-],
-"v":2
-},
 "EDF-05470_EDF_T_00333987":{
 "eic":"17W100P100P01768",
 "end":"2026-10-13T12:00:00Z",
@@ -163764,9 +163764,9 @@
 "kind":"PLANNED",
 "mw":910,
 "name":"BLAYAIS 4",
-"pub":"2026-11-13T17:05:51Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Sous réserve d'accord du gestionnaire de réseau de transport.\n--------\nSubject to TSO agreement.",
+"pub":"2026-11-16T14:01:49Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
 "start":"2026-11-17T19:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -163776,7 +163776,7 @@
 910
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00341699":{
 "eic":"17W100P100P0018Q",
@@ -163785,19 +163785,19 @@
 "kind":"PLANNED",
 "mw":580,
 "name":"CORDEMAIS 5",
-"pub":"2026-11-13T16:42:49Z",
+"pub":"2026-11-16T16:27:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Inapte à l'arrêt et imposée sur le réseau jusqu'au 20/11/2026 inclus --------------------------------------------------------- Not available to stop until 11/20/2026.",
-"start":"2026-11-18T16:15:00Z",
+"remarks":"Inapte à l'arrêt et imposée sur le réseau jusqu'au 20/11/2026 inclus \n--------------------------------------------------------- \nNot available to stop until 11/20/2026.",
+"start":"2026-11-18T17:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-18T16:15:00Z",
+"2026-11-18T17:00:00Z",
 "2026-11-20T23:00:00Z",
 0
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00341702":{
 "eic":"17W100P100P0041V",
@@ -163840,27 +163840,6 @@
 ]
 ],
 "v":3
-},
-"EDF-05470_EDF_T_00341786":{
-"eic":"17W100P100P0139E",
-"end":"2026-11-16T15:00:00Z",
-"fuel":"NUCLEAR",
-"kind":"PLANNED",
-"mw":1330,
-"name":"PALUEL 1",
-"pub":"2026-11-14T06:47:50Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Essai programmé.\n--------\nPlanned test.",
-"start":"2026-11-16T14:30:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-16T14:30:00Z",
-"2026-11-16T15:00:00Z",
-730
-]
-],
-"v":1
 },
 "EDF-05470_EDF_T_00341799":{
 "eic":"17W100P100P0141R",
@@ -163969,45 +163948,45 @@
 },
 "EDF-05470_EDF_T_00342224":{
 "eic":"17W100P100P0105V",
-"end":"2026-11-20T00:00:00Z",
+"end":"2026-11-20T02:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-11-16T12:11:49Z",
+"pub":"2026-11-16T16:54:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 440 MW\n--------\nUnit is currently ramping up by steps\nNext step : 440 MW.",
+"remarks":"Remontée par paliers en cours\nProchain palier : 900 MW\n--------\nUnit is currently ramping up by steps\nNext step : 900 MW.",
 "start":"2026-11-16T08:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-16T08:00:00Z",
-"2026-11-20T00:00:00Z",
-1015
+"2026-11-20T02:00:00Z",
+820
 ]
 ],
-"v":3
+"v":6
 },
 "EDF-05470_EDF_T_00342225":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-19T15:30:00Z",
+"end":"2026-11-19T17:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-16T12:04:49Z",
+"pub":"2026-11-16T18:18:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 181MW\n--------\nUnit is currently ramping up by steps\nNext step : 181MW.",
+"remarks":"Remontée par paliers en cours\nProchain palier : 367 MW\n--------\nUnit is currently ramping up by steps\nNext step : 367 MW.",
 "start":"2026-11-16T09:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-16T09:00:00Z",
-"2026-11-19T15:30:00Z",
-815
+"2026-11-19T17:30:00Z",
+724
 ]
 ],
-"v":3
+"v":5
 },
 "EDF-05470_EDF_T_00342245":{
 "eic":"17W100P100P0142P",
@@ -164047,6 +164026,27 @@
 "2026-11-16T09:45:00Z",
 "2026-11-16T10:45:00Z",
 1187
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00342437":{
+"eic":"17W100P100P0018Q",
+"end":"2026-11-18T17:00:00Z",
+"fuel":"FOSSIL_HARD_COAL",
+"kind":"UNPLANNED",
+"mw":580,
+"name":"CORDEMAIS 5",
+"pub":"2026-11-16T16:12:49Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-16T16:08:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-16T16:08:00Z",
+"2026-11-18T17:00:00Z",
+580
 ]
 ],
 "v":1
