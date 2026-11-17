@@ -163969,24 +163969,24 @@
 },
 "EDF-05470_EDF_T_00342225":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-19T17:30:00Z",
+"end":"2026-11-17T00:04:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-16T18:18:49Z",
+"pub":"2026-11-17T00:09:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 367 MW\n--------\nUnit is currently ramping up by steps\nNext step : 367 MW.",
+"remarks":"Remontée par paliers en cours\nProchain palier : 595 MW\n--------\nUnit is currently ramping up by steps\nNext step : 595 MW.",
 "start":"2026-11-16T09:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-16T09:00:00Z",
-"2026-11-19T17:30:00Z",
-724
+"2026-11-17T00:04:00Z",
+548
 ]
 ],
-"v":5
+"v":7
 },
 "EDF-05470_EDF_T_00342245":{
 "eic":"17W100P100P0142P",
@@ -164050,6 +164050,48 @@
 ]
 ],
 "v":1
+},
+"EDF-05470_EDF_T_00342455":{
+"eic":"17W100P100P0119K",
+"end":"2026-11-17T01:56:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":915,
+"name":"CRUAS 4",
+"pub":"2026-11-17T01:59:49Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-17T00:04:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-17T00:04:00Z",
+"2026-11-17T01:56:00Z",
+735
+]
+],
+"v":3
+},
+"EDF-05470_EDF_T_00342471":{
+"eic":"17W100P100P0119K",
+"end":"2026-11-20T02:30:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":915,
+"name":"CRUAS 4",
+"pub":"2026-11-17T02:04:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Remontée par paliers en cours\nProchain palier : 367 MW\n--------\nUnit is currently ramping up by steps\nNext step : 367 MW.",
+"start":"2026-11-17T01:56:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-17T01:56:00Z",
+"2026-11-20T02:30:00Z",
+870
+]
+],
+"v":2
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
