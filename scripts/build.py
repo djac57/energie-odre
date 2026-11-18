@@ -178,6 +178,13 @@ def main():
         "borderMonths": border_months, "borders": borders,
         "weatherMonths": w_months, "weather": weather_out,
     }
+    # Phrase du jour, déterministe (scripts/phrase.py) ; None si les chiffres manquent → la page masque le bloc
+    try:
+        from phrase import phrase_du_jour
+        data["phrase"] = phrase_du_jour(data)
+    except Exception as e:  # la phrase ne doit jamais bloquer la construction de data.js
+        print("Phrase du jour non générée :", e)
+        data["phrase"] = None
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("window.DATA=")
         json.dump(data, fh, ensure_ascii=False, separators=(",", ":"))

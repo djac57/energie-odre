@@ -65,6 +65,9 @@ h1 { font-weight: 700; font-size: clamp(36px, 6vw, 76px); line-height: .95; lett
 h1 em { font-style: normal; color: var(--accent); text-shadow: var(--glow); }
 .lede { color: var(--text-2); font-size: 17px; max-width: 640px; margin: 0; }
 .source { font: 12.5px "IBM Plex Mono", monospace; color: var(--muted); margin-top: 14px; }
+.phrase { font-size: 19px; line-height: 1.45; color: var(--text); max-width: 680px; margin: 0 0 14px; border-left: 3px solid var(--accent); padding-left: 12px; }
+@media (max-width: 640px) { .phrase { font-size: 16px; } }
+.tag { display: inline-block; font: 600 10.5px/1.6 "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; padding: 0 6px; border: 1px solid currentColor; margin-right: 6px; }
 .readout { border: 1px solid var(--line); background: var(--panel); padding: 16px 18px; position: relative; }
 .readout::before, .readout::after, .panel::before, .panel::after { content: ""; position: absolute; width: 10px; height: 10px; border-color: var(--accent); border-style: solid; }
 .readout::before, .panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
@@ -247,6 +250,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 <header class="hero">
   <div>
     <h1>D'où vient l'<em>électricité</em> française&nbsp;?</h1>
+    <p class="phrase" id="phrase" hidden></p>
     <p class="lede">Production par filière, consommation, CO₂ et échanges avec les voisins, mesurés toutes les demi-heures par RTE depuis 2012 — et le vent et le soleil qui font tourner les renouvelables.</p>
     <p class="source" id="source"></p>
   </div>
@@ -268,7 +272,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <div class="side"><div class="no">02 — FRONTIÈRES</div><h2>Ce qui entre, ce qui sort</h2>
     <p>Chaque couloir montre les deux sens&nbsp;: <b style="color:var(--exp)">exportations</b> vers le voisin, <b style="color:var(--imp)">importations</b> vers la France. Épaisseur et débit des particules suivent les volumes. Pour les échanges commerciaux, RTE publie Allemagne et Belgique ensemble&nbsp;; les flux physiques les distinguent.</p>
     <div class="tabs" id="flowSource"><button class="tab" data-v="commercial" aria-pressed="true">Échanges commerciaux</button><button class="tab" data-v="physical" aria-pressed="false">Flux physiques</button></div>
-    <div class="tabs" id="flowMode"><button class="tab" data-v="live" aria-pressed="false" id="flowLiveTab"><span class="ldot"></span> LIVE</button><button class="tab" data-v="period" aria-pressed="true">Toute la période</button><button class="tab" data-v="month" aria-pressed="false">Mois par mois</button></div></div>
+    <div class="tabs" id="flowMode"><button class="tab" data-v="live" aria-pressed="false" id="flowLiveTab"><span class="ldot"></span> Temps réel</button><button class="tab" data-v="period" aria-pressed="true">Toute la période</button><button class="tab" data-v="month" aria-pressed="false">Mois par mois</button></div></div>
   <div class="panel">
     <div class="lstatus" id="flowLiveStatus" style="margin-bottom:6px"></div>
     <div id="flowMap"></div><div id="flowList" class="flist"></div>
@@ -285,7 +289,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
     <div class="tabs" id="overlays"><button class="tab" data-v="wind" aria-pressed="true">⟲ Vent</button><button class="tab" data-v="sun" aria-pressed="true">☀ Ciel</button></div>
     <div class="tabs" id="regMode"><button class="tab" data-v="period" aria-pressed="true">Moyenne de période</button><button class="tab" data-v="month" aria-pressed="false">Mois par mois</button></div></div>
   <div class="maps">
-    <div class="panel"><div class="livebar"><div class="srcseg" id="regSource"><button data-v="live" aria-pressed="false"><span class="ldot"></span>LIVE</button><button data-v="year" aria-pressed="true" id="yearBtn">Dernière année</button></div><span class="lstatus" id="liveStatus"></span></div>
+    <div class="panel"><div class="livebar"><div class="srcseg" id="regSource"><button data-v="live" aria-pressed="false"><span class="ldot"></span>Temps réel</button><button data-v="year" aria-pressed="true" id="yearBtn">Dernière année</button></div><span class="lstatus" id="liveStatus"></span></div>
       <div class="maptitle" id="regTitle"></div><div id="regMap"></div>
       <div class="player" id="regPlayer"><button class="play" id="regPlay" aria-label="Lecture">▶</button><input type="range" id="regSlider" aria-label="Mois"><div class="mlabel" id="regLabel"></div></div>
       <div class="legends"><div><div class="lt" id="regLegendT"></div><div class="rgrad" id="regGrad"></div><div class="rticks"><span id="regMin"></span><span id="regMid"></span><span id="regMax"></span></div></div>
@@ -470,10 +474,10 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
 
 <section class="band" id="co2Block"><div class="band-in">
   <div class="side"><div class="no">22 — CO₂ EN EUROPE</div><h2>Le CO₂ de chaque kWh, pays par pays</h2>
-    <p>Intensité carbone de la production d'électricité (émissions directes des centrales ÷ production) mois par mois dans toute l'Europe, et la France en direct.</p>
+    <p>Intensité carbone de la production d'électricité (émissions directes des centrales ÷ production) mois par mois dans toute l'Europe, et la France en temps réel.</p>
     <div class="player"><button class="play" id="co2Play" aria-label="Lecture">▶</button><input type="range" id="co2Slider" min="0" max="0" value="0" aria-label="Mois"><span class="mlabel" id="co2Label"></span></div>
     <div class="stat" id="co2Live"></div>
-    <p class="note">Europe&nbsp;: Ember, Monthly Electricity Data (CC BY 4.0), publié avec un à trois mois de décalage. France en direct&nbsp;: éCO2mix (RTE, <span class="mono">eco2mix-national-tr</span>), estimation des émissions directes du parc. Les deux sources comptent les émissions directes, pas le cycle de vie.</p></div>
+    <p class="note">Europe&nbsp;: Ember, Monthly Electricity Data (CC BY 4.0), publié avec un à trois mois de décalage. France en temps réel&nbsp;: éCO2mix (RTE, <span class="mono">eco2mix-national-tr</span>), estimation des émissions directes du parc. Les deux sources comptent les émissions directes, pas le cycle de vie.</p></div>
   <div><div class="maps"><div class="panel"><div id="co2Map"></div></div>
       <div class="panel"><div class="maptitle" id="co2CmpT">France : éCO2mix face à Ember (gCO₂/kWh, moyenne mensuelle)</div><div id="co2Cmp"></div><div class="legend" id="co2CmpLg"></div><div class="note" id="co2CmpNote"></div></div></div>
     <div class="panel" style="margin-top:16px"><div class="maptitle">France, 7 derniers jours au quart d'heure (gCO₂/kWh, éCO2mix temps réel)</div><div id="co2Week"></div><div class="note" id="co2WeekNote"></div></div></div>
@@ -483,7 +487,7 @@ footer { max-width: 1400px; margin: 0 auto; padding: 28px; border-top: 1px solid
   <b>Données</b> — RTE, éCO2mix, sur <a href="https://odre.opendatasoft.com" target="_blank" rel="noopener">ODRÉ</a> (Open Data Réseaux Énergies), Licence Ouverte&nbsp;: nationales consolidées et définitives (<span class="mono">eco2mix-national-cons-def</span>) + temps réel (<span class="mono">eco2mix-national-tr</span>)&nbsp;; régionales (<span class="mono">eco2mix-regional-cons-def</span>, <span class="mono">eco2mix-regional-tr</span>)&nbsp;;
   météo régionale Weathernews France (<span class="mono">rayonnement-solaire-vitesse-vent-tri-horaires-regionaux</span>, vent à 100&nbsp;m et rayonnement solaire global, tri-horaire, depuis 2016, Licence Ouverte 2.0) — sans direction du vent&nbsp;: les éoliennes de la carte en indiquent la force, pas l'orientation.
   Le temps réel est provisoire. « Bas carbone » = nucléaire, hydraulique, éolien, solaire, bioénergies&nbsp;; « ENR » = hydraulique, éolien, solaire, bioénergies. Échanges commerciaux&nbsp;: les exportations et importations de chaque mois sont cumulées séparément sur les pas fins.<br>
-  <b>En direct</b> — production régionale et nationale : API ODRÉ (<span class="mono">eco2mix-regional-tr</span>, <span class="mono">eco2mix-national-tr</span>), interrogée par votre navigateur et rafraîchie toutes les 15 min&nbsp;; météo actuelle&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (données CC BY 4.0), au centroïde de chaque région.<br>
+  <b>Temps réel</b> — production régionale et nationale : API ODRÉ (<span class="mono">eco2mix-regional-tr</span>, <span class="mono">eco2mix-national-tr</span>), interrogée par votre navigateur et rafraîchie toutes les 15 min&nbsp;; météo actuelle&nbsp;: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (données CC BY 4.0), au centroïde de chaque région.<br>
   <b>Pilotage RTE</b> — API du portail <a href="https://data.rte-france.com" target="_blank" rel="noopener">data.rte-france.com</a> (données publiques, réutilisation autorisée avec mention de la source, CGU art.&nbsp;9) : Actual Generation (production par filière et par groupe), Generation Installed Capacities, Unavailability Additional Information, Generation Forecast, Consumption, Balancing Energy&nbsp;; mises à jour chaque heure par le dépôt. Les prix de marché de gros (EPEX SPOT / Nord Pool) ne sont pas affichés.
   Coordonnées des centrales&nbsp;: <a href="https://data.jrc.ec.europa.eu/dataset/9810feeb-f062-49cd-8e76-8d8cfd488a05" target="_blank" rel="noopener">JRC Open Power Plants Database</a> (Commission européenne, CC BY 4.0), rapprochée par code EIC, complétée par Wikidata (CC0) et, à défaut, le centre de la commune (geo.api.gouv.fr, Licence Ouverte).<br>
   <b>Pilotage RTE (suite)</b> — Ecowatt v5 (signal du jour et des 3 jours suivants), Physical Flow v1 (flux physiques aux frontières), Tempo Like Supply Contract v1, Demand Response v1, Balancing Capacity v5 (besoin de réserves) — données publiques RTE, réutilisation avec mention de la source.<br>
@@ -553,7 +557,8 @@ const presets = document.getElementById("presets");
   const b = el("button", "tab", l); b.dataset.v = v; b.onclick = () => { state.period = v; update(); }; presets.append(b); });
 (() => { const s = document.getElementById("source"), t = new Date(D.lastStamp);
   s.append("Source : données publiques "); const a = el("a", null, "ODRÉ / RTE"); a.href = "https://odre.opendatasoft.com"; a.target = "_blank"; a.rel = "noopener"; s.append(a);
-  s.append(` · dernière mesure ${t.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })} ${t.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`); })();
+  s.append(el("br"), el("span", "tag", "Historique ODRÉ"), `jusqu'au ${t.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ${t.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} · mis à jour au moins une fois par jour`);
+  const ph = document.getElementById("phrase"); if (D.phrase) { ph.textContent = D.phrase; ph.hidden = false; } })();
 
 /* ---------- Agrégats ---------- */
 function sumDays(d0, d1, k) { let s = 0, n = 0; const a = D.daily[k]; for (let i = d0; i <= d1; i++) if (a[i] != null) { s += a[i]; n++; } return { twh: s * 24 / 1e6, n, mean: n ? s / n : 0 }; }
@@ -566,17 +571,17 @@ function renderReadout() {
   const N = LIVE.national;
   if (N) { const box = document.getElementById("readout"); box.replaceChildren();
     const k = el("div", "k"); const dot = el("span", "ldot on"); dot.style.cssText = "display:inline-block;margin-right:6px;vertical-align:1px";
-    k.append(dot, document.createTextNode(`En direct · RTE ${new Date(N.date_heure).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ${hhmm(N.date_heure)}`)); box.append(k);
+    k.append(dot, document.createTextNode(`Temps réel RTE · ${new Date(N.date_heure).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ${hhmm(N.date_heure)}`)); box.append(k);
     const rows = el("div", "rows");
     [["Consommation", fmtGW(N.consommation), "instantanée"], ["CO₂", fr(N.taux_co2) + " g", "par kWh produit"], ["Solaire", fmtGW(N.solaire), "en ce moment"], ["Éolien", fmtGW(N.eolien), "en ce moment"]]
       .forEach(([a, v, s2]) => { const c = el("div"); c.append(el("div", "k", a), el("div", "v", v), el("div", "s", s2)); rows.append(c); }); box.append(rows); return; }
   const h = D.hourly, n = h.consommation.length; let i = n - 1; while (i > 0 && h.consommation[i] == null) i--;
   const t = dayDate(Math.floor(i / 24)); t.setHours(i % 24);
   const box = document.getElementById("readout"); box.replaceChildren();
-  box.append(el("div", "k", `Dernière heure mesurée · ${t.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ${i % 24} h`));
+  box.append(el("div", "k", `Historique · dernière heure : ${t.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} ${i % 24} h`));
   const rows = el("div", "rows");
   [["Consommation", fmtGW(h.consommation[i]), "moyenne horaire"], ["CO₂", fr(h.taux_co2[i]) + " g", "par kWh produit"],
-   ["Solaire", fmtGW(h.solaire[i]), "en ce moment"], ["Éolien", fmtGW(h.eolien[i]), "en ce moment"]].forEach(([k, v, s]) => {
+   ["Solaire", fmtGW(h.solaire[i]), "moyenne horaire"], ["Éolien", fmtGW(h.eolien[i]), "moyenne horaire"]].forEach(([k, v, s]) => {
     const c = el("div"); c.append(el("div", "k", k), el("div", "v", v), el("div", "s", s)); rows.append(c); });
   box.append(rows);
 }
@@ -684,8 +689,8 @@ function syncFlowLive() {
   st.classList.toggle("err", !!BLIVE.error && !BLIVE.ok);
   if (BLIVE.loading && !BLIVE.ok) st.textContent = "● connexion au temps réel…";
   else if (live && physicalOn()) { const last = Object.values(RTE.physicalRecent || {})[0]?.at(-1)?.[0];
-    st.textContent = last ? `● EN DIRECT · flux physiques RTE, dernière heure publiée : ${tUTC(last).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}–${new Date(+tUTC(last) + 3600e3).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} (mise à jour horaire)` : "Flux physiques récents indisponibles"; }
-  else if (live && BLIVE.ok) { const r = currentRow(); st.textContent = `● EN DIRECT · échanges commerciaux programmés pour le quart d'heure de ${hhmm(r.date_heure)} · actualisé toutes les 15 min`; }
+    st.textContent = last ? `● TEMPS RÉEL · flux physiques RTE, dernière heure publiée : ${tUTC(last).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}–${new Date(+tUTC(last) + 3600e3).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} (mise à jour horaire)` : "Flux physiques récents indisponibles"; }
+  else if (live && BLIVE.ok) { const r = currentRow(); st.textContent = `● TEMPS RÉEL · échanges commerciaux programmés pour le quart d'heure de ${hhmm(r.date_heure)} · actualisé toutes les 15 min`; }
   else st.textContent = BLIVE.error && !BLIVE.ok ? `Temps réel indisponible (${BLIVE.error}) — affichage de l'historique` : "";
 }
 function commercial(k, months) { let ex = 0, im = 0; months.forEach(([m, i]) => { const v = D.borders[k][i]; if (v) { ex += v[0]; im += v[1]; } }); return { ex, im }; }
@@ -768,7 +773,7 @@ function renderFlows() {
   flow.timer = d3.timer(el => { const dt = Math.min(.05, (el - last) / 1000); last = el; flow.particles.forEach(p => { p.t = (p.t + p.speed * dt) % 1; }); draw(); });
 }
 function flowTip(e, v) { const fv = v.live ? fmtGW : fmtTWh; showTip(e, t => {
-  t.append(el("div", "t", v.name + " · " + (v.live ? "en direct · " + (v.stamp ? (v.stamp.length === 13 ? tUTC(v.stamp) : new Date(v.stamp)).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "—") : state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth) : periodLabel())));
+  t.append(el("div", "t", v.name + " · " + (v.live ? "temps réel · " + (v.stamp ? (v.stamp.length === 13 ? tUTC(v.stamp) : new Date(v.stamp)).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "—") : state.flowMode === "month" && state.flowMonth ? monthName(state.flowMonth) : periodLabel())));
   row(t, css("--exp"), "Exportations", fv(v.ex)); row(t, css("--imp"), "Importations", fv(v.im)); t.append(el("hr"));
   t.append(el("div", "big", (v.net >= 0 ? "+" : "−") + fv(Math.abs(v.net)))); t.append(el("div", null, v.net >= 0 ? "solde exportateur" : "solde importateur"));
   if (v.hours && !v.live) row(t, null, "Puissance moyenne", fmtGW((v.ex - v.im) * 1e6 / v.hours));
@@ -1053,7 +1058,7 @@ function renderRegionLive() {
   const path = d3.geoPath(proj), svg = d3.select(host).append("svg").attr("width", W).attr("height", H).style("display", "block");
   const vmax = d3.max(Object.values(stats), LMET.v) || 1;
   const scale = d3.scaleSequential(d3.interpolateRgb(d3.interpolateRgb(css("--hm-0"), css(met.hue))(.12), css(met.hue))).domain([0, vmax]);
-  document.getElementById("regTitle").textContent = `${met.name.replace("Production", "Puissance")} · en direct · ${hhmm(LIVE.stamp)}`;
+  document.getElementById("regTitle").textContent = `${met.name.replace("Production", "Puissance")} · temps réel · ${hhmm(LIVE.stamp)}`;
   svg.append("g").selectAll("path").data(feats).join("path").attr("d", path)
     .attr("fill", f => stats[f.properties.nom] ? scale(LMET.v(stats[f.properties.nom]) || 0) : "var(--land)")
     .attr("stroke", f => f.properties.nom === state.region ? "var(--accent)" : "var(--bg)").attr("stroke-width", f => f.properties.nom === state.region ? 2.5 : 1)
@@ -2111,6 +2116,7 @@ function renderImbHorizon() {
   const daPast = da.filter(r => r.t >= imb[0]?.t && +r.t < lastImb), daToday = da.filter(r => +r.t >= lastImb && r.t < tomorrow), daTom = da.filter(r => r.t >= tomorrow && r.t < after);
   const t0 = imb[0]?.t || new Date(+now - 48 * 3600e3), t1 = daTom.length ? after : tomorrow;
   const all = [...imb.flatMap(r => [r.ex, r.de]), ...da.filter(r => r.t >= t0).map(r => r.p)].sort(d3.ascending);
+  if (!all.length) { host.append(el("p", "note", "Pas de prix publié sur les dernières 48 h.")); return; }  // évite un axe en NaN
   const lo = Math.min(0, d3.quantile(all, .01)), hi = d3.quantile(all, .99);
   const W = host.clientWidth, H = W < 560 ? 240 : 300, M = { l: 46, r: 8, t: 22, b: 22 };
   const x = d3.scaleTime().domain([t0, t1]).range([M.l, W - M.r]), y = d3.scaleLinear().domain([lo, hi]).nice().range([H - M.b, M.t]).clamp(true);
@@ -2404,7 +2410,7 @@ async function loadCo2Week() {
 function renderCo2Week() {
   const host = document.getElementById("co2Week"); host.replaceChildren(); const note = document.getElementById("co2WeekNote"), live = document.getElementById("co2Live"); live.replaceChildren();
   if (!co2s.week) { note.textContent = "Chargement…"; return; }
-  if (co2s.week.error || !co2s.week.length) { note.textContent = `Données en direct indisponibles (${co2s.week.error || "réponse vide"}).`; return; }
+  if (co2s.week.error || !co2s.week.length) { note.textContent = `Données temps réel indisponibles (${co2s.week.error || "réponse vide"}).`; return; }
   const rows = co2s.week, last = rows.at(-1), W = host.clientWidth, H = 170, M = { l: 40, r: 8, t: 8, b: 20 };
   const x = d3.scaleTime().domain(d3.extent(rows, r => r.t)).range([M.l, W - M.r]), y = d3.scaleLinear().domain([0, d3.max(rows, r => r.v)]).nice().range([H - M.b, M.t]);
   const svg = d3.select(host).append("svg").attr("width", W).attr("height", H);
