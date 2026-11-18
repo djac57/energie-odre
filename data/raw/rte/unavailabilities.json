@@ -108548,6 +108548,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00136055":{
+"eic":"17W100P100P00796",
+"end":"2026-11-18T23:25:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"UNPLANNED",
+"mw":202,
+"name":"REVIN 4",
+"pub":"2026-11-18T17:30:50Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-11-18T17:25:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-18T17:25:00Z",
+"2026-11-18T23:25:00Z",
+202
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -164074,12 +164095,12 @@
 },
 "EDF-05470_EDF_T_00340024":{
 "eic":"17W100P100P01012",
-"end":"2026-11-25T22:00:00Z",
+"end":"2026-11-29T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1300,
 "name":"CATTENOM 1",
-"pub":"2026-11-13T10:45:49Z",
+"pub":"2026-11-18T18:48:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Arrêt susceptible d'être prolongé.\n--------\nStop likely to be extended.",
 "start":"2026-11-06T05:23:00Z",
@@ -164087,11 +164108,11 @@
 "steps":[
 [
 "2026-11-06T05:23:00Z",
-"2026-11-25T22:00:00Z",
+"2026-11-29T22:00:00Z",
 1300
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00340053":{
 "eic":"17W100P100P0109N",
@@ -165255,7 +165276,7 @@
 "kind":"PLANNED",
 "mw":1495,
 "name":"CIVAUX 2",
-"pub":"2026-11-18T13:52:02Z",
+"pub":"2026-11-18T17:29:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essai à puissance stable.\nLe niveau de puissance pourra être réinterrogé si les conditions économiques le justifient.\n--------\nTest at stable power.\nThe power level will be reassessed depending on economic conditions.",
 "start":"2026-11-19T07:00:00Z",
@@ -165264,10 +165285,10 @@
 [
 "2026-11-19T07:00:00Z",
 "2026-11-19T16:00:00Z",
-568
+1120
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00342949":{
 "eic":"17W100P100P0133Q",
