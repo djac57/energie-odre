@@ -164646,19 +164646,19 @@
 "kind":"PLANNED",
 "mw":1310,
 "name":"BELLEVILLE 1",
-"pub":"2026-11-17T12:46:49Z",
+"pub":"2026-11-17T23:40:48Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 985 MW\n--------\nUnit is currently ramping up by steps\nNext step : 985 MW.",
+"remarks":"Remontée par paliers en cours\nProchain palier : 1310 MW\n--------\nUnit is currently ramping up by steps\nNext step : 1310 MW.",
 "start":"2026-11-15T20:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-15T20:00:00Z",
 "2026-11-19T18:00:00Z",
-660
+350
 ]
 ],
-"v":7
+"v":8
 },
 "EDF-05470_EDF_T_00342224":{
 "eic":"17W100P100P0105V",
@@ -164767,12 +164767,12 @@
 },
 "EDF-05470_EDF_T_00342471":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-20T02:30:00Z",
+"end":"2026-11-21T16:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-17T10:06:58Z",
+"pub":"2026-11-17T23:19:47Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 336 MW\n--------\nUnit is currently ramping up by steps\nNext step : 336 MW.",
 "start":"2026-11-17T01:56:00Z",
@@ -164780,11 +164780,11 @@
 "steps":[
 [
 "2026-11-17T01:56:00Z",
-"2026-11-20T02:30:00Z",
+"2026-11-21T16:30:00Z",
 535
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00342673":{
 "eic":"17W100P100P0113W",
@@ -164827,6 +164827,27 @@
 ]
 ],
 "v":2
+},
+"EDF-05470_EDF_T_00342700":{
+"eic":"17W100P100P01101",
+"end":"2026-11-18T11:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1500,
+"name":"CHOOZ 1",
+"pub":"2026-11-18T02:25:51Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-17T21:50:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-17T21:50:00Z",
+"2026-11-18T11:00:00Z",
+700
+]
+],
+"v":6
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
