@@ -7223,6 +7223,27 @@
 ],
 "v":1
 },
+"CNR-CA252326-20001U05-5-1":{
+"eic":"17W100P100P1369T",
+"end":"2026-12-11T16:00:00Z",
+"fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
+"kind":"PLANNED",
+"mw":32,
+"name":"CADEROUSSE G5",
+"pub":"2026-11-19T09:52:48Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-12-11T07:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-12-11T07:00:00Z",
+"2026-12-11T16:00:00Z",
+32
+]
+],
+"v":1
+},
 "CNR-CA252327-20001U06-1-1":{
 "eic":"17W100P100P13715",
 "end":"2026-09-18T13:30:00Z",
@@ -108571,12 +108592,12 @@
 },
 "EDF-05470_EDF_H_00136060":{
 "eic":"17W100P100P00796",
-"end":"2026-11-19T15:13:00Z",
+"end":"2026-11-19T16:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"UNPLANNED",
 "mw":202,
 "name":"REVIN 4",
-"pub":"2026-11-19T09:16:51Z",
+"pub":"2026-11-19T09:44:50Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-11-19T09:13:00Z",
@@ -108584,11 +108605,11 @@
 "steps":[
 [
 "2026-11-19T09:13:00Z",
-"2026-11-19T15:13:00Z",
+"2026-11-19T16:00:00Z",
 202
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
@@ -165019,12 +165040,12 @@
 },
 "EDF-05470_EDF_T_00342170":{
 "eic":"17W100P100P0090I",
-"end":"2026-11-19T19:50:00Z",
+"end":"2026-11-19T23:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1310,
 "name":"BELLEVILLE 1",
-"pub":"2026-11-18T07:16:49Z",
+"pub":"2026-11-19T11:30:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 1300 MW\n--------\nUnit is currently ramping up by steps\nNext step : 1300 MW.",
 "start":"2026-11-15T20:00:00Z",
@@ -165032,11 +165053,11 @@
 "steps":[
 [
 "2026-11-15T20:00:00Z",
-"2026-11-19T19:50:00Z",
+"2026-11-19T23:00:00Z",
 350
 ]
 ],
-"v":9
+"v":10
 },
 "EDF-05470_EDF_T_00342224":{
 "eic":"17W100P100P0105V",
@@ -165045,19 +165066,19 @@
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-11-19T08:42:50Z",
+"pub":"2026-11-19T12:18:48Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 900 MW\n--------\nUnit is currently ramping up by steps\nNext step : 900 MW.",
+"remarks":"Remontée par paliers en cours\nProchain palier : PMD \n--------\nUnit is currently ramping up by steps\nNext step : PMD",
 "start":"2026-11-16T08:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-16T08:00:00Z",
 "2026-11-20T18:30:00Z",
-500
+400
 ]
 ],
-"v":13
+"v":14
 },
 "EDF-05470_EDF_T_00342225":{
 "eic":"17W100P100P0119K",
@@ -165418,12 +165439,12 @@
 },
 "EDF-05470_EDF_T_00343115":{
 "eic":"17W100P100P0090I",
-"end":"2026-11-19T11:00:00Z",
+"end":"2026-11-19T14:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1310,
 "name":"BELLEVILLE 1",
-"pub":"2026-11-19T08:32:49Z",
+"pub":"2026-11-19T11:07:48Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-19T07:40:00Z",
@@ -165431,11 +165452,11 @@
 "steps":[
 [
 "2026-11-19T07:40:00Z",
-"2026-11-19T11:00:00Z",
+"2026-11-19T14:00:00Z",
 422
 ]
 ],
-"v":2
+"v":3
 },
 "EDF-05470_EDF_T_00343124":{
 "eic":"17W100P100P0131U",
