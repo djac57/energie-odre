@@ -108550,24 +108550,24 @@
 },
 "EDF-05470_EDF_H_00136055":{
 "eic":"17W100P100P00796",
-"end":"2026-11-18T23:25:00Z",
+"end":"2026-11-18T20:18:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"UNPLANNED",
 "mw":202,
 "name":"REVIN 4",
-"pub":"2026-11-18T17:30:50Z",
+"pub":"2026-11-18T21:44:48Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-11-18T17:25:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-18T17:25:00Z",
-"2026-11-18T23:25:00Z",
+"2026-11-18T20:18:00Z",
 202
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
@@ -165019,12 +165019,12 @@
 },
 "EDF-05470_EDF_T_00342224":{
 "eic":"17W100P100P0105V",
-"end":"2026-11-20T16:30:00Z",
+"end":"2026-11-20T20:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-11-18T15:08:02Z",
+"pub":"2026-11-18T23:50:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 900 MW\n--------\nUnit is currently ramping up by steps\nNext step : 900 MW.",
 "start":"2026-11-16T08:00:00Z",
@@ -165032,11 +165032,11 @@
 "steps":[
 [
 "2026-11-16T08:00:00Z",
-"2026-11-20T16:30:00Z",
+"2026-11-20T20:00:00Z",
 820
 ]
 ],
-"v":8
+"v":12
 },
 "EDF-05470_EDF_T_00342225":{
 "eic":"17W100P100P0119K",
@@ -165187,12 +165187,12 @@
 },
 "EDF-05470_EDF_T_00342700":{
 "eic":"17W100P100P01101",
-"end":"2026-11-18T21:00:00Z",
+"end":"2026-11-18T22:35:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":1500,
 "name":"CHOOZ 1",
-"pub":"2026-11-18T16:15:49Z",
+"pub":"2026-11-18T22:15:49Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-17T21:50:00Z",
@@ -165200,11 +165200,11 @@
 "steps":[
 [
 "2026-11-17T21:50:00Z",
-"2026-11-18T21:00:00Z",
+"2026-11-18T22:35:00Z",
 700
 ]
 ],
-"v":8
+"v":11
 },
 "EDF-05470_EDF_T_00342751":{
 "eic":"17W100P100P0142P",
@@ -165269,14 +165269,77 @@
 ],
 "v":1
 },
-"EDF-05470_EDF_T_00342948":{
+"EDF-05470_EDF_T_00342992":{
+"eic":"17W100P100P0146H",
+"end":"2026-11-19T07:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1335,
+"name":"ST ALBAN 2",
+"pub":"2026-11-18T22:08:47Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Grève\nLa baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.\n--------\nStrike\nThe production restriction is likely to continue until the end of the national strike.",
+"start":"2026-11-18T20:47:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-18T20:47:00Z",
+"2026-11-19T07:00:00Z",
+995
+]
+],
+"v":2
+},
+"EDF-05470_EDF_T_00342993":{
+"eic":"17W100P100P0145J",
+"end":"2026-11-19T07:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1335,
+"name":"ST ALBAN 1",
+"pub":"2026-11-19T00:33:50Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Grève\nLa baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.\n--------\nStrike\nThe production restriction is likely to continue until the end of the national strike.",
+"start":"2026-11-18T20:47:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-18T20:47:00Z",
+"2026-11-19T07:00:00Z",
+335
+]
+],
+"v":2
+},
+"EDF-05470_EDF_T_00343032":{
+"eic":"17W100P100P0145J",
+"end":"2026-11-20T00:35:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":1335,
+"name":"ST ALBAN 1",
+"pub":"2026-11-19T00:37:03Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.\nUne nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.\n--------\nThe duration of the unavailability is a pre-",
+"start":"2026-11-19T00:35:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-19T00:35:00Z",
+"2026-11-20T00:35:00Z",
+335
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00343037":{
 "eic":"17W100P100P0114U",
 "end":"2026-11-19T16:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1495,
 "name":"CIVAUX 2",
-"pub":"2026-11-18T17:29:50Z",
+"pub":"2026-11-19T01:27:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essai à puissance stable.\nLe niveau de puissance pourra être réinterrogé si les conditions économiques le justifient.\n--------\nTest at stable power.\nThe power level will be reassessed depending on economic conditions.",
 "start":"2026-11-19T07:00:00Z",
@@ -165286,27 +165349,6 @@
 "2026-11-19T07:00:00Z",
 "2026-11-19T16:00:00Z",
 1120
-]
-],
-"v":2
-},
-"EDF-05470_EDF_T_00342949":{
-"eic":"17W100P100P0133Q",
-"end":"2026-11-19T14:00:00Z",
-"fuel":"NUCLEAR",
-"kind":"PLANNED",
-"mw":910,
-"name":"GRAVELINES 4",
-"pub":"2026-11-18T13:52:48Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Essai à puissance stable.\nLe niveau de puissance pourra être réinterrogé si les conditions économiques le justifient.\n--------\nTest at stable power.\nThe power level will be reassessed depending on economic conditions.",
-"start":"2026-11-19T08:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-19T08:00:00Z",
-"2026-11-19T14:00:00Z",
-260
 ]
 ],
 "v":1
