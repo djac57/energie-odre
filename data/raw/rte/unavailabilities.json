@@ -25474,24 +25474,24 @@
 },
 "EC-EDF-05470-EDF-T-00104283":{
 "eic":"17W100P100P0123T",
-"end":"2026-11-26T22:00:00Z",
+"end":"2026-11-24T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":890,
 "name":"DAMPIERRE 4",
-"pub":"2026-11-05T14:42:50Z",
+"pub":"2026-11-21T10:09:55Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
+"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.\n--------\nAfter its restart, the plant will gradually return by vari",
 "start":"2026-08-21T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-08-21T22:00:00Z",
-"2026-11-26T22:00:00Z",
+"2026-11-24T22:00:00Z",
 890
 ]
 ],
-"v":8
+"v":9
 },
 "EC-EDF-05470-EDF-T-00104297":{
 "eic":"17W100P100P0137I",
@@ -25579,24 +25579,24 @@
 },
 "EC-EDF-05470-EDF-T-00105341":{
 "eic":"17W100P100P0115S",
-"end":"2026-11-25T22:30:00Z",
+"end":"2026-11-23T11:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 1",
-"pub":"2026-10-16T20:56:36Z",
+"pub":"2026-11-21T10:12:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.\n-------------------------------------\nAprès son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera",
+"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 98 MW.\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.\n-\nAfter its restart, the plant ",
 "start":"2026-10-16T20:55:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-10-16T20:55:00Z",
-"2026-11-25T22:30:00Z",
+"2026-11-23T11:00:00Z",
 915
 ]
 ],
-"v":12
+"v":14
 },
 "EC-EDF-05470-EDF-T-00107362":{
 "eic":"17W100P100P0140T",
@@ -108065,27 +108065,6 @@
 ],
 "v":1
 },
-"EDF-05470_EDF_H_00135989":{
-"eic":"17W100P100P0302T",
-"end":"2026-11-23T15:00:00Z",
-"fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
-"kind":"PLANNED",
-"mw":293,
-"name":"CHASTANG",
-"pub":"2026-11-18T07:36:59Z",
-"reason":"FORESEEN_MAINTENANCE",
-"remarks":"",
-"start":"2026-11-23T10:00:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-23T10:00:00Z",
-"2026-11-23T15:00:00Z",
-293
-]
-],
-"v":2
-},
 "EDF-05470_EDF_H_00135990":{
 "eic":"17W100P100P00885",
 "end":"2026-11-19T11:00:00Z",
@@ -165208,24 +165187,24 @@
 },
 "EDF-05470_EDF_T_00342224":{
 "eic":"17W100P100P0105V",
-"end":"2026-11-21T12:00:00Z",
+"end":"2026-11-21T10:34:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-11-21T05:41:49Z",
+"pub":"2026-11-21T10:35:51Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : PMD \n--------\nUnit is currently ramping up by steps\nNext step : PMD",
 "start":"2026-11-16T08:00:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-16T08:00:00Z",
-"2026-11-21T12:00:00Z",
-210
+"2026-11-21T10:34:00Z",
+89
 ]
 ],
-"v":18
+"v":19
 },
 "EDF-05470_EDF_T_00342225":{
 "eic":"17W100P100P0119K",
@@ -165612,7 +165591,7 @@
 "kind":"PLANNED",
 "mw":910,
 "name":"GRAVELINES 2",
-"pub":"2026-11-20T07:15:48Z",
+"pub":"2026-11-21T08:29:49Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-21T06:25:00Z",
@@ -165621,10 +165600,10 @@
 [
 "2026-11-21T06:25:00Z",
 "2026-11-21T23:00:00Z",
-324
+379
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00343125":{
 "eic":"17W100P100P0109N",
