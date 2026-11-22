@@ -25479,9 +25479,9 @@
 "kind":"PLANNED",
 "mw":890,
 "name":"DAMPIERRE 4",
-"pub":"2026-11-21T10:09:55Z",
+"pub":"2026-11-22T06:08:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.\n--------\nAfter its restart, the plant will gradually return by vari",
+"remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance\nLa remontée durera au moins 48h\nPremier palier à atteindre : 27 MW\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport\n-\nAfter its restart, the plant will",
 "start":"2026-08-21T22:00:00Z",
 "status":"ACTIVE",
 "steps":[
@@ -25491,7 +25491,7 @@
 890
 ]
 ],
-"v":9
+"v":10
 },
 "EC-EDF-05470-EDF-T-00104297":{
 "eic":"17W100P100P0137I",
@@ -108737,6 +108737,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00136104":{
+"eic":"17W100P100P0302T",
+"end":"2026-11-23T14:30:00Z",
+"fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
+"kind":"PLANNED",
+"mw":293,
+"name":"CHASTANG",
+"pub":"2026-11-22T09:39:49Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-23T12:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-23T12:30:00Z",
+"2026-11-23T14:30:00Z",
+293
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -162252,7 +162273,7 @@
 "kind":"PLANNED",
 "mw":1335,
 "name":"ST ALBAN 1",
-"pub":"2026-11-21T21:12:49Z",
+"pub":"2026-11-22T04:15:50Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-22T02:15:00Z",
@@ -162261,10 +162282,10 @@
 [
 "2026-11-22T02:15:00Z",
 "2026-11-22T21:00:00Z",
-570
+629
 ]
 ],
-"v":4
+"v":5
 },
 "EDF-05470_EDF_T_00336638":{
 "eic":"17W100P100P0129H",
@@ -165748,6 +165769,48 @@
 "2026-11-21T18:00:00Z",
 "2026-11-21T19:00:00Z",
 163
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00343761":{
+"eic":"17W100P100P0090I",
+"end":"2026-11-24T07:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1310,
+"name":"BELLEVILLE 1",
+"pub":"2026-11-22T06:07:09Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-24T06:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-24T06:30:00Z",
+"2026-11-24T07:00:00Z",
+670
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00343763":{
+"eic":"17W100P100P0142P",
+"end":"2026-11-24T15:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1330,
+"name":"PALUEL 4",
+"pub":"2026-11-22T06:06:50Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-24T14:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-24T14:30:00Z",
+"2026-11-24T15:00:00Z",
+701
 ]
 ],
 "v":1
