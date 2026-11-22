@@ -25579,12 +25579,12 @@
 },
 "EC-EDF-05470-EDF-T-00105341":{
 "eic":"17W100P100P0115S",
-"end":"2026-11-23T11:00:00Z",
+"end":"2026-11-23T05:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 1",
-"pub":"2026-11-21T10:12:50Z",
+"pub":"2026-11-22T12:16:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 98 MW.\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.\n-\nAfter its restart, the plant ",
 "start":"2026-10-16T20:55:00Z",
@@ -25592,11 +25592,11 @@
 "steps":[
 [
 "2026-10-16T20:55:00Z",
-"2026-11-23T11:00:00Z",
+"2026-11-23T05:00:00Z",
 915
 ]
 ],
-"v":14
+"v":15
 },
 "EC-EDF-05470-EDF-T-00107362":{
 "eic":"17W100P100P0140T",
@@ -165040,12 +165040,12 @@
 },
 "EDF-05470_EDF_T_00341684":{
 "eic":"17W100P100P00958",
-"end":"2026-11-22T19:00:00Z",
+"end":"2026-11-22T16:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":910,
 "name":"BLAYAIS 4",
-"pub":"2026-11-16T14:01:49Z",
+"pub":"2026-11-22T12:29:49Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-17T19:00:00Z",
@@ -165053,11 +165053,11 @@
 "steps":[
 [
 "2026-11-17T19:00:00Z",
-"2026-11-22T19:00:00Z",
+"2026-11-22T16:00:00Z",
 910
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_T_00341702":{
 "eic":"17W100P100P0041V",
