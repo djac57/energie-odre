@@ -25579,12 +25579,12 @@
 },
 "EC-EDF-05470-EDF-T-00105341":{
 "eic":"17W100P100P0115S",
-"end":"2026-11-23T05:00:00Z",
+"end":"2026-11-23T15:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 1",
-"pub":"2026-11-22T12:16:49Z",
+"pub":"2026-11-22T18:19:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.\nLa remontée durera au moins 48h.\nPremier palier à atteindre : 98 MW.\nRetour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.\n-\nAfter its restart, the plant ",
 "start":"2026-10-16T20:55:00Z",
@@ -25592,11 +25592,11 @@
 "steps":[
 [
 "2026-10-16T20:55:00Z",
-"2026-11-23T05:00:00Z",
+"2026-11-23T15:00:00Z",
 915
 ]
 ],
-"v":15
+"v":16
 },
 "EC-EDF-05470-EDF-T-00107362":{
 "eic":"17W100P100P0140T",
@@ -108758,6 +108758,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00136105":{
+"eic":"17W100P100P0072K",
+"end":"2026-11-22T15:10:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"UNPLANNED",
+"mw":227,
+"name":"MONTEZIC 2",
+"pub":"2026-11-22T15:17:48Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
+"start":"2026-11-22T14:23:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-22T14:23:00Z",
+"2026-11-22T15:10:00Z",
+227
+]
+],
+"v":2
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -162268,24 +162289,24 @@
 },
 "EDF-05470_EDF_T_00336631":{
 "eic":"17W100P100P0145J",
-"end":"2026-11-22T21:00:00Z",
+"end":"2026-11-22T18:43:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1335,
 "name":"ST ALBAN 1",
-"pub":"2026-11-22T04:15:50Z",
+"pub":"2026-11-22T18:45:50Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-22T02:15:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-22T02:15:00Z",
-"2026-11-22T21:00:00Z",
+"2026-11-22T18:43:00Z",
 629
 ]
 ],
-"v":5
+"v":6
 },
 "EDF-05470_EDF_T_00336638":{
 "eic":"17W100P100P0129H",
@@ -165040,12 +165061,12 @@
 },
 "EDF-05470_EDF_T_00341684":{
 "eic":"17W100P100P00958",
-"end":"2026-11-22T16:00:00Z",
+"end":"2026-11-22T19:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":910,
 "name":"BLAYAIS 4",
-"pub":"2026-11-22T12:29:49Z",
+"pub":"2026-11-22T16:08:49Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
 "start":"2026-11-17T19:00:00Z",
@@ -165053,11 +165074,11 @@
 "steps":[
 [
 "2026-11-17T19:00:00Z",
-"2026-11-22T16:00:00Z",
+"2026-11-22T19:00:00Z",
 910
 ]
 ],
-"v":4
+"v":6
 },
 "EDF-05470_EDF_T_00341702":{
 "eic":"17W100P100P0041V",
@@ -165313,12 +165334,12 @@
 },
 "EDF-05470_EDF_T_00342471":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-23T05:00:00Z",
+"end":"2026-11-23T22:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-20T17:18:50Z",
+"pub":"2026-11-22T23:01:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : PMD\n--------\nUnit is currently ramping up by steps\nNext step : PMD",
 "start":"2026-11-17T01:56:00Z",
@@ -165326,11 +165347,11 @@
 "steps":[
 [
 "2026-11-17T01:56:00Z",
-"2026-11-23T05:00:00Z",
+"2026-11-23T22:00:00Z",
 117
 ]
 ],
-"v":15
+"v":16
 },
 "EDF-05470_EDF_T_00342673":{
 "eic":"17W100P100P0113W",
@@ -165814,6 +165835,48 @@
 ]
 ],
 "v":1
+},
+"EDF-05470_EDF_T_00343904":{
+"eic":"17W100P100P0093C",
+"end":"2026-11-23T00:45:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":910,
+"name":"BLAYAIS 2",
+"pub":"2026-11-22T23:14:49Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-22T14:56:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-22T14:56:00Z",
+"2026-11-23T00:45:00Z",
+910
+]
+],
+"v":3
+},
+"EDF-05470_EDF_T_00343919":{
+"eic":"17W100P100P0119K",
+"end":"2026-11-22T22:58:00Z",
+"fuel":"NUCLEAR",
+"kind":"UNPLANNED",
+"mw":915,
+"name":"CRUAS 4",
+"pub":"2026-11-22T23:00:50Z",
+"reason":"FAILURE",
+"remarks":"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.\nUne nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.\n--------\nThe duration of the unavailability is a pre-",
+"start":"2026-11-22T19:57:00Z",
+"status":"INACTIVE",
+"steps":[
+[
+"2026-11-22T19:57:00Z",
+"2026-11-22T22:58:00Z",
+130
+]
+],
+"v":2
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
