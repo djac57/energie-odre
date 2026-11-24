@@ -165465,19 +165465,19 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-23T17:42:51Z",
+"pub":"2026-11-24T03:31:50Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : PMD\n--------\nUnit is currently ramping up by steps\nNext step : PMD",
+"remarks":"Remontée par paliers en cours\nProchain palier : 781 MW\n--------\nUnit is currently ramping up by steps\nNext step : 781 MW",
 "start":"2026-11-17T01:56:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-17T01:56:00Z",
 "2026-11-28T16:00:00Z",
-545
+575
 ]
 ],
-"v":20
+"v":22
 },
 "EDF-05470_EDF_T_00342673":{
 "eic":"17W100P100P0113W",
@@ -166011,7 +166011,7 @@
 "kind":"UNPLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-23T17:42:50Z",
+"pub":"2026-11-23T23:39:50Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-23T04:09:00Z",
@@ -166020,10 +166020,10 @@
 [
 "2026-11-23T04:09:00Z",
 "2026-11-24T16:30:00Z",
-545
+575
 ]
 ],
-"v":6
+"v":7
 },
 "EDF-05470_EDF_T_00343982":{
 "eic":"17W100P100P0091G",
@@ -166048,24 +166048,66 @@
 },
 "EDF-05470_EDF_T_00344159":{
 "eic":"17W100P100P0115S",
-"end":"2026-11-26T22:30:00Z",
+"end":"2026-11-27T03:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 1",
-"pub":"2026-11-23T19:57:49Z",
+"pub":"2026-11-24T03:59:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 181 MW\n--------\nUnit is currently ramping up by steps\nNext step : 181 MW",
+"remarks":"Remontée par paliers en cours\nProchain palier : 367 MW\n--------\nUnit is currently ramping up by steps\nNext step : 367 MW",
 "start":"2026-11-23T17:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-23T17:30:00Z",
-"2026-11-26T22:30:00Z",
-840
+"2026-11-27T03:30:00Z",
+708
 ]
 ],
-"v":3
+"v":8
+},
+"EDF-05470_EDF_T_00344181":{
+"eic":"17W100P100P0033U",
+"end":"2026-11-23T23:00:00Z",
+"fuel":"FOSSIL_OIL",
+"kind":"UNPLANNED",
+"mw":134,
+"name":"BRENNILIS 3",
+"pub":"2026-11-23T21:39:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Limitation à un cycle de démarrage/arrêt par jour.\n--------\nOne daily start/stop cycle limitation.",
+"start":"2026-11-23T21:36:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-23T21:36:00Z",
+"2026-11-23T23:00:00Z",
+134
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00344229":{
+"eic":"17W100P100P0123T",
+"end":"2026-11-27T12:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":890,
+"name":"DAMPIERRE 4",
+"pub":"2026-11-24T04:08:02Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Remontée par paliers en cours\nProchain palier : 27 MW\n--------\nUnit is currently ramping up by steps\nNext step : 27 MW.",
+"start":"2026-11-24T04:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-24T04:00:00Z",
+"2026-11-27T12:00:00Z",
+880
+]
+],
+"v":1
 },
 "ENG-1383f88418216421d8a3":{
 "eic":"17W100P100P0332K",
