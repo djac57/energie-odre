@@ -11969,6 +11969,27 @@
 ],
 "v":1
 },
+"CNR-GE262175-03001U04-1-1":{
+"eic":"17W100P100P1598E",
+"end":"2026-12-04T15:30:00Z",
+"fuel":"HYDRO_RUN_OF_RIVER_AND_POUNDAGE",
+"kind":"UNPLANNED",
+"mw":65,
+"name":"GENISSIAT G4",
+"pub":"2026-11-25T09:02:50Z",
+"reason":"FAILURE",
+"remarks":"",
+"start":"2026-11-12T11:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-12T11:00:00Z",
+"2026-12-04T15:30:00Z",
+65
+]
+],
+"v":1
+},
 "CNR-LN251762-17001U01-1-1":{
 "eic":"17W100P100P1734W",
 "end":"2025-10-24T12:00:00Z",
@@ -109031,6 +109052,27 @@
 ],
 "v":1
 },
+"EDF-05470_EDF_H_00136153":{
+"eic":"17W100P100P0072K",
+"end":"2026-11-25T11:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":227,
+"name":"MONTEZIC 2",
+"pub":"2026-11-25T08:05:51Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-25T09:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-25T09:30:00Z",
+"2026-11-25T11:00:00Z",
+227
+]
+],
+"v":1
+},
 "EDF-05470_EDF_T_00228845":{
 "eic":"17W100P100P0017S",
 "end":"2025-11-12T16:00:00Z",
@@ -164137,12 +164179,12 @@
 },
 "EDF-05470_EDF_T_00339426":{
 "eic":"17W100P100P0037M",
-"end":"2026-11-27T15:30:00Z",
+"end":"2026-11-27T16:00:00Z",
 "fuel":"FOSSIL_GAS",
 "kind":"PLANNED",
 "mw":203,
 "name":"GENNEVILLIERS 1",
-"pub":"2026-11-03T11:26:36Z",
+"pub":"2026-11-25T06:45:51Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Essais de requalification, à PMD. \n----------------------------------------------------------------------- \nCheck tests, to full power.",
 "start":"2026-11-27T14:30:00Z",
@@ -164150,11 +164192,11 @@
 "steps":[
 [
 "2026-11-27T14:30:00Z",
-"2026-11-27T15:30:00Z",
-0
+"2026-11-27T16:00:00Z",
+-12
 ]
 ],
-"v":1
+"v":2
 },
 "EDF-05470_EDF_T_00339465":{
 "eic":"17W100P100P0018Q",
@@ -165586,24 +165628,24 @@
 },
 "EDF-05470_EDF_T_00342471":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-29T16:00:00Z",
+"end":"2026-11-26T17:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-24T15:08:50Z",
+"pub":"2026-11-25T03:43:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Remontée par paliers en cours\nProchain palier : 798 MW\n--------\nUnit is currently ramping up by steps\nNext step : 798 MW",
+"remarks":"Remontée par paliers en cours\nProchain palier : 905 MW\n--------\nUnit is currently ramping up by steps\nNext step : 905 MW",
 "start":"2026-11-17T01:56:00Z",
 "status":"ACTIVE",
 "steps":[
 [
 "2026-11-17T01:56:00Z",
-"2026-11-29T16:00:00Z",
+"2026-11-26T17:00:00Z",
 575
 ]
 ],
-"v":23
+"v":24
 },
 "EDF-05470_EDF_T_00342673":{
 "eic":"17W100P100P0113W",
@@ -166151,35 +166193,14 @@
 ],
 "v":8
 },
-"EDF-05470_EDF_T_00343982":{
-"eic":"17W100P100P0091G",
-"end":"2026-11-25T02:00:00Z",
-"fuel":"NUCLEAR",
-"kind":"PLANNED",
-"mw":1310,
-"name":"BELLEVILLE 2",
-"pub":"2026-11-23T06:08:51Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Essai programmé.\n--------\nPlanned test.",
-"start":"2026-11-25T01:30:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-11-25T01:30:00Z",
-"2026-11-25T02:00:00Z",
-679
-]
-],
-"v":1
-},
 "EDF-05470_EDF_T_00344159":{
 "eic":"17W100P100P0115S",
-"end":"2026-11-27T07:00:00Z",
+"end":"2026-11-27T12:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 1",
-"pub":"2026-11-25T00:27:50Z",
+"pub":"2026-11-25T09:21:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 781 MW\n--------\nUnit is currently ramping up by steps\nNext step : 781 MW",
 "start":"2026-11-23T17:30:00Z",
@@ -166187,11 +166208,11 @@
 "steps":[
 [
 "2026-11-23T17:30:00Z",
-"2026-11-27T07:00:00Z",
-543
+"2026-11-27T12:00:00Z",
+575
 ]
 ],
-"v":10
+"v":12
 },
 "EDF-05470_EDF_T_00344181":{
 "eic":"17W100P100P0033U",
@@ -166256,23 +166277,107 @@
 ],
 "v":1
 },
-"EDF-05470_EDF_T_00344404":{
+"EDF-05470_EDF_T_00344489":{
+"eic":"17W100P100P0093C",
+"end":"2026-11-27T04:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":910,
+"name":"BLAYAIS 2",
+"pub":"2026-11-25T06:59:49Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-27T03:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-27T03:30:00Z",
+"2026-11-27T04:00:00Z",
+460
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00344501":{
+"eic":"17W100P100P0127L",
+"end":"2026-11-27T16:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":1330,
+"name":"FLAMANVILLE 2",
+"pub":"2026-11-25T06:45:50Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-27T15:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-27T15:30:00Z",
+"2026-11-27T16:00:00Z",
+690
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00344507":{
+"eic":"17W100P100P0121X",
+"end":"2026-11-27T11:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":890,
+"name":"DAMPIERRE 2",
+"pub":"2026-11-25T06:47:51Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-27T10:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-27T10:30:00Z",
+"2026-11-27T11:00:00Z",
+440
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00344509":{
 "eic":"17W100P100P0105V",
-"end":"2026-11-27T09:00:00Z",
+"end":"2026-11-27T09:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":1300,
 "name":"CATTENOM 4",
-"pub":"2026-11-24T15:16:50Z",
+"pub":"2026-11-25T06:50:51Z",
 "reason":"FORESEEN_MAINTENANCE",
 "remarks":"",
-"start":"2026-11-27T07:00:00Z",
+"start":"2026-11-27T07:30:00Z",
 "status":"ACTIVE",
 "steps":[
 [
-"2026-11-27T07:00:00Z",
-"2026-11-27T09:00:00Z",
-660
+"2026-11-27T07:30:00Z",
+"2026-11-27T09:30:00Z",
+650
+]
+],
+"v":1
+},
+"EDF-05470_EDF_T_00344517":{
+"eic":"17W100P100P0131U",
+"end":"2026-11-27T03:00:00Z",
+"fuel":"NUCLEAR",
+"kind":"PLANNED",
+"mw":910,
+"name":"GRAVELINES 2",
+"pub":"2026-11-25T06:55:52Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Essai programmé.\n--------\nPlanned test.",
+"start":"2026-11-27T02:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-27T02:30:00Z",
+"2026-11-27T03:00:00Z",
+470
 ]
 ],
 "v":1
