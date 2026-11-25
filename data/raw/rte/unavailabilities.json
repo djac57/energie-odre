@@ -101660,27 +101660,6 @@
 ],
 "v":1
 },
-"EDF-05470_EDF_H_00134330":{
-"eic":"17W100P100P0060R",
-"end":"2026-12-09T15:00:00Z",
-"fuel":"HYDRO_PUMPED_STORAGE",
-"kind":"PLANNED",
-"mw":170,
-"name":"GRAND MAISON 11",
-"pub":"2026-11-05T10:56:51Z",
-"reason":"COMPLEMENTARY_INFORMATION",
-"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
-"start":"2026-12-09T12:30:00Z",
-"status":"ACTIVE",
-"steps":[
-[
-"2026-12-09T12:30:00Z",
-"2026-12-09T15:00:00Z",
-170
-]
-],
-"v":3
-},
 "EDF-05470_EDF_H_00134356":{
 "eic":"17W100P100P0077A",
 "end":"2026-10-07T08:00:00Z",
@@ -108949,24 +108928,24 @@
 },
 "EDF-05470_EDF_H_00136138":{
 "eic":"17W100P100P0084D",
-"end":"2026-11-25T16:00:00Z",
+"end":"2026-11-25T15:00:00Z",
 "fuel":"HYDRO_PUMPED_STORAGE",
 "kind":"UNPLANNED",
 "mw":152,
 "name":"SUPER BISSORTE 3",
-"pub":"2026-11-24T14:58:51Z",
+"pub":"2026-11-25T15:10:51Z",
 "reason":"FAILURE",
 "remarks":"La durée indiquée dans la première version est une durée par défaut qui sera affinée après analyse technique - The duration indicated in the first version is pre-defined and will be reassessed after technical analysis.",
 "start":"2026-11-24T11:46:00Z",
-"status":"ACTIVE",
+"status":"INACTIVE",
 "steps":[
 [
 "2026-11-24T11:46:00Z",
-"2026-11-25T16:00:00Z",
+"2026-11-25T15:00:00Z",
 152
 ]
 ],
-"v":3
+"v":4
 },
 "EDF-05470_EDF_H_00136150":{
 "eic":"17W100P100P0301V",
@@ -109048,6 +109027,48 @@
 "2026-11-25T09:30:00Z",
 "2026-11-25T11:00:00Z",
 227
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00136160":{
+"eic":"17W100P100P0074G",
+"end":"2026-11-27T17:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":227,
+"name":"MONTEZIC 4",
+"pub":"2026-11-25T15:13:51Z",
+"reason":"FORESEEN_MAINTENANCE",
+"remarks":"",
+"start":"2026-11-27T07:00:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-11-27T07:00:00Z",
+"2026-11-27T17:00:00Z",
+227
+]
+],
+"v":1
+},
+"EDF-05470_EDF_H_00136164":{
+"eic":"17W100P100P0058E",
+"end":"2026-12-09T15:00:00Z",
+"fuel":"HYDRO_PUMPED_STORAGE",
+"kind":"PLANNED",
+"mw":170,
+"name":"GRAND MAISON 10",
+"pub":"2026-11-25T15:53:28Z",
+"reason":"COMPLEMENTARY_INFORMATION",
+"remarks":"Des variations de puissance pour essais sont possibles --- Power variations are expected due to tests",
+"start":"2026-12-09T12:30:00Z",
+"status":"ACTIVE",
+"steps":[
+[
+"2026-12-09T12:30:00Z",
+"2026-12-09T15:00:00Z",
+170
 ]
 ],
 "v":1
@@ -165586,12 +165607,12 @@
 },
 "EDF-05470_EDF_T_00342471":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-26T17:00:00Z",
+"end":"2026-11-27T17:00:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-25T03:43:49Z",
+"pub":"2026-11-25T15:53:28Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 905 MW\n--------\nUnit is currently ramping up by steps\nNext step : 905 MW",
 "start":"2026-11-17T01:56:00Z",
@@ -165599,11 +165620,11 @@
 "steps":[
 [
 "2026-11-17T01:56:00Z",
-"2026-11-26T17:00:00Z",
+"2026-11-27T17:00:00Z",
 575
 ]
 ],
-"v":24
+"v":25
 },
 "EDF-05470_EDF_T_00342673":{
 "eic":"17W100P100P0113W",
@@ -166132,12 +166153,12 @@
 },
 "EDF-05470_EDF_T_00343972":{
 "eic":"17W100P100P0119K",
-"end":"2026-11-25T16:30:00Z",
+"end":"2026-11-26T16:30:00Z",
 "fuel":"NUCLEAR",
 "kind":"UNPLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-24T15:07:31Z",
+"pub":"2026-11-25T15:50:49Z",
 "reason":"FAILURE",
 "remarks":"",
 "start":"2026-11-23T04:09:00Z",
@@ -166145,20 +166166,20 @@
 "steps":[
 [
 "2026-11-23T04:09:00Z",
-"2026-11-25T16:30:00Z",
+"2026-11-26T16:30:00Z",
 575
 ]
 ],
-"v":8
+"v":9
 },
 "EDF-05470_EDF_T_00344159":{
 "eic":"17W100P100P0115S",
-"end":"2026-11-27T15:00:00Z",
+"end":"2026-11-27T16:40:00Z",
 "fuel":"NUCLEAR",
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 1",
-"pub":"2026-11-25T12:54:22Z",
+"pub":"2026-11-25T20:08:51Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 781 MW\n--------\nUnit is currently ramping up by steps\nNext step : 781 MW",
 "start":"2026-11-23T17:30:00Z",
@@ -166166,11 +166187,11 @@
 "steps":[
 [
 "2026-11-23T17:30:00Z",
-"2026-11-27T15:00:00Z",
-575
+"2026-11-27T16:40:00Z",
+495
 ]
 ],
-"v":13
+"v":15
 },
 "EDF-05470_EDF_T_00344181":{
 "eic":"17W100P100P0033U",
