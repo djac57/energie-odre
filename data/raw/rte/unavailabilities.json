@@ -166032,7 +166032,7 @@
 "kind":"PLANNED",
 "mw":915,
 "name":"CRUAS 4",
-"pub":"2026-11-26T10:25:19Z",
+"pub":"2026-11-26T13:42:49Z",
 "reason":"COMPLEMENTARY_INFORMATION",
 "remarks":"Remontée par paliers en cours\nProchain palier : 905 MW\n--------\nUnit is currently ramping up by steps\nNext step : 905 MW",
 "start":"2026-11-17T01:56:00Z",
@@ -166041,10 +166041,10 @@
 [
 "2026-11-17T01:56:00Z",
 "2026-11-28T16:30:00Z",
-575
+585
 ]
 ],
-"v":26
+"v":27
 },
 "EDF-05470_EDF_T_00342673":{
 "eic":"17W100P100P0113W",
